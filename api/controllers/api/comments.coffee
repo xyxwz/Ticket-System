@@ -6,7 +6,13 @@ _ = require 'underscore'
 
 module.exports = (app) ->
   
-  # Return a ticket's comments
+  # Ticket Comments
+  # GET /tickets/:id/comments.json
+  #
+  # id - The MongoDb BSON id converted to a string
+  #
+  # returns all of a ticket's comments. Uses the Mongoose
+  # Populate method to fill in information for the comment user.
   app.get '/tickets/:id/comments.json', (req, res) ->
     Ticket
     .findOne({'_id':req.params.id})
@@ -16,12 +22,29 @@ module.exports = (app) ->
         res.status 404
         res.send { error: 'Ticket not found' }
       else
-        res.send JSON.stringify ticket.comments
+        array = []
+        _.each ticket.comments, (comment) ->
+          obj = comment.toObject()
+          obj.id = obj._id
+          obj.user.id = obj.user._id
+          delete obj._id
+          delete obj.user._id
+          array.push(obj)
 
-  # Add a comment to a ticket
+        res.send JSON.stringify array
+
+
+  # Create a new ticket comment
+  # POST /tickets/:id/comments.json
+  #
+  # id - The MongoDb BSON id converted to a string
+  # body - A json object representing a ticket
+  #        :comment   - string
+  #        :user      - string, a user's BSON id in string form
+  #
+  # adds a comment to a ticket
   app.post '/tickets/:id/comments.json', (req, res) ->
     data = req.body
-    data.ticket = req.params.id
     Ticket
     .findOne({'_id': req.params.id})
     .run (err, ticket) ->
@@ -39,9 +62,10 @@ module.exports = (app) ->
             comment = new Comment({ comment: data.comment, user: user.id })
             ticket.comments.push(comment)
             ticket.save (err) ->
-            if err
-              res.status 400
-              res.send { error: 'Missing required parameters' }
-            else
-              comment_data = {'id':comment.id, 'comment':comment.comment, 'user':comment.user}
-              res.send JSON.stringify comment_data
+              if err
+                res.status 400
+                res.send { error: 'Missing required parameters' }
+              else
+                comment_data = {'id':comment.id, 'comment':comment.comment, 'user':user.toClient()}
+                res.send JSON.stringify comment_data
+
