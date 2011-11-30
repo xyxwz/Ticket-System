@@ -95,7 +95,7 @@ module.exports = (app) ->
   # id - The MongoDb BSON id converted to a string
   #
   # removes a user from the database
-  app.delete '/users/:id.json', (req, res) ->
+  app.del '/users/:id.json', (req, res) ->
     User
     .findOne({'_id':req.params.id})
     .run (err, user) ->
