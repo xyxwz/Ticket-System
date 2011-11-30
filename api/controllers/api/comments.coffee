@@ -66,6 +66,6 @@ module.exports = (app) ->
                 res.status 400
                 res.send { error: 'Missing required parameters' }
               else
-                comment_data = {'id':comment.id, 'comment':comment.comment, 'user':user.toClient()}
+                comment_data = { 'id':comment.id, 'comment':comment.comment, 'created':comment.created, 'user':user.toClient() }
                 res.send JSON.stringify comment_data
 
