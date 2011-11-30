@@ -36,7 +36,8 @@ module.exports = (app) ->
         res.status 400
         res.send { error: 'Missing required attributes' }
       else
-        res.send JSON.stringify model
+        obj = model.toClient()
+        res.send JSON.stringify obj
 
 
   # User Info
