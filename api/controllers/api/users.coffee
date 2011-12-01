@@ -16,7 +16,7 @@ module.exports = (app) ->
         obj = user.toClient()
         array.push(obj)
 
-      res.send JSON.stringify array
+      res.json array
 
 
   # Create a new user
@@ -33,11 +33,11 @@ module.exports = (app) ->
     user = new User { email: data.email, name: data.name, department: data.department }
     user.save (err, model) ->
       if err || !model
-        res.status 400
-        res.send { error: 'Missing required attributes' }
+        res.json { error: 'Missing required attributes' }, 400
       else
         obj = model.toClient()
-        res.send JSON.stringify obj
+        res.json obj
+
 
 
   # User Info
@@ -51,11 +51,10 @@ module.exports = (app) ->
     .findOne({'_id':req.params.id})
     .run (err, user) ->
       if err || !user
-        res.status 404
-        res.send { error: 'User not found' }
+        res.json { error: 'User not found' }, 404
       else
         obj = user.toClient()
-        res.send JSON.stringify obj
+        res.json obj
 
 
   # Update a user
@@ -74,19 +73,17 @@ module.exports = (app) ->
     .findOne({'_id':req.params.id})
     .run (err, user) ->
       if err || !user
-        res.status 404
-        res.send { error: 'User not found' }
+        res.json { error: 'User not found' }, 404
       else
         user.email = data.email if data.email
         user.name = data.name if data.name
         user.department = data.department if data.department
         user.save (err, model) ->
           if err || !model
-            res.status 400
-            res.send { error: 'Error updating model. Check required attributes.' }
+            res.json { error: 'Error updating model. Check required attributes.' }, 400
           else
             obj = model.toClient()
-            res.send JSON.stringify obj
+            res.json obj
 
 
   # Delete a user
@@ -100,14 +97,11 @@ module.exports = (app) ->
     .findOne({'_id':req.params.id})
     .run (err, user) ->
       if err || !user
-        res.status 404
-        res.send { error: 'User not found' }
+        res.json { error: 'User not found' }, 404
       else
         user.remove (err) ->
           if err
-            res.status 400
-            res.send { error: 'Error removing user' }
+            res.json { error: 'Error removing user' }, 400
           else
-            res.status 200
-            res.send { success: 'ok' }
+            res.json { success: 'ok' }
 

@@ -19,8 +19,7 @@ module.exports = (app) ->
     .populate('comments.user')
     .run (err, ticket) ->
       if err || !ticket
-        res.status 404
-        res.send { error: 'Ticket not found' }
+        res.json { error: 'Ticket not found' }, 404
       else
         array = []
         _.each ticket.comments, (comment) ->
@@ -31,7 +30,7 @@ module.exports = (app) ->
           delete obj.user._id
           array.push(obj)
 
-        res.send JSON.stringify array
+        res.json array
 
 
   # Create a new ticket comment
@@ -49,25 +48,22 @@ module.exports = (app) ->
     .findOne({'_id': req.params.id})
     .run (err, ticket) ->
       if err || !ticket
-        res.status 404
-        res.send { error: 'Ticket not found' }
+        res.json { error: 'Ticket not found' }, 404
       else
         User
         .findOne({'_id': data.user})
         .run (err, user) ->
           if err || !user
-            res.status 400
-            res.send { error: 'Not a valid user' }
+            res.json { error: 'Not a valid user' }, 400
           else
             comment = new Comment({ comment: data.comment, user: user.id })
             ticket.comments.push(comment)
             ticket.save (err) ->
               if err
-                res.status 400
-                res.send { error: 'Missing required parameters' }
+                res.json { error: 'Missing required parameters' }, 400
               else
                 comment_data = { 'id':comment.id, 'comment':comment.comment, 'created':comment.created, 'user':user.toClient() }
-                res.send JSON.stringify comment_data
+                res.json comment_data
 
 
   # Single Comment
@@ -82,23 +78,20 @@ module.exports = (app) ->
     .findOne({'_id': req.params.ticket_id})
     .run (err, ticket) ->
       if err || !ticket
-        res.status 404
-        res.send { error: 'Ticket not found' }
+        res.json { error: 'Ticket not found' }, 404
       else
         comment = ticket.comments.id(req.params.id)
         if !comment
-          res.status 404
-          res.send { error: 'Comment not found' }
+          res.json { error: 'Comment not found' }, 404
         else
           User
           .findOne({'_id': comment.user})
           .run (err, user) ->
             if err || !user
-              res.status 400
-              res.send { error: 'Error finding comment user' }
+              res.json { error: 'Error finding comment user' }, 400
             else
               comment_data = { 'id':comment.id, 'comment':comment.comment, 'created':comment.created, 'user':user.toClient() }
-              res.send JSON.stringify comment_data
+              res.json comment_data
 
 
   # Update a comment
@@ -117,30 +110,26 @@ module.exports = (app) ->
     .findOne({'_id': req.params.ticket_id})
     .run (err, ticket) ->
       if err || !ticket
-        res.status 404
-        res.send { error: 'Ticket not found' }
+        res.json { error: 'Ticket not found' }, 404
       else
         comment = ticket.comments.id(req.params.id)
         if !comment
-          res.status 404
-          res.send { error: 'Comment not found' }
+          res.json { error: 'Comment not found' }, 404
         else
           comment.comment = data.comment if data.comment
           comment.user = data.user if data.user
           ticket.save (err, model) ->
             if err || !model
-              res.status 400
-              res.send { error: 'Error updating model. Check required attributes.' }
+              res.json { error: 'Error updating model. Check required attributes.' }, 400
             else
               User
               .findOne({'_id': comment.user})
               .run (err, user) ->
                 if err || !user
-                  res.status 400
-                  res.send { error: 'Error finding comment user' }
+                  res.json { error: 'Error finding comment user' }, 400
                 else
                   comment_data = { 'id':comment.id, 'comment':comment.comment, 'created':comment.created, 'user':user.toClient() }
-                  res.send JSON.stringify comment_data
+                  res.json comment_data
 
 
   # Delete Comment
@@ -155,15 +144,12 @@ module.exports = (app) ->
     .findOne({'_id': req.params.ticket_id})
     .run (err, ticket) ->
       if err || !ticket
-        res.status 404
-        res.send { error: 'Ticket not found' }
+        res.json { error: 'Ticket not found' }, 404
       else
         ticket.comments.id(req.params.id).remove()
         ticket.save (err) ->
           if err
-            res.status 400
-            res.send { error: 'Error removing comment' }
+            res.json { error: 'Error removing comment' }, 400
           else
-            res.status 200
-            res.send { success: 'ok' }
+            res.json { success: 'ok' }
 
