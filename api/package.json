@@ -2,11 +2,9 @@
     "name": "TxSSC-Ticket-System"
   , "version": "0.0.1"
   , "dependencies": {
-      "coffee-script": ">= 1.1.2"
-    , "express": ">= 2.4.7"
+      "express": ">= 2.4.7"
     , "jade": ">= 0.0.1"
     , "mongoose": ">= 2.3.3"
     , "underscore": ">= 1.2.0"
-    , "expresso": ">=  0.0.9"
   }
 }
