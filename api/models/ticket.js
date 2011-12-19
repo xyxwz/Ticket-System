@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-var util = require("util");
+var _ = require('underscore');
 
 var Comment = new mongoose.Schema({
   comment           : {type : String, default : '', required: true, trim: true},
@@ -9,7 +9,7 @@ var Comment = new mongoose.Schema({
 });
 
 var Ticket = new mongoose.Schema({
-  status                : {type : String, default : 'open', enum: ['Open', 'Closed'], required: true},
+  status                : {type : String, default : 'open', enum: ['open', 'closed'], required: true},
   title                 : {type : String, default : '', required: true, trim: true},
   description           : {type : String, default : '', required: true, trim: true},
   opened_at             : {type : Date, default : Date.now(), required: true},
@@ -20,15 +20,147 @@ var Ticket = new mongoose.Schema({
   assigned_to           : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
 });
 
-Ticket.method('toClient', function(){
-  obj = this.toObject();
+
+/* ---------------------------------------- *
+ * Instance Methods *
+ * ---------------------------------------- */
+
+
+/* To Client *
+*
+*  Returns an object for use with client-side js.
+*  Sets the mongo _id property name to id */
+Ticket.methods.toClient = function(){
+  var obj = this.toObject();
   obj.id = obj._id;
   obj.user.id = obj.user._id;
   delete obj._id;
   delete obj.user._id;
   delete obj.comments;
   return obj;
-});
+};
+
+
+/* Update Ticket *
+*
+*  data - A json object representing ticket properties to update
+*     :title       - string, optional
+*     :description - string, optional
+*     :status      - string, optional, available options ['open', 'closed']
+*
+*  Updates a ticket and returns a ticket object
+*  ready to be sent to the client. */
+Ticket.methods.update = function(data, callback) {
+  if (data.status) {
+    this.status = data.status;
+    if(data.status === "closed") this.closed_at = Date.now();
+  }
+  if (data.title) this.title = data.title;
+  if (data.description) this.description = data.description;
+  this.save(function(err, ticket) {
+    if (err || !ticket) {
+      callback('Error updating model. Check required attributes.');
+    }
+    else {
+      return callback(null, ticket.toClient());
+    }
+  });
+}
+
+
+/* Delete Ticket *
+*
+*  Removes a ticket from the database.
+*  Returns an error or status "ok" to the callback */
+Ticket.methods.removeTicket = function(callback) {
+  this.remove(function(err) {
+    if (err) return callback('Error removing ticket');
+    return callback(null, "ok");
+  });
+}
+
+
+/* ---------------------------------------- *
+ * Static Methods *
+ * ---------------------------------------- */
+
+
+/* Return All Tickets
+*
+*  :status - string, accepted values: ["open", "closed"]
+*
+*  Gets a list of all the tickets in the database based on status.
+*  Uses the Mongoose Populate method to fill in information for the ticket user
+*
+* Returns an Array ready to be sent to the client. */
+Ticket.statics.getAll = function(status, callback) {
+  this
+  .find({'status': status})
+  .populate('user')
+  .run(function(err, models){
+    if(err || !models) {
+      return callback("Error finding tickets");
+    }
+    else {
+      var array = [];
+      _.each(models, function(ticket) {
+        var obj = ticket.toClient();
+        array.push(obj);
+      });
+      return callback(null, array);
+    }
+  });
+}
+
+
+/* Return A Single Ticket
+*
+*  :id - string, a tickets BSON id
+*
+*  Return a single ticket object ready to be sent to the client */
+Ticket.statics.getSingle = function(id, callback) {
+  this
+  .findOne({'_id':id})
+  .populate('user')
+  .run(function(err, model) {
+    if(err || !model){
+      return callback("Error finding ticket");
+    }
+    else {
+      return callback(null, model.toClient());
+    }
+  });
+}
+
+
+/* Create A Ticket *
+*
+*  data - A json object representing ticket properties
+*     :title       - string
+*     :description - string
+*     :user        - string, a user instance BSON id
+*
+*  Creates a new ticket with the status of "open"
+*  Returns a ticket object ready to be sent to the client. */
+Ticket.statics.create = function(data, callback) {
+  var self = this;
+  var ticket = new self({
+    title: data.title,
+    description: data.description,
+    user: data.user
+  });
+  ticket.save(function(err, ticket) {
+    if (err || !ticket) {
+      return callback("Error saving tickets");
+    }
+    else {
+      self.getSingle(ticket._id, function(err, model){
+        return callback(null, model);
+      });
+    }
+  });
+}
+
 
 mongoose.model('Comment', Comment);
 mongoose.model('Ticket', Ticket);

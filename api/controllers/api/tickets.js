@@ -12,16 +12,10 @@ module.exports = function(app) {
   *  marked as "open". Uses the Mongoose Populate method
   *  to fill in information for the ticket user. */
   app.get('/tickets.json', function(req, res) {
-    Ticket
-    .find({'status': 'open'})
-    .populate('user')
-    .run(function(err, tickets) {
-      var array = [];
-      _.each(tickets, function(ticket) {
-        var obj = ticket.toClient();
-        array.push(obj);
-      });
-      res.json(array);
+    var status = req.query.status ? req.query.status : 'open';
+    Ticket.getAll(status, function(err, tickets){
+      if(err) return res.json({error: 'Error getting tickets'}, 400);
+      res.json(tickets);
     });
   });
 
@@ -37,121 +31,75 @@ module.exports = function(app) {
   *  adds a ticket to the database */
   app.post('/tickets.json', function(req, res) {
     var data = req.body;
-    User.findOne({'_id': data.user}, function(err, user) {
-      if (err || !user) {
-        res.json({error: 'Missing required attributes'}, 400);
-      } 
-      else {
-        var ticket = new Ticket({
-          title: data.title,
-          description: data.description,
-          user: user.id
-        });
-        ticket.save(function(err, model) {
-          if (err || !model) {
-            res.json({error: 'Missing required attributes'}, 400);
-          } 
-          else {
-            Ticket
-            .findOne({'_id': model._id})
-            .populate('user')
-            .run(function(err, model) {
-              var obj = model.toClient();
-              res.json(obj);
-            });
-          }
-        });
-      }
+    User.getSingle(data.user, function(err, user) {
+      if(err) return res.json({error: 'User ID is required for ticket'}, 400);
+      data.user = user.id;
+      Ticket.create(data, function(err, ticket) {
+        if(err) return res.json({error: 'Missing required attributes'}, 400);
+        res.json(ticket);
+      });
     });
   });
-  
+
 
   /* Ticket Info
-  *  GET /tickets/:id.json
+  *  GET /tickets/:ticketID.json
   *
-  *  id - The MongoDb BSON id converted to a string
+  *  ticketID - The MongoDb BSON id converted to a string
   *
   *  returns a single ticket */
-  app.get('/tickets/:id.json', function(req, res) {
-    Ticket
-    .findOne({'_id': req.params.id})
-    .populate('user')
-    .run(function(err, ticket) {
-      if (err || !ticket) {
-        res.json({error: 'Ticket not found'}, 404);
-      } 
-      else {
-        var obj = ticket.toClient();
-        res.json(obj);
-      }
-    });
+  app.get('/tickets/:ticketID.json', function(req, res) {
+    res.json(req.ticket.toClient());
   });
-  
+
 
   /* Update a ticket
-  *  PUT /tickets/:id.json
+  *  PUT /tickets/:ticketID.json
   *
-  *  id   - The MongoDb BSON id converted to a string
+  *  ticketID   - The MongoDb BSON id converted to a string
   *  body - The attributes to update in the model
   *        :title       - string
   *        :description - string
   *        :status      - string, "open" or "closed"
-  *        :user        - string, a user's BSON id in string form
   *
   *  updates the ticket instance with the passed in attributes */
-  app.put('/tickets/:id.json', function(req, res) {
+  app.put('/tickets/:ticketID.json', function(req, res) {
     var data = req.body;
-    Ticket.findOne({'_id': req.params.id}).run(function(err, ticket) {
-      if (err || !ticket) {
-        res.json({error: 'Ticket not found'}, 404);
-      } 
-      else {
-        if (data.title) ticket.title = data.title;
-        if (data.description) ticket.description = data.description;
-        if (data.status) ticket.status = data.status;
-        if (data.user) ticket.user = data.user;
-        ticket.save(function(err, model) {
-          if (err || !model) {
-            res.json({error: 'Error updating model. Check required attributes.'}, 400);
-          } 
-          else {
-            Ticket
-            .findOne({'_id': model._id})
-            .populate('user')
-            .run(function(err, model) {
-              var obj = model.toClient();
-              res.json(obj);
-            });
-          }
-        });
-      }
+    var ticket = req.ticket;
+    ticket.update(data, function(err, model) {
+      if(err) return res.json({error: 'Error updating ticket'});
+      res.json(model);
     });
   });
-  
+
 
   /* Delete a ticket
-  *  DELETE /tickets/:id.json
+  *  DELETE /tickets/:ticketID.json
   *
-  *  id - The MongoDb BSON id converted to a string
+  *  ticketID - The MongoDb BSON id converted to a string
   *
   *  removes a ticket from the database */
-  app.del('/tickets/:id.json', function(req, res) {
+  app.del('/tickets/:ticketID.json', function(req, res) {
+    var ticket = req.ticket;
+    ticket.removeTicket(function(err, status) {
+      if(err) return res.json({error: 'Error removing ticket'});
+      res.json({success: "ok"});
+    });
+  });
+
+  /* ---------------------------------------------- *
+   * Pre-conditions
+   * ---------------------------------------------- */
+
+  /* Find A Ticket */
+  app.param('ticketID', function(req, res, next, id){
     Ticket
-    .findOne({'_id': req.params.id})
+    .findOne({'_id':id})
+    .populate('user')
     .run(function(err, ticket) {
-      if (err || !ticket) {
-        res.json({error: 'Ticket not found'}, 404);
-      } 
-      else {
-        ticket.remove(function(err) {
-          if (err) {
-            res.json({error: 'Error removing ticket'}, 400);
-          } 
-          else {
-            res.json({success: 'ok'});
-          }
-        });
-      }
+      if(err || !ticket) return res.json({error: 'Ticket not found'}, 404);
+      req.ticket = ticket;
+      next();
     });
   });
 
