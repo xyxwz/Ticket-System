@@ -4,7 +4,7 @@ var util = require("util");
 var Comment = new mongoose.Schema({
   comment           : {type : String, default : '', required: true, trim: true},
   created           : {type : Date, default : Date.now(), required: true},
-  modified          : {type : Date, default : Date.now, set: Date.now, required: true}
+  modified          : {type : Date, default : Date.now, set: Date.now, required: true},
   user              : {type : mongoose.Schema.Types.ObjectId, ref: 'User'},
 });
 
