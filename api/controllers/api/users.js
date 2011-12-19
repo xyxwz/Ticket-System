@@ -40,8 +40,7 @@ module.exports = function(app) {
         res.json({error: 'Missing required attributes'}, 400);
       } 
       else {
-        var obj = model.toClient();
-        res.json(obj);
+        res.json(model.toClient());
       }
     });
   });
@@ -61,8 +60,7 @@ module.exports = function(app) {
         res.json({error: 'User not found'}, 404);
       } 
       else {
-        var obj = user.toClient();
-        res.json(obj);
+        res.json(user.toClient());
       }
     });
   });
@@ -95,8 +93,7 @@ module.exports = function(app) {
             return res.json({error: 'Error updating model. Check required attributes.'}, 400);
           } 
           else {
-            var obj = model.toClient();
-            res.json(obj);
+            res.json(model.toClient());
           }
         });
       }
