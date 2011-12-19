@@ -2,17 +2,18 @@ var mongoose = require("mongoose");
 var util = require("util");
 
 var Comment = new mongoose.Schema({
-  comment           : {type : String, default : '', required: true},
-  created           : {type : Date, default: Date.now(), required: true},
+  comment           : {type : String, default : '', required: true, trim: true},
+  created           : {type : Date, default : Date.now(), required: true},
+  modified          : {type : Date, default : Date.now, set: Date.now, required: true}
   user              : {type : mongoose.Schema.Types.ObjectId, ref: 'User'},
 });
 
 var Ticket = new mongoose.Schema({
-  status                : {type : String, default : 'open', required: true},
-  title                 : {type : String, default : '', required: true},
-  description           : {type : String, default : '', required: true},
-  opened                : {type : Date, default : Date.now(), required: true},
-  closed                : {type : Date},
+  status                : {type : String, default : 'open', enum: ['Open', 'Closed'], required: true},
+  title                 : {type : String, default : '', required: true, trim: true},
+  description           : {type : String, default : '', required: true, trim: true},
+  opened_at             : {type : Date, default : Date.now(), required: true},
+  closed_at             : {type : Date},
   user                  : {type : mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
   comments              : [Comment],
   participating_users   : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
