@@ -8,15 +8,13 @@ module.exports = function(app) {
   *  GET /users.json
   *  returns a list of all the users in the database */
   app.get('/users.json', function(req, res) {
-    User
-    .find()
-    .run(function(err, users) {
-      var array = [];
-      _.each(users, function(user) {
-        var obj = user.toClient();
-        array.push(obj);
-      });
-      res.json(array);
+    User.getAll(function(err, users){
+      if(err) {
+        res.json({error: 'Error getting users'}, 400);
+      }
+      else {
+        res.json(users);
+      }
     });
   });
   
