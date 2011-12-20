@@ -87,20 +87,4 @@ module.exports = function(app) {
     });
   });
 
-  /* ---------------------------------------------- *
-   * Pre-conditions
-   * ---------------------------------------------- */
-
-  /* Find A Ticket */
-  app.param('ticketID', function(req, res, next, id){
-    Ticket
-    .findOne({'_id':id})
-    .populate('user')
-    .run(function(err, ticket) {
-      if(err || !ticket) return res.json({error: 'Ticket not found'}, 404);
-      req.ticket = ticket;
-      next();
-    });
-  });
-
 };
