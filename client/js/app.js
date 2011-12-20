@@ -6,8 +6,7 @@ var ticketer = ticketer || {};
 
 (function() {
 
-  /*
-   * Override the Backbone sync functionality -
+  /* Override the Backbone sync functionality -
    * all calls to Backbone.sync now send an auth_token
    * header. */
   Backbone.sync_model = Backbone.sync;
@@ -30,15 +29,16 @@ var ticketer = ticketer || {};
   };
 
 
-  /* 
-   * Comment model - used to represent a single
+  /* Comment model - used to represent a single
    * comment */
   ticketer.Comment = Backbone.Model.extend({
 
     initialize: function() {
 
     },
-
+    
+    /* Updates the Comment with the attributes passed in
+     * the comment argument, also take a save error callback */
     updateComment: function(comment, callback) {
 
       if (comment) {
@@ -51,8 +51,7 @@ var ticketer = ticketer || {};
   });
 
 
-  /* 
-   * Ticket model - used to represent a single ticket object.
+  /* Ticket model - used to represent a single ticket object.
    *  - comments child, tickets have multiple comments */
   ticketer.Ticket = Backbone.Model.extend({
 
@@ -75,7 +74,10 @@ var ticketer = ticketer || {};
       });
 
     },
-
+    
+    /* Updates the Ticket with the matching attributes
+     * of the ticket argument, also takes a save error
+     * callback. */
     updateTicket: function(ticket, callback) {
 
       if (ticket.title) {
@@ -92,6 +94,7 @@ var ticketer = ticketer || {};
 
     },
 
+    /* Sets the Ticket's status to closed */
     close: function(callback) {
 
       this.set({ status: 'Closed' });
@@ -102,8 +105,7 @@ var ticketer = ticketer || {};
   });
 
 
-  /*
-   * User model - used to get the current user and store that 
+  /* User model - used to get the current user and store that 
    * information in memory. */
   ticketer.User = Backbone.Model.extend({
 
@@ -112,13 +114,13 @@ var ticketer = ticketer || {};
   });
 
 
-  /*
-   * Comment collection - used to represent a collection
+  /* Comment collection - used to represent a collection
    * of comments on a single ticket model */
   ticketer.Comments = Backbone.Collection.extend({
 
     model: ticketer.Comment,
 
+    /* Drop all comments associated with the Ticket */
     removeComments: function(callback) {
 
       var op = this;
@@ -127,13 +129,13 @@ var ticketer = ticketer || {};
         comment.destroy({ error: callback });
 
       });
-    }
+
+    },
 
   });
 
 
-  /*
-   * Ticket collection - used to represent a collection of
+  /* Ticket collection - used to represent a collection of
    * tickets */
   ticketer.Tickets = Backbone.Collection.extend({
 
@@ -156,9 +158,8 @@ var ticketer = ticketer || {};
 
   });
 
-
-  /*
-   * User collection - used to represent all users */
+  
+  /* User collection - used to represent all users */
   ticketer.Users = Backbone.Collection.extend({
 
     model: ticketer.User,
