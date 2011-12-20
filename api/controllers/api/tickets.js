@@ -49,7 +49,8 @@ module.exports = function(app) {
   *
   *  returns a single ticket */
   app.get('/tickets/:ticketID.json', function(req, res) {
-    res.json(req.ticket.toClient());
+    var ticket = req.ticket;
+    res.json(ticket.toClient());
   });
 
 
