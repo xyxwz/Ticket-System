@@ -1,12 +1,6 @@
 var mongoose = require("mongoose");
+var CommentSchema = require('./comment').CommentSchema
 var _ = require('underscore');
-
-var Comment = new mongoose.Schema({
-  comment           : {type : String, default : '', required: true, trim: true},
-  created           : {type : Date, default : Date.now(), required: true},
-  modified          : {type : Date, default : Date.now, set: Date.now, required: true},
-  user              : {type : mongoose.Schema.Types.ObjectId, ref: 'User'},
-});
 
 var Ticket = new mongoose.Schema({
   status                : {type : String, default : 'open', enum: ['open', 'closed'], required: true},
@@ -15,7 +9,7 @@ var Ticket = new mongoose.Schema({
   opened_at             : {type : Date, default : Date.now(), required: true},
   closed_at             : {type : Date},
   user                  : {type : mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-  comments              : [Comment],
+  comments              : [CommentSchema],
   participating_users   : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
   assigned_to           : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
 });
@@ -162,5 +156,4 @@ Ticket.statics.create = function(data, callback) {
 }
 
 
-mongoose.model('Comment', Comment);
 mongoose.model('Ticket', Ticket);
