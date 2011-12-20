@@ -6,12 +6,12 @@ var _ = require('underscore');
 module.exports = function(app) {
 
   /* Ticket Index
-  *  GET /tickets.json
+  *  GET /api/tickets.json
   *
   *  returns a list of all the tickets in the database
   *  marked as "open". Uses the Mongoose Populate method
   *  to fill in information for the ticket user. */
-  app.get('/tickets.json', function(req, res) {
+  app.get('/api/tickets.json', function(req, res) {
     var status = req.query.status ? req.query.status : 'open';
     Ticket.getAll(status, function(err, tickets){
       if(err) return res.json({error: 'Error getting tickets'}, 400);
@@ -21,7 +21,7 @@ module.exports = function(app) {
 
 
   /* Create a new ticket
-  *  POST /tickets.json
+  *  POST /api/tickets.json
   *
   *  body - A json object representing a ticket
   *        :title       - string
@@ -29,7 +29,7 @@ module.exports = function(app) {
   *        :user        - string, a user's BSON id in string form
   *
   *  adds a ticket to the database */
-  app.post('/tickets.json', function(req, res) {
+  app.post('/api/tickets.json', function(req, res) {
     var data = req.body;
     User.getSingle(data.user, function(err, user) {
       if(err) return res.json({error: 'User ID is required for ticket'}, 400);
@@ -43,19 +43,19 @@ module.exports = function(app) {
 
 
   /* Ticket Info
-  *  GET /tickets/:ticketID.json
+  *  GET /api/tickets/:ticketID.json
   *
   *  ticketID - The MongoDb BSON id converted to a string
   *
   *  returns a single ticket */
-  app.get('/tickets/:ticketID.json', function(req, res) {
+  app.get('/api/tickets/:ticketID.json', function(req, res) {
     var ticket = req.ticket;
     res.json(ticket.toClient());
   });
 
 
   /* Update a ticket
-  *  PUT /tickets/:ticketID.json
+  *  PUT /api/tickets/:ticketID.json
   *
   *  ticketID   - The MongoDb BSON id converted to a string
   *  body - The attributes to update in the model
@@ -64,7 +64,7 @@ module.exports = function(app) {
   *        :status      - string, "open" or "closed"
   *
   *  updates the ticket instance with the passed in attributes */
-  app.put('/tickets/:ticketID.json', function(req, res) {
+  app.put('/api/tickets/:ticketID.json', function(req, res) {
     var data = req.body;
     var ticket = req.ticket;
     ticket.update(data, function(err, model) {
@@ -75,12 +75,12 @@ module.exports = function(app) {
 
 
   /* Delete a ticket
-  *  DELETE /tickets/:ticketID.json
+  *  DELETE /api/tickets/:ticketID.json
   *
   *  ticketID - The MongoDb BSON id converted to a string
   *
   *  removes a ticket from the database */
-  app.del('/tickets/:ticketID.json', function(req, res) {
+  app.del('/api/tickets/:ticketID.json', function(req, res) {
     var ticket = req.ticket;
     ticket.removeTicket(function(err, status) {
       if(err) return res.json({error: 'Error removing ticket'});

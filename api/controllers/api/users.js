@@ -5,10 +5,10 @@ var _ = require('underscore');
 module.exports = function(app) {
    
   /* User Index
-  *  GET /users.json
+  *  GET /api/users.json
   *
   *  returns a list of all the users in the database */
-  app.get('/users.json', function(req, res) {
+  app.get('/api/users.json', function(req, res) {
     User.getAll(function(err, users){
       if(err) return res.json({error: 'Error getting users'}, 400);
       res.json(users);
@@ -17,7 +17,7 @@ module.exports = function(app) {
   
   
   /* Create a new user
-  *  POST /users.json
+  *  POST /api/users.json
   *
   *  body - A json object representing a user
   *        :email      - string
@@ -25,7 +25,7 @@ module.exports = function(app) {
   *        :department - string, used to determine permissions
   *
   *  adds a user to the database */
-  app.post('/users.json', function(req, res) {
+  app.post('/api/users.json', function(req, res) {
     var data = req.body;
     User.create(data, function(err, model) {
       if(err) return res.json({error: 'Missing required attributes'}, 400);
@@ -35,18 +35,18 @@ module.exports = function(app) {
   
   
   /* User Info
-  *  GET /users/:userID.json
+  *  GET /api/users/:userID.json
   *
   *  userID - The MongoDb BSON id converted to a string
   *
   *  returns a single user */
-  app.get('/users/:userID.json', function(req, res) {
+  app.get('/api/users/:userID.json', function(req, res) {
     res.json(req.user.toClient());
   });
   
   
   /* Update a user
-  *  PUT /users/:userID.json
+  *  PUT /api/users/:userID.json
   *
   *  userID   - The MongoDb BSON id converted to a string
   *  body - The attributes to update in the model
@@ -55,7 +55,7 @@ module.exports = function(app) {
   *        :department - string, used to determine permissions
   *
   *  updates the user instance with the passed in attributes */
-  app.put('/users/:userID.json', function(req, res) {
+  app.put('/api/users/:userID.json', function(req, res) {
     var data = req.body;
     var user = req.user;
     user.update(data, function(err, model) {
@@ -66,12 +66,12 @@ module.exports = function(app) {
   
   
   /* Delete a user
-  *  DELETE /users/:userID.json
+  *  DELETE /api/users/:userID.json
   *
   *  userID - The MongoDb BSON id converted to a string
   *
   *  removes a user from the database */
-  app.del('/users/:userID.json', function(req, res) {
+  app.del('/api/users/:userID.json', function(req, res) {
     var user = req.user;
     user.removeUser(function(err, status) {
       if(err) return res.json({error: 'Error removing user'});

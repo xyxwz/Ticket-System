@@ -7,13 +7,13 @@ var _ = require('underscore');
 module.exports = function(app) {
 
   /* Ticket Comments
-  *  GET /tickets/:ticketID/comments.json
+  *  GET /api/tickets/:ticketID/comments.json
   *
   *  ticketID - The MongoDb BSON id converted to a string
   *
   *  returns all of a ticket's comments. Uses the Mongoose
   *  Populate method to fill in information for the comment user. */
-  app.get('/tickets/:ticketID/comments.json', function(req, res) {
+  app.get('/api/tickets/:ticketID/comments.json', function(req, res) {
     var ticket = req.ticket;
     Comment.getAll(ticket.comments, function(err, comments) {
       res.json(comments);
@@ -22,7 +22,7 @@ module.exports = function(app) {
 
 
   /* Create a new ticket comment
-  *  POST /tickets/:ticketID/comments.json
+  *  POST /api/tickets/:ticketID/comments.json
   *
   *  ticketID - The MongoDb BSON id converted to a string
   *  body - A json object representing a ticket
@@ -30,7 +30,7 @@ module.exports = function(app) {
   *        :user      - string, a user's BSON id in string form
   *
   *  adds a comment to a ticket */
-  app.post('/tickets/:ticketID/comments.json', function(req, res) {
+  app.post('/api/tickets/:ticketID/comments.json', function(req, res) {
     var data = req.body;
     var ticket = req.ticket;
     Comment.create(ticket, data, function(err, model) {
@@ -41,13 +41,13 @@ module.exports = function(app) {
 
 
   /* Single Comment
-  *  GET /tickets/:ticketID/comments/:id.json
+  *  GET /api/tickets/:ticketID/comments/:id.json
   *
   *  ticketID  - The MongoDb BSON ticket id converted to a string
   *  id         - The MongoDb BSON comment id converted to a string
   *
   *  returns a single comment with user information */
-  app.get('/tickets/:ticketID/comments/:id.json', function(req, res) {
+  app.get('/api/tickets/:ticketID/comments/:id.json', function(req, res) {
     var ticket = req.ticket;
     Comment.getSingle(ticket, req.params.id, function(err, model) {
       if(err) return res.json({error: err}, 404);
@@ -57,7 +57,7 @@ module.exports = function(app) {
 
 
   /* Update a comment
-  *  PUT /tickets/:ticketID/comments/:id.json
+  *  PUT /api/tickets/:ticketID/comments/:id.json
   *
   *  ticketID   - The MongoDb BSON ticket id converted to a string
   *  id         - The MongoDb BSON comment id converted to a string
@@ -65,7 +65,7 @@ module.exports = function(app) {
   *               :comment   - string
   *
   *  updates a comment within the ticket instance with the passed in attributes */
-  app.put('/tickets/:ticketID/comments/:id.json', function(req, res) {
+  app.put('/api/tickets/:ticketID/comments/:id.json', function(req, res) {
     var data = req.body;
     var ticket = req.ticket;
     var comment = ticket.comments.id(req.params.id);
@@ -78,13 +78,13 @@ module.exports = function(app) {
 
 
   /* Delete Comment
-  * DELETE /tickets/:ticketID/comments/:id.json
+  * DELETE /api/tickets/:ticketID/comments/:id.json
   *
   * ticketID  - The MongoDb BSON ticket id converted to a string
   * id        - The MongoDb BSON comment id converted to a string
   *
   * removes a comment from the ticket */
-  app.del('/tickets/:ticketID/comments/:id.json', function(req, res) {
+  app.del('/api/tickets/:ticketID/comments/:id.json', function(req, res) {
     var ticket = req.ticket;
     var comment = ticket.comments.id(req.params.id);
     if(!comment) return res.json({error: "Comment not found"}, 404);
