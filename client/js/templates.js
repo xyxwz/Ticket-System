@@ -14,7 +14,7 @@ var renders = renders || {};
 
   };
 
-  renders.DisplayTicket = ''function(ticket) {
+  renders.DisplayTicket = function(ticket) {
 
     var template = '';
 
