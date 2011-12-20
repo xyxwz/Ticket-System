@@ -78,21 +78,5 @@ module.exports = function(app) {
       res.json({success: "ok"});
     });
   });
-
-
-  /* ---------------------------------------------- *
-   * Pre-conditions
-   * ---------------------------------------------- */
-
-  /* Find A User */
-  app.param('userID', function(req, res, next, id){
-    User
-    .findOne({'_id':id})
-    .run(function(err, user) {
-      if(err || !user) return res.json({error: 'User not found'}, 404);
-      req.user = user;
-      next();
-    });
-  });
   
 };
