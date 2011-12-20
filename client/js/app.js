@@ -1,38 +1,45 @@
-var app = new Object;
+var ticketer = ticketer || {};
 
-(function(){
-  
-  app.Comment = Backbone.Model.extend({});
+(function() {
 
-  
-  app.Ticket = Backbone.Model.extend({
+  "use strict";
+
+  ticketer.Comment = Backbone.Model.extend({});
+
+  ticketer.Ticket = Backbone.Model.extend({
     url: '/tickets.json',
 
-    initialize: function() {
-      this.comments = new app.Comments();
-      this.comments.url = '/tickets/' + this.id + '/comments.json';
+    defaults: {
+      'status'    : 'Open',
+    },
 
+    initialize: function() {
+      this.comments = new ticketer.Comments();
+      this.comments.url = '/tickets/' + this.id + '/comments.json';
       var op = this;
       this.bind("change", function() {
         op.comments.url = '/tickets/' + this.id + '/comments.json';
       });
     },
+    close: function() {
+      this.set({ status: 'Closed' });
+    },
   });
 
   
-  app.User = Backbone.Model.extend({
+  ticketer.User = Backbone.Model.extend({
     url: '/users.json',
   });
 
 
   //collections
-  app.Comments = Backbone.Collection.extend({
-    model: app.Comment,
-    });
+  ticketer.Comments = Backbone.Collection.extend({
+    model: ticketer.Comment,
+  });
 
 
-  app.Tickets = Backbone.Collection.extend({
-    model: app.Ticket,
+  ticketer.Tickets = Backbone.Collection.extend({
+    model: ticketer.Ticket,
     url: '/tickets.json',
 
     initialize: function() {
@@ -43,14 +50,6 @@ var app = new Object;
         });
       });
     }
-  });
-
-
-
-
-
-
-
-
+  }); 
 
 }).call(this);
