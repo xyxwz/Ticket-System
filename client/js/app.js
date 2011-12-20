@@ -1,11 +1,20 @@
+/*
+ * ticketer - our namespace object, create 
+ * the object and attach functions and models to
+ * it */
 var ticketer = ticketer || {};
 
 (function() {
 
-  "use strict";
-
+  /* 
+   * Comment model - used to represent a single
+   * comment */
   ticketer.Comment = Backbone.Model.extend({});
 
+
+  /* 
+   * Ticket model - used to represent a single ticket object.
+   *  - comments child, tickets have multiple comments */
   ticketer.Ticket = Backbone.Model.extend({
     url: '/tickets.json',
 
@@ -26,18 +35,26 @@ var ticketer = ticketer || {};
     },
   });
 
-  
+
+  /*
+   * User model - used to get the current user and store that 
+   * information in memory. */
   ticketer.User = Backbone.Model.extend({
     url: '/users.json',
   });
 
 
-  //collections
+  /*
+   * Comment collection - used to represent a collection
+   * of comments on a single ticket model */
   ticketer.Comments = Backbone.Collection.extend({
     model: ticketer.Comment,
   });
 
 
+  /*
+   * Ticket collection - used to represent a collection of
+   * tickets */
   ticketer.Tickets = Backbone.Collection.extend({
     model: ticketer.Ticket,
     url: '/tickets.json',
@@ -50,6 +67,18 @@ var ticketer = ticketer || {};
         });
       });
     }
-  }); 
+  });
+
+
+  /*
+   * User collection - used to represent all users */
+  ticketer.Users = Backbone.Collection.extend({
+    model: ticketer.User,
+
+    initialize: function() {
+
+    },
+  });
+
 
 }).call(this);
