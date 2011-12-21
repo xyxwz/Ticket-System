@@ -17,10 +17,12 @@ var ticketer = ticketer || {};
       beforeSend: function(xhr) {
 
         //Get the authentication token from the page
-        var auth_token = $('meta[name="auth_token"]').attr('value');
+        var auth_token = $('meta[name="X-Auth-Token"]').attr('content');
         if (auth_token) {
-          xhr.setRequestHeader('auth_token', auth_token);
+          xhr.setRequestHeader('X-Auth-Token', auth_token);
         }
+        // Add Accept Header for API
+        xhr.setRequestHeader('Accept', 'application/json');
       }
     }, options);
 
