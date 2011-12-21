@@ -29,17 +29,8 @@ module.exports = function(app) {
 
 
   app.get('/logout', function(req, res){
-    if(req.session.passport.user) {
-      var token = req.session.passport.user;
-      User.destroyAccessToken(token, function(err, status) {
-        if(err) return res.json({error: err}, 400);
-        req.logout();
-        res.redirect('/');
-      })
-    }
-    else {
-      res.redirect('/');
-    }
+    req.logout();
+    res.redirect('/');
   });
 
 }
