@@ -7,11 +7,11 @@ var models = require('../../models'),
 
 /* Authentication Middleware *
  *
- * Checks the value of the given X-CSRF-Token header
+ * Checks the value of the given X-Auth-Token header
  * compared to the value in the database for a user */
 exports.Authenticate = function(req, res, next) {
-  if(typeof(req.header('Auth-Token')) != 'undefined') {
-    var token = req.header('Auth-Token');
+  if(typeof(req.header('X-Auth-Token')) != 'undefined') {
+    var token = req.header('X-Auth-Token');
     User
     .findOne({'access_token':token})
     .run(function(err, model){
