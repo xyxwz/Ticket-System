@@ -25,6 +25,7 @@ Comment.methods.toClient = function(){
   obj.user.id = obj.user._id;
   delete obj._id;
   delete obj.user._id;
+  if (typeof(obj.user.access_token) != 'undefined') delete obj.user.access_token;
   return obj
 };
 

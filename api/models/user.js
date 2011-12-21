@@ -8,6 +8,7 @@ var User = new mongoose.Schema({
   department    : {type : String, default : '', required: true, trim: true,
                    enum: ['IT', 'K12']},
   created       : {type : Date,   default : Date.now, required: true}
+  access_token  : {type : String, trim: true}
 });
 
 
@@ -24,6 +25,7 @@ User.methods.toClient = function(){
   var obj = this.toObject();
   obj.id = obj._id;
   delete obj._id;
+  if (typeof(obj.access_token) != 'undefined') delete obj.access_token;
   return obj;
 }
 
@@ -134,4 +136,37 @@ User.statics.create = function(data, callback) {
 }
 
 
-mongoose.model('User', User);
+/* Set User Access Token *
+*
+*  :email - Email address returned by the authentication system
+*  :token - Access Token returned by the authentication system
+*
+*  Sets the access_token field for the user account */
+User.statics.setAccessToken = function(email, token, callback) {
+  this
+  .findOne({'email':email})
+  .run(function(err, model) {
+    if(err) return callback("Not an authorized user");
+    model.access_token = token;
+    model.save(function(err, user) {
+      if(err) return callback("Error setting access token");
+      return callback(null, token);
+    });
+  });
+};
+
+
+/* Destroy User Access Token *
+*
+*  :token - A user's access token
+*
+*  Returns an error or "ok" status to the callback  */
+User.statics.destroyAccessToken = function(token, callback) {
+  this.update({'access_token': token}, {$unset: {'access_token': 1 }}, function(err, status) {
+    if(err) return callback(err);
+    return callback(null, "ok");
+  });
+}
+
+
+exports.User = mongoose.model('User', User);

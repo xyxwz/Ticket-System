@@ -31,6 +31,7 @@ Ticket.methods.toClient = function(){
   delete obj._id;
   delete obj.user._id;
   delete obj.comments;
+  if (typeof(obj.user.access_token) != 'undefined') delete obj.user.access_token;
   return obj;
 };
 
