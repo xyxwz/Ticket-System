@@ -1,4 +1,5 @@
-var passport = require('passport'),
+var strategies = require('../lib/authentication'),
+    passport = require('passport'),
     mongoose = require('mongoose'),
     User = mongoose.model('User'),
     GitHubStrategy = require('passport-github').Strategy;

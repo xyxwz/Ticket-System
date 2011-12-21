@@ -1,30 +1,34 @@
 var models = require('../models'),
-    User = models.User;
+    User = models.User,
+    passport = require('passport'),
+    GitHubStrategy = require('passport-github').Strategy,
+    settings = require('./settings');
 
-/* ---------------------------------------------- *
- * Authentication Middleware
- * ---------------------------------------------- */
+/* -------------------------------- */
+/* Passport Authentication Strategy */
+/* -------------------------------- */
 
-/* Authentication Middleware *
- *
- * Checks the value of the given X-CSRF-Token header
- * compared to the value in the database for a user */
-exports.Auth = function(req, res, next) {
-  if(typeof(req.header('Auth-Token')) != 'undefined') {
-    var token = req.header('Auth-Token');
-    User
-    .findOne({'access_token':token})
-    .run(function(err, model){
-      if(err || !model) {
-        next(new Error("Not Authenticated"));
-      }
-      else {
-        req.user = model;
-        next();
-      }
+// Passport Sessions
+// Stores access token in session
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+// Use the GitHubStrategy within Passport.
+passport.use(new GitHubStrategy({
+    clientID: settings.github_client_id,
+    clientSecret: settings.github_client_secret,
+    callbackURL: "http://"+settings.host_ip+":3000/login/oauth/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    var primaryEmail = profile.emails[0]['value'];
+    User.setAccessToken(primaryEmail, accessToken, function(err, token) {
+      if(err) return res.json({error: err}, 401);
+      return done(null, token);
     });
   }
-  else {
-    return res.json({error: "Not Authenticated"}, 401);
-  }
-}
+));
