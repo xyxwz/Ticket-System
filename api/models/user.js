@@ -8,7 +8,7 @@ var User = new mongoose.Schema({
   department    : {type : String, default : '', required: true, trim: true,
                    enum: ['IT', 'K12']},
   created_at    : {type : Date,   default : Date.now, required: true},
-  access_token  : {type : String, trim: true}
+  access_token  : {type : String, trim: true, index: true}
 });
 
 
