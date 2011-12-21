@@ -7,7 +7,7 @@ var User = new mongoose.Schema({
   name          : {type : String, default : '', required: true, trim: true},
   department    : {type : String, default : '', required: true, trim: true,
                    enum: ['IT', 'K12']},
-  created       : {type : Date,   default : Date.now, required: true}
+  created_at    : {type : Date,   default : Date.now, required: true},
   access_token  : {type : String, trim: true}
 });
 
