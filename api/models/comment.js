@@ -96,37 +96,34 @@ Comment.statics.getSingle = function(ticket, id, callback) {
 /* Create A Comment *
 *
 *  ticket - a ticket object
-*  data - A json object representing a ticket
-*        :comment   - string
-*        :user      - string, a user's BSON id in string form
+*  user   - the authenticated to user (prevents a lookup)
+*  data   - A json object representing a ticket
+*          :comment   - string
+*          :user      - string, a user's BSON id in string form (authenticated user)
 *
 *  Creates a new comment
 *  Returns a comment object ready to be sent to the client. */
-Comment.statics.create = function(ticket, data, callback) {
+Comment.statics.create = function(ticket, user, data, callback) {
   var self = this;
-  if(data.user) {
-    User.getSingle(data.user, function(err, user) {
-      if(err) return callback("Not a valid user");
-      var comment = new self({
-        comment: data.comment,
-        user: user.id
-      });
-      ticket.comments.push(comment);
-      ticket.save(function(err, model) {
-        if (err) return callback("Error saving comment");
-        var comment_data = {
-          'id': comment.id,
-          'comment': comment.comment,
-          'created_at': comment.created_at,
-          'user': user
-        };
-        return callback(null, comment_data);
-      });
-    });
-  }
-  else {
-    callback("Not a valid user");
-  }
+  var comment = new self({
+    comment: data.comment,
+    user: data.user
+  });
+  ticket.comments.push(comment);
+  ticket.save(function(err, model) {
+    if (err) return callback("Error saving comment");
+    // build client data to prevent looking up and populating user & comment
+    var comment_data = {
+      'id': comment.id,
+      'comment': comment.comment,
+      'created_at': comment.created_at,
+      'user': user.toObject(),
+    };
+    comment_data.user.id = comment_data.user._id;
+    delete comment_data.user._id;
+    delete comment_data.user.access_token;
+    return callback(null, comment_data);
+  });
 }
 
 exports.CommentSchema = Comment;

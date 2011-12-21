@@ -24,13 +24,13 @@ module.exports = function(app) {
   *  ticketID - The MongoDb BSON id converted to a string
   *  body - A json object representing a ticket
   *        :comment   - string
-  *        :user      - string, a user's BSON id in string form
   *
   *  adds a comment to a ticket */
   app.post('/api/tickets/:ticketID/comments.json', function(req, res) {
     var data = req.body;
+    data.user = req.user.id;
     var ticket = req.ticket;
-    Comment.create(ticket, data, function(err, model) {
+    Comment.create(ticket, req.user, data, function(err, model) {
       if(err) return res.json({error: err}, 400);
       res.json(model);
     });

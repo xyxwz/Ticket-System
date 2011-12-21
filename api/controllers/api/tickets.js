@@ -24,18 +24,14 @@ module.exports = function(app) {
   *  body - A json object representing a ticket
   *        :title       - string
   *        :description - string
-  *        :user        - string, a user's BSON id in string form
   *
   *  adds a ticket to the database */
   app.post('/api/tickets.json', function(req, res) {
     var data = req.body;
-    User.getSingle(data.user, function(err, user) {
-      if(err) return res.json({error: 'User ID is required for ticket'}, 400);
-      data.user = user.id;
-      Ticket.create(data, function(err, ticket) {
-        if(err) return res.json({error: 'Missing required attributes'}, 400);
-        res.json(ticket);
-      });
+    data.user = req.user.id;
+    Ticket.create(data, function(err, ticket) {
+      if(err) return res.json({error: 'Missing required attributes'}, 400);
+      res.json(ticket);
     });
   });
 
