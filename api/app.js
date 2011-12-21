@@ -1,5 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose');
+    lib = require('./lib');
 
 var app = module.exports = express.createServer();
 
@@ -10,7 +11,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: 'zF0g#n)37ujfTg[|0UQvx#i@fg~gC^xkbM]E7FJNTUM#5G' }));
+  app.use(express.session({ secret: lib.settings.session_secret }));
   app.use(app.router);
   app.use(express.static('../client/'));
 });
