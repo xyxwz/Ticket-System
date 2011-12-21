@@ -16,7 +16,8 @@ app.configure(function(){
   app.use(express.session({ secret: lib.settings.session_secret }));
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use('/api', lib.Auth);
+  app.use('/api', lib.middleware.Auth);
+  app.use('/api', lib.middleware.Error);
   app.use(app.router);
   app.use(express.static('../client/'));
 });
