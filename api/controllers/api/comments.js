@@ -1,8 +1,5 @@
-var mongoose = require('mongoose');
-var User = mongoose.model('User');
-var Ticket = mongoose.model('Ticket');
-var Comment = mongoose.model('Comment');
-var _ = require('underscore');
+var mongoose = require('mongoose'),
+    Comment = mongoose.model('Comment');
 
 module.exports = function(app) {
 

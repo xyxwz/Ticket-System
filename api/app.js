@@ -1,5 +1,5 @@
-var express = require('express');
-var mongoose = require('mongoose');
+var express = require('express'),
+    mongoose = require('mongoose'),
     lib = require('./lib');
 
 var app = module.exports = express.createServer();

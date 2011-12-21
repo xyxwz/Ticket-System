@@ -1,6 +1,6 @@
-var mongoose = require("mongoose");
-var User = mongoose.model('User');
-var _ = require('underscore');
+var mongoose = require("mongoose"),
+    User = mongoose.model('User'),
+    _ = require('underscore');
 
 var Comment = new mongoose.Schema({
   comment           : {type : String, default : '', required: true, trim: true},

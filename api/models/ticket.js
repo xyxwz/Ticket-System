@@ -1,6 +1,6 @@
-var mongoose = require("mongoose");
-var CommentSchema = require('./comment').CommentSchema
-var _ = require('underscore');
+var mongoose = require("mongoose"),
+    CommentSchema = require('./comment').CommentSchema,
+    _ = require('underscore');
 
 var Ticket = new mongoose.Schema({
   status                : {type : String, default : 'open', enum: ['open', 'closed'], required: true},

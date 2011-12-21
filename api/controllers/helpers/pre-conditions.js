@@ -1,7 +1,6 @@
-var mongoose = require('mongoose');
-var Ticket = mongoose.model('Ticket');
-var User = mongoose.model('User');
-var _ = require('underscore');
+var mongoose = require('mongoose'),
+    Ticket = mongoose.model('Ticket'),
+    User = mongoose.model('User');
 
 /* ---------------------------------------------- *
  * Pre-conditions

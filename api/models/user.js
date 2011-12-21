@@ -1,5 +1,5 @@
-var mongoose = require("mongoose");
-var _ = require('underscore');
+var mongoose = require("mongoose"),
+    _ = require('underscore');
 
 var User = new mongoose.Schema({
   email         : {type : String, default:  '', required: true, trim: true,
