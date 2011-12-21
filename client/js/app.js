@@ -57,7 +57,7 @@ var ticketer = ticketer || {};
    *  - comments child, tickets have multiple comments */
   ticketer.Ticket = Backbone.Model.extend({
 
-    url: '/tickets.json',
+    url: '/api/tickets.json',
     defaults: {
 
       'status'    : 'Open',
@@ -66,12 +66,12 @@ var ticketer = ticketer || {};
     initialize: function() {
 
       this.comments = new ticketer.Comments();
-      this.comments.url = '/tickets/' + this.id + '/comments.json';
+      this.comments.url = '/api/tickets/' + this.id + '/comments.json';
 
       var op = this;
       this.bind("change", function() {
 
-        op.comments.url = '/tickets/' + this.id + '/comments.json';
+        op.comments.url = '/api/tickets/' + this.id + '/comments.json';
 
       });
 
@@ -111,7 +111,7 @@ var ticketer = ticketer || {};
    * information in memory. */
   ticketer.User = Backbone.Model.extend({
 
-    url: '/users.json',
+    url: '/api/users.json',
 
   });
 
@@ -142,7 +142,7 @@ var ticketer = ticketer || {};
   ticketer.Tickets = Backbone.Collection.extend({
 
     model: ticketer.Ticket,
-    url: '/tickets.json',
+    url: '/api/tickets.json',
 
     initialize: function() {
 
