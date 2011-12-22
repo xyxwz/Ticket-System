@@ -146,7 +146,7 @@ User.statics.setAccessToken = function(email, token, callback) {
   this
   .findOne({'email':email})
   .run(function(err, model) {
-    if(err) return callback("Not an authorized user");
+    if(err || !model) return callback("Not an authorized user");
     model.access_token = token;
     model.save(function(err, user) {
       if(err) return callback("Error setting access token");
