@@ -47,3 +47,5 @@ app.controllers = require('./controllers')(app);
 
 
 app.listen(3000);
+
+exports.app = app;
