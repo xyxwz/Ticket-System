@@ -27,7 +27,7 @@ passport.use(new GitHubStrategy({
   function(accessToken, refreshToken, profile, done) {
     var primaryEmail = profile.emails[0]['value'];
     User.setAccessToken(primaryEmail, accessToken, function(err, token) {
-      if(err) return res.json({error: err}, 401);
+      if(err) return done(new Error(err));
       return done(null, token);
     });
   }
