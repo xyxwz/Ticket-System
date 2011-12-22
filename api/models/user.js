@@ -156,17 +156,4 @@ User.statics.setAccessToken = function(email, token, callback) {
 };
 
 
-/* Destroy User Access Token *
-*
-*  :token - A user's access token
-*
-*  Returns an error or "ok" status to the callback  */
-User.statics.destroyAccessToken = function(token, callback) {
-  this.update({'access_token': token}, {$unset: {'access_token': 1 }}, function(err, status) {
-    if(err) return callback(err);
-    return callback(null, "ok");
-  });
-}
-
-
 exports.User = mongoose.model('User', User);
