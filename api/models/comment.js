@@ -38,10 +38,11 @@ Comment.methods.toClient = function(){
 *  Updates a comment and returns a comment object
 *  ready to be sent to the client. */
 Comment.methods.update = function(ticket, data, callback) {
+  var self = this;
   if (data.comment) this.comment = data.comment;
   ticket.save(function(err, model) {
     if(err || !model) callback("Error updating ticket");
-    return callback(null, model.toClient());
+    return callback(null, self.toClient());
   });
 }
 
