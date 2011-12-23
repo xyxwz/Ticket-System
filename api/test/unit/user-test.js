@@ -1,6 +1,7 @@
 var app = require('../../app.js'),
     mongoose = require("mongoose"),
     should = require("should"),
+    support = require('../support'),
     User = require('../../models/user').User;
 
 /* User Model Unit Tests */
@@ -8,15 +9,21 @@ var app = require('../../app.js'),
 describe('user', function(){
 
   // Hold values used in async hooks
-  var fixtures = {
-    users: []
-  }
+  var fixtures;
 
-  // Drop User Test Collection
   before(function(done){
-    User.collection.drop(function(err, status){
+    support.Setup(function(err, data){
       if(err) return done(err);
-      return done();
+      fixtures = data;
+      done();
+    });
+  });
+
+  after(function(done){
+    support.Teardown(function(err){
+      if(err) return done(err);
+      fixtures = {};
+      done();
     });
   });
 
@@ -50,22 +57,6 @@ describe('user', function(){
    * ------------------------------- */
   describe('instance methods', function(){  
 
-    // Insert a Test User
-    before(function(done){
-      var user = new User({
-       email: "example@example.com"
-        , name: "John Doe"
-        , department: "IT"
-        , access_token: "abc"
-      });
-      user.save(function(err, model){
-        if(err) return done(err);
-        fixtures.users.push(model);
-        done();
-      });
-    });
-
-
     /* To Client */
     /* Should test the object is ready to be sent to the client */
     describe('toClient', function(){
@@ -93,7 +84,7 @@ describe('user', function(){
       data.department = "K12";
       data.access_token = null;
 
-      before(function(done){
+      beforeEach(function(done){
         fixtures.users[0].update(data, function(err, model){
           if(err) return done(err);
           testObject = model;
@@ -150,10 +141,10 @@ describe('user', function(){
      // Insert a Test User
     before(function(done){
       var user = new User({
-       email: "static.example@example.com"
-        , name: "John Doe"
-        , department: "IT"
-        , access_token: "abc"
+        email: "static.example@example.com",
+        name: "John Doe",
+        department: "IT",
+        access_token: "abc"
       });
       user.save(function(err, model){
         if(err) return done(err);
@@ -216,9 +207,9 @@ describe('user', function(){
     /* Should add a user to the database */
     describe('create', function(){
       var data = {
-        email: "create.example@example.com"
-        , name: "John Doe"
-        , department: "IT"
+        email: "create.example@example.com",
+        name: "John Doe",
+        department: "IT"
       }
 
       it('should successfully create a user', function(done){
