@@ -146,7 +146,7 @@ Ticket.statics.create = function(data, callback) {
   });
   ticket.save(function(err, ticket) {
     if (err || !ticket) {
-      return callback("Error saving tickets");
+      return callback("Error saving ticket");
     }
     else {
       self.getSingle(ticket._id, function(err, model){
@@ -157,4 +157,4 @@ Ticket.statics.create = function(data, callback) {
 }
 
 
-mongoose.model('Ticket', Ticket);
+exports.Ticket = mongoose.model('Ticket', Ticket);

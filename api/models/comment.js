@@ -127,4 +127,4 @@ Comment.statics.create = function(ticket, user, data, callback) {
 }
 
 exports.CommentSchema = Comment;
-mongoose.model('Comment', Comment);
+exports.Comment = mongoose.model('Comment', Comment);
