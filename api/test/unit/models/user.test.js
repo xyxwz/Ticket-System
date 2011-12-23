@@ -1,8 +1,8 @@
-var app = require('../../app.js'),
+var app = require('../../../app.js'),
     mongoose = require("mongoose"),
     should = require("should"),
-    support = require('../support'),
-    User = require('../../models/user').User;
+    support = require('../../support'),
+    User = require('../../../models/user').User;
 
 /* User Model Unit Tests */
 

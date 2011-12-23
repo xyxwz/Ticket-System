@@ -1,2 +1,1 @@
-exports.User = require('./user.test');
-exports.Ticket = require('./ticket.test');
+exports.models = require('./models');

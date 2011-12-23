@@ -1,9 +1,9 @@
-var app = require('../../app.js'),
+var app = require('../../../app.js'),
     mongoose = require("mongoose"),
     should = require("should"),
-    support = require('../support'),
-    Comment = require('../../models/comment').Comment,
-    Ticket = require('../../models/ticket').Ticket;
+    support = require('../../support'),
+    Comment = require('../../../models/comment').Comment,
+    Ticket = require('../../../models/ticket').Ticket;
 
 /* Comment Model Unit Tests */
 
