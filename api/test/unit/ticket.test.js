@@ -33,7 +33,7 @@ describe('ticket', function(){
     describe('required fields', function(){  
       var ticket = new Ticket();
 
-      it("should enfore required fields", function(done){
+      it("should enforce required fields", function(done){
         ticket.save(function(err){
           // Title
           should.exist(err.errors.title);

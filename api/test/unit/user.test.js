@@ -33,7 +33,7 @@ describe('user', function(){
     describe('required fields', function(){  
       var user = new User();
 
-      it("should enfore required fields", function(done){
+      it("should enforce required fields", function(done){
         user.save(function(err){
           // Email
           should.exist(err.errors.email);

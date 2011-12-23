@@ -9,14 +9,15 @@ var app = require('../../app.js'),
 // Hold values used in async functions
 var fixtures = {
   users: [],
-  tickets: []
+  tickets: [],
+  comments: []
 }
 
 // Setup and Seed Database
 function setup(callback){
 
   // Clean Database
-  var models = [User, Ticket, Comment];
+  var models = [User, Ticket];
 
   var model, modelCount, _i, _len;
   modelCount = models.length;
@@ -48,7 +49,8 @@ function teardown(callback){
     if (modelCount === 0) {
       fixtures = {
         users: [],
-        tickets: []
+        tickets: [],
+        comments: []
       }
       callback(null); 
     }
@@ -63,7 +65,11 @@ function seedDatabase(cb){
     addTicket(user, function(err, ticket){
       if(err) return cb(err);
       fixtures.tickets.push(ticket);
-      cb(null);
+      addComment(ticket, user, function(err, comment){
+        if(err) return cb(err);
+        fixtures.comments.push(comment);
+        cb(null);
+      });
     });
   });
 }
@@ -92,6 +98,19 @@ function addTicket(user, cb){
   ticket.save(function(err, model){
     if(err) return cb(err);
     cb(null, model);
+  });
+}
+
+// Add Comment
+function addComment(ticket,user, cb){
+  var comment = new Comment({
+    comment: "test comment",
+    user: user._id
+  });
+  ticket.comments.push(comment);
+  ticket.save(function(err, model) {
+    if (err) return cb(err);
+    return cb(null, model.comments.id(comment.id));
   });
 }
 
