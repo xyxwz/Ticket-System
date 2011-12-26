@@ -4,11 +4,24 @@ var express = require('express'),
     GitHubStrategy = require('passport-github').Strategy,
     lib = require('./lib');
 
-var app = module.exports = express.createServer();
+var path = __dirname;
+var app;
 
-app.configure(function(){
+/* Initial Bootstrap */
+exports.boot = function(params){
+  app = express.createServer();
+  require(path + '/conf/configuration')(app,express);
+
+  // Bootstrap application
+  bootApplication(app);
+  bootModels(app);
+  bootControllers(app);
+  return app;
+};
+
+function bootApplication(app) {
   app.set('view engine', 'jade');
-  app.set('views', __dirname + '/client');
+  app.set('views', path + '/client');
   app.set('view options', { layout: false });
   app.use(express.bodyParser());
   app.use(express.methodOverride());
@@ -19,33 +32,26 @@ app.configure(function(){
   app.use('/api', lib.middleware.Auth);
   app.use('/api', lib.middleware.Error);
   app.use(app.router);
-  app.use(express.static('../client/'));
-});
-  
+  app.use(express.static(path + '/client/'));
+}
 
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-  app.db = mongoose.connect('mongodb://localhost/ticket-system-development');
-});
+// Bootstrap models
+function bootModels(app) {
+  app.models = require('./models');
+  mongoose.connect(app.set('db-uri'));
+}
 
-app.configure('production', function(){
-  app.use(express.errorHandler());
-  app.db = mongoose.connect('mongodb://127.0.0.1/ticket-system');
-});
+// Bootstrap controllers
+function bootControllers(app) {
+  require(path + '/controllers/helpers/pre-conditions')(app);
+  require(path + '/controllers/authentication')(app);
+  require(path + '/controllers/api/users')(app);
+  require(path + '/controllers/api/tickets')(app);
+  require(path + '/controllers/api/comments')(app);
+  require(path + '/controllers/static')(app);
+}
 
-app.configure('test', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-  app.db = mongoose.connect('mongodb://localhost/ticket-system-test');
-});
-
-
-// Models
-app.models = require('./models');
-
-// Controllers
-app.controllers = require('./controllers')(app);
-
-
-app.listen(3000);
-
-exports.app = app;
+// allow normal node loading if appropriate
+if (!module.parent) {
+  exports.boot().listen(3000);
+}
