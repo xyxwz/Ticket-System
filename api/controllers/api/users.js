@@ -28,7 +28,7 @@ module.exports = function(app) {
     var data = req.body;
     User.create(data, function(err, model) {
       if(err) return res.json({error: 'Missing required attributes'}, 400);
-      res.json(model);
+      res.json(model, 201);
     });
   });
   
