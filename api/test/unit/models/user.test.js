@@ -1,7 +1,7 @@
 var app = require('../../../app.js'),
     mongoose = require("mongoose"),
     should = require("should"),
-    support = require('../../support'),
+    helper = require('../../support/helper'),
     User = require('../../../models/user').User;
 
 /* User Model Unit Tests */
@@ -12,7 +12,7 @@ describe('user', function(){
   var fixtures;
 
   before(function(done){
-    support.Setup(function(err, data){
+    helper.Setup(function(err, data){
       if(err) return done(err);
       fixtures = data;
       done();
@@ -20,7 +20,7 @@ describe('user', function(){
   });
 
   after(function(done){
-    support.Teardown(function(err){
+    helper.Teardown(function(err){
       if(err) return done(err);
       fixtures = {};
       done();
@@ -84,7 +84,7 @@ describe('user', function(){
       data.department = "K12";
       data.access_token = null;
 
-      beforeEach(function(done){
+      before(function(done){
         fixtures.users[0].update(data, function(err, model){
           if(err) return done(err);
           testObject = model;

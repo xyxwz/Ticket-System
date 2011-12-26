@@ -1,7 +1,7 @@
 var app = require('../../../app.js'),
     mongoose = require("mongoose"),
     should = require("should"),
-    support = require('../../support'),
+    helper = require('../../support/helper'),
     Ticket = require('../../../models/ticket').Ticket;
 
 /* Ticket Model Unit Tests */
@@ -12,7 +12,7 @@ describe('ticket', function(){
   var fixtures;
 
   before(function(done){
-    support.Setup(function(err, data){
+    helper.Setup(function(err, data){
       if(err) return done(err);
       fixtures = data;
       done();
@@ -20,7 +20,7 @@ describe('ticket', function(){
   });
 
   after(function(done){
-    support.Teardown(function(err){
+    helper.Teardown(function(err){
       if(err) return done(err);
       fixtures = {};
       done();
