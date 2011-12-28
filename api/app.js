@@ -44,12 +44,7 @@ function bootModels(app) {
 
 // Bootstrap controllers
 function bootControllers(app) {
-  require(path + '/controllers/helpers/pre-conditions')(app);
-  require(path + '/controllers/authentication')(app);
-  require(path + '/controllers/api/users')(app);
-  require(path + '/controllers/api/tickets')(app);
-  require(path + '/controllers/api/comments')(app);
-  require(path + '/controllers/static')(app);
+  app.controllers = require('./controllers')(app);
 }
 
 // allow normal node loading if appropriate

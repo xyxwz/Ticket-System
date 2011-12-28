@@ -23,13 +23,7 @@ function createServer(){
 
   app.use(app.router);
 
-  var path = '../../';
-  require(path + 'controllers/helpers/pre-conditions')(app);
-  require(path + 'controllers/authentication')(app);
-  require(path + 'controllers/api/users')(app);
-  require(path + 'controllers/api/tickets')(app);
-  require(path + 'controllers/api/comments')(app);
-  require(path + 'controllers/static')(app);
+  app.controllers = require('../../controllers')(app);
 
   return app.listen(3000);
 }
