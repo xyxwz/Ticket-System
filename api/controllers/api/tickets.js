@@ -31,7 +31,7 @@ module.exports = function(app) {
     data.user = req.user.id;
     Ticket.create(data, function(err, ticket) {
       if(err) return res.json({error: 'Missing required attributes'}, 400);
-      res.json(ticket);
+      res.json(ticket, 201);
     });
   });
 
