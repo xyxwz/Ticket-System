@@ -32,7 +32,7 @@ module.exports = function(app) {
     var ticket = req.ticket;
     Comment.create(ticket, req.user, data, function(err, model) {
       if(err) return res.json({error: err}, 400);
-      res.json(model);
+      res.json(model, 201);
     });
   });
 
