@@ -2,7 +2,7 @@ var models = require('../models'),
     User = models.User,
     passport = require('passport'),
     GitHubStrategy = require('passport-github').Strategy,
-    settings = require('./settings');
+    settings = require('../conf/settings');
 
 /* -------------------------------- */
 /* Passport Authentication Strategy */
