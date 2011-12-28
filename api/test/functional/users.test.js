@@ -1,14 +1,14 @@
 var should = require("should"),
-    helper = require('../../support/helper'),
+    helper = require('../support/helper'),
     url = require('url'),
-    app = require('../../support/bootstrap').app,
+    app = require('../support/bootstrap').app,
     request = require('superagent');
 
 var server = app();
 
-/* Comments Controller Unit Tests */
+/* Users Controller Unit Tests */
 
-describe('comments', function(){
+describe('user', function(){
 
   // Hold values used in async hooks
   var fixtures;
@@ -32,12 +32,12 @@ describe('comments', function(){
   /* Routes */
 
   // Index
-  describe('GET /api/ticket/:ticketID/comments.json', function(){
+  describe('GET /api/users.json', function(){
     var res;
 
     before(function(done){
       request
-      .get('http://127.0.0.1:3000/api/tickets/'+fixtures.tickets[0].id+"/comments.json")
+      .get('http://127.0.0.1:3000/api/users.json')
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -51,32 +51,33 @@ describe('comments', function(){
       res.status.should.equal(200);
     });
 
-    it('should return an array of comments', function(){
+    it('should return an array of users', function(){
       res.body.should.be.an.instanceof(Array);
     });
 
-    it('should contain 1 comment object', function(){
-      var comments = res.body;
-      comments.length.should.equal(1);
-      should.exist(comments[0].id);
-      should.exist(comments[0].comment)
-      should.not.exist(comments[0].user.access_token);
+    it('should contain 1 user object', function(){
+      var users = res.body;
+      users.length.should.equal(1);
+      should.exist(users[0].id);
+      should.not.exist(users[0].access_token);
     });
   });
 
 
   // Create
-  describe('POST /api/tickets/:ticketID/comments.json', function(){
+  describe('POST /api/users.json', function(){
     var res;
 
     before(function(done){
-      var commentObj = {
-        "comment":"An example comment"
+      var userObject = {
+        "email":"post@example.com",
+        "name":"Example User",
+        "department":"IT"
       }
 
       request
-      .post('http://127.0.0.1:3000/api/tickets/'+fixtures.tickets[0].id+"/comments.json")
-      .data(commentObj)
+      .post('http://127.0.0.1:3000/api/users.json')
+      .data(userObject)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -90,27 +91,22 @@ describe('comments', function(){
       res.status.should.equal(201);
     });
 
-    it('should return comment object', function(){
-      var comment = res.body;
-      should.exist(comment.id);
-      should.exist(comment.comment);
-      should.exist(comment.created_at);
-    });
-
-    it('should return an embedded user object', function(){
-      var comment = res.body;
-      should.exist(comment.user.id);
-      should.not.exist(comment.user.access_token); 
+    it('should return user object', function(){
+      var user = res.body;
+      should.exist(user.id);
+      should.exist(user.email);
+      should.exist(user.created_at);
+      should.not.exist(user.access_token); 
     });
   });
 
 
   // Show
-  describe('GET /api/tickets/:ticketID/comments/:id.json', function(){
+  describe('GET /api/users/:userID.json', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id+".json";
+      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id+".json";
       request
       .get(url)
       .set('Accept', 'application/json')
@@ -126,30 +122,23 @@ describe('comments', function(){
       res.status.should.equal(200);
     });
 
-    it('should return comment object', function(){
-      var comment = res.body;
-      should.exist(comment.id);
-      should.exist(comment.comment);
-      should.exist(comment.created_at);
-    });
-
-    it('should return an embedded user object', function(){
-      var comment = res.body;
-      should.exist(comment.user.id);
-      should.not.exist(comment.user.access_token); 
+    it('should return a user object', function(){
+      var user = res.body;
+      should.exist(user.id);
+      should.not.exist(user.access_token);
     });
   });
 
 
   // Update
-  describe('PUT /api/tickets/:ticketID/comments/:id.json', function(){
+  describe('PUT /api/users/:userID.json', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id+".json";
+      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id+".json";
       request
       .put(url)
-      .data({"comment":"UPDATED"})
+      .data({"name":"UPDATED"})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -163,31 +152,24 @@ describe('comments', function(){
       res.status.should.equal(200);
     });
 
-    it('should update ticker title', function(){
-      res.body.comment.should.equal('UPDATED');
+    it('should update user name', function(){
+      res.body.name.should.equal('UPDATED');
     });
     
-    it('should return ticket object', function(){
-     var comment = res.body;
-      should.exist(comment.id);
-      should.exist(comment.comment);
-      should.exist(comment.created_at);
-    });
-
-    it('should return an embedded user object', function(){
-      var comment = res.body;
-      should.exist(comment.user.id);
-      should.not.exist(comment.user.access_token); 
+    it('should return a user object', function(){
+      var user = res.body;
+      should.exist(user.id);
+      should.not.exist(user.access_token);
     });
   });
 
 
   // Delete
-  describe('DELETE /api/tickets/:ticketID/comments/:id.json', function(){
+  describe('DELETE /api/users/:userID.json', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id+".json";
+      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id+".json";
       request
       .del(url)
       .set('Accept', 'application/json')

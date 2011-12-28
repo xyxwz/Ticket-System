@@ -1,14 +1,14 @@
 var should = require("should"),
-    helper = require('../../support/helper'),
+    helper = require('../support/helper'),
     url = require('url'),
-    app = require('../../support/bootstrap').app,
+    app = require('../support/bootstrap').app,
     request = require('superagent');
 
 var server = app();
 
-/* Users Controller Unit Tests */
+/* Tickets Controller Unit Tests */
 
-describe('user', function(){
+describe('tickets', function(){
 
   // Hold values used in async hooks
   var fixtures;
@@ -32,12 +32,12 @@ describe('user', function(){
   /* Routes */
 
   // Index
-  describe('GET /api/users.json', function(){
+  describe('GET /api/tickets.json', function(){
     var res;
 
     before(function(done){
       request
-      .get('http://127.0.0.1:3000/api/users.json')
+      .get('http://127.0.0.1:3000/api/tickets.json')
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -51,33 +51,32 @@ describe('user', function(){
       res.status.should.equal(200);
     });
 
-    it('should return an array of users', function(){
+    it('should return an array of tickets', function(){
       res.body.should.be.an.instanceof(Array);
     });
 
-    it('should contain 1 user object', function(){
-      var users = res.body;
-      users.length.should.equal(1);
-      should.exist(users[0].id);
-      should.not.exist(users[0].access_token);
+    it('should contain 1 ticket object', function(){
+      var tickets = res.body;
+      tickets.length.should.equal(1);
+      should.exist(tickets[0].id);
+      should.not.exist(tickets[0].user.access_token);
     });
   });
 
 
   // Create
-  describe('POST /api/users.json', function(){
+  describe('POST /api/tickets.json', function(){
     var res;
 
     before(function(done){
-      var userObject = {
-        "email":"post@example.com",
-        "name":"Example User",
-        "department":"IT"
+      var ticketObj = {
+        "title":"test ticket",
+        "description":"An example test ticket"
       }
 
       request
-      .post('http://127.0.0.1:3000/api/users.json')
-      .data(userObject)
+      .post('http://127.0.0.1:3000/api/tickets.json')
+      .data(ticketObj)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -91,22 +90,29 @@ describe('user', function(){
       res.status.should.equal(201);
     });
 
-    it('should return user object', function(){
-      var user = res.body;
-      should.exist(user.id);
-      should.exist(user.email);
-      should.exist(user.created_at);
-      should.not.exist(user.access_token); 
+    it('should return ticket object', function(){
+      var ticket = res.body;
+      should.exist(ticket.id);
+      should.exist(ticket.title);
+      should.exist(ticket.description);
+      should.exist(ticket.opened_at);
+      ticket.status.should.equal('open');
+    });
+
+    it('should return an embedded user object', function(){
+      var ticket = res.body;
+      should.exist(ticket.user.id);
+      should.not.exist(ticket.user.access_token); 
     });
   });
 
 
   // Show
-  describe('GET /api/users/:userID.json', function(){
+  describe('GET /api/tickets/:ticketID.json', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id+".json";
+      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+".json";
       request
       .get(url)
       .set('Accept', 'application/json')
@@ -122,23 +128,30 @@ describe('user', function(){
       res.status.should.equal(200);
     });
 
-    it('should return a user object', function(){
-      var user = res.body;
-      should.exist(user.id);
-      should.not.exist(user.access_token);
+    it('should return ticket object', function(){
+      var ticket = res.body;
+      should.exist(ticket.id);
+      should.exist(ticket.title);
+      should.exist(ticket.description);
+    });
+
+    it('should return an embedded user object', function(){
+      var ticket = res.body;
+      should.exist(ticket.user.id);
+      should.not.exist(ticket.user.access_token); 
     });
   });
 
 
   // Update
-  describe('PUT /api/users/:userID.json', function(){
+  describe('PUT /api/tickets/:ticketID.json', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id+".json";
+      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+".json";
       request
       .put(url)
-      .data({"name":"UPDATED"})
+      .data({"title":"UPDATED"})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -152,24 +165,31 @@ describe('user', function(){
       res.status.should.equal(200);
     });
 
-    it('should update user name', function(){
-      res.body.name.should.equal('UPDATED');
+    it('should update ticker title', function(){
+      res.body.title.should.equal('UPDATED');
     });
     
-    it('should return a user object', function(){
-      var user = res.body;
-      should.exist(user.id);
-      should.not.exist(user.access_token);
+    it('should return ticket object', function(){
+      var ticket = res.body;
+      should.exist(ticket.id);
+      should.exist(ticket.title);
+      should.exist(ticket.description);
+    });
+
+    it('should return an embedded user object', function(){
+      var ticket = res.body;
+      should.exist(ticket.user.id);
+      should.not.exist(ticket.user.access_token); 
     });
   });
 
 
   // Delete
-  describe('DELETE /api/users/:userID.json', function(){
+  describe('DELETE /api/tickets/:ticketID.json', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id+".json";
+      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+".json";
       request
       .del(url)
       .set('Accept', 'application/json')

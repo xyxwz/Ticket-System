@@ -1,9 +1,9 @@
 var should = require("should"),
-    helper = require('../../support/helper'),
-    app = require('../../support/bootstrap').app,
+    helper = require('../support/helper'),
+    app = require('../support/bootstrap').app,
     mongoose = require("mongoose"),
-    Comment = require('../../../models/comment').Comment,
-    Ticket = require('../../../models/ticket').Ticket;
+    Comment = require('../../models/comment').Comment,
+    Ticket = require('../../models/ticket').Ticket;
 
 var server = app();
 

@@ -1,2 +1,3 @@
-exports.models = require('./models');
-exports.controllers = require('./controllers');
+exports.User = require('./user.test');
+exports.Ticket = require('./ticket.test');
+exports.Comment = require('./comment.test');
