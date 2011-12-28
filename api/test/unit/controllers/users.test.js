@@ -1,11 +1,10 @@
 var should = require("should"),
     helper = require('../../support/helper'),
     url = require('url'),
-    app = require('../../support/bootstrap'),
+    app = require('../../support/bootstrap').app,
     request = require('superagent');
 
-var preCond = require('../../../controllers/helpers/pre-conditions')(app), 
-    users = require('../../../controllers/api/users')(app);
+var server = app();
 
 /* Users Controller Unit Tests */
 
@@ -41,6 +40,7 @@ describe('user', function(){
       .get('http://127.0.0.1:3000/api/users.json')
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
+      .set('X-Auth-Token', fixtures.users[0].access_token)
       .end(function(err, data){
         res = data;
         done();
@@ -80,6 +80,7 @@ describe('user', function(){
       .data(userObject)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
+      .set('X-Auth-Token', fixtures.users[0].access_token)
       .end(function(err, data){
         res = data;
         done();
@@ -110,6 +111,7 @@ describe('user', function(){
       .get(url)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
+      .set('X-Auth-Token', fixtures.users[0].access_token)
       .end(function(err, data){
         res = data;
         done();
@@ -139,6 +141,7 @@ describe('user', function(){
       .data({"name":"UPDATED"})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
+      .set('X-Auth-Token', fixtures.users[0].access_token)
       .end(function(err, data){
         res = data;
         done();
@@ -171,6 +174,7 @@ describe('user', function(){
       .del(url)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
+      .set('X-Auth-Token', fixtures.users[0].access_token)
       .end(function(err, data){
         res = data;
         done();

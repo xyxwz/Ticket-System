@@ -1,9 +1,11 @@
-var app = require('../../../app.js'),
-    mongoose = require("mongoose"),
-    should = require("should"),
+var should = require("should"),
     helper = require('../../support/helper'),
+    app = require('../../support/bootstrap').app,
+    mongoose = require("mongoose"),
     Comment = require('../../../models/comment').Comment,
     Ticket = require('../../../models/ticket').Ticket;
+
+var server = app();
 
 /* Comment Model Unit Tests */
 

@@ -1,5 +1,4 @@
-var app = require('../../app.js'),
-    mongoose = require("mongoose"),
+var mongoose = require("mongoose"),
     should = require("should"),
     _ = require('underscore'),
     User = require('../../models/user').User,

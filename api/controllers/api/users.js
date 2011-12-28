@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     User = mongoose.model('User');
 
 module.exports = function(app) {
-   
+
   /* User Index
   *  GET /api/users.json
   *
