@@ -33,7 +33,7 @@ function bootApplication(app) {
   app.use('/api', lib.middleware.Auth);
   app.use('/api', lib.middleware.Error);
   app.use(app.router);
-  app.use(express.static(path + '/client/'));
+  app.use(express.static(path + '/../client/'));
 }
 
 // Bootstrap models

@@ -1,0 +1,553 @@
+
+/* -------------------------------------------------- 
+   Table of Contents
+-----------------------------------------------------
+:: Shared Styles
+:: Gradients
+:: Effects
+:: Typeography
+:: Header
+:: Ticket Structure
+:: Ticket Items
+:: Ticket Admin
+:: Comments
+:: Comment Form
+:: CSS3 Social Login Buttons
+*/
+
+
+/* -----------------------------------------
+   Shared Styles
+----------------------------------------- */
+
+html, body { 
+  background: #000 url('/img/assets/black_linen_v2.png');
+  color: #222;
+}
+
+#border {
+  background: url('/img/assets/header.png') repeat-x; 
+  height: 29px; 
+  position: relative;
+  z-index: 101;
+}
+
+.container { position: relative; z-index: 100; }
+
+.left { float: left; }
+.right { float: right; }
+
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+  }
+
+* html .clearfix             { zoom: 1; } /* IE6 */
+*:first-child+html .clearfix { zoom: 1; } /* IE7 */
+
+::-webkit-input-placeholder { color: #b2b2b2; }
+:-moz-placeholder { color: #b2b2b2; }
+
+#main { margin: 50px 0; }
+
+input[type="text"], textarea {
+  border: 1px solid #cfd0d0;
+  border: 1px solid rgba(207,208,208,0.7);
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+input[type="text"] { outline: none; }
+textarea { resize: none; }
+
+/* -----------------------------------------
+   Gradients
+----------------------------------------- */
+
+.green {
+  background-color: #57a957;
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(top, #62c462, #57a957);
+  background-image: -ms-linear-gradient(top, #62c462, #57a957);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #62c462), color-stop(100%, #57a957));
+  background-image: -webkit-linear-gradient(top, #62c462, #57a957);
+  background-image: linear-gradient(top, #62c462, #57a957);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  border-color: #57a957 #57a957 #3d773d;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+
+.yellow {
+  background: rgb(234,241,112);
+  background: -moz-linear-gradient(top,  rgba(234,241,112,1) 0%, rgba(233,239,134,1) 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(234,241,112,1)), color-stop(100%,rgba(233,239,134,1)));
+  background: -webkit-linear-gradient(top,  rgba(234,241,112,1) 0%,rgba(233,239,134,1) 100%);
+  background: -o-linear-gradient(top,  rgba(234,241,112,1) 0%,rgba(233,239,134,1) 100%);
+  background: -ms-linear-gradient(top,  rgba(234,241,112,1) 0%,rgba(233,239,134,1) 100%);
+  background: linear-gradient(top,  rgba(234,241,112,1) 0%,rgba(233,239,134,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eaf170', endColorstr='#e9ef86',GradientType=0 );
+}
+
+.red {
+  background-color: #c43c35;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#ee5f5b), to(#c43c35));
+  background-image: -moz-linear-gradient(top, #ee5f5b, #c43c35);
+  background-image: -ms-linear-gradient(top, #ee5f5b, #c43c35);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ee5f5b), color-stop(100%, #c43c35));
+  background-image: -webkit-linear-gradient(top, #ee5f5b, #c43c35);
+  background-image: -o-linear-gradient(top, #ee5f5b, #c43c35);
+  background-image: linear-gradient(top, #ee5f5b, #c43c35);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ee5f5b', endColorstr='#c43c35', GradientType=0);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  border-color: #c43c35 #c43c35 #882a25;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+
+
+/* -----------------------------------------
+   Effects
+----------------------------------------- */
+
+.shadow {
+  -moz-box-shadow: 4px 1px 6px 3px #222222;
+  -webkit-box-shadow: 4px 1px 6px 3px #222222;
+  box-shadow: 4px 1px 6px 3px #222222;
+  filter: progid:DXImageTransform.Microsoft.Shadow(strength=4, direction=135, color='#222222');
+  -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(strength=4, Direction=135, Color='#222222')";
+}
+
+.paper { background: #fff url('/img/assets/handmadepaper.png'); }
+
+/* -----------------------------------------
+   Typeography
+----------------------------------------- */
+
+p { line-height: 1.5em; }
+
+.written {
+  font-family: "American Typewriter", "serif";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5em; 
+  color: #222;
+}
+
+/* -----------------------------------------
+   Header
+----------------------------------------- */
+
+header.row {
+  position: relative;
+  margin-top: -29px;
+}
+
+  header ul { margin: 19px 0 0 0; }
+
+    header li {
+      background: #fff;
+      float: left;
+      margin-right: 2em;
+    }
+
+      header li:last-child { margin-right: 0; }
+
+      header li a {
+        display: block;
+        padding: 0.6em 1.8em;
+        font-size: 16px;
+        color: #222;
+      }
+
+
+
+/* -----------------------------------------
+   Ticket Structure
+----------------------------------------- */
+
+.ticket {
+  position: relative;
+  margin-bottom: 50px;
+}
+
+  .ticket .avatar a {
+    display: block;
+    position: relative;
+    width: 67px;
+    padding: 5px;
+    text-align: center;
+    z-index: 200;
+  }
+
+    .ticket .avatar a img {
+      display: block;
+      margin: 0 auto 4px auto;
+      border: 1px solid #cfd0d0;
+      border: 1px solid rgba(207,208,208,0.7);
+      z-index: 201;
+    }
+
+    .ticket .avatar a span { display: block; }
+
+  .ticket .ticketInfo { z-index: 300; }
+
+    .ticket .ticketHeader { padding: 10px 20px 0 20px; }
+
+      .ticketHeader hgroup h2 {
+        font-size: 18px;
+        font-weight: 400;
+        margin-bottom: 0;
+        line-height: 1.8em;
+      }
+
+      .ticketHeader hgroup h4 {
+        font-size: 14px;
+        font-weight: 400;
+        color: #626262;
+      }
+      
+      .ticketHeader ul { margin-bottom: 0; }
+
+        .ticketHeader ul li {
+          float: left;
+          margin-right: 10px;
+        }
+
+          .ticketHeader li:last-child { margin-right: 0; }
+
+    .ticket .ticketBody {
+      width: 78%;
+      margin: 0 20px;
+      padding-top: 12px;
+      border-top: 1px solid #cfd0d0;
+      border-top: 1px solid rgba(207,208,208,0.7);
+    }
+
+    .ticketInfo span.chat {
+      display: block;
+      width: 24px;
+      height: 22px;
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: url('/img/assets/08-chat.png') no-repeat;
+      color: #fff;
+      font-size: 10px;
+      line-height: 1.75em;
+      text-align: center;
+    }
+
+/* -----------------------------------------
+   Ticket Items
+----------------------------------------- */
+
+a.miniAvatar {
+  display: block;
+  padding: 2px;
+  border: 1px solid #cfd0d0;
+  border: 1px solid rgba(207,208,208,0.7);
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
+
+  a.miniAvatar img {
+    display: block;
+    border: 1px solid #cfd0d0;
+    border: 1px solid rgba(207,208,208,0.7);
+  }
+
+span.tape {
+  display: block;
+  width: 51px;
+  height: 47px;
+  position: absolute;
+  top: -17px;
+  left: -22px;
+  background: url('/img/assets/tape.png') top left no-repeat;
+  z-index: 202;
+}
+
+span.tack {
+  display: block;
+  position: absolute;
+  width: 29px;
+  height: 26px;
+  top: -15px;
+  left: -8px;
+  background: url('/img/assets/tack.png') no-repeat;
+}
+
+
+/* -----------------------------------------
+   Ticket Admin
+----------------------------------------- */
+
+#ticketOptions { 
+  z-index: 299; 
+  margin-bottom: 0;
+}
+
+#ticketOptions li {
+  float: left;
+  margin: 0 2em 0 0;
+}
+
+  #ticketOptions li:last-child { margin-right: 0; }
+
+  #ticketOptions li a {
+    display: block;
+    padding: 0.6em 1.8em;
+    font-size: 16px;
+    color: #222;
+  }
+
+/* -----------------------------------------
+   Comments
+----------------------------------------- */
+
+.comment { margin-bottom: 35px; }
+
+  .comment .commentBody { position: relative; }
+
+    .commentBody .commentAvatar {
+      float: left;
+      padding: 8px;
+    }
+
+    .commentBody .commentInfo {
+      float: left;
+      padding: 8px 0 0 8px;
+      width: 72%;
+    }
+
+      .commentInfo h5 {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .commentInfo p { line-height: 1.5em; }
+    
+    .commentBody span.commentTime {
+      display: block;
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      color: #626262;
+      font-size: 12px;
+    }
+
+  
+/* -----------------------------------------
+   Comment Form
+----------------------------------------- */
+
+.commentBody textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  height: 2.8em;
+}
+
+
+/* -----------------------------------------
+   Ticket Form
+----------------------------------------- */
+
+#ticketForm form { padding: 20px 30px; }
+
+  #ticketForm form input[type="text"], #ticketForm form textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+  }
+
+  #ticketForm form .seperator {
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #cfd0d0;
+    border-bottom: 1px solid rgba(207,208,208,0.7);
+  }
+
+  #ticketForm form button {
+    cursor: pointer;
+    margin: 12px 0 0 0;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+    padding: 0.4em 2em;
+    color: #fff;
+    border: none;
+  }
+
+
+/* -----------------------------------------
+   Login Form
+----------------------------------------- */
+
+#loginForm { padding: 20px 30px; }
+
+  #loginForm h2 {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  #loginForm li {
+    margin: 20px 0;
+    text-align: center;
+  }
+
+/* -----------------------------------------
+   CSS3 Social Login Buttons
+   https://github.com/necolas/css3-social-signin-buttons
+----------------------------------------- */
+
+/*
+ * Button Object
+ */
+
+/*
+ * 1. Corrects inability to style clickable 'input' types in iOS
+ * 2. Remove excess padding in IE6/7
+ * 3. IE6/7 inline-block hack for native block-level elements
+ */
+
+.btn-auth {
+    position: relative;
+    display: inline-block;
+    height: 22px;
+    padding: 0 1em;
+    border: 1px solid #999;
+    border-radius: 2px;
+    margin: 0;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 22px;
+    white-space: nowrap;
+    cursor: pointer;
+    color: #222;
+    background: #fff;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    /* iOS */
+    -webkit-appearance: none; /* 1 */
+    /* IE6/7 hacks */
+    *overflow: visible;  /* 2 */
+    *display: inline; /* 3 */
+    *zoom: 1; /* 3 */
+}
+
+.btn-auth:hover,
+.btn-auth:focus,
+.btn-auth:active {
+    text-decoration: none;
+}
+
+.btn-auth:before {
+    content: "";
+    float: left;
+    width: 22px;
+    height: 22px;
+    background: url('/img/assets/auth-icons.png') no-repeat 99px 99px;
+}
+
+/*
+ * 36px
+ */
+
+.btn-auth.large {
+    height: 36px;
+    line-height: 36px;
+    font-size: 20px;
+}
+
+.btn-auth.large:before {
+    width: 36px;
+    height: 36px;
+}
+
+/*
+ * Remove excess padding and border in FF3+
+ */
+
+.btn-auth::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/* GitHub
+   ========================================================================== */
+
+.btn-github {
+    border-color: #d4d4d4;
+    background: #ececec;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f4f4f4), to(#ececec));
+    background-image: -webkit-linear-gradient(#f4f4f4, #ececec);
+    background-image: -moz-linear-gradient(#f4f4f4, #ececec);
+    background-image: -ms-linear-gradient(#f4f4f4, #ececec);
+    background-image: -o-linear-gradient(#f4f4f4, #ececec);
+    background-image: linear-gradient(#f4f4f4, #ececec);
+    text-shadow: 1px 1px 0 #fff;
+}
+
+.btn-github:hover,
+.btn-github:focus {
+    border-color: #518cc6;
+    border-bottom-color: #2a65a0;
+    color: #fff;
+    background-color: #599bdc;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#599bdc), to(#3072b3));
+    background-image: -webkit-linear-gradient(#599bdc, #3072b3);
+    background-image: -moz-linear-gradient(#599bdc, #3072b3);
+    background-image: -ms-linear-gradient(#599bdc, #3072b3);
+    background-image: -o-linear-gradient(#599bdc, #3072b3);
+    background-image: linear-gradient(#599bdc, #3072b3);
+    text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
+}
+
+.btn-github:active {
+    border-color: #2A65A0;
+    border-bottom-color: #518CC6;
+    background: #3072B3;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#3072b3), to(#599bdc));
+    background: -webkit-linear-gradient(#3072b3, #599bdc);
+    background: -moz-linear-gradient(#3072b3, #599bdc);
+    background: -ms-linear-gradient(#3072b3, #599bdc);
+    background: -o-linear-gradient(#3072b3, #599bdc);
+    background: linear-gradient(#3072b3, #599bdc);
+}
+
+/*
+ * Icon
+ */
+
+.btn-github:before {
+    margin: 0 0.6em 0 -0.6em;
+    background-position: -44px 0;
+}
+
+.btn-github:hover:before,
+.btn-github:focus:before,
+.btn-github:active:before {
+    background-position: -66px 0;
+}
+
+.btn-github.large:before {
+    background-position: -72px -22px;
+}
+
+.btn-github.large:hover:before,
+.btn-github.large:focus:before,
+.btn-github.large:active:before {
+    background-position: -108px -22px;
+}
