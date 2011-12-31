@@ -3,7 +3,24 @@ html
   head
     title TxSSC Ticket System
 
-  body
-    #container
+    link(rel="stylesheet", href="css/foundation.2.1.4.min.css")
+    link(rel="stylesheet", href="css/app.css")
 
-      a(href='/login/oauth/authorize', title='Login with GitHub') Login with Github
+    meta(name="viewport", content="width=device-width,initial-scale=1")
+
+  body
+
+    #border
+
+    .container
+
+      #main(role="main")
+
+        .row
+          .eight.columns.offset-by-two.shadow.paper
+            span.tack
+            #loginForm
+              h2.written Login to begin
+              ul
+                li
+                  a.btn-auth.btn-github.large(href='/login/oauth/authorize', title='Sign in with GitHub') Sign in with <b>GitHub</b>
