@@ -8,7 +8,9 @@ define([
   'collections/Comments',
   'collections/Users',
   'views/headers/FullHeader',
+  'views/headers/Back',
   'views/tickets/TicketListView',
+  'views/tickets/TicketDetailsView',
   'routers/Ticketer'
 ], function(
   Backbone,
@@ -16,7 +18,9 @@ define([
   Comments,
   Users,
   FullHeader,
+  Back,
   TicketListView,
+  TicketDetailsView,
   Ticketer
 ) {
 
@@ -40,15 +44,14 @@ define([
     // Add top level views
     ticketer.views = {
       headers: {
-        full: new FullHeader()
+        full: new FullHeader(),
+        back: new Back(),
       },
       tickets: {
-        index: new TicketListView({ collection: ticketer.collections.tickets })
+        index: TicketListView,
+        show: TicketDetailsView,
       },
     };
-
-    // Fetch Tickets
-    ticketer.collections.tickets.fetch();
 
     Backbone.history.start();
   });
