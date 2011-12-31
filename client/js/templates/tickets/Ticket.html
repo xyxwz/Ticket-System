@@ -1,0 +1,37 @@
+<!-- Ticket Creator's Avatar -->
+<div class="two columns avatar clearfix">
+  <a class="right shadow paper" href="#">
+    <span class="tape"></span>
+    <img src="/img/avatars/65x65.gif" alt="placeholder">
+    <span class="written">{{user.name}}</span>
+  </a>
+</div>
+
+<!-- Ticket Body -->
+<div class="ten columns ticketInfo shadow paper">
+  <!-- Ticket Header -->
+  <div class="ticketHeader written clearfix">
+    <span class="tack"></span>
+
+    <!-- Ticket Title -->
+    <hgroup class="left">
+      <h2>{{title}}</h2>
+      <h4>{{opened_at}}</h4>
+    </hgroup>
+
+    <!-- Ticket Assigned To -->
+    <ul class="right clearfix">
+      <li><a href="#" class="miniAvatar"><img src="/img/avatars/40x40.gif" alt="placeholder"></a></li>
+      <li><a href="#" class="miniAvatar"><img src="/img/avatars/40x40.gif" alt="placeholder"></a></li>
+    </ul>
+  </div> <!-- end of ticketHeader -->
+
+  <!-- Ticket Body -->
+  <div class="ticketBody written">
+    <p>{{description}}</p>
+  </div> <!-- end of ticketBody -->
+
+  <!-- Ticket Comment Count -->
+  <span class="chat written">{{comments}}</span>
+
+</div> <!-- end of ticketInfo -->
