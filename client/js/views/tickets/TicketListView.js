@@ -9,11 +9,10 @@ function($, _, Backbone, TicketView) {
     el: $('#main'),
 
     initialize: function() {
-      _.bindAll(this, "renderList");
-      this.collection.bind("reset", this.renderList);
+      _.bindAll(this);
     },
 
-    renderList: function() {
+    render: function() {
       var collection = this.collection,
           self = this;
 
