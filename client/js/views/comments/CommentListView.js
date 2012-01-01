@@ -2,15 +2,17 @@
  * Renders a collection of ticket comments
  */
 
-define(['jquery', 'underscore', 'backbone', 'views/comments/CommentView'],
-function($, _, Backbone, CommentView) {
+define(['jquery', 'underscore', 'backbone', 'views/comments/CommentView', 'views/comments/CommentFormView'],
+function($, _, Backbone, CommentView, CommentFormView) {
 
   var CommentListView = Backbone.View.extend({
     el: $('<div id="comments"></div>'),
 
     initialize: function() {
       _.bindAll(this);
-      $(this.el).html('');
+      this.collection.bind('add', this.addComment);
+
+      $(this.el).html('<div id="commentList"></div>');
     },
 
     render: function() {
@@ -18,12 +20,29 @@ function($, _, Backbone, CommentView) {
           self = this;
 
       _.each(collection.models, function(comment) {
-        var view = new CommentView({
-          model: comment,
-        });
-        $(self.el).append(view.render().el);
+        self.addComment(comment);
       });
+
+      // Add CommentFormView
+      var form = new CommentFormView({
+        collection: collection,
+      });
+      $(this.el).append(form.render().el);
+
       return this;
+    },
+
+    addComment: function(comment) {
+      var view = new CommentView({
+        model: comment,
+      });
+
+      // Build html and set style to hidden for
+      // a nice fadeIn transition
+      var html = view.render().el;
+      $(html).hide();
+      $("#commentList", this.el).append(html)
+      $(html).fadeIn('slow');
     },
 
   });
