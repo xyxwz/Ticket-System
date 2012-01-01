@@ -6,12 +6,16 @@ define(['jquery', 'backbone'], function($, Backbone) {
 
     routes: {
       "": "index",
+      "tickets": "tickets",
       "tickets/:id": "details",
     },
 
     // Paths
     index: function() {
+      this.navigate("tickets", true);
+    },
 
+    tickets: function() {
       var TicketListView = new ticketer.views.tickets.index({ collection: ticketer.collections.tickets });
 
       // Transitions
