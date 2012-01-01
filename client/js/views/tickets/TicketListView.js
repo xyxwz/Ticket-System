@@ -6,10 +6,11 @@ define(['jquery', 'underscore', 'backbone', 'views/tickets/TicketView'],
 function($, _, Backbone, TicketView) {
 
   var TicketListView = Backbone.View.extend({
-    el: $('#main'),
+    el: $('<div id="ticketList"></div>'),
 
     initialize: function() {
       _.bindAll(this);
+      $(this.el).html(''); // clear out content
     },
 
     render: function() {
@@ -22,6 +23,9 @@ function($, _, Backbone, TicketView) {
         });
         $(self.el).append(view.render().el);
       });
+
+      return this;
+    },
     },
 
   });

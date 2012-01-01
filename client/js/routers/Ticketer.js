@@ -20,8 +20,8 @@ define(['jquery', 'backbone'], function($, Backbone) {
       }).fadeIn('fast');
 
       $('#main').fadeOut('fast', function() {
-        $(this).html(''); // clear
-        TicketListView.render();
+        $('#main').html('');
+        $(this).html(TicketListView.render().el);
       }).fadeIn('fast');
     },
 
@@ -35,8 +35,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
       }).fadeIn('fast');
 
       $('#main').fadeOut('fast', function() {
-        $(this).html(''); // clear
-        TicketDetailsView.render();
+        $(this).html(TicketDetailsView.render().el);
       }).fadeIn('fast');
     },
 
