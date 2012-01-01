@@ -2,8 +2,9 @@
  * Renders a collection of Tickets
  */
 
-define(['jquery', 'underscore', 'backbone', 'views/tickets/TicketView'], 
-function($, _, Backbone, TicketView) {
+define(['jquery', 'underscore', 'backbone',
+'text!templates/headers/FullHeader.html', 'views/tickets/TicketView'],
+function($, _, Backbone, HeaderTmpl, TicketView) {
 
   var TicketListView = Backbone.View.extend({
     el: $('<div id="ticketList"></div>'),
@@ -18,17 +19,27 @@ function($, _, Backbone, TicketView) {
     },
 
     render: function() {
-      var collection = this.collection,
-          self = this;
+      this.addHeader();
+      this.addAll();
 
-      _.each(collection.models, function(ticket) {
+      return this;
+    },
+
+    addHeader: function() {
+      var header = $('<div id="ticketIndexHeader"></div>').html(HeaderTmpl);
+      $('header').html(header).fadeIn('fast');
+    },
+
+    addAll: function() {
+      var self = this;
+
+      _.each(this.collection.models, function(ticket) {
         var view = new TicketView({
           model: ticket,
         });
         $(self.el).append(view.render().el);
       });
 
-      return this;
     },
 
     showDetails: function(e) {

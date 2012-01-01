@@ -2,8 +2,9 @@
  * Renders a ticket's details and comments
  */
 
-define(['jquery', 'underscore', 'backbone', 'views/tickets/TicketView'], 
-function($, _, Backbone, TicketView) {
+define(['jquery', 'underscore', 'backbone',
+'text!templates/headers/Back.html', 'views/tickets/TicketView'],
+function($, _, Backbone, HeaderTmpl, TicketView) {
 
   var TicketDetailsView = Backbone.View.extend({
     el: $('<div id="ticketDetails"></div>'),
@@ -16,6 +17,8 @@ function($, _, Backbone, TicketView) {
     render: function() {
       var ticket = this.model;
           comments = this.model.comments;
+
+      this.addHeader();
 
       // Render Ticket
       var ticketView = new TicketView({
@@ -30,6 +33,11 @@ function($, _, Backbone, TicketView) {
       $(this.el).append(CommentListView.render().el);
 
       return this;
+    },
+
+    addHeader: function() {
+      var header = $('<div id="ticketDetailsHeader"></div>').html(HeaderTmpl);
+      $('header').html(header).fadeIn('fast');
     },
 
   });
