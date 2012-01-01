@@ -10,6 +10,15 @@ function($, _, Backbone, CommentView, CommentFormView) {
 
     initialize: function() {
       _.bindAll(this);
+
+       /* Unbind Add - Workaround fix
+       * If a comment is added then the back button
+       * is used, the view never unbinds the old add callback
+       * and it is triggered multiple times adding multiple comments
+       * to the view. There should be a better way of doing this */
+      this.collection.unbind('add');
+
+      /* Rebind Add */
       this.collection.bind('add', this.addComment);
 
       $(this.el).html('<div id="commentList"></div>');
@@ -42,7 +51,7 @@ function($, _, Backbone, CommentView, CommentFormView) {
       var html = view.render().el;
       $(html).hide();
       $("#commentList", this.el).append(html)
-      $(html).fadeIn('slow');
+      $(html).fadeIn(200);
     },
 
   });
