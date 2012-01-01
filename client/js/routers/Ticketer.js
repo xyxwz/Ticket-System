@@ -15,12 +15,9 @@ define(['jquery', 'backbone'], function($, Backbone) {
       var TicketListView = new ticketer.views.tickets.index({ collection: ticketer.collections.tickets });
 
       // Transitions
-      $('header').fadeOut('fast', function(){
-        ticketer.views.headers.full.render();
-      }).fadeIn('fast');
+      $('header').fadeOut('fast');
 
       $('#main').fadeOut('fast', function() {
-        $('#main').html('');
         $(this).html(TicketListView.render().el);
       }).fadeIn('fast');
     },
@@ -30,9 +27,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
       var TicketDetailsView = new ticketer.views.tickets.show({ model: ticket });
 
       // Transitions
-      $('header').fadeOut('fast', function(){
-        ticketer.views.headers.back.render();
-      }).fadeIn('fast');
+      $('header').fadeOut('fast');
 
       $('#main').fadeOut('fast', function() {
         $(this).html(TicketDetailsView.render().el);
