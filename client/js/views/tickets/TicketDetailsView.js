@@ -9,6 +9,10 @@ function($, _, Backbone, HeaderTmpl, TicketView) {
   var TicketDetailsView = Backbone.View.extend({
     el: $('<div id="ticketDetails"></div>'),
 
+    events: {
+      "click #ticketDetailsHeader li a": "navigateBack",
+    },
+
     initialize: function() {
       _.bindAll(this);
 
@@ -40,6 +44,7 @@ function($, _, Backbone, HeaderTmpl, TicketView) {
         model: this.model,
       });
       $(this.el).html(ticketView.render().el);
+    },
 
     renderComments: function() {
       var CommentListView = new ticketer.views.comments.index({
@@ -48,9 +53,8 @@ function($, _, Backbone, HeaderTmpl, TicketView) {
       $(this.el).append(CommentListView.render().el);
     },
 
-    addHeader: function() {
-      var header = $('<div id="ticketDetailsHeader"></div>').html(HeaderTmpl);
-      $('header').html(header).fadeIn('fast');
+    navigateBack: function() {
+      ticketer.routers.ticketer.navigate("tickets", true);
     },
 
   });
