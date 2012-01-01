@@ -23,24 +23,29 @@ function($, _, Backbone, HeaderTmpl, TicketView) {
     },
 
     render: function() {
-      var ticket = this.model;
-          comments = this.model.comments;
-
       this.addHeader();
+      this.renderTicket();
+      this.renderComments();
 
-      // Render Ticket
+      return this;
+    },
+
+    addHeader: function() {
+      var header = $('<div id="ticketDetailsHeader"></div>').html(HeaderTmpl);
+      $('header').html(header).fadeIn('fast');
+    },
+
+    renderTicket: function() {
       var ticketView = new TicketView({
-        model: ticket,
+        model: this.model,
       });
       $(this.el).html(ticketView.render().el);
 
-      // Render Comments
+    renderComments: function() {
       var CommentListView = new ticketer.views.comments.index({
-        collection: comments,
+        collection: this.model.comments,
       });
       $(this.el).append(CommentListView.render().el);
-
-      return this;
     },
 
     addHeader: function() {
