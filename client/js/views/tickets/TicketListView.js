@@ -8,6 +8,10 @@ function($, _, Backbone, TicketView) {
   var TicketListView = Backbone.View.extend({
     el: $('<div id="ticketList"></div>'),
 
+    events: {
+      "click .ticketInfo": "showDetails",
+    },
+
     initialize: function() {
       _.bindAll(this);
       $(this.el).html(''); // clear out content
@@ -26,6 +30,10 @@ function($, _, Backbone, TicketView) {
 
       return this;
     },
+
+    showDetails: function(e) {
+      var id = e.currentTarget.id;
+      ticketer.routers.ticketer.navigate("tickets/"+id, true);
     },
 
   });
