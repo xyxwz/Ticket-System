@@ -15,6 +15,9 @@ function($, _, Backbone, mustache, ticket) {
 
     initialize: function() {
       _.bindAll(this);
+
+      // Update Comment Count
+      this.model.comments.bind('add', this.updateCommentCount);
     },
 
     render: function() {
@@ -28,6 +31,10 @@ function($, _, Backbone, mustache, ticket) {
 
     showDetails: function() {
       ticketer.routers.ticketer.navigate("tickets/"+this.model.id, true);
+    },
+
+    updateCommentCount: function() {
+      $('.commentCount', this.el).html(this.model.comments.length);
     },
 
   });
