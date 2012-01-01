@@ -9,10 +9,6 @@ function($, _, Backbone, mustache, ticket) {
     tagName: 'div',
     className: 'row ticket',
 
-    events: {
-      "click .ticketInfo": "showDetails",
-    },
-
     initialize: function() {
       _.bindAll(this);
 
@@ -27,10 +23,6 @@ function($, _, Backbone, mustache, ticket) {
       data.comments = this.model.comments.length;
       $(this.el).html(Mustache.to_html(ticket, data));
       return this;
-    },
-
-    showDetails: function() {
-      ticketer.routers.ticketer.navigate("tickets/"+this.model.id, true);
     },
 
     updateCommentCount: function() {
