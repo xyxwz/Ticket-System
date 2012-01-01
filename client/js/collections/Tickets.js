@@ -8,8 +8,6 @@ define(['underscore', 'backbone', 'models/ticket'], function(_, Backbone, Ticket
     url: '/api/tickets.json',
 
     initialize: function() {
-      // Bootstrap tickets from JSON in HEAD tag
-      this.reset(tickets);
 
       var op = this;
       this.bind("reset", function() {
