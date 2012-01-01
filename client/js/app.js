@@ -11,6 +11,7 @@ define([
   'views/headers/Back',
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView',
+  'views/comments/CommentListView',
   'routers/Ticketer'
 ], function(
   Backbone,
@@ -21,6 +22,7 @@ define([
   Back,
   TicketListView,
   TicketDetailsView,
+  CommentListView,
   Ticketer
 ) {
 
@@ -51,8 +53,12 @@ define([
         index: TicketListView,
         show: TicketDetailsView,
       },
+      comments: {
+        index: CommentListView,
+      },
     };
 
+    ticketer.collections.tickets.reset(tickets);
     Backbone.history.start();
   });
 });

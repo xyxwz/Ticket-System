@@ -21,6 +21,12 @@ function($, _, Backbone, TicketView) {
         model: ticket,
       });
       $(this.el).html(ticketView.render().el);
+
+      // Render Comments
+      var CommentListView = new ticketer.views.comments.index({
+        collection: comments,
+      });
+      $(this.el).append(CommentListView.render().el);
     },
 
   });
