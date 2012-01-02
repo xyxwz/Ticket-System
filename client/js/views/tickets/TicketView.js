@@ -14,6 +14,7 @@ function($, _, Backbone, BaseView, mustache, ticket) {
 
       // Bindings using the garbage collectors bindTo()
       this.bindTo(this.model.comments, 'add', this.updateCommentCount);
+      this.bindTo(this.model.comments, 'reset', this.updateCommentCount);
     },
 
     render: function() {
