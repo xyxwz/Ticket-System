@@ -6,11 +6,13 @@ require.config( {
     'text':             'libs/require/text',
     'jquery':           'libs/jquery-1.7.1.min',
     'mustache':         'libs/mustache',
+    'garbage':          'support/GarbageCollector',
+    'AppView':          'support/AppView',
   },
 });
 
-require(['require', 'backbone', 'jquery', 'underscore'],
-function(require, Backbone, $, _) {
+require(['require', 'backbone', 'jquery', 'underscore', 'garbage'],
+function(require, Backbone, $, _, GarbageCollector) {
   // framework is now loaded
   require(['require', 'jquery', 'backbone', 'app'], function(require, $, Backbone){
     // Any config or setup can go here
