@@ -1,12 +1,12 @@
 // Main Router
 
-define(['jquery', 'backbone', 'AppView','support/transitions'], function($, Backbone, AppView, Transitions) {
+define(['jquery', 'backbone', 'AppView'], function($, Backbone, AppView) {
 
   var Ticketer = Backbone.Router.extend({
 
     routes: {
       "": "index",
-      "tickets": "tickets",
+      "tickets/open": "openTickets",
       "tickets/closed": "closedTickets",
       "tickets/:id": "details",
     },
@@ -17,28 +17,32 @@ define(['jquery', 'backbone', 'AppView','support/transitions'], function($, Back
     },
 
     index: function() {
-      this.navigate("tickets", true);
+      this.navigate("tickets/open", true);
     },
 
-    tickets: function() {
-      var TicketListView = new ticketer.views.tickets.index({ collection: ticketer.collections.tickets });
+    openTickets: function() {
+      var Header = ticketer.views.headers.main,
+          TicketListView = new ticketer.views.tickets.index({ collection: ticketer.collections.tickets });
 
       // Transitions
-      Transitions.headers('ticketIndexHeader','openTickets');
+      this.appView.showHeader(Header, 'openTickets');
       this.appView.showView(TicketListView);
     },
 
     closedTickets: function() {
-      var collection = ticketer.collections.closedTickets,
+      var Header = ticketer.views.headers.main,
+          collection = ticketer.collections.closedTickets,
           ClosedListView = new ticketer.views.tickets.closed({collection: collection });
 
       // Transitions
-      Transitions.headers('ticketIndexHeader','closedTickets');
+      this.appView.showHeader(Header, 'closedTickets');
       this.appView.showView(ClosedListView);
     },
 
     details: function(id) {
-      var ticket = ticketer.collections.tickets.get(id);
+      var Header = ticketer.views.headers.back,
+          ticket = ticketer.collections.tickets.get(id);
+
       if(typeof(ticket) === 'undefined') {
         ticket = ticketer.collections.closedTickets.get(id);
       }
@@ -46,7 +50,7 @@ define(['jquery', 'backbone', 'AppView','support/transitions'], function($, Back
       var TicketDetailsView = new ticketer.views.tickets.show({ model: ticket });
 
       // Transitions
-      Transitions.headers('ticketDetailsHeader');
+      this.appView.showHeader(Header);
       this.appView.showView(TicketDetailsView);
     },
 
