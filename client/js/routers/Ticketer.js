@@ -7,6 +7,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
     routes: {
       "": "index",
       "tickets": "tickets",
+      "tickets/closed": "closedTickets",
       "tickets/:id": "details",
     },
 
@@ -26,8 +27,30 @@ define(['jquery', 'backbone'], function($, Backbone) {
       }).fadeIn('fast');
     },
 
+    closedTickets: function() {
+      var collection = ticketer.collections.closedTickets,
+          ClosedListView = new ticketer.views.tickets.closed({collection: collection });
+
+      // Transitions
+      $('header').fadeOut('fast');
+
+      $('#main').fadeOut('fast', function() {
+        $(this).html(ClosedListView.render().el);
+      }).fadeIn('fast');
+
+      // If collection is empty try a fetch
+      if(collection.length === 0) {
+        collection.fetch({data: {status: 'closed'}});
+      }
+    },
+
     details: function(id) {
       var ticket = ticketer.collections.tickets.get(id);
+      if(typeof(ticket) === 'undefined') {
+        ticket = ticketer.collections.closedTickets.get(id);
+      }
+
+
       var TicketDetailsView = new ticketer.views.tickets.show({ model: ticket });
 
       // Transitions
