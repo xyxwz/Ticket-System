@@ -2,10 +2,10 @@
  * Renders a header with delegated events
  */
 
-define(['jquery', 'underscore', 'backbone','text!templates/headers/Back.html'],
-function($, _, Backbone, HeaderTmpl) {
+define(['jquery', 'underscore', 'backbone', 'garbage', 'text!templates/headers/Back.html'],
+function($, _, Backbone, BaseView, HeaderTmpl) {
 
-  var BackHeadersView = Backbone.View.extend({
+  var BackHeadersView = BaseView.extend({
 
     events: {
       "click a": "navigateBack",

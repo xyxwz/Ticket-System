@@ -156,17 +156,12 @@ header.row {
       background: #fff;
       float: left;
       margin-right: 2em;
+      padding: 0.6em 1.8em;
+      font-size: 16px;
+      color: #222;
     }
 
       header li:last-child { margin-right: 0; }
-
-      header li a {
-        display: block;
-        padding: 0.6em 1.8em;
-        font-size: 16px;
-        color: #222;
-      }
-
 
 
 /* -----------------------------------------

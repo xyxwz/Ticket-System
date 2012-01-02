@@ -7,6 +7,7 @@ define([
   'collections/Tickets',
   'collections/Comments',
   'collections/Users',
+  'views/headers/MainHeaderView',
   'views/headers/BackHeaderView',
   'views/tickets/TicketView',
   'views/tickets/TicketListView',
@@ -21,6 +22,7 @@ define([
   Tickets,
   Comments,
   Users,
+  MainHeaderView,
   BackHeaderView,
   TicketView,
   TicketListView,
@@ -48,23 +50,22 @@ define([
         comments: new Comments(),
         users: new Users(),
       },
-    };
-
-    // Add top level views
-    ticketer.views = {
-      headers: {
-        back: new BackHeaderView(),
-      },
-      tickets: {
-        ticket: TicketView,
-        index: TicketListView,
-        show: TicketDetailsView,
-        closed: ClosedTicketListView,
-      },
-      comments: {
-        comment: CommentView,
-        index: CommentListView,
-        form: CommentFormView,
+      views: {
+        headers: {
+          main: MainHeaderView,
+          back: BackHeaderView,
+        },
+        tickets: {
+          ticket: TicketView,
+          index: TicketListView,
+          show: TicketDetailsView,
+          closed: ClosedTicketListView,
+        },
+        comments: {
+          comment: CommentView,
+          index: CommentListView,
+          form: CommentFormView,
+        },
       },
     };
 
