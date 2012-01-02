@@ -47,7 +47,6 @@ define([
       collections: {
         tickets: new Tickets(),
         closedTickets: new Tickets(),
-        comments: new Comments(),
         users: new Users(),
       },
       views: {
