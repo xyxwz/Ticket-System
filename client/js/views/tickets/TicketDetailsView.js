@@ -9,10 +9,6 @@ function($, _, Backbone, HeaderTmpl, TicketView) {
   var TicketDetailsView = Backbone.View.extend({
     el: $('<div id="ticketDetails"></div>'),
 
-    events: {
-      "click #ticketDetailsHeader li a": "navigateBack",
-    },
-
     initialize: function() {
       _.bindAll(this);
 
@@ -27,16 +23,10 @@ function($, _, Backbone, HeaderTmpl, TicketView) {
     },
 
     render: function() {
-      this.addHeader();
       this.renderTicket();
       this.renderComments();
 
       return this;
-    },
-
-    addHeader: function() {
-      var header = $('<div id="ticketDetailsHeader"></div>').html(HeaderTmpl);
-      $('header').html(header).fadeIn('fast');
     },
 
     renderTicket: function() {
@@ -51,10 +41,6 @@ function($, _, Backbone, HeaderTmpl, TicketView) {
         collection: this.model.comments,
       });
       $(this.el).append(CommentListView.render().el);
-    },
-
-    navigateBack: function() {
-      ticketer.routers.ticketer.navigate("tickets", true);
     },
 
   });

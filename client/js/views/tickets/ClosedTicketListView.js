@@ -2,9 +2,8 @@
  * Renders a collection of Tickets with status of closed
  */
 
-define(['jquery', 'underscore', 'backbone',
-'text!templates/headers/FullHeader.html', 'views/tickets/TicketView'],
-function($, _, Backbone, HeaderTmpl, TicketView) {
+define(['jquery', 'underscore', 'backbone','views/tickets/TicketView'],
+function($, _, Backbone, TicketView) {
 
   var ClosedTicketListView = Backbone.View.extend({
     el: $('<div id="ticketList"></div>'),
@@ -19,15 +18,9 @@ function($, _, Backbone, HeaderTmpl, TicketView) {
     },
 
     render: function() {
-      this.addHeader();
       this.addAll();
 
       return this;
-    },
-
-    addHeader: function() {
-      var header = $('<div id="ticketIndexHeader"></div>').html(HeaderTmpl);
-      $('header').html(header).fadeIn('fast');
     },
 
     addAll: function() {
