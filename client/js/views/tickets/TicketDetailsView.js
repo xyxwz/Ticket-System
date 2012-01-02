@@ -14,6 +14,7 @@ function($, _, Backbone, BaseView) {
     render: function() {
       this.renderTicket();
       this.renderComments();
+      this.renderCommentForm();
       return this;
     },
 
@@ -33,6 +34,17 @@ function($, _, Backbone, BaseView) {
       );
 
       $(this.el).append(CommentList.render().el);
+    },
+
+    renderCommentForm: function() {
+      var self = this;
+
+      var commentForm = this.createView(
+        ticketer.views.comments.form,
+        {collection: self.model.comments}
+      );
+
+      $(this.el).append(commentForm.render().el);
     },
 
   });
