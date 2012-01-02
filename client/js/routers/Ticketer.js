@@ -1,6 +1,6 @@
 // Main Router
 
-define(['jquery', 'backbone', 'support/transitions'], function($, Backbone, Transitions) {
+define(['jquery', 'backbone', 'AppView','support/transitions'], function($, Backbone, AppView, Transitions) {
 
   var Ticketer = Backbone.Router.extend({
 
@@ -11,7 +11,11 @@ define(['jquery', 'backbone', 'support/transitions'], function($, Backbone, Tran
       "tickets/:id": "details",
     },
 
-    // Paths
+    /* Routing */
+    initialize: function(){
+      this.appView = new AppView();
+    },
+
     index: function() {
       this.navigate("tickets", true);
     },
@@ -21,10 +25,7 @@ define(['jquery', 'backbone', 'support/transitions'], function($, Backbone, Tran
 
       // Transitions
       Transitions.headers('ticketIndexHeader','openTickets');
-
-      $('#main').fadeOut('fast', function() {
-        $(this).html(TicketListView.render().el);
-      }).fadeIn('fast');
+      this.appView.showView(TicketListView);
     },
 
     closedTickets: function() {
@@ -33,10 +34,7 @@ define(['jquery', 'backbone', 'support/transitions'], function($, Backbone, Tran
 
       // Transitions
       Transitions.headers('ticketIndexHeader','closedTickets');
-
-      $('#main').fadeOut('fast', function() {
-        $(this).html(ClosedListView.render().el);
-      }).fadeIn('fast');
+      this.appView.showView(ClosedListView);
     },
 
     details: function(id) {
@@ -49,12 +47,8 @@ define(['jquery', 'backbone', 'support/transitions'], function($, Backbone, Tran
 
       // Transitions
       Transitions.headers('ticketDetailsHeader');
-
-      $('#main').fadeOut('fast', function() {
-        $(this).html(TicketDetailsView.render().el);
-      }).fadeIn('fast');
+      this.appView.showView(TicketDetailsView);
     },
-
 
   });
 

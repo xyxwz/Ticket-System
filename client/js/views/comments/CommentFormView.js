@@ -2,14 +2,13 @@
  * Renders the comment form
  */
 
-define(['jquery', 'underscore', 'backbone', 'mustache', 'text!templates/comments/CommentForm.html'], 
-function($, _, Backbone, mustache, form) {
+define(['jquery', 'underscore', 'backbone', 'garbage', 'mustache', 'text!templates/comments/CommentForm.html'],
+function($, _, Backbone, BaseView, mustache, form) {
 
-  var CommentFormView = Backbone.View.extend({
-    el: $('<div id="commentForm"></div>'),
+  var CommentFormView = BaseView.extend({
 
     events: {
-      "keypress #commentForm textarea":  "createOnEnter",
+      "keypress textarea":  "createOnEnter",
     },
 
     initialize: function() {

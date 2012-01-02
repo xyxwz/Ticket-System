@@ -2,10 +2,10 @@
  * Renders a single comment
  */
 
-define(['jquery', 'underscore', 'backbone', 'mustache', 'text!templates/comments/Comment.html'], 
-function($, _, Backbone, mustache, comment) {
+define(['jquery', 'underscore', 'backbone', 'garbage', 'mustache', 'text!templates/comments/Comment.html'],
+function($, _, Backbone, BaseView, mustache, comment) {
 
-  var CommentView = Backbone.View.extend({
+  var CommentView = BaseView.extend({
     tagName: 'div',
     className: 'row comment written',
 

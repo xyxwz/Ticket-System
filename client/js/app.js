@@ -8,10 +8,13 @@ define([
   'collections/Comments',
   'collections/Users',
   'views/headers/BackHeaderView',
+  'views/tickets/TicketView',
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView',
   'views/tickets/ClosedTicketListView',
+  'views/comments/CommentView',
   'views/comments/CommentListView',
+  'views/comments/CommentFormView',
   'routers/Ticketer'
 ], function(
   Backbone,
@@ -19,10 +22,13 @@ define([
   Comments,
   Users,
   BackHeaderView,
+  TicketView,
   TicketListView,
   TicketDetailsView,
   ClosedTicketListView,
+  CommentView,
   CommentListView,
+  CommentFormView,
   Ticketer
 ) {
 
@@ -50,12 +56,15 @@ define([
         back: new BackHeaderView(),
       },
       tickets: {
+        ticket: TicketView,
         index: TicketListView,
         show: TicketDetailsView,
         closed: ClosedTicketListView,
       },
       comments: {
+        comment: CommentView,
         index: CommentListView,
+        form: CommentFormView,
       },
     };
 
