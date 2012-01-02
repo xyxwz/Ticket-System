@@ -2,11 +2,10 @@
  * Renders a collection of Tickets with status of closed
  */
 
-define(['jquery', 'underscore', 'backbone','views/tickets/TicketView'],
-function($, _, Backbone, TicketView) {
+define(['jquery', 'underscore', 'backbone', 'garbage'],
+function($, _, Backbone, BaseView) {
 
-  var ClosedTicketListView = Backbone.View.extend({
-    el: $('<div id="ticketList"></div>'),
+  var ClosedTicketListView = BaseView.extend({
 
     events: {
       "click .ticketInfo": "showDetails",
@@ -14,23 +13,23 @@ function($, _, Backbone, TicketView) {
 
     initialize: function() {
       _.bindAll(this);
-      $(this.el).html(''); // clear out content
     },
 
     render: function() {
-      this.addAll();
+      var self = this;
+
+      _.each(this.collection.models, function(ticket) {
+
+        var view = self.createView(
+          ticketer.views.tickets.ticket,
+          {model: ticket}
+        );
+
+        $(self.el).append(view.render().el);
+
+      });
 
       return this;
-    },
-
-    addAll: function() {
-      var self = this;
-      _.each(this.collection.models, function(ticket) {
-        var view = new TicketView({
-          model: ticket,
-        });
-        $(self.el).append(view.render().el);
-      });
     },
 
     showDetails: function(e) {

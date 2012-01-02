@@ -2,48 +2,55 @@
  * Renders a collection of ticket comments
  */
 
-define(['jquery', 'underscore', 'backbone', 'views/comments/CommentView', 'views/comments/CommentFormView'],
-function($, _, Backbone, CommentView, CommentFormView) {
+define(['jquery', 'underscore', 'backbone', 'garbage'],
+function($, _, Backbone, BaseView) {
 
-  var CommentListView = Backbone.View.extend({
-    el: $('<div id="comments"></div>'),
+  var CommentListView = BaseView.extend({
 
     initialize: function() {
-      _.bindAll(this);
 
-      this.collection.bind('add', this.addComment);
+      // Bindings using the garbage collectors bindTo()
+      _.bindAll(this);
+      this.bindTo(this.collection,'add', this.addComment);
 
       $(this.el).html('<div id="commentList"></div>');
     },
 
     render: function() {
-      var collection = this.collection,
-          self = this;
+      var self = this;
 
-      _.each(collection.models, function(comment) {
+      _.each(this.collection.models, function(comment) {
         self.addComment(comment);
       });
 
-      // Add CommentFormView
-      var form = new CommentFormView({
-        collection: collection,
-      });
-      $(this.el).append(form.render().el);
+      this.addForm();
 
       return this;
     },
 
     addComment: function(comment) {
-      var view = new CommentView({
-        model: comment,
-      });
+      var commentView = this.createView(
+        ticketer.views.comments.comment,
+        {model: comment}
+      );
 
       // Build html and set style to hidden for
       // a nice fadeIn transition
-      var html = view.render().el;
+      var html = commentView.render().el;
       $(html).hide();
       $("#commentList", this.el).append(html)
       $(html).fadeIn(200);
+    },
+
+    addForm: function() {
+      var self = this;
+
+      var commentForm = this.createView(
+        ticketer.views.comments.form,
+        {collection: self.collection}
+      );
+
+      $(this.el).append(commentForm.render().el);
     },
 
   });
