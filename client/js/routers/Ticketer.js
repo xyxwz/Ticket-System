@@ -23,7 +23,8 @@ define(['jquery', 'backbone', 'AppView'], function($, Backbone, AppView) {
 
     openTickets: function() {
       var Header = ticketer.views.headers.main,
-          TicketListView = new ticketer.views.tickets.index({ collection: ticketer.collections.tickets });
+          collection = ticketer.collections.openTickets,
+          TicketListView = new ticketer.views.tickets.index({ collection: collection });
 
       // Transitions
       this.appView.showHeader(Header, 'openTickets');
@@ -42,7 +43,7 @@ define(['jquery', 'backbone', 'AppView'], function($, Backbone, AppView) {
 
     details: function(id) {
       var Header = ticketer.views.headers.back,
-          ticket = ticketer.collections.tickets.get(id);
+          ticket = ticketer.collections.openTickets.get(id);
 
       if(typeof(ticket) === 'undefined') {
         ticket = ticketer.collections.closedTickets.get(id);
@@ -57,7 +58,8 @@ define(['jquery', 'backbone', 'AppView'], function($, Backbone, AppView) {
 
     createTicket: function() {
       var Header = ticketer.views.headers.back,
-          TicketFormView = new ticketer.views.tickets.form({ collection: ticketer.collections.tickets });
+          collection = ticketer.collections.openTickets,
+          TicketFormView = new ticketer.views.tickets.form({ collection: collection });
 
       // Transitions
       this.appView.showHeader(Header);

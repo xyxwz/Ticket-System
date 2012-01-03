@@ -48,7 +48,7 @@ define([
         ticketer: new Ticketer()
       },
       collections: {
-        tickets: new Tickets(),
+        openTickets: new Tickets(),
         closedTickets: new Tickets(),
         users: new Users(),
       },
@@ -76,7 +76,7 @@ define([
      * Reads in JSON variables written to page by server
      * side code to prevent fetch at boot and make collections
      * available immediately to views. */
-    ticketer.collections.tickets.reset(openTickets);
+    ticketer.collections.openTickets.reset(openTickets);
     ticketer.collections.closedTickets.reset(closedTickets);
 
     // Start Backbone History
