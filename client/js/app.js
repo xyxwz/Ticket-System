@@ -76,7 +76,7 @@ define([
      * sort by closed_at date instead of opened_at
      */
     ticketer.collections.closedTickets.comparator = function(collection) {
-      return collection.get("closed_at");
+      return -collection.get("closed_at");
     };
 
     /* Reset collections with bootstrapped data.
