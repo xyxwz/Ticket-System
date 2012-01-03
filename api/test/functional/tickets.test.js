@@ -32,12 +32,12 @@ describe('tickets', function(){
   /* Routes */
 
   // Index
-  describe('GET /api/tickets.json', function(){
+  describe('GET /api/tickets', function(){
     var res;
 
     before(function(done){
       request
-      .get('http://127.0.0.1:3000/api/tickets.json')
+      .get('http://127.0.0.1:3000/api/tickets')
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -65,7 +65,7 @@ describe('tickets', function(){
 
 
   // Create
-  describe('POST /api/tickets.json', function(){
+  describe('POST /api/tickets', function(){
     var res;
 
     before(function(done){
@@ -75,7 +75,7 @@ describe('tickets', function(){
       }
 
       request
-      .post('http://127.0.0.1:3000/api/tickets.json')
+      .post('http://127.0.0.1:3000/api/tickets')
       .data(ticketObj)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
@@ -108,11 +108,11 @@ describe('tickets', function(){
 
 
   // Show
-  describe('GET /api/tickets/:ticketID.json', function(){
+  describe('GET /api/tickets/:ticketID', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+".json";
+      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id;
       request
       .get(url)
       .set('Accept', 'application/json')
@@ -144,11 +144,11 @@ describe('tickets', function(){
 
 
   // Update
-  describe('PUT /api/tickets/:ticketID.json', function(){
+  describe('PUT /api/tickets/:ticketID', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+".json";
+      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id;
       request
       .put(url)
       .data({"title":"UPDATED"})
@@ -185,11 +185,11 @@ describe('tickets', function(){
 
 
   // Delete
-  describe('DELETE /api/tickets/:ticketID.json', function(){
+  describe('DELETE /api/tickets/:ticketID', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+".json";
+      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id;
       request
       .del(url)
       .set('Accept', 'application/json')
