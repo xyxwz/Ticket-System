@@ -40,12 +40,12 @@ describe('user', function(){
           // Email
           should.exist(err.errors.email);
           err.errors.email.type.should.equal("required");
-          // Department
-          should.exist(err.errors.department);
-          err.errors.email.type.should.equal("required");
+          // Role
+          should.exist(err.errors.role);
+          err.errors.role.type.should.equal("required");
           // Name
-          should.exist(err.errors.department);
-          err.errors.email.type.should.equal("required");
+          should.exist(err.errors.name);
+          err.errors.name.type.should.equal("required");
           done();
         });
       });
@@ -83,7 +83,7 @@ describe('user', function(){
       var data = {};
       data.email = "updated@test.com";
       data.name = "John Doe UPDATED";
-      data.department = "K12";
+      data.role = "member";
       data.access_token = null;
 
       before(function(done){
@@ -97,7 +97,7 @@ describe('user', function(){
       it('should update required fields', function(){
         testObject.email.should.equal("updated@test.com");
         testObject.name.should.equal("John Doe UPDATED");
-        testObject.department.should.equal("K12");
+        testObject.role.should.equal("member");
       });
 
       it('should not update access token', function(){
@@ -145,7 +145,7 @@ describe('user', function(){
       var user = new User({
         email: "static.example@example.com",
         name: "John Doe",
-        department: "IT",
+        role: "admin",
         access_token: "abc"
       });
       user.save(function(err, model){
@@ -211,7 +211,7 @@ describe('user', function(){
       var data = {
         email: "create.example@example.com",
         name: "John Doe",
-        department: "IT"
+        role: "member"
       }
 
       it('should successfully create a user', function(done){

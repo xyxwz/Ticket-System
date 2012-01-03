@@ -78,7 +78,7 @@ function addUser(cb){
   var user = new User({
     email: "example@example.com",
     name: "John Doe",
-    department: "IT",
+    role: "member",
     access_token: "abc",
   });
   user.save(function(err, model){
