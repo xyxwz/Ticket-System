@@ -45,9 +45,18 @@ define(['underscore', 'backbone', 'collections/comments'], function(_, Backbone,
 
     /* Sets the Ticket's status to closed */
     close: function(callback) {
+      var self = this;
 
       this.set({ status: 'closed' });
-      this.save(null, { error: callback });
+      this.save(null, {
+        error: callback,
+        success: function() {
+          // Handles Switching Collections
+          ticketer.collections.openTickets.remove(self);
+          ticketer.collections.closedTickets.add(self);
+        },
+
+      });
 
     },
 

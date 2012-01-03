@@ -16,7 +16,7 @@
     <!-- Ticket Title -->
     <hgroup class="left">
       <h2>{{title}}</h2>
-      <h4>{{opened_at}}</h4>
+      <h4>{{timestamp}}</h4>
     </hgroup>
 
     <!-- Ticket Assigned To -->
@@ -35,3 +35,10 @@
   <span class="chat written commentCount">{{comments}}</span>
 
 </div> <!-- end of ticketInfo -->
+
+{{#showAdmin}}
+<!-- Admin Ticket Options -->
+<ul id="ticketOptions" class="ten columns offset-by-two written">
+  <li id="closeTicket" class="red shadow">Close Ticket</li>
+</ul>
+{{/showAdmin}}
