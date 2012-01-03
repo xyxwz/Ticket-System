@@ -5,7 +5,7 @@ define(['underscore', 'backbone', 'models/ticket'], function(_, Backbone, Ticket
   var Tickets = Backbone.Collection.extend({
 
     model: Ticket,
-    url: '/api/tickets.json',
+    url: '/api/tickets',
 
     initialize: function() {
 
