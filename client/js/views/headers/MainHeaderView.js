@@ -8,6 +8,7 @@ function($, _, Backbone, BaseView, HeaderTmpl) {
   var BackHeadersView = BaseView.extend({
 
     events: {
+      "click #createTicket"  : "navigateToForm",
       "click #myTickets"     : "toggleMyTickets",
       "click #openTickets"   : "toggleOpen",
       "click #closedTickets" : "toggleClosed",
@@ -20,6 +21,10 @@ function($, _, Backbone, BaseView, HeaderTmpl) {
     render: function() {
       $(this.el).html(HeaderTmpl);
       return this;
+    },
+
+    navigateToForm: function() {
+      ticketer.routers.ticketer.navigate("tickets/new", true);
     },
 
     toggleMyTickets: function() {

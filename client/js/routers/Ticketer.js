@@ -8,6 +8,7 @@ define(['jquery', 'backbone', 'AppView'], function($, Backbone, AppView) {
       "": "index",
       "tickets/open": "openTickets",
       "tickets/closed": "closedTickets",
+      "tickets/new": "createTicket",
       "tickets/:id": "details",
     },
 
@@ -52,6 +53,15 @@ define(['jquery', 'backbone', 'AppView'], function($, Backbone, AppView) {
       // Transitions
       this.appView.showHeader(Header);
       this.appView.showView(TicketDetailsView);
+    },
+
+    createTicket: function() {
+      var Header = ticketer.views.headers.back,
+          TicketFormView = new ticketer.views.tickets.form({ collection: ticketer.collections.tickets });
+
+      // Transitions
+      this.appView.showHeader(Header);
+      this.appView.showView(TicketFormView);
     },
 
   });
