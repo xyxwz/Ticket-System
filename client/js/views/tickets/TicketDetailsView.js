@@ -21,7 +21,7 @@ function($, _, Backbone, BaseView) {
     renderTicket: function() {
       var ticketView = this.createView(
         ticketer.views.tickets.ticket,
-        {model: this.model}
+        {model: this.model, admin: true}
       );
 
       $(this.el).html(ticketView.render().el);
