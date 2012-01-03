@@ -62,7 +62,7 @@ module.exports = function(app) {
     var data = req.body;
     var ticket = req.ticket;
     ticket.update(data, function(err, model) {
-      if(err) return res.json({error: 'Error updating ticket'});
+      if(err) return res.json({error: 'Error updating ticket'}, 400);
       res.json(model);
     });
   });
@@ -77,7 +77,7 @@ module.exports = function(app) {
   app.del('/api/tickets/:ticketID', function(req, res) {
     var ticket = req.ticket;
     ticket.removeTicket(function(err, status) {
-      if(err) return res.json({error: 'Error removing ticket'});
+      if(err) return res.json({error: 'Error removing ticket'}, 400);
       res.json({success: "ok"});
     });
   });

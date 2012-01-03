@@ -58,7 +58,7 @@ module.exports = function(app) {
     var data = req.body;
     var user = req.user;
     user.update(data, function(err, model) {
-      if(err) return res.json({error: 'Error updating user'});
+      if(err) return res.json({error: 'Error updating user'}, 400);
       res.json(model);
     });
   });
@@ -73,7 +73,7 @@ module.exports = function(app) {
   app.del('/api/users/:userID', function(req, res) {
     var user = req.user;
     user.removeUser(function(err, status) {
-      if(err) return res.json({error: 'Error removing user'});
+      if(err) return res.json({error: 'Error removing user'}, 400);
       res.json({success: "ok"});
     });
   });
