@@ -72,7 +72,7 @@ describe('user', function(){
       var userObject = {
         "email":"post@example.com",
         "name":"Example User",
-        "department":"IT"
+        "role":"admin"
       }
 
       request

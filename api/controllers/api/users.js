@@ -21,7 +21,7 @@ module.exports = function(app) {
   *  body - A json object representing a user
   *        :email      - string
   *        :name       - string in format "first last"
-  *        :department - string, used to determine permissions
+  *        :role       - string, used to determine permissions
   *
   *  adds a user to the database */
   app.post('/api/users.json', function(req, res) {
@@ -51,7 +51,7 @@ module.exports = function(app) {
   *  body - The attributes to update in the model
   *        :email      - string
   *        :name       - string in format "first last"
-  *        :department - string, used to determine permissions
+  *        :role       - string, used to determine permissions
   *
   *  updates the user instance with the passed in attributes */
   app.put('/api/users/:userID.json', function(req, res) {
