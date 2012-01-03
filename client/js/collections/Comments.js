@@ -6,6 +6,14 @@ define(['underscore', 'backbone', 'models/comment'], function(_, Backbone, Comme
 
     model: Comment,
 
+    initialize: function() {
+
+      this.comparator = function(model) {
+        return model.get("created_at");
+      };
+
+    },
+
     /* Drop all comments associated with the Ticket */
     removeComments: function(callback) {
 
