@@ -32,12 +32,12 @@ describe('user', function(){
   /* Routes */
 
   // Index
-  describe('GET /api/users.json', function(){
+  describe('GET /api/users', function(){
     var res;
 
     before(function(done){
       request
-      .get('http://127.0.0.1:3000/api/users.json')
+      .get('http://127.0.0.1:3000/api/users')
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -65,7 +65,7 @@ describe('user', function(){
 
 
   // Create
-  describe('POST /api/users.json', function(){
+  describe('POST /api/users', function(){
     var res;
 
     before(function(done){
@@ -76,7 +76,7 @@ describe('user', function(){
       }
 
       request
-      .post('http://127.0.0.1:3000/api/users.json')
+      .post('http://127.0.0.1:3000/api/users')
       .data(userObject)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
@@ -102,11 +102,11 @@ describe('user', function(){
 
 
   // Show
-  describe('GET /api/users/:userID.json', function(){
+  describe('GET /api/users/:userID', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id+".json";
+      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id;
       request
       .get(url)
       .set('Accept', 'application/json')
@@ -131,11 +131,11 @@ describe('user', function(){
 
 
   // Update
-  describe('PUT /api/users/:userID.json', function(){
+  describe('PUT /api/users/:userID', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id+".json";
+      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id;
       request
       .put(url)
       .data({"name":"UPDATED"})
@@ -165,11 +165,11 @@ describe('user', function(){
 
 
   // Delete
-  describe('DELETE /api/users/:userID.json', function(){
+  describe('DELETE /api/users/:userID', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id+".json";
+      url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id;
       request
       .del(url)
       .set('Accept', 'application/json')

@@ -32,12 +32,12 @@ describe('comments', function(){
   /* Routes */
 
   // Index
-  describe('GET /api/ticket/:ticketID/comments.json', function(){
+  describe('GET /api/ticket/:ticketID/comments', function(){
     var res;
 
     before(function(done){
       request
-      .get('http://127.0.0.1:3000/api/tickets/'+fixtures.tickets[0].id+"/comments.json")
+      .get('http://127.0.0.1:3000/api/tickets/'+fixtures.tickets[0].id+"/comments")
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -66,7 +66,7 @@ describe('comments', function(){
 
 
   // Create
-  describe('POST /api/tickets/:ticketID/comments.json', function(){
+  describe('POST /api/tickets/:ticketID/comments', function(){
     var res;
 
     before(function(done){
@@ -75,7 +75,7 @@ describe('comments', function(){
       }
 
       request
-      .post('http://127.0.0.1:3000/api/tickets/'+fixtures.tickets[0].id+"/comments.json")
+      .post('http://127.0.0.1:3000/api/tickets/'+fixtures.tickets[0].id+"/comments")
       .data(commentObj)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
@@ -106,11 +106,11 @@ describe('comments', function(){
 
 
   // Show
-  describe('GET /api/tickets/:ticketID/comments/:id.json', function(){
+  describe('GET /api/tickets/:ticketID/comments/:id', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id+".json";
+      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id;
       request
       .get(url)
       .set('Accept', 'application/json')
@@ -142,11 +142,11 @@ describe('comments', function(){
 
 
   // Update
-  describe('PUT /api/tickets/:ticketID/comments/:id.json', function(){
+  describe('PUT /api/tickets/:ticketID/comments/:id', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id+".json";
+      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id;
       request
       .put(url)
       .data({"comment":"UPDATED"})
@@ -183,11 +183,11 @@ describe('comments', function(){
 
 
   // Delete
-  describe('DELETE /api/tickets/:ticketID/comments/:id.json', function(){
+  describe('DELETE /api/tickets/:ticketID/comments/:id', function(){
     var res;
 
     before(function(done){
-      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id+".json";
+      url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id;
       request
       .del(url)
       .set('Accept', 'application/json')
