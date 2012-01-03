@@ -3,12 +3,12 @@ var mongoose = require("mongoose"),
     _ = require('underscore');
 
 var Ticket = new mongoose.Schema({
-  status                : {type : String, default : 'open', enum: ['open', 'closed'], required: true},
+  status                : {type : String, default : 'open', enum: ['open', 'closed'], index: true, required: true},
   title                 : {type : String, default : '', required: true, trim: true},
   description           : {type : String, default : '', required: true, trim: true},
-  opened_at             : {type : Date, default : Date.now(), required: true},
-  closed_at             : {type : Date},
-  user                  : {type : mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+  opened_at             : {type : Date, default : Date.now(), index: true, required: true},
+  closed_at             : {type : Date, index: true},
+  user                  : {type : mongoose.Schema.Types.ObjectId, ref: 'User', index: true, required: true},
   comments              : [CommentSchema],
   participating_users   : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
   assigned_to           : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
@@ -91,6 +91,7 @@ Ticket.methods.removeTicket = function(callback) {
 Ticket.statics.getAll = function(status, callback) {
   this
   .find({'status': status})
+  .asc('opened_at')
   .populate('user')
   .run(function(err, models){
     if(err || !models) {

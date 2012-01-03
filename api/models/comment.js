@@ -4,7 +4,7 @@ var mongoose = require("mongoose"),
 
 var Comment = new mongoose.Schema({
   comment           : {type : String, default : '', required: true, trim: true},
-  created_at        : {type : Date, default : Date.now(), required: true},
+  created_at        : {type : Date, default : Date.now(), index: true, required: true},
   modified_at       : {type : Date, default : Date.now, set: Date.now, required: true},
   user              : {type : mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
 });
