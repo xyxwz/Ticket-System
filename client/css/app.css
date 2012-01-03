@@ -197,14 +197,14 @@ header.row {
 
     .ticket .ticketHeader { padding: 10px 20px 0 20px; }
 
-      .ticketHeader hgroup h2 {
+      .ticketHeader .ticketName h2 {
         font-size: 18px;
         font-weight: 400;
         margin-bottom: 0;
         line-height: 1.8em;
       }
 
-      .ticketHeader hgroup h4 {
+      .ticketHeader .ticketName span.timestamp {
         font-size: 14px;
         font-weight: 400;
         color: #626262;

@@ -2,8 +2,9 @@
  * Renders a single Ticket
  */
 
-define(['jquery', 'underscore', 'backbone', 'garbage', 'mustache', 'text!templates/tickets/Ticket.html'],
-function($, _, Backbone, BaseView, mustache, ticket) {
+define(['jquery', 'underscore', 'backbone', 'garbage', 'mustache',
+'text!templates/tickets/Ticket.html', 'text!templates/tickets/Timestamp.html', 'timeago'],
+function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl) {
 
   var TicketView = BaseView.extend({
     tagName: 'div',
@@ -29,9 +30,9 @@ function($, _, Backbone, BaseView, mustache, ticket) {
       var data = this.model.toJSON();
       data.comments = this.model.comments.length;
       data.showAdmin = this.renderAdminOptions(); // True or False
-      data.timestamp = this.setTimestamp();
+      $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
-      $(this.el).html(Mustache.to_html(ticket, data));
+      this.setTimestamp();
 
       return this;
     },
@@ -53,14 +54,21 @@ function($, _, Backbone, BaseView, mustache, ticket) {
       }
     },
 
-    /* Sets which timestamp to use when rendering the view.
-     *    - can be either opened_at or closed_at
-     */
+    /* Renders the timestamp with the jQuery timeago plugin
+     * auto updates */
     setTimestamp: function() {
       if (this.model.get('closed_at')) {
-        return "closed: " + this.model.get('closed_at');
+        $('.timestamp', this.el).remove();
+        var timestamp = { time: this.model.get('closed_at') };
+        $('.ticketName', this.el).append(Mustache.to_html(TimestampTmpl, timestamp));
+        $('.timestamp', this.el).prepend('closed: ');
+        $('time.timeago', this.el).timeago();
       }
-      return this.model.get('opened_at');
+      else {
+        var timestamp = { time: this.model.get('opened_at') };
+        $('.ticketName', this.el).append(Mustache.to_html(TimestampTmpl, timestamp));
+        $('time.timeago', this.el).timeago();
+      }
     },
 
     /* Updates the view's comment count
@@ -84,8 +92,7 @@ function($, _, Backbone, BaseView, mustache, ticket) {
       }
 
       if(changedAttributes.closed_at) {
-        timestamp = this.setTimestamp();
-        $('hgroup h4', this.el).html(timestamp);
+        this.setTimestamp();
       }
     },
 

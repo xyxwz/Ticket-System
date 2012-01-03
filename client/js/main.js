@@ -5,6 +5,7 @@ require.config( {
     'underscore':       'libs/underscore',
     'text':             'libs/require/text',
     'mustache':         'libs/mustache',
+    'timeago':          'libs/jquery.timeago',
     'garbage':          'support/GarbageCollector',
     'AppView':          'support/AppView',
   },
