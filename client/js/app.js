@@ -41,6 +41,7 @@ define([
      * the object and attach functions and models to it
      */
     window.ticketer = window.ticketer || {
+      currentUser: currentUser, // set current user
       routers: {
         ticketer: new Ticketer()
       },
