@@ -8,7 +8,7 @@ function($, _, Backbone, BaseView, HeaderTmpl) {
   var BackHeadersView = BaseView.extend({
 
     events: {
-      "click a": "navigateBack",
+      "click li": "navigateBack",
     },
 
     initialize: function() {

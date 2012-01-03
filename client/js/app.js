@@ -13,6 +13,7 @@ define([
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView',
   'views/tickets/ClosedTicketListView',
+  'views/tickets/TicketFormView',
   'views/comments/CommentView',
   'views/comments/CommentListView',
   'views/comments/CommentFormView',
@@ -28,6 +29,7 @@ define([
   TicketListView,
   TicketDetailsView,
   ClosedTicketListView,
+  TicketFormView,
   CommentView,
   CommentListView,
   CommentFormView,
@@ -60,6 +62,7 @@ define([
           index: TicketListView,
           show: TicketDetailsView,
           closed: ClosedTicketListView,
+          form: TicketFormView,
         },
         comments: {
           comment: CommentView,

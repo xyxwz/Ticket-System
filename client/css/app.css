@@ -159,6 +159,7 @@ header.row {
       padding: 0.6em 1.8em;
       font-size: 16px;
       color: #222;
+      cursor: pointer;
     }
 
       header li:last-child { margin-right: 0; }
