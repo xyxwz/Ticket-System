@@ -9,6 +9,10 @@ define(['underscore', 'backbone', 'models/ticket'], function(_, Backbone, Ticket
 
     initialize: function() {
 
+      this.comparator = function(model) {
+        return model.get("opened_at");
+      };
+
       var op = this;
       this.bind("reset", function() {
 

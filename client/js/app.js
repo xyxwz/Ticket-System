@@ -72,6 +72,13 @@ define([
       },
     };
 
+    /* Override the closedTicket collection's comparator to
+     * sort by closed_at date instead of opened_at
+     */
+    ticketer.collections.closedTickets.comparator = function(collection) {
+      return collection.get("closed_at");
+    };
+
     /* Reset collections with bootstrapped data.
      * Reads in JSON variables written to page by server
      * side code to prevent fetch at boot and make collections
