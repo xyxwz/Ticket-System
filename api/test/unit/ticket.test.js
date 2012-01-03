@@ -106,6 +106,11 @@ describe('ticket', function(){
       it('should set closed_at', function(){
         should.exist(testObject.closed_at);
       });
+
+      it('should set modified_at time', function(){
+        should.exist(testObject.modified_at);
+        testObject.modified_at.should.not.equal(testObject.opened_at);
+      });
     });
 
 
@@ -210,7 +215,7 @@ describe('ticket', function(){
     /* create */
     /* Should add a ticket to the database */
     describe('create', function(){
-      var data;
+      var data, result;
 
       before(function(done){
         var obj = {
@@ -219,19 +224,27 @@ describe('ticket', function(){
           user: fixtures.users[0]._id
         }
         data = obj;
-        done();
+
+        Ticket.create(data, function(err, ticket){
+          result = ticket;
+          done();
+        });
       });
 
 
       it('should successfully create a ticket', function(done){
-        Ticket.create(data, function(err, ticket){
-          // Perform a query to ensure ticket is inserted
-          Ticket.findOne({"title":"create ticket"})
-          .run(function(err, model){
-            model.title.should.equal(ticket.title);
-            done();
-          });
+        // Perform a query to ensure ticket is inserted
+        Ticket.findOne({"title":"create ticket"})
+        .run(function(err, model){
+          model.title.should.equal(result.title);
+          done();
         });
+      });
+
+      it('should set opened_at date', function(){
+        should.exist(result.opened_at);
+        should.not.exist(result.modified_at);
+        should.not.exist(result.closed_at);
       });
 
       it('should err if validations fail', function(done){
