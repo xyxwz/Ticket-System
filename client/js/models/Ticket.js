@@ -4,7 +4,7 @@
 define(['underscore', 'backbone', 'collections/comments'], function(_, Backbone, Comments) {
   var Ticket = Backbone.Model.extend({
 
-    url: '/api/tickets.json',
+    //url: '/api/tickets',
     
     defaults: {
       'status'  : 'Open',
@@ -13,12 +13,12 @@ define(['underscore', 'backbone', 'collections/comments'], function(_, Backbone,
     initialize: function() {
 
       this.comments = new Comments();
-      this.comments.url = '/api/tickets/' + this.id + '/comments.json';
+      this.comments.url = '/api/tickets/' + this.id + '/comments';
 
       var op = this;
       this.bind("change", function() {
 
-        op.comments.url = '/api/tickets/' + this.id + '/comments.json';
+        op.comments.url = '/api/tickets/' + this.id + '/comments';
 
       });
 
