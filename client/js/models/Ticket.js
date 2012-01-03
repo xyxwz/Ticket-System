@@ -46,7 +46,7 @@ define(['underscore', 'backbone', 'collections/comments'], function(_, Backbone,
     /* Sets the Ticket's status to closed */
     close: function(callback) {
 
-      this.set({ status: 'Closed' });
+      this.set({ status: 'closed' });
       this.save(null, { error: callback });
 
     },
