@@ -104,6 +104,11 @@ describe('comment', function(){
       it('should update comment', function(){
         testObject.comment.should.equal("comment UPDATED");
       });
+
+      it('should set modified_at time', function(){
+        should.exist(testObject.modified_at);
+        testObject.modified_at.should.not.equal(testObject.created_at);
+      });
     });
 
 
@@ -254,6 +259,11 @@ describe('comment', function(){
         should.exist(result.user.id);
         should.not.exist(result._id);
         should.not.exist(result.user._id);
+      });
+
+      it('should set created_at date', function(){
+        should.exist(result.created_at);
+        should.not.exist(result.modified_at);
       });
 
       it('should err if validations fail', function(done){

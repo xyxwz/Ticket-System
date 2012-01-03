@@ -6,8 +6,9 @@ var Ticket = new mongoose.Schema({
   status                : {type : String, default : 'open', enum: ['open', 'closed'], index: true, required: true},
   title                 : {type : String, default : '', required: true, trim: true},
   description           : {type : String, default : '', required: true, trim: true},
-  opened_at             : {type : Date, default : Date.now(), index: true, required: true},
+  opened_at             : {type : Date, default : Date.now, index: true, required: true},
   closed_at             : {type : Date, index: true},
+  modified_at           : {type : Date},
   user                  : {type : mongoose.Schema.Types.ObjectId, ref: 'User', index: true, required: true},
   comments              : [CommentSchema],
   participating_users   : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
@@ -52,6 +53,8 @@ Ticket.methods.update = function(data, callback) {
   }
   if (data.title) this.title = data.title;
   if (data.description) this.description = data.description;
+  this.modified_at = Date.now();
+
   this.save(function(err, ticket) {
     if (err || !ticket) {
       callback('Error updating model. Check required attributes.');

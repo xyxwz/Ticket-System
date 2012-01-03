@@ -4,8 +4,8 @@ var mongoose = require("mongoose"),
 
 var Comment = new mongoose.Schema({
   comment           : {type : String, default : '', required: true, trim: true},
-  created_at        : {type : Date, default : Date.now(), index: true, required: true},
-  modified_at       : {type : Date, default : Date.now, set: Date.now, required: true},
+  created_at        : {type : Date, default : Date.now, index: true, required: true},
+  modified_at       : {type : Date},
   user              : {type : mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
 });
 
@@ -39,7 +39,10 @@ Comment.methods.toClient = function(){
 *  ready to be sent to the client. */
 Comment.methods.update = function(ticket, data, callback) {
   var self = this;
-  if (data.comment) this.comment = data.comment;
+  if (data.comment) {
+    this.comment = data.comment;
+    this.modified_at = Date.now();
+  }
   ticket.save(function(err, model) {
     if(err || !model) callback("Error updating ticket");
     return callback(null, self.toClient());
