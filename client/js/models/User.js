@@ -6,6 +6,16 @@ define(['underscore', 'backbone'], function(_, Backbone) {
 
     url: '/api/users',
 
+    initialize: function() {
+      this.createShortName();
+      this.bind('change:name', this.createShortName);
+    },
+
+    createShortName: function() {
+      var str = this.get('name').split(' ')[0];
+      this.set({shortname:str});
+    },
+
   });
 
   return User;

@@ -30,6 +30,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl) {
       var data = this.model.toJSON();
       data.comments = this.model.comments.length;
       data.showAdmin = this.renderAdminOptions(); // True or False
+      data.user = ticketer.collections.users.get(this.model.get('user').id).toJSON();
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
       this.setTimestamp();
