@@ -94,9 +94,7 @@ describe('user', function(){
     it('should return user object', function(){
       var user = res.body;
       should.exist(user.id);
-      should.exist(user.email);
-      should.exist(user.created_at);
-      should.not.exist(user.access_token); 
+      should.exist(user.name);
     });
   });
 
@@ -125,6 +123,7 @@ describe('user', function(){
     it('should return a user object', function(){
       var user = res.body;
       should.exist(user.id);
+      should.exist(user.name);
       should.not.exist(user.access_token);
     });
   });

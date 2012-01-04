@@ -22,10 +22,14 @@ var Comment = new mongoose.Schema({
 Comment.methods.toClient = function(){
   var obj = this.toObject();
   obj.id = obj._id;
-  obj.user.id = obj.user._id;
   delete obj._id;
-  delete obj.user._id;
-  if (typeof(obj.user.access_token) != 'undefined') delete obj.user.access_token;
+
+  var user = {
+    id: obj.user._id,
+    name: obj.name,
+  }
+  obj.user = user;
+
   return obj
 };
 

@@ -24,9 +24,14 @@ var User = new mongoose.Schema({
 User.methods.toClient = function(){
   var obj = this.toObject();
   obj.id = obj._id;
-  delete obj._id;
-  if (typeof(obj.access_token) != 'undefined') delete obj.access_token;
-  return obj;
+
+  var user = {
+    id: obj.id,
+    name: obj.name,
+    role: obj.role
+  }
+
+  return user;
 }
 
 
