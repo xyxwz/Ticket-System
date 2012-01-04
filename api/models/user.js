@@ -155,7 +155,7 @@ User.statics.setAccessToken = function(email, token, callback) {
     model.access_token = token;
     model.save(function(err, user) {
       if(err) return callback("Error setting access token");
-      return callback(null, token);
+      return callback(null, user);
     });
   });
 };

@@ -240,8 +240,8 @@ describe('user', function(){
       it('should add an access token', function(done){
         User.setAccessToken(
         'create.example@example.com', '123', 
-        function(err, token){
-          User.findOne({'access_token':token}).run(function(err, user){
+        function(err, user){
+          User.findOne({'access_token':user.access_token}).run(function(err, user){
             should.exist(user.access_token);
             user.access_token.should.equal('123');
             done();
@@ -252,8 +252,8 @@ describe('user', function(){
       it('should return a token', function(done){
         User.setAccessToken(
         'create.example@example.com', '123', 
-        function(err, token){
-          token.should.equal('123');
+        function(err, user){
+          user.access_token.should.equal('123');
           done();
         });
       });
