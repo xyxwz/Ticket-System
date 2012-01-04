@@ -83,6 +83,7 @@ define([
      * available immediately to views. */
     ticketer.collections.openTickets.reset(openTickets);
     ticketer.collections.closedTickets.reset(closedTickets);
+    ticketer.collections.users.reset(users);
 
     // Start Backbone History
     Backbone.history.start();
