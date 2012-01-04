@@ -95,7 +95,6 @@ describe('user', function(){
       });
 
       it('should update required fields', function(){
-        testObject.email.should.equal("updated@test.com");
         testObject.name.should.equal("John Doe UPDATED");
         testObject.role.should.equal("member");
       });
@@ -197,10 +196,10 @@ describe('user', function(){
       });
 
       it('should return a user object', function(){
-        user.email.should.equal('static.example@example.com');
         should.not.exist(user._id);
         should.not.exist(user.access_token);
         should.exist(user.id);
+        should.exist(user.name);
       });
     });
 
@@ -219,7 +218,7 @@ describe('user', function(){
           // Perform a query to ensure user is inserted
           User.findOne({"email":"create.example@example.com"})
           .run(function(err, model){
-            model.email.should.equal(user.email);
+            model.name.should.equal(user.name);
             done();
           });
         });
