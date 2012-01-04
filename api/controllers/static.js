@@ -1,4 +1,5 @@
 var mongoose = require('mongoose'),
+    _ = require('underscore'),
     Ticket = mongoose.model('Ticket'),
     User = mongoose.model('User');
 
@@ -11,7 +12,6 @@ module.exports = function(app) {
    */
   app.get('/', function(req, res) {
     if(req.session.passport.user) {
-
       /* If User session then user has been authenticated.
        * Get tickets to bootstrap into page.
        * This prevents a fetch on page load. */
@@ -20,7 +20,7 @@ module.exports = function(app) {
 
         // Render Index with bootstrapped tickets
         res.render('index', {
-          token: req.session.passport.user,
+          token: req.session.passport.user.token,
           openTickets: JSON.stringify(data.openTickets),
           closedTickets: JSON.stringify(data.closedTickets),
           user: JSON.stringify(data.currentUser),
