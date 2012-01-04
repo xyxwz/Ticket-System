@@ -39,7 +39,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl) {
 
     /* Set this.admin to true when instantiating a view
      * if admin options are needed. Access control is done on
-     * a per view basis by checking currentUsers.role
+     * a per view basis by checking currentUser.role
      */
     renderAdminOptions: function() {
       var self = this;

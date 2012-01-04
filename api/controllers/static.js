@@ -23,7 +23,8 @@ module.exports = function(app) {
           token: req.session.passport.user.token,
           openTickets: JSON.stringify(data.openTickets),
           closedTickets: JSON.stringify(data.closedTickets),
-          user: JSON.stringify(data.currentUser),
+          users: JSON.stringify(data.users),
+          currentUser: JSON.stringify(data.currentUser),
         });
       });
     }
@@ -51,12 +52,17 @@ module.exports = function(app) {
         if(err || !models) return cb('error getting closed tickets');
         data.closedTickets = models;
 
-        // Get Current User
-        User
-        .findOne({"access_token":req.session.passport.user})
-        .run(function(err, user) {
-          if(err || !user) return cb('error getting current user');
-          data.currentUser = user.toClient();
+        // Get Users
+        User.getAll(function(err, models) {
+          if(err || !models) return cb('error getting users');
+          data.users = models;
+
+          // Find Current User in Users Array
+          _.find(data.users, function(user) {
+            if(user.id == req.session.passport.user.id)
+              data.currentUser = user;
+          });
+
           return cb(null, data);
         });
       });
