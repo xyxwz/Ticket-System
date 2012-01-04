@@ -37,7 +37,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
         if (this.headerView != header) {
           this.currentHeader.dispose();
           this.headerView = null;
-          this.currentHeader = new header();
+          this.currentHeader = new header({admin: true});
           this.headerView = header;
           this.currentHeader.render();
 
@@ -55,7 +55,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
 
       else {
         /* No header exists so create one */
-        this.currentHeader = new header();
+        this.currentHeader = new header({admin: true});
         this.headerView = header;
         this.currentHeader.render();
 

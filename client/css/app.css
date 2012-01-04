@@ -52,7 +52,11 @@ html, body {
 ::-webkit-input-placeholder { color: #b2b2b2; }
 :-moz-placeholder { color: #b2b2b2; }
 
-#main { margin: 50px 0; }
+#main {
+  position: relative;
+  margin: 100px 0 50px 0;
+  z-index: 200;
+}
 
 input[type="text"], textarea {
   border: 1px solid #cfd0d0;
@@ -125,6 +129,12 @@ textarea { resize: none; }
   -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(strength=4, Direction=135, Color='#222222')";
 }
 
+.lightShadow {
+  -webkit-box-shadow: 2px 2px 6px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow: 2px 2px 6px rgba(50, 50, 50, 0.75);
+  box-shadow: 2px 2px 6px rgba(50, 50, 50, 0.75);
+}
+
 .paper { background: #fff url('/img/assets/handmadepaper.png'); }
 
 /* -----------------------------------------
@@ -147,22 +157,61 @@ p { line-height: 1.5em; }
 
 header.row {
   position: relative;
-  margin-top: -29px;
+  z-index: 201;
+  margin-top: -10px;
 }
 
-  header ul { margin: 19px 0 0 0; }
+  header nav {
+    position: absolute;
+    width: 100%;
+  }
+
+  header ul { margin: 0; }
 
     header li {
+      position: relative;
       background: #fff;
       float: left;
-      margin-right: 2em;
-      padding: 0.6em 1.8em;
+      margin: 0 1em 0 0;
+      padding: 12px 0;
+      width: 138px;
+      text-align: center;
       font-size: 16px;
       color: #222;
       cursor: pointer;
     }
 
       header li:last-child { margin-right: 0; }
+
+      header li.pullTab { padding: 0; }
+
+      header ul#assignees {
+        display: none;
+        background: #fff;
+        padding: 0 8px;
+        z-index: 300;
+        margin: 0;
+      }
+
+        header li.pullTab span.tab { display: block; }
+
+        header li.assign {
+          margin: 0;
+          padding: 8px 0;
+          width: 122px;
+          border-bottom: 1px solid #cfd0d0;
+          border-bottom: 1px solid rgba(207,208,208,0.7);
+        }
+
+          header li.assign span { display: block; }
+
+          header li.assign span.name {
+            float: left;
+            margin-right: 6px;
+            line-height: 41px;
+          }
+
+          header li.assign span.miniAvatar { float: right; }
 
 
 /* -----------------------------------------
@@ -201,7 +250,7 @@ header.row {
         font-size: 18px;
         font-weight: 400;
         margin-bottom: 0;
-        line-height: 1.8em;
+        line-height: 1.5em;
       }
 
       .ticketHeader .ticketName span.timestamp {
@@ -245,7 +294,7 @@ header.row {
    Ticket Items
 ----------------------------------------- */
 
-a.miniAvatar {
+span.miniAvatar {
   display: block;
   padding: 2px;
   border: 1px solid #cfd0d0;
@@ -255,7 +304,7 @@ a.miniAvatar {
   border-radius: 2px;
 }
 
-  a.miniAvatar img {
+  span.miniAvatar img {
     display: block;
     border: 1px solid #cfd0d0;
     border: 1px solid rgba(207,208,208,0.7);

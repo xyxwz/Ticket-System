@@ -3,8 +3,6 @@
 
 define(['underscore', 'backbone', 'collections/comments'], function(_, Backbone, Comments) {
   var Ticket = Backbone.Model.extend({
-
-    //url: '/api/tickets',
     
     defaults: {
       'status'  : 'Open',
