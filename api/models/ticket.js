@@ -32,7 +32,7 @@ Ticket.methods.toClient = function(){
 
   var user = {
     id: obj.user._id,
-    name: obj.name,
+    name: obj.user.name,
   }
   obj.user = user;
 
