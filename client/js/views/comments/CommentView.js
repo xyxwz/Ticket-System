@@ -2,7 +2,7 @@
  * Renders a single comment
  */
 
-define(['jquery', 'underscore', 'backbone', 'garbage', 'mustache',
+define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
 'text!templates/comments/Comment.html', 'timeago'],
 function($, _, Backbone, BaseView, mustache, comment) {
 

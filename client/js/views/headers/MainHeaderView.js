@@ -2,7 +2,8 @@
  * Renders a header with delegated events
  */
 
-define(['jquery', 'underscore', 'backbone','garbage', 'text!templates/headers/MainHeader.html'],
+define(['jquery', 'underscore', 'backbone', 'BaseView',
+'text!templates/headers/MainHeader.html'],
 function($, _, Backbone, BaseView, HeaderTmpl) {
 
   var BackHeadersView = BaseView.extend({

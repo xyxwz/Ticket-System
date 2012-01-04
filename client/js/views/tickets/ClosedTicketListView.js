@@ -2,8 +2,8 @@
  * Renders a collection of Tickets with status of closed
  */
 
-define(['jquery', 'underscore', 'backbone', 'garbage'],
-function($, _, Backbone, BaseView) {
+define(['jquery', 'underscore', 'backbone', 'BaseView', 'views/tickets/TicketView'],
+function($, _, Backbone, BaseView, TicketView) {
 
   var ClosedTicketListView = BaseView.extend({
 
@@ -21,7 +21,7 @@ function($, _, Backbone, BaseView) {
       _.each(this.collection.models, function(ticket) {
 
         var view = self.createView(
-          ticketer.views.tickets.ticket,
+          TicketView,
           {model: ticket}
         );
 

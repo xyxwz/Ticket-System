@@ -1,6 +1,7 @@
 /* New Ticket Form */
 
-define(['jquery', 'underscore', 'backbone', 'garbage', 'mustache', 'text!templates/tickets/TicketForm.html'], 
+define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
+'text!templates/tickets/TicketForm.html'],
 function($, _, Backbone, BaseView, mustache, TicketForm) {
 
   var TicketFormView = BaseView.extend({
