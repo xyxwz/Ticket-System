@@ -1,6 +1,21 @@
 // Main Router
 
-define(['jquery', 'backbone', 'AppView'], function($, Backbone, AppView) {
+define([
+  'backbone',
+  'AppView',
+  'views/tickets/TicketListView',
+  'views/tickets/TicketDetailsView',
+  'views/tickets/ClosedTicketListView',
+  'views/tickets/TicketFormView',
+],
+function(
+  Backbone,
+  AppView,
+  TicketListView,
+  TicketDetailsView,
+  ClosedTicketListView,
+  TicketFormView
+) {
 
   var Ticketer = Backbone.Router.extend({
 
@@ -24,21 +39,21 @@ define(['jquery', 'backbone', 'AppView'], function($, Backbone, AppView) {
     openTickets: function() {
       var Header = ticketer.views.headers.main,
           collection = ticketer.collections.openTickets,
-          TicketListView = new ticketer.views.tickets.index({ collection: collection });
+          View = new TicketListView({ collection: collection });
 
       // Transitions
       this.appView.showHeader(Header, 'openTickets');
-      this.appView.showView(TicketListView);
+      this.appView.showView(View);
     },
 
     closedTickets: function() {
       var Header = ticketer.views.headers.main,
           collection = ticketer.collections.closedTickets,
-          ClosedListView = new ticketer.views.tickets.closed({collection: collection });
+          View = new ClosedTicketListView({collection: collection });
 
       // Transitions
       this.appView.showHeader(Header, 'closedTickets');
-      this.appView.showView(ClosedListView);
+      this.appView.showView(View);
     },
 
     details: function(id) {
@@ -49,21 +64,21 @@ define(['jquery', 'backbone', 'AppView'], function($, Backbone, AppView) {
         ticket = ticketer.collections.closedTickets.get(id);
       }
 
-      var TicketDetailsView = new ticketer.views.tickets.show({ model: ticket });
+      var View = new TicketDetailsView({ model: ticket });
 
       // Transitions
       this.appView.showHeader(Header);
-      this.appView.showView(TicketDetailsView);
+      this.appView.showView(View);
     },
 
     createTicket: function() {
       var Header = ticketer.views.headers.back,
           collection = ticketer.collections.openTickets,
-          TicketFormView = new ticketer.views.tickets.form({ collection: collection });
+          View = new TicketFormView({ collection: collection });
 
       // Transitions
       this.appView.showHeader(Header);
-      this.appView.showView(TicketFormView);
+      this.appView.showView(View);
     },
 
   });

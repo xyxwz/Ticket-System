@@ -2,8 +2,9 @@
  * Renders a ticket's details and comments
  */
 
-define(['jquery', 'underscore', 'backbone', 'garbage'],
-function($, _, Backbone, BaseView) {
+define(['jquery', 'underscore', 'backbone', 'BaseView',
+'views/tickets/TicketView', 'views/comments/CommentListView', 'views/comments/CommentFormView'],
+function($, _, Backbone, BaseView, TicketView, CommentListView, CommentFormView) {
 
   var TicketDetailsView = BaseView.extend({
 
@@ -19,32 +20,32 @@ function($, _, Backbone, BaseView) {
     },
 
     renderTicket: function() {
-      var ticketView = this.createView(
-        ticketer.views.tickets.ticket,
+      var view = this.createView(
+        TicketView,
         {model: this.model, admin: true}
       );
 
-      $(this.el).html(ticketView.render().el);
+      $(this.el).html(view.render().el);
     },
 
     renderComments: function() {
-      var CommentList = this.createView(
-        ticketer.views.comments.index,
+      var view = this.createView(
+        CommentListView,
         {collection: this.model.comments}
       );
 
-      $(this.el).append(CommentList.render().el);
+      $(this.el).append(view.render().el);
     },
 
     renderCommentForm: function() {
       var self = this;
 
-      var commentForm = this.createView(
-        ticketer.views.comments.form,
+      var view = this.createView(
+        CommentFormView,
         {collection: self.model.comments}
       );
 
-      $(this.el).append(commentForm.render().el);
+      $(this.el).append(view.render().el);
     },
 
   });

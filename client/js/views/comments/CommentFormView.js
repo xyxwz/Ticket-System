@@ -2,7 +2,8 @@
  * Renders the comment form
  */
 
-define(['jquery', 'underscore', 'backbone', 'garbage', 'mustache', 'text!templates/comments/CommentForm.html'],
+define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
+'text!templates/comments/CommentForm.html'],
 function($, _, Backbone, BaseView, mustache, form) {
 
   var CommentFormView = BaseView.extend({

@@ -8,34 +8,18 @@ define([
   'collections/Tickets',
   'collections/Comments',
   'collections/Users',
+  'routers/Ticketer',
   'views/headers/MainHeaderView',
-  'views/headers/BackHeaderView',
-  'views/tickets/TicketView',
-  'views/tickets/TicketListView',
-  'views/tickets/TicketDetailsView',
-  'views/tickets/ClosedTicketListView',
-  'views/tickets/TicketFormView',
-  'views/comments/CommentView',
-  'views/comments/CommentListView',
-  'views/comments/CommentFormView',
-  'routers/Ticketer'
+  'views/headers/BackHeaderView'
 ], function(
   _,
   Backbone,
   Tickets,
   Comments,
   Users,
+  Ticketer,
   MainHeaderView,
-  BackHeaderView,
-  TicketView,
-  TicketListView,
-  TicketDetailsView,
-  ClosedTicketListView,
-  TicketFormView,
-  CommentView,
-  CommentListView,
-  CommentFormView,
-  Ticketer
+  BackHeaderView
 ) {
 
   $(function() {
@@ -82,19 +66,7 @@ define([
         headers: {
           main: MainHeaderView,
           back: BackHeaderView,
-        },
-        tickets: {
-          ticket: TicketView,
-          index: TicketListView,
-          show: TicketDetailsView,
-          closed: ClosedTicketListView,
-          form: TicketFormView,
-        },
-        comments: {
-          comment: CommentView,
-          index: CommentListView,
-          form: CommentFormView,
-        },
+        }
       },
     };
 

@@ -2,7 +2,7 @@
  * Renders a single Ticket
  */
 
-define(['jquery', 'underscore', 'backbone', 'garbage', 'mustache',
+define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
 'text!templates/tickets/Ticket.html', 'text!templates/tickets/Timestamp.html', 'timeago'],
 function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl) {
 

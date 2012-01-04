@@ -2,8 +2,8 @@
  * Renders a collection of ticket comments
  */
 
-define(['jquery', 'underscore', 'backbone', 'garbage'],
-function($, _, Backbone, BaseView) {
+define(['jquery', 'underscore', 'backbone', 'BaseView', 'views/comments/CommentView'],
+function($, _, Backbone, BaseView, CommentView) {
 
   var CommentListView = BaseView.extend({
 
@@ -31,14 +31,14 @@ function($, _, Backbone, BaseView) {
     },
 
     addComment: function(comment) {
-      var commentView = this.createView(
-        ticketer.views.comments.comment,
+      var view = this.createView(
+        CommentView,
         {model: comment}
       );
 
       // Build html and set style to hidden for
       // a nice fadeIn transition
-      var html = commentView.render().el;
+      var html = view.render().el;
       $(html).hide();
       $(this.el).append(html);
       $(html).fadeIn(200);
