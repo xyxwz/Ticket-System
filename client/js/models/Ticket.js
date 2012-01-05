@@ -41,7 +41,9 @@ define(['underscore', 'backbone', 'collections/comments'], function(_, Backbone,
 
     },
 
-    /* Sets the Ticket's status to closed */
+    /* Sets the Ticket's status to closed
+     *    :callback - An error callback
+     */
     close: function(callback) {
       var self = this;
 
@@ -56,6 +58,17 @@ define(['underscore', 'backbone', 'collections/comments'], function(_, Backbone,
 
       });
 
+    },
+
+    /* Assigns a User to the ticket
+     *    :id       -  A user model id to assign
+     *    :callback - An error callback
+    */
+    assignUser: function(id, callback) {
+      var array = _.clone(this.get('assigned_to'));
+      array.push(id);
+      this.set({assigned_to: _.uniq(array)});
+      this.save(null, { error: callback });
     },
 
   });
