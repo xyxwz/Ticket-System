@@ -84,12 +84,14 @@ describe('ticket', function(){
     /* Should test the update method follows the correct rules */
     describe('update', function(){
       var testObject = {};
-      var data = {};
-      data.title = "title UPDATED";
-      data.description = "description UPDATED";
-      data.status = "closed";
 
       before(function(done){
+        var data = {};
+        data.title = "title UPDATED";
+        data.description = "description UPDATED";
+        data.status = "closed";
+        data.assigned_to = [fixtures.users[0].id, fixtures.users[0].id];
+
         fixtures.tickets[0].update(data, function(err, model){
           if(err) return done(err);
           testObject = model;
@@ -110,6 +112,15 @@ describe('ticket', function(){
       it('should set modified_at time', function(){
         should.exist(testObject.modified_at);
         testObject.modified_at.should.not.equal(testObject.opened_at);
+      });
+
+      it('should assign user to ticket', function(){
+        var assignedTo = testObject.assigned_to[0].toString();
+        assignedTo.should.equal(fixtures.users[0].id);
+      });
+
+      it('should strip out duplicate ids', function(){
+        testObject.assigned_to.length.should.equal(1);
       });
     });
 

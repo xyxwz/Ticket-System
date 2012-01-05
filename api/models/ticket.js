@@ -12,7 +12,7 @@ var Ticket = new mongoose.Schema({
   user                  : {type : mongoose.Schema.Types.ObjectId, ref: 'User', index: true, required: true},
   comments              : [CommentSchema],
   participating_users   : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
-  assigned_to           : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
+  assigned_to           : [{type : mongoose.Schema.Types.ObjectId}],
 });
 
 
@@ -47,16 +47,22 @@ Ticket.methods.toClient = function(){
 *     :title       - string, optional
 *     :description - string, optional
 *     :status      - string, optional, available options ['open', 'closed']
+*     :assigned_to - array, optional, collection of userID's
 *
 *  Updates a ticket and returns a ticket object
 *  ready to be sent to the client. */
 Ticket.methods.update = function(data, callback) {
+  var self = this;
+
   if (data.status) {
     this.status = data.status;
     if(data.status === "closed") this.closed_at = Date.now();
   }
   if (data.title) this.title = data.title;
   if (data.description) this.description = data.description;
+
+  // Manage assigned users
+  if (data.assigned_to) this.assigned_to = _.uniq(data.assigned_to);
   this.modified_at = Date.now();
 
   this.save(function(err, ticket) {
