@@ -3,7 +3,7 @@
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/headers/MainHeader.html', 'text!templates/headers/AssignPullTab.html'],
+'text!templates/headers/MainHeader.html', 'text!templates/headers/AssignPullTab.html', 'outsideEvents'],
 function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
 
   var MainHeadersView = BaseView.extend({
@@ -23,26 +23,9 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
     render: function() {
       var ViewData = {};
       ViewData.showAdmin = this.renderAdminOptions();
-
       $(this.el).html(Mustache.to_html(HeaderTmpl, ViewData));
 
       if(ViewData.showAdmin) this.renderAssignees();
-
-      /* Animation for Pull Tabs */
-      $('.pullTab .tab', this.el).click(function() {
-        var tab = $(this).parent().parent(),
-        content = $('ul', tab).first();
-
-        if( $(content).is(':visible') ) {
-          $(content).slideUp(200, function() {
-            $(tab).removeClass('lightShadow').addClass('shadow');
-          });
-        }
-        else {
-          $(tab).removeClass('shadow').addClass('lightShadow');
-          $(content).slideDown(200);
-        }
-      });
 
       return this;
     },
@@ -71,6 +54,9 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
       _.each(admins, function(admin) {
         $('ul#assignees', self.el).append(Mustache.to_html(PullTabTmpl, admin.toJSON()));
       });
+
+      this.bindTo($('.pullTab .tab', this.el), 'click', this.togglePullTab);
+      this.bindTo($('.pullTab', this.el), 'clickoutside', this.hidePullTab);
     },
 
     navigateToForm: function() {
@@ -99,6 +85,35 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
       if ($('#' + tab + ' .yellow', 'header').length === 0) {
         $('header li').removeClass('yellow');
         $('#' + tab, 'header').addClass('yellow');
+      }
+    },
+
+    /* Toggles PullTab Menu Up or Down */
+    togglePullTab: function(e) {
+      var tab = $(e.currentTarget).closest('.pullTab'),
+          content = $('.scroll', tab);
+
+      $(content).is(':hidden') ? this.showPullTab(e) : this.hidePullTab(e);
+    },
+
+    showPullTab: function(e) {
+      var tab = $(e.currentTarget).closest('.pullTab'),
+          content = $('.scroll', tab);
+
+      if( $(content).is(':hidden') ) {
+        $(tab).removeClass('shadow').addClass('lightShadow');
+        $(content).slideDown(200);
+      }
+    },
+
+    hidePullTab: function(e) {
+      var tab = $(e.currentTarget).closest('.pullTab'),
+          content = $('.scroll', tab);
+
+      if( $(content).is(':visible') ) {
+        $(content).slideUp(200, function() {
+          $(tab).removeClass('lightShadow').addClass('shadow');
+        });
       }
     },
 
