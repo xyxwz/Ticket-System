@@ -6,6 +6,7 @@ require.config( {
     'text':             'libs/require/text',
     'mustache':         'libs/mustache',
     'timeago':          'libs/jquery.timeago',
+    'outsideEvents':    'libs/jquery.ba-outside-events.min',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
   },
