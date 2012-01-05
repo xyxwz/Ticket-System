@@ -3,7 +3,8 @@
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/headers/MainHeader.html', 'text!templates/headers/AssignPullTab.html', 'outsideEvents'],
+'text!templates/headers/MainHeader.html', 'text!templates/headers/AssignPullTab.html',
+'outsideEvents', 'jqueryui/draggable'],
 function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
 
   var MainHeadersView = BaseView.extend({
@@ -53,6 +54,16 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
 
       _.each(admins, function(admin) {
         $('ul#assignees', self.el).append(Mustache.to_html(PullTabTmpl, admin.toJSON()));
+      });
+
+      $('ul#assignees li', this.el).draggable({
+        revert: true,
+        helper: "clone",
+        scope: "assigned_to",
+        cursorAt: {
+          top: 28,
+          left: 69,
+        },
       });
 
       this.bindTo($('.pullTab .tab', this.el), 'click', this.togglePullTab);
