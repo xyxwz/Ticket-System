@@ -51,7 +51,7 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
      *  ex:  this.bindTo(this.model, 'change', someFunction);
      */
     bindTo: function(model, ev, callback) {
-      model.bind(ev, callback, this);
+      model.bind(ev, callback);
       this.bindings.push({ model: model, ev: ev, callback: callback });
     },
 
