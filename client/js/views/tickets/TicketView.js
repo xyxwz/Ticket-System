@@ -3,8 +3,9 @@
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/tickets/Ticket.html', 'text!templates/tickets/Timestamp.html', 'timeago'],
-function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl) {
+'text!templates/tickets/Ticket.html', 'text!templates/tickets/Timestamp.html',
+'text!templates/tickets/AssignedUser.html', 'timeago', 'jqueryui/droppable'],
+function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, AssignedUserTmpl) {
 
   var TicketView = BaseView.extend({
     tagName: 'div',
@@ -18,22 +19,41 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl) {
       _.bindAll(this);
       this.admin = this.options.admin;
 
+      /* Keep track of who is assigned to this ticket.
+       * Because the id's are stored as an array when the 'change'
+       * event fires it returns the entire new array. By managing it
+       * in an instance variable the UI can update with only the
+       * added/removed user and not refresh all assigned users */
+      this.assigned_to = this.model.get('assigned_to');
+
       // Bindings using the garbage collectors bindTo()
       this.bindTo(this.model.comments, 'add', this.updateCommentCount);
       this.bindTo(this.model.comments, 'remove', this.updateCommentCount);
       this.bindTo(this.model.comments, 'reset', this.updateCommentCount);
       this.bindTo(this.model, 'change', this.updateTicket);
+      this.bindTo(this.model, 'change:assigned_to', this.addAssignee);
     },
 
     render: function() {
       // Build up data object for use with view
-      var data = this.model.toJSON();
+      var self = this,
+          data = this.model.toJSON();
+
       data.comments = this.model.comments.length;
       data.showAdmin = this.renderAdminOptions(); // True or False
       data.user = ticketer.collections.users.get(this.model.get('user').id).toJSON();
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
       this.setTimestamp();
+      this.setAssignedUsers();
+
+      $(this.el).droppable({
+        accept: '.assign',
+        scope: 'assigned_to',
+        drop: function(e, ui) {
+          self.model.assignUser(ui.draggable.attr('id'));
+        }
+      });
 
       return this;
     },
@@ -95,6 +115,36 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl) {
       if(changedAttributes.closed_at) {
         this.setTimestamp();
       }
+    },
+
+    /* Renders the ticket's assigned users avatars */
+    setAssignedUsers: function() {
+      var self = this;
+
+      _.each(this.model.get('assigned_to'), function(id) {
+        var user = ticketer.collections.users.get(id),
+            html = Mustache.to_html(AssignedUserTmpl, user);
+
+        $('.ticketHeader ul', self.el).prepend(html);
+      });
+    },
+
+    addAssignee: function(id) {
+      var self = this,
+          newAssignees = _.difference(
+            this.model.changedAttributes().assigned_to,
+            this.assigned_to
+          );
+
+      // Add newly assigned user to this.assigned_to
+      _.each(newAssignees, function(user) {
+        self.assigned_to.push(user);
+      })
+
+      var user = ticketer.collections.users.get(id),
+          html = Mustache.to_html(AssignedUserTmpl, user);
+
+      $('.ticketHeader ul', self.el).prepend(html);
     },
 
   });
