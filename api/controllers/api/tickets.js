@@ -7,11 +7,12 @@ module.exports = function(app) {
   *  GET /api/tickets
   *
   *  returns a list of all the tickets in the database
-  *  marked as "open". Uses the Mongoose Populate method
+  *  marked as :status and :page. Uses the Mongoose Populate method
   *  to fill in information for the ticket user. */
   app.get('/api/tickets', function(req, res) {
     var status = req.query.status ? req.query.status : 'open';
-    Ticket.getAll(status, function(err, tickets){
+    var page = req.query.page ? req.query.page : 1;
+    Ticket.getAll(status, page, function(err, tickets){
       if(err) return res.json({error: 'Error getting tickets'}, 400);
       res.json(tickets);
     });
