@@ -96,16 +96,19 @@ Ticket.methods.removeTicket = function(callback) {
 /* Return All Tickets
 *
 *  :status - string, accepted values: ["open", "closed"]
+*  :page - int, determines what set of tickets to return
 *
 *  Gets a list of all the tickets in the database based on status.
 *  Uses the Mongoose Populate method to fill in information for the ticket user
 *
 * Returns an Array ready to be sent to the client. */
-Ticket.statics.getAll = function(status, callback) {
+Ticket.statics.getAll = function(status, page, callback) {
   this
   .find({'status': status})
   .asc('opened_at')
   .populate('user')
+  .skip((page - 1) * 10)
+  .limit(10)
   .run(function(err, models){
     if(err || !models) {
       return callback("Error finding tickets");
