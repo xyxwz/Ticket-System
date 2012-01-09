@@ -31,7 +31,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       this.bindTo(this.model.comments, 'remove', this.updateCommentCount);
       this.bindTo(this.model.comments, 'reset', this.updateCommentCount);
       this.bindTo(this.model, 'change', this.updateTicket);
-      this.bindTo(this.model, 'change:assigned_to', this.addAssignee);
+      this.bindTo(this.model, 'addedUser', this.addAssignee);
     },
 
     render: function() {
@@ -47,6 +47,11 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       this.setTimestamp();
       this.setAssignedUsers();
 
+      /* Make the entire ticket a droppable element that accepts
+       * .assign classes within the assigned_to scope.
+       *
+       * User to assign users to a ticket's assigned_users param.
+       */
       $(this.el).droppable({
         accept: '.assign',
         scope: 'assigned_to',
@@ -127,8 +132,35 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
         $('.ticketHeader ul', self.el).prepend(html);
       });
+
+      /* Bind assigned users to .draggable using the mouseover
+       * event. Check if element is already a draggable first.
+       *
+       * Used to make avatars draggable for use in removeAssignedTo.
+       */
+      if(ticketer.currentUser.role === "admin") {
+
+        $('.ticketHeader ul', this.el).on('mouseenter', 'li', function() {
+          if(!$(this).is(':data(draggable)')) {
+            $(this).draggable({
+              distance: 30,
+              cursorAt: {
+                top: 21,
+                left: 21,
+              },
+            });
+
+            $('.ticketHeader ul li', self.el).bind("drag", self.dragAvatar);
+            $('.ticketHeader ul li', self.el).bind("dragstop", self.dragAvatarStop);
+          }
+        });
+      }
+
     },
 
+    /* Adds a single assignee to ticket's assigned users avatars list
+     *    :id - an id from a tickets assigned_users array
+     */
     addAssignee: function(id) {
       var self = this,
           newAssignees = _.difference(
@@ -139,12 +171,51 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       // Add newly assigned user to this.assigned_to
       _.each(newAssignees, function(user) {
         self.assigned_to.push(user);
+
+        var userObj = ticketer.collections.users.get(user),
+            html = Mustache.to_html(AssignedUserTmpl, userObj);
+
+        $('.ticketHeader ul', self.el).prepend(html);
       })
+    },
 
-      var user = ticketer.collections.users.get(id),
-          html = Mustache.to_html(AssignedUserTmpl, user);
+    /* Removes a signle assignee from a ticket's assigned users avatars list.
+     *    :id = an id from a tickets assigned_ussers array
+     */
+    removeAssignee: function(id) {
+      var newArray = _.reject(this.assigned_to, function(user) {
+        return user === id;
+      });
+      this.assigned_to = newArray;
+      this.model.unassignUser(id);
+    },
 
-      $('.ticketHeader ul', self.el).prepend(html);
+    /* Drag Avatar */
+    dragAvatar: function(e, ui) {
+      var html = ui.helper;
+      if(ui.position.top < -45) {
+        $(html).data('draggable').options.revert = false;
+        if($('span figure', html).length === 0) {
+          $('span', html).append("<figure class='poof'></figure>");
+        }
+      }
+      else {
+        $(html).data('draggable').options.revert = true;
+        $('figure', html).remove();
+      }
+    },
+
+    /* Stop Dragging Avatar */
+    dragAvatarStop: function(e, ui) {
+      var html = ui.helper;
+      if(ui.position.top < -45) {
+        var id = $('span', html).data('user');
+        $(html).remove();
+        this.removeAssignee(id);
+      }
+      else {
+        $('figure', html).remove();
+      }
     },
 
   });

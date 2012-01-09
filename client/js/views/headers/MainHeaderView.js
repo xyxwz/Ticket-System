@@ -18,7 +18,6 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
 
     initialize: function() {
       _.bindAll(this);
-      this.admin = this.options.admin;
     },
 
     render: function() {
@@ -31,20 +30,13 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
       return this;
     },
 
-    /* Set this.admin to true when instantiating a view
-     * if admin options are needed. Access control is done on
-     * a per view basis by checking currentUser.role
-     */
+    /* Does user have the role of admin? */
     renderAdminOptions: function() {
-      var self = this;
-
-      if(this.admin && this.admin === true) {
-        if(ticketer.currentUser.role === 'admin') {
-          return true;
-        }
-        else {
-          return false;
-        }
+      if(ticketer.currentUser.role === 'admin') {
+        return true;
+      }
+      else {
+        return false;
       }
     },
 
