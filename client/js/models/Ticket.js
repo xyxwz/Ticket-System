@@ -63,13 +63,29 @@ define(['underscore', 'backbone', 'collections/comments'], function(_, Backbone,
     /* Assigns a User to the ticket
      *    :id       -  A user model id to assign
      *    :callback - An error callback
-    */
+     */
     assignUser: function(id, callback) {
       var array = _.clone(this.get('assigned_to'));
       array.push(id);
-      this.set({assigned_to: _.uniq(array)});
+      this.set({assigned_to: _.uniq(array)}, {silent: true});
+      this.trigger('addedUser', this);
       this.save(null, { error: callback });
     },
+
+    /* Unassign a User from the ticket
+     *    :id       - A user model id to remove
+     *    :callback - An error callback
+     */
+    unassignUser: function(id, callback) {
+      var array = _.clone(this.get('assigned_to'));
+      var newArray = _.reject(array, function(user) {
+        return user === id;
+      });
+      this.set({assigned_to: _.uniq(newArray)}, {silet: true});
+      this.trigger('removedUser', this)
+      this.save(null, { error: callback });
+    },
+
 
   });
   
