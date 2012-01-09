@@ -43,12 +43,12 @@ module.exports = function(app) {
   function bootstrapModels(req, cb) {
     var data = {};
     // Get Open Tickets
-    Ticket.getAll('open', function(err, models) {
+    Ticket.getAll('open', 1, function(err, models) {
       if(err || !models) return cb('error getting open tickets');
       data.openTickets = models;
 
       // Get Closed Tickets
-      Ticket.getAll('closed', function(err, models) {
+      Ticket.getAll('closed', 1, function(err, models) {
         if(err || !models) return cb('error getting closed tickets');
         data.closedTickets = models;
 
