@@ -41,7 +41,7 @@ describe('comments', function(){
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });
@@ -76,11 +76,11 @@ describe('comments', function(){
 
       request
       .post('http://127.0.0.1:3000/api/tickets/'+fixtures.tickets[0].id+"/comments")
-      .data(commentObj)
+      .send(commentObj)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });
@@ -116,7 +116,7 @@ describe('comments', function(){
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });
@@ -149,11 +149,11 @@ describe('comments', function(){
       url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id;
       request
       .put(url)
-      .data({"comment":"UPDATED"})
+      .send({"comment":"UPDATED"})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });  
@@ -193,7 +193,7 @@ describe('comments', function(){
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });  

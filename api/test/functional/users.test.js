@@ -41,7 +41,7 @@ describe('user', function(){
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });
@@ -77,11 +77,11 @@ describe('user', function(){
 
       request
       .post('http://127.0.0.1:3000/api/users')
-      .data(userObject)
+      .send(userObject)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });
@@ -110,7 +110,7 @@ describe('user', function(){
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });
@@ -137,11 +137,11 @@ describe('user', function(){
       url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id;
       request
       .put(url)
-      .data({"name":"UPDATED"})
+      .send({"name":"UPDATED"})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });  
@@ -174,7 +174,7 @@ describe('user', function(){
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });  

@@ -41,7 +41,7 @@ describe('tickets', function(){
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });
@@ -76,11 +76,11 @@ describe('tickets', function(){
 
       request
       .post('http://127.0.0.1:3000/api/tickets')
-      .data(ticketObj)
+      .send(ticketObj)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });
@@ -118,7 +118,7 @@ describe('tickets', function(){
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });
@@ -151,11 +151,11 @@ describe('tickets', function(){
       url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id;
       request
       .put(url)
-      .data({"title":"UPDATED"})
+      .send({"title":"UPDATED"})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });  
@@ -195,7 +195,7 @@ describe('tickets', function(){
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
-      .end(function(err, data){
+      .end(function(data){
         res = data;
         done();
       });  
