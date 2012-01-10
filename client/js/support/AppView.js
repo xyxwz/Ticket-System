@@ -2,11 +2,11 @@
  * 
  * Manages Garbage Collection on view renders
  */
-define(['jquery', 'backbone'], function($, Backbone) {
+define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
   
   function AppView() {
 
-    this.showView = function(view) {
+    this.showView = function(view, args) {
       var self = this;
 
       if (this.currentView){
@@ -18,7 +18,13 @@ define(['jquery', 'backbone'], function($, Backbone) {
 
       $('#main').fadeOut(200, function() {
         $(this).html(self.currentView.el);
-      }).fadeIn(200);
+      }).fadeIn(200, function() {
+        if(args && args.triggers) {
+          _.each(args.triggers, function(trigger) {
+            self.currentView.trigger(trigger);
+          });
+        }
+      });
     };
 
     /* Manages Headers

@@ -11,6 +11,7 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
   var BaseView = function(options) {
     this.bindings = [];
     this.views = [];
+    this.intervals = []
     Backbone.View.apply(this, [options]);
   };
 
@@ -37,6 +38,11 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
       var view = new name(args);
       this.views.push(view);
       return view;
+    },
+
+    createInterval: function(ms, cb) {
+      var interval = setInterval(cb, ms);
+      this.intervals.push(interval);
     },
 
     /* Model and collection bindings
@@ -93,6 +99,12 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
         }
       });
       this.views = [];
+
+      // Clear any setIntervals
+      _.each(this.intervals, function(interval) {
+        clearInterval(interval);
+      });
+      this.intervals = [];
     },
 
   });
