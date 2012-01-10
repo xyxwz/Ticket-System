@@ -181,7 +181,7 @@ describe('ticket', function(){
 
       // Run get all and assign to users
       before(function(done){
-        Ticket.getAll('open', function(err, results){
+        Ticket.getAll('open', 1, function(err, results){
           if(err) return done(err);
           models = results;
           done();

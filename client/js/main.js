@@ -8,6 +8,7 @@ require.config( {
     'timeago':          'libs/jquery.timeago',
     'outsideEvents':    'libs/jquery.ba-outside-events.min',
     'jqueryui':         'libs/jqueryui-1.8.16',
+    'timeline':         'libs/timeline',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
   },

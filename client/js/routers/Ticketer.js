@@ -22,7 +22,9 @@ function(
     routes: {
       "": "index",
       "tickets/open": "openTickets",
+      "tickets/open?*params": "openTickets",
       "tickets/closed": "closedTickets",
+      "tickets/closed?*params": "closedTickets",
       "tickets/new": "createTicket",
       "tickets/:id": "details",
     },
@@ -43,7 +45,9 @@ function(
 
       // Transitions
       this.appView.showHeader(Header, 'openTickets');
-      this.appView.showView(View);
+      this.appView.showView(View, {
+        triggers: ['timeline'],
+      });
     },
 
     closedTickets: function() {
