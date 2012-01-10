@@ -14,6 +14,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
     initialize: function() {
       _.bindAll(this);
       this.page = 1;
+      this.status = this.options.status ? this.options.status : 'open';
       this.bindTo(this, 'timeline', this.initTimeline);
     },
 
@@ -36,7 +37,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
 
     initTimeline: function() {
       var self = this;
-      this.timeline = new Timeline(this.collection, this.renderTicket, $(this.el), '.ticket');
+      this.timeline = new Timeline(this.collection, this.renderTicket, $(this.el), '.ticket', { status: this.status });
       this.bindTo($(window), 'scroll', function() { self.timeline.shouldCheckScroll = true });
       this.createInterval(250, function() { self.timeline.didScroll() });
     },

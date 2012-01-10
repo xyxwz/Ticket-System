@@ -33,7 +33,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
      *                  ex: .tweet
      *
      * Returns nothing. */
-    function Timeline(collection, renderFunction, wrapperElement, el) {
+    function Timeline(collection, renderFunction, wrapperElement, el, args) {
       var self, params, url, objID, item;
       
       self = this;
@@ -41,6 +41,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
       this.collection = collection;
       this.render = renderFunction;
       this.el = el;
+      this.args = args;
 
       this.elements = {
         wrapper: wrapperElement,
@@ -130,7 +131,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
         page = parseInt(this.elements.lastItem.attr('data-page')) + 1;
         this.collection.fetch({
           add: true,
-          data: {page: page},
+          data: {page: page, status: this.args.status},
           success: function(collection, response) {
             self.receivedData(response, page);
           },

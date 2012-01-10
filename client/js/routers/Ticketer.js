@@ -5,7 +5,6 @@ define([
   'AppView',
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView',
-  'views/tickets/ClosedTicketListView',
   'views/tickets/TicketFormView',
 ],
 function(
@@ -13,7 +12,6 @@ function(
   AppView,
   TicketListView,
   TicketDetailsView,
-  ClosedTicketListView,
   TicketFormView
 ) {
 
@@ -41,7 +39,7 @@ function(
     openTickets: function() {
       var Header = ticketer.views.headers.main,
           collection = ticketer.collections.openTickets,
-          View = new TicketListView({ collection: collection });
+          View = new TicketListView({ collection: collection, status: 'open' });
 
       // Transitions
       this.appView.showHeader(Header, 'openTickets');
