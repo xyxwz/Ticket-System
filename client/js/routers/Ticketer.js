@@ -51,11 +51,13 @@ function(
     closedTickets: function() {
       var Header = ticketer.views.headers.main,
           collection = ticketer.collections.closedTickets,
-          View = new ClosedTicketListView({collection: collection });
+          View = new TicketListView({collection: collection, status: 'closed' });
 
       // Transitions
       this.appView.showHeader(Header, 'closedTickets');
-      this.appView.showView(View);
+      this.appView.showView(View, {
+        triggers: ['timeline'],
+      });
     },
 
     details: function(id) {
