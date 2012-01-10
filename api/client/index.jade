@@ -2,13 +2,27 @@
 html
   head
     title TxSSC Ticket System
-    script(src='js/jquery-1.7.1.js')
-    script(src='js/underscore.js')
-    script(src='js/mustache.js')
-    script(src='js/backbone.js')
-    script(src='js/app.js')
 
-    meta(content=token, name="X-Auth-Token")
+    script(data-main="js/main", src="js/libs/require/require-jquery.js")
+
+    link(rel="stylesheet", href="css/foundation.2.1.4.min.css")
+    link(rel="stylesheet", href="css/app.css")
+
+    meta(name="viewport", content="width=device-width,initial-scale=1")
+    meta(name="X-Auth-Token", content=token)
+
+    script(type='text/javascript')
+      var openTickets = !{openTickets};
+      var closedTickets = !{closedTickets};
+      var currentUser = !{currentUser};
+      var users = !{users};
 
   body
-    #container
+
+    #border
+
+    .container
+
+      header.row
+
+      #main(role='main')

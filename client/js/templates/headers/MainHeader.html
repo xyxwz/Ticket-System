@@ -1,0 +1,21 @@
+<nav class="clearfix">
+  <ul class="left written">
+    <li id="createTicket" class="green shadow">Create Ticket</li>
+    {{#showAdmin}}
+    <li class="pullTab shadow">
+      <ul id="assignees" class="scroll clearfix">
+        <!-- Append Admins Here -->
+      </ul>
+      <ul class="clearfix">
+        <li class="tab">Assign Ticket</li>
+      </ul>
+    </li>
+    {{/showAdmin}}
+  </ul>
+
+  <ul class="right written">
+    <li id="myTickets" class="shadow">My Tickets</li>
+    <li id="openTickets" class="shadow">Open Tickets</li>
+    <li id="closedTickets" class="shadow">Closed Tickets</li>
+  </ul>
+</nav>

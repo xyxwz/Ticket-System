@@ -1,176 +1,91 @@
-/*
- * ticketer - our namespace object, create 
- * the object and attach functions and models to
- * it */
-var ticketer = ticketer || {};
+/* TxSSC Ticketer - An IT support ticket system
+   http://txssc.txstate.edu
+ */
 
-(function() {
+define([
+  'underscore',
+  'backbone',
+  'collections/Tickets',
+  'collections/Comments',
+  'collections/Users',
+  'routers/Ticketer',
+  'views/headers/MainHeaderView',
+  'views/headers/BackHeaderView'
+], function(
+  _,
+  Backbone,
+  Tickets,
+  Comments,
+  Users,
+  Ticketer,
+  MainHeaderView,
+  BackHeaderView
+) {
 
-  /* Override the Backbone sync functionality -
-   * all calls to Backbone.sync now send an auth_token
-   * header. */
-  Backbone.sync_model = Backbone.sync;
-  Backbone.sync = function(method, model, options) {
+  $(function() {
 
-    var new_options = _.extend({
+    /* Override Backbone Sync Method
+     * includes an X-Auth-Token and Accept Header
+     */
+    Backbone.sync_model = Backbone.sync;
+    Backbone.sync = function(method, model, options) {
 
-      beforeSend: function(xhr) {
+      var new_options = _.extend({
 
-        //Get the authentication token from the page
-        var auth_token = $('meta[name="X-Auth-Token"]').attr('content');
-        if (auth_token) {
-          xhr.setRequestHeader('X-Auth-Token', auth_token);
+        beforeSend: function(xhr) {
+
+          // Get the authentication token from the page
+          var auth_token = $('meta[name="X-Auth-Token"]').attr('content');
+          if (auth_token) {
+            xhr.setRequestHeader('X-Auth-Token', auth_token);
+          }
+          // Add Accept Header for API
+          xhr.setRequestHeader('Accept', 'application/json');
         }
-        // Add Accept Header for API
-        xhr.setRequestHeader('Accept', 'application/json');
-      }
-    }, options);
+      }, options);
 
-    Backbone.sync_model(method, model, new_options);
-
-  };
+      Backbone.sync_model(method, model, new_options);
+    };
 
 
-  /* Comment model - used to represent a single
-   * comment */
-  ticketer.Comment = Backbone.Model.extend({
+    /*
+     * ticketer - our namespace object, create
+     * the object and attach functions and models to it
+     */
+    window.ticketer = window.ticketer || {
+      currentUser: currentUser, // set current user
+      routers: {
+        ticketer: new Ticketer()
+      },
+      collections: {
+        openTickets: new Tickets(),
+        closedTickets: new Tickets(),
+        users: new Users(),
+      },
+      views: {
+        headers: {
+          main: MainHeaderView,
+          back: BackHeaderView,
+        }
+      },
+    };
 
-    initialize: function() {
+    /* Override the closedTicket collection's comparator to
+     * sort by closed_at date instead of opened_at
+     */
+    ticketer.collections.closedTickets.comparator = function(collection) {
+      return -collection.get("closed_at");
+    };
 
-    },
-    
-    /* Updates the Comment with the attributes passed in
-     * the comment argument, also take a save error callback */
-    updateComment: function(comment, callback) {
+    /* Reset collections with bootstrapped data.
+     * Reads in JSON variables written to page by server
+     * side code to prevent fetch at boot and make collections
+     * available immediately to views. */
+    ticketer.collections.openTickets.reset(openTickets);
+    ticketer.collections.closedTickets.reset(closedTickets);
+    ticketer.collections.users.reset(users);
 
-      if (comment) {
-        this.set({ comment: comment });
-      }
-      this.save(null, { error: callback });
-
-    },
-  
+    // Start Backbone History
+    Backbone.history.start();
   });
-
-
-  /* Ticket model - used to represent a single ticket object.
-   *  - comments child, tickets have multiple comments */
-  ticketer.Ticket = Backbone.Model.extend({
-
-    url: '/api/tickets.json',
-    defaults: {
-
-      'status'    : 'Open',
-    },
-
-    initialize: function() {
-
-      this.comments = new ticketer.Comments();
-      this.comments.url = '/api/tickets/' + this.id + '/comments.json';
-
-      var op = this;
-      this.bind("change", function() {
-
-        op.comments.url = '/api/tickets/' + this.id + '/comments.json';
-
-      });
-
-    },
-    
-    /* Updates the Ticket with the matching attributes
-     * of the ticket argument, also takes a save error
-     * callback. */
-    updateTicket: function(ticket, callback) {
-
-      if (ticket.title) {
-        this.set({ title: ticket.title });
-      }
-      if (ticket.description) {
-        this.set({ description: ticket.description });
-      }
-      if (ticket.status) {
-        this.set({ status: ticket.status });
-      }
-
-      this.save(null, { error: callback });
-
-    },
-
-    /* Sets the Ticket's status to closed */
-    close: function(callback) {
-
-      this.set({ status: 'Closed' });
-      this.save(null, { error: callback });
-
-    },
-
-  });
-
-
-  /* User model - used to get the current user and store that 
-   * information in memory. */
-  ticketer.User = Backbone.Model.extend({
-
-    url: '/api/users.json',
-
-  });
-
-
-  /* Comment collection - used to represent a collection
-   * of comments on a single ticket model */
-  ticketer.Comments = Backbone.Collection.extend({
-
-    model: ticketer.Comment,
-
-    /* Drop all comments associated with the Ticket */
-    removeComments: function(callback) {
-
-      var op = this;
-      this.each(function(comment) {
-
-        comment.destroy({ error: callback });
-
-      });
-
-    },
-
-  });
-
-
-  /* Ticket collection - used to represent a collection of
-   * tickets */
-  ticketer.Tickets = Backbone.Collection.extend({
-
-    model: ticketer.Ticket,
-    url: '/api/tickets.json',
-
-    initialize: function() {
-
-      var op = this;
-      this.bind("reset", function() {
-
-        op.each(function(ticket) {
-
-          ticket.comments.fetch();
-
-        });
-      });
-
-    },
-
-  });
-
-  
-  /* User collection - used to represent all users */
-  ticketer.Users = Backbone.Collection.extend({
-
-    model: ticketer.User,
-
-    initialize: function() {
-
-    },
-
-  });
-
-
-}).call(this);
+});

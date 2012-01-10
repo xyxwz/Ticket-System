@@ -84,12 +84,14 @@ describe('ticket', function(){
     /* Should test the update method follows the correct rules */
     describe('update', function(){
       var testObject = {};
-      var data = {};
-      data.title = "title UPDATED";
-      data.description = "description UPDATED";
-      data.status = "closed";
 
       before(function(done){
+        var data = {};
+        data.title = "title UPDATED";
+        data.description = "description UPDATED";
+        data.status = "closed";
+        data.assigned_to = [fixtures.users[0].id, fixtures.users[0].id];
+
         fixtures.tickets[0].update(data, function(err, model){
           if(err) return done(err);
           testObject = model;
@@ -105,6 +107,20 @@ describe('ticket', function(){
 
       it('should set closed_at', function(){
         should.exist(testObject.closed_at);
+      });
+
+      it('should set modified_at time', function(){
+        should.exist(testObject.modified_at);
+        testObject.modified_at.should.not.equal(testObject.opened_at);
+      });
+
+      it('should assign user to ticket', function(){
+        var assignedTo = testObject.assigned_to[0].toString();
+        assignedTo.should.equal(fixtures.users[0].id);
+      });
+
+      it('should strip out duplicate ids', function(){
+        testObject.assigned_to.length.should.equal(1);
       });
     });
 
@@ -165,7 +181,7 @@ describe('ticket', function(){
 
       // Run get all and assign to users
       before(function(done){
-        Ticket.getAll('open', function(err, results){
+        Ticket.getAll('open', 1, function(err, results){
           if(err) return done(err);
           models = results;
           done();
@@ -210,7 +226,7 @@ describe('ticket', function(){
     /* create */
     /* Should add a ticket to the database */
     describe('create', function(){
-      var data;
+      var data, result;
 
       before(function(done){
         var obj = {
@@ -219,19 +235,27 @@ describe('ticket', function(){
           user: fixtures.users[0]._id
         }
         data = obj;
-        done();
+
+        Ticket.create(data, function(err, ticket){
+          result = ticket;
+          done();
+        });
       });
 
 
       it('should successfully create a ticket', function(done){
-        Ticket.create(data, function(err, ticket){
-          // Perform a query to ensure ticket is inserted
-          Ticket.findOne({"title":"create ticket"})
-          .run(function(err, model){
-            model.title.should.equal(ticket.title);
-            done();
-          });
+        // Perform a query to ensure ticket is inserted
+        Ticket.findOne({"title":"create ticket"})
+        .run(function(err, model){
+          model.title.should.equal(result.title);
+          done();
         });
+      });
+
+      it('should set opened_at date', function(){
+        should.exist(result.opened_at);
+        should.not.exist(result.modified_at);
+        should.not.exist(result.closed_at);
       });
 
       it('should err if validations fail', function(done){

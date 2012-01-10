@@ -3,15 +3,16 @@ var mongoose = require("mongoose"),
     _ = require('underscore');
 
 var Ticket = new mongoose.Schema({
-  status                : {type : String, default : 'open', enum: ['open', 'closed'], required: true},
+  status                : {type : String, default : 'open', enum: ['open', 'closed'], index: true, required: true},
   title                 : {type : String, default : '', required: true, trim: true},
   description           : {type : String, default : '', required: true, trim: true},
-  opened_at             : {type : Date, default : Date.now(), required: true},
-  closed_at             : {type : Date},
-  user                  : {type : mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+  opened_at             : {type : Date, default : Date.now, index: true, required: true},
+  closed_at             : {type : Date, index: true},
+  modified_at           : {type : Date},
+  user                  : {type : mongoose.Schema.Types.ObjectId, ref: 'User', index: true, required: true},
   comments              : [CommentSchema],
   participating_users   : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
-  assigned_to           : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
+  assigned_to           : [{type : mongoose.Schema.Types.ObjectId}],
 });
 
 
@@ -27,11 +28,15 @@ var Ticket = new mongoose.Schema({
 Ticket.methods.toClient = function(){
   var obj = this.toObject();
   obj.id = obj._id;
-  obj.user.id = obj.user._id;
   delete obj._id;
-  delete obj.user._id;
+
+  var user = {
+    id: obj.user._id,
+    name: obj.user.name,
+  }
+  obj.user = user;
+
   delete obj.comments;
-  if (typeof(obj.user.access_token) != 'undefined') delete obj.user.access_token;
   return obj;
 };
 
@@ -42,16 +47,24 @@ Ticket.methods.toClient = function(){
 *     :title       - string, optional
 *     :description - string, optional
 *     :status      - string, optional, available options ['open', 'closed']
+*     :assigned_to - array, optional, collection of userID's
 *
 *  Updates a ticket and returns a ticket object
 *  ready to be sent to the client. */
 Ticket.methods.update = function(data, callback) {
+  var self = this;
+
   if (data.status) {
     this.status = data.status;
     if(data.status === "closed") this.closed_at = Date.now();
   }
   if (data.title) this.title = data.title;
   if (data.description) this.description = data.description;
+
+  // Manage assigned users
+  if (data.assigned_to) this.assigned_to = _.uniq(data.assigned_to);
+  this.modified_at = Date.now();
+
   this.save(function(err, ticket) {
     if (err || !ticket) {
       callback('Error updating model. Check required attributes.');
@@ -83,15 +96,19 @@ Ticket.methods.removeTicket = function(callback) {
 /* Return All Tickets
 *
 *  :status - string, accepted values: ["open", "closed"]
+*  :page - int, determines what set of tickets to return
 *
 *  Gets a list of all the tickets in the database based on status.
 *  Uses the Mongoose Populate method to fill in information for the ticket user
 *
 * Returns an Array ready to be sent to the client. */
-Ticket.statics.getAll = function(status, callback) {
+Ticket.statics.getAll = function(status, page, callback) {
   this
   .find({'status': status})
+  .asc('opened_at')
   .populate('user')
+  .skip((page - 1) * 10)
+  .limit(10)
   .run(function(err, models){
     if(err || !models) {
       return callback("Error finding tickets");
