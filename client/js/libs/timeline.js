@@ -10,13 +10,10 @@ define(['jquery', 'backbone'], function($, Backbone) {
   
     /* Distance from the bottom that we ask for more tweets, distance from the
      * top that we preload if getting an existing permalink.*/
-    Timeline.prototype.infiniteScrollThreshold = 75;
+    Timeline.prototype.infiniteScrollThreshold = 175;
 
     /* How many pixels do we have to scroll before we permalink the page? */
     Timeline.prototype.permalinkScrollThreshold = 200;
-
-    /* Are there items earlier than the ones we've shown? */
-    Timeline.prototype.earlierItemsPossible = false;
 
     /* Are there items later than the ones we've shown? */
     Timeline.prototype.laterItemsPossible = true;
@@ -26,15 +23,18 @@ define(['jquery', 'backbone'], function($, Backbone) {
      * that make infinite scrolling possible.
      *
      * collection     - A Backbone.js Collection that can run the fetch method
+     * renderFunction - A function to render a single model to a page.
+     *                  Usually the view's render function.
      * wrapperElement - The HTML element to insert the items into. It should
      *                  have a data-url attribute pointing to the desired API
      *                  endpoint.
      *
-     * class          - The class name of the items.
+     * el             - The class name of the items.
      *                  ex: .tweet
+     *
      * Returns nothing. */
     function Timeline(collection, renderFunction, wrapperElement, el) {
-      var self, params, url, objID, item, lastAvailablePage, fetchPages;
+      var self, params, url, objID, item;
       
       self = this;
 
@@ -58,7 +58,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
 
       params = this.getUrlVars();
 
-      if (params.page && params.id) {
+      if (params.id) {
         objID = params.id.split('id_')[1];
         item = this.collection.get(objID);
         if(item) {
@@ -82,21 +82,11 @@ define(['jquery', 'backbone'], function($, Backbone) {
     /* Got some data back from the server, time to parse it!
      *
      *  items   - Array of objects returned from the server.
-     *  prepend - Boolean indicating whether we should prepend the items to the
-     *            timeline
+     *  page    - the page number to append to the item
      *
      * Returns nothing. */
-    Timeline.prototype.receivedData = function(items, page, prepend) {
+    Timeline.prototype.receivedData = function(items, page) {
       var model, context, created_at, rendered, scrollOffset, item;
-
-      if (prepend == null) {
-        prepend = false;
-      }
-
-      // Since we're prepending data, we need to build from the bottom up 
-      if (prepend) {
-        items = items.reverse();
-      }
 
       rendered = (function() {
         var _i, _len, _results;
@@ -106,31 +96,18 @@ define(['jquery', 'backbone'], function($, Backbone) {
           item = items[_i];
           model = this.collection.get(item.id);
           context = this.render(model, page);
-          _results.push(prepend ? this.elements.wrapper.prepend(context) : this.elements.wrapper.append(context));
+          _results.push(this.elements.wrapper.append(context));
         }
         return _results
       }).call(this);
 
-      // Preserve the scroll position if we're adding stuff above
-      if (prepend) {
-        this.earlierItemsPossible = items.length > 0;
-        scrollOffset = $(window).scrollTop() + this.elements.firstItem.offset().top;
-        scrollOffset -= this.elements.wrapper.find(this.el + ':first-child').offset().top;
-        $(window).scrollTop(scrollOffset);
-      }
-
       this.elements.lastItem = this.elements.wrapper.find(this.el + ':last-child');
       this.elements.firstItem = this.elements.wrapper.find(this.el + ':first-child');
-      
-      if (this.shouldScrollDown) {
-        $(window).scrollTop($(window).height() - this.infiniteScrollThreshold);
-        return this.shouldScrollDown = false;
-      }
     };
 
     /* So we've scrolled down the page, do we need to load more items? This
      * analyzes what items are visible and figures out if we need to load more
-     * itemss (either earlier ones or later ones).
+     * items (either earlier ones or later ones).
      *
      * Returns nothing. */
     Timeline.prototype.didScroll = function() {
@@ -155,19 +132,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
           add: true,
           data: {page: page},
           success: function(collection, response) {
-            self.receivedData(response, page, false);
-          },
-        });
-      }
-
-      // Get more items for infinite scroll upwards?
-      if (this.earlierItemsPossible && (topOfFirstItem >= $(document).scrollTop())) {
-        page = parseInt(this.elements.firstItem.attr('data-page')) - 1;
-        this.collection.fetch({
-          add: true,
-          data: {page: page},
-          success: function(collection, response) {
-            self.receivedData(response, page, true);
+            self.receivedData(response, page);
           },
         });
       }
@@ -183,7 +148,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
           item = _ref[_i];
           item = $(item);
           if (item.offset().top >= (this.lastPermalinkPosition - this.infiniteScrollThreshold)) {
-            if (item.is(':first-child') && !this.earlierItemsPossible) {
+            if (item.is(':first-child')) {
               this.permalink(false);
             } else {
               this.permalink(item);
@@ -209,10 +174,9 @@ define(['jquery', 'backbone'], function($, Backbone) {
         return;
       }
 
-      url = window.location.hash.split("/?")[0];
+      url = window.location.hash.split("?")[0];
       if (item) {
-        url += "/?page=" + item.attr('data-page');
-        url += "&id=" + item.attr('id');
+        url += "?id=" + item.attr('id');
       }
       return window.history.replaceState({}, document.title, url);
     };

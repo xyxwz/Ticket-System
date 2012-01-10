@@ -49,7 +49,6 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
 
       this.page = page;
 
-      //$(this.el).append(view.render().el);
       return view.render().el;
     },
 

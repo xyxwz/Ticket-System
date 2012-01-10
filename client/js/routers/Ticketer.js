@@ -22,9 +22,9 @@ function(
     routes: {
       "": "index",
       "tickets/open": "openTickets",
-      "tickets/open/?*params": "openTickets",
+      "tickets/open?*params": "openTickets",
       "tickets/closed": "closedTickets",
-      "tickets/closed/?*params": "closedTickets",
+      "tickets/closed?*params": "closedTickets",
       "tickets/new": "createTicket",
       "tickets/:id": "details",
     },
