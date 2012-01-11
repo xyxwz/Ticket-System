@@ -6,23 +6,22 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
     model: Ticket,
     url: '/api/tickets',
-
+    
     initialize: function() {
 
       this.comparator = function(model) {
         return model.get("opened_at");
       };
 
-      var op = this;
-      this.bind("reset", function() {
+      this.bind('add', this.loadComments);
+      this.bind('reset', this.loadComments);
 
-        op.each(function(ticket) {
+    },
 
-          ticket.comments.fetch();
-
-        });
+    loadComments: function() {
+      this.each(function(ticket) {
+        ticket.comments.fetch();
       });
-
     },
 
   });
