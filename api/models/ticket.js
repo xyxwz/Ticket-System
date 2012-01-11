@@ -57,8 +57,10 @@ Ticket.methods.update = function(data, callback) {
   var self = this, newAssigned;
 
   if (data.status) {
+    if(this.status === "open" && data.status === "closed") {
+      this.closed_at = Date.now();
+    }
     this.status = data.status;
-    if(data.status === "closed") this.closed_at = Date.now();
   }
   if (data.title) this.title = data.title;
   if (data.description) this.description = data.description;

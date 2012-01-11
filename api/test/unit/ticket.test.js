@@ -276,8 +276,8 @@ describe('ticket', function(){
       });
 
       it('should sort by closed_at', function(){
-        models[0].title.should.equal('test ticket 1');
-        models[1].title.should.equal('test ticket 3');
+        models[0].title.should.equal('test ticket 3');
+        models[1].title.should.equal('test ticket 1');
       });
 
       it('should run toClient() on ticket instances', function(){
