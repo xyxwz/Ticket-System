@@ -31,13 +31,14 @@ describe('tickets', function(){
 
   /* Routes */
 
-  // Index
+  // Index Open Tickets
   describe('GET /api/tickets', function(){
     var res;
 
     before(function(done){
       request
       .get('http://127.0.0.1:3000/api/tickets')
+      .send({status: 'open'})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -61,6 +62,52 @@ describe('tickets', function(){
       should.exist(tickets[0].id);
       should.not.exist(tickets[0].user.access_token);
     });
+
+    it('should return correct tickets', function(){
+      var tickets = res.body;
+      tickets[0].title.should.equal('test ticket 2');
+      tickets[1].title.should.equal('test ticket 4');
+    });
+  });
+
+  // Index Closed Tickets
+  describe('GET /api/tickets', function(){
+    var res;
+
+    before(function(done){
+      request
+      .get('http://127.0.0.1:3000/api/tickets')
+      .send({status: 'closed'})
+      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json')
+      .set('X-Auth-Token', fixtures.users[0].access_token)
+      .end(function(data){
+        res = data;
+        done();
+      });
+    });
+
+    it('should return a 200 status code', function(){
+      res.status.should.equal(200);
+    });
+
+    it('should return an array of tickets', function(){
+      res.body.should.be.an.instanceof(Array);
+    });
+
+    it('should contain 2 ticket object', function(){
+      var tickets = res.body;
+      tickets.length.should.equal(2);
+      should.exist(tickets[0].id);
+      should.not.exist(tickets[0].user.access_token);
+    });
+
+    it('should return correct tickets', function(){
+      var tickets = res.body;
+      tickets[0].title.should.equal('test ticket 3');
+      tickets[1].title.should.equal('test ticket 1');
+    });
+  });
   });
 
 
