@@ -1,6 +1,8 @@
 var mongoose = require("mongoose"),
     CommentSchema = require('./comment').CommentSchema,
-    _ = require('underscore');
+    _ = require('underscore'),
+    redis = require('redis'),
+    client = redis.createClient();
 
 var Ticket = new mongoose.Schema({
   status                : {type : String, default : 'open', enum: ['open', 'closed'], index: true, required: true},
@@ -52,7 +54,7 @@ Ticket.methods.toClient = function(){
 *  Updates a ticket and returns a ticket object
 *  ready to be sent to the client. */
 Ticket.methods.update = function(data, callback) {
-  var self = this;
+  var self = this, newAssigned;
 
   if (data.status) {
     this.status = data.status;
@@ -62,19 +64,69 @@ Ticket.methods.update = function(data, callback) {
   if (data.description) this.description = data.description;
 
   // Manage assigned users
-  if (data.assigned_to) this.assigned_to = _.uniq(data.assigned_to);
+  if (data.assigned_to) {
+    newAssigned = _.uniq(data.assigned_to);
+    this.manageSets(newAssigned, function() {
+      self.runUpdate(callback);
+    });
+  }
+  else {
+    this.runUpdate(callback);
+  }
+}
+
+/* Manage Redis Sets *
+ *
+ * Adds/Removes TicketID in Redis Set. Set key is the
+ * User's mongoID. Finds the difference between the current
+ * assigned_to array and the new assigned_to array then checks
+ * if the id is new or old in order to determine if it needs
+ * to be added or removed from the set.
+ *
+ *  :newArray  -  The array passed in the put request for
+ *                assigned_users
+ *  :callback  -  A callback to run when completed
+ *
+ * returns callback(null) */
+Ticket.methods.manageSets = function(newArray, callback) {
+  var self = this,
+      _add = _.difference(newArray, this.assigned_to),
+      _rem = _.difference(this.assigned_to, newArray);
+
+  _.each(_add, function(user) {
+    client.sadd(user, self._id);
+  });
+
+  _.each(_rem, function(user) {
+    client.srem(user, self._id);
+  });
+
+  this.assigned_to = newArray;
+
+  return callback(null);
+}
+
+/* Exec Update
+ *
+ * Runs the save function to update a ticket after other
+ * functions have been run. Takes a callback to return the
+ * saved ticket's toClient() properties.
+ *
+ *    :callback - A callback to run
+ *
+ * returns callback(null, this.toClient()) */
+Ticket.methods.runUpdate = function(callback) {
   this.modified_at = Date.now();
 
   this.save(function(err, ticket) {
     if (err || !ticket) {
-      callback('Error updating model. Check required attributes.');
+      return callback('Error updating model. Check required attributes.');
     }
     else {
       return callback(null, ticket.toClient());
     }
   });
 }
-
 
 /* Delete Ticket *
 *

@@ -8,6 +8,8 @@
     , "underscore": ">= 1.2.0"
     , "passport": ">= 0.1.5"
     , "passport-github": ">= 0.1.0"
+    , "hiredis": ">= 0.1.13"
+    , "redis": ">= 0.0.1"
   }
   , "devDependencies": {
       "mocha": ">= 0.7.0"

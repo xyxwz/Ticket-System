@@ -2,7 +2,9 @@ var should = require("should"),
     helper = require('../support/helper'),
     app = require('../support/bootstrap').app,
     mongoose = require("mongoose"),
-    Ticket = require('../../models/ticket').Ticket;
+    Ticket = require('../../models/ticket').Ticket,
+    redis = require('redis'),
+    client = redis.createClient();
 
 var server = app();
 
@@ -129,6 +131,42 @@ describe('ticket', function(){
 
       it('should strip out duplicate ids', function(){
         testObject.assigned_to.length.should.equal(1);
+      });
+    });
+
+    /* Manage Sets */
+    /* Should manage the assigned_to redis sets */
+    describe('manageSets', function(){
+      var ticket, userID;
+
+      before(function(done){
+        /* clear out previous assigned_to's to
+         * only test manageSets() */
+        var data = {assigned_to: []};
+        fixtures.tickets[0].update(data, function(err, model){
+          if(err) return done(err);
+          ticket = fixtures.tickets[0];
+          userID = fixtures.users[0]._id;
+          done();
+        });
+      });
+
+      it('should add a ticket to user set', function(done){
+        ticket.manageSets([userID], function(){
+          client.smembers(userID, function(err, res){
+            res.length.should.equal(1);
+            done();
+          });
+        });
+      });
+
+      it('should remove a ticket from a user set', function(done){
+        ticket.manageSets([], function(){
+          client.smembers(userID, function(err, res){
+            res.length.should.equal(0);
+            done();
+          });
+        });
       });
     });
 
