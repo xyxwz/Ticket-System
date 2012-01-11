@@ -9,16 +9,17 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     },
 
     initialize: function() {
+      var self = this;
 
       this.comments = new Comments();
       this.comments.url = '/api/tickets/' + this.id + '/comments';
 
-      var op = this;
       this.bind("change", function() {
-
-        op.comments.url = '/api/tickets/' + this.id + '/comments';
-
+        self.comments.url = '/api/tickets/' + this.id + '/comments';
       });
+
+      this.bind("assignedUser", this.collection.assignMe);
+      this.bind("unassignedUser", this.collection.unassignMe);
 
     },
     
