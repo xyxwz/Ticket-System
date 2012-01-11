@@ -55,9 +55,9 @@ describe('user', function(){
       res.body.should.be.an.instanceof(Array);
     });
 
-    it('should contain 1 user object', function(){
+    it('should contain 2 user objects', function(){
       var users = res.body;
-      users.length.should.equal(1);
+      users.length.should.equal(2);
       should.exist(users[0].id);
       should.not.exist(users[0].access_token);
     });

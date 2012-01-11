@@ -184,6 +184,37 @@ Ticket.statics.getAll = function(status, page, callback) {
 }
 
 
+/* Return All Tickets Assigned To A User
+*
+* */
+Ticket.statics.getMyTickets = function(user, status, page, callback) {
+  var self = this;
+
+  client.smembers(user, function(err, res){
+    self
+    .find({'status': status})
+    .where('_id')
+    .in(res)
+    .asc('opened_at')
+    .populate('user')
+    .skip((page - 1) * 10)
+    .limit(10)
+    .run(function(err, models) {
+      if(err) {
+        return callback("Error finding tickets");
+      }
+      else {
+        var array = [];
+        _.each(models, function(ticket) {
+          var obj = ticket.toClient();
+          array.push(obj);
+        });
+        return callback(null, array);
+      }
+    });
+  });
+}
+
 /* Return A Single Ticket
 *
 *  :id - string, a tickets BSON id

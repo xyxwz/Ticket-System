@@ -121,7 +121,7 @@ describe('user', function(){
 
       it('should destroy a user account', function(done){
         User.find().run(function(err, users){
-          users.length.should.equal(0);
+          users.length.should.equal(1);
           done();
         });
       });
@@ -171,7 +171,7 @@ describe('user', function(){
 
       it('should return an array', function(){
         users.should.be.an.instanceof(Array);
-        users.length.should.equal(1);
+        users.length.should.equal(2);
       });
 
       it('should run toClient() on user instances', function(){

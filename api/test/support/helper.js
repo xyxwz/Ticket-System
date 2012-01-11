@@ -58,15 +58,11 @@ function teardown(callback){
 
 // Seed Database
 function seedDatabase(cb){
-  addUser(function(err, user){
+  addUsers(function(err, users){
     if(err) return cb(err);
-    fixtures.users.push(user);
-    addTickets(user, function(err, tickets){
+    addTickets(users[0], function(err, tickets){
       if(err) return cb(err);
-      _.each(tickets, function(ticket){
-        fixtures.tickets.push(ticket);
-      });
-      addComment(tickets[0], user, function(err, comment){
+      addComment(tickets[0], users[0], function(err, comment){
         if(err) return cb(err);
         fixtures.comments.push(comment);
         cb(null);
@@ -75,13 +71,27 @@ function seedDatabase(cb){
   });
 }
 
+// Add Multiple Users
+function addUsers(cb) {
+  var i = 0;
+  while(i < 2) {
+    addUser(i, function(err, model) {
+      fixtures.users.push(model)
+      if(fixtures.users.length == 2) {
+        cb(null, fixtures.users);
+      }
+    });
+    i++;
+  }
+}
+
 // Add User
-function addUser(cb){
+function addUser(i, cb){
   var user = new User({
-    email: "example@example.com",
+    email: "example_"+i+"@example.com",
     name: "John Doe",
     role: "member",
-    access_token: "abc",
+    access_token: "abc"+i,
   });
   user.save(function(err, model){
     if(err) return cb(err);
@@ -91,21 +101,21 @@ function addUser(cb){
 
 // Add Ticket
 function addTickets(user, cb){
-  var i = 1, array = [];
+  var i = 1;
   while(i <= 4) {
     if(i % 2 == 0) {
       addOpenTicket(user, i, function(err, model) {
-        array.push(model);
-        if (array.length == 4) {
-          cb(null, array);
+        fixtures.tickets.push(model);
+        if (fixtures.tickets.length == 4) {
+          cb(null, fixtures.tickets);
         }
       });
     }
     else {
       addClosedTicket(user, i, function(err, model) {
-        array.push(model);
-        if (array.length == 4) {
-          cb(null, array);
+        fixtures.tickets.push(model);
+        if (fixtures.tickets.length == 4) {
+          cb(null, fixtures.tickets);
         }
       });
     }
@@ -119,7 +129,7 @@ function addOpenTicket(user, i, cb){
     title: "test ticket " + i,
     description: "a ticket to use with test",
     user: user._id,
-    status: 'open'
+    status: 'open',
   });
   ticket.save(function(err, model){
     if(err) return cb(err);

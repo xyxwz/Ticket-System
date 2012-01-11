@@ -1,4 +1,5 @@
 var should = require("should"),
+    _ = require('underscore'),
     helper = require('../support/helper'),
     app = require('../support/bootstrap').app,
     mongoose = require("mongoose"),
@@ -137,7 +138,7 @@ describe('ticket', function(){
     /* Manage Sets */
     /* Should manage the assigned_to redis sets */
     describe('manageSets', function(){
-      var ticket, userID;
+      var ticket, user1, user2;
 
       before(function(done){
         /* clear out previous assigned_to's to
@@ -146,25 +147,32 @@ describe('ticket', function(){
         fixtures.tickets[0].update(data, function(err, model){
           if(err) return done(err);
           ticket = fixtures.tickets[0];
-          userID = fixtures.users[0]._id;
+          user1 = fixtures.users[0]._id;
+          user2 = fixtures.users[1]._id;
           done();
         });
       });
 
       it('should add a ticket to user set', function(done){
-        ticket.manageSets([userID], function(){
-          client.smembers(userID, function(err, res){
+        ticket.manageSets([user1, user2], function(){
+          client.smembers(user1, function(err, res){
             res.length.should.equal(1);
-            done();
+            client.smembers(user2, function(err, res){
+              res.length.should.equal(1);
+              done();
+            });
           });
         });
       });
 
       it('should remove a ticket from a user set', function(done){
-        ticket.manageSets([], function(){
-          client.smembers(userID, function(err, res){
+        ticket.manageSets([user1], function(){
+          client.smembers(user2, function(err, res){
             res.length.should.equal(0);
-            done();
+            client.smembers(user1, function(err, res){
+              res.length.should.equal(1);
+              done();
+            });
           });
         });
       });
@@ -276,6 +284,45 @@ describe('ticket', function(){
         should.not.exist(models[0]._id);
         should.exist(models[0].id);
       });
+    });
+
+    /* getMyTickets
+     * Should return an array of tickets assigned to
+     * a given user */
+    describe('getMyTickets', function(){
+
+      before(function(done){
+        var data = {assigned_to: [fixtures.users[0]._id, fixtures.users[1]._id]};
+        var i = 0, count = 0;
+        _.each(fixtures.tickets, function(ticket){
+          ticket.update(data, function(err, ticket){
+            count++;
+            if(count == fixtures.tickets.length){
+              runCallback();
+            }
+          });
+          i++;
+        });
+
+        function runCallback(){
+          done();
+        }
+      });
+
+      it('should return open tickets assigned to user', function(done){
+        Ticket.getMyTickets(fixtures.users[0]._id, 'open', 1, function(err, models){
+          models.length.should.equal(2);
+          done();
+        });
+      });
+
+      it('should return closed tickets assigned to user', function(done){
+        Ticket.getMyTickets(fixtures.users[0]._id, 'closed', 1, function(err, models){
+          models.length.should.equal(2);
+          done();
+        });
+      });
+
     });
 
 
