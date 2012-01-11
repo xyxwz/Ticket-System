@@ -103,9 +103,16 @@ Ticket.methods.removeTicket = function(callback) {
 *
 * Returns an Array ready to be sent to the client. */
 Ticket.statics.getAll = function(status, page, callback) {
-  this
-  .find({'status': status})
-  .asc('opened_at')
+  var query = this.find({'status': status});
+
+  if(status === 'open') {
+    query.asc('opened_at')
+  }
+  else {
+    query.desc('closed_at')
+  }
+
+  query
   .populate('user')
   .skip((page - 1) * 10)
   .limit(10)

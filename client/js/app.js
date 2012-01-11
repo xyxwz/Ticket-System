@@ -70,11 +70,15 @@ define([
       },
     };
 
-    /* Override the closedTicket collection's comparator to
-     * sort by closed_at date instead of opened_at
+    /* Override the closedTicket collection's comparator
+     *
+     * MongoDB id's are 12-byte values with the first 4 bytes
+     * being a UNIX style timestamp. If we turn the hex into a
+     * integer and negate it we can reverse the sort order.
      */
     ticketer.collections.closedTickets.comparator = function(collection) {
-      return collection.get("closed_at");
+      var id = collection.get("id");
+      return -parseInt(id.substring(0,8), 16);
     };
 
     /* Reset collections with bootstrapped data.

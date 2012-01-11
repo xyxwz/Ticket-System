@@ -55,9 +55,9 @@ describe('tickets', function(){
       res.body.should.be.an.instanceof(Array);
     });
 
-    it('should contain 1 ticket object', function(){
+    it('should contain 2 ticket object', function(){
       var tickets = res.body;
-      tickets.length.should.equal(1);
+      tickets.length.should.equal(2);
       should.exist(tickets[0].id);
       should.not.exist(tickets[0].user.access_token);
     });

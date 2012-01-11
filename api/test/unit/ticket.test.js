@@ -32,7 +32,7 @@ describe('ticket', function(){
   /* Validations */
   describe('validations', function(){
 
-    describe('required fields', function(){  
+    describe('required fields', function(){
       var ticket = new Ticket();
 
       it("should enforce required fields", function(done){
@@ -83,10 +83,11 @@ describe('ticket', function(){
     /* Update */
     /* Should test the update method follows the correct rules */
     describe('update', function(){
-      var testObject = {};
+      var testObject = {}, origTitle;
 
       before(function(done){
         var data = {};
+        origTitle = fixtures.tickets[0].title
         data.title = "title UPDATED";
         data.description = "description UPDATED";
         data.status = "closed";
@@ -98,6 +99,13 @@ describe('ticket', function(){
           done();
         });
       });
+
+      after(function(done){
+        fixtures.tickets[0].update({title: origTitle}, function(err, model){
+          if(err) return done(err);
+          done();
+        });
+      })
 
       it('should update required fields', function(){
         testObject.title.should.equal("title UPDATED");
@@ -132,16 +140,25 @@ describe('ticket', function(){
 
       // Run removeTicket and return result
       before(function(done){
-        fixtures.tickets[0].removeTicket(function(err, status){
+        // Insert a Test Ticket and destory it
+        var ticket = new Ticket({
+          title: "destroy example",
+          description: "a ticket to use for static methods",
+          user: fixtures.users[0]._id
+        });
+        ticket.save(function(err, model){
           if(err) return done(err);
-          result = status;
-          done();
+          model.removeTicket(function(err, status){
+            if(err) return done(err);
+            result = status;
+            done();
+          });
         });
       });
 
       it('should destroy a ticket', function(done){
-        Ticket.find().run(function(err, tickets){
-          tickets.length.should.equal(0);
+        Ticket.findOne({title: "destroy example"}).run(function(err, ticket){
+          should.not.exist(ticket);
           done();
         });
       });
@@ -159,24 +176,13 @@ describe('ticket', function(){
    * ------------------------------- */
   describe('static methods', function(){
 
-    // Insert a Test Ticket
-    before(function(done){
-      var ticket = new Ticket({
-        title: "static example",
-        description: "a ticket to use for static methods",
-        user: fixtures.users[0]._id
-      });
-      ticket.save(function(err, model){
-        if(err) return done(err);
-        fixtures.tickets.push(model);
-        done();
-      });
-    });
+    /* --------------------
+     * GetAll
+     * -------------------- */
 
-
-    /* getAll */
+    /* Get All Open Tickets */
     /* Should return an array of tickets */
-    describe('getAll', function(){
+    describe('getAll Open', function(){
       var models;
 
       // Run get all and assign to users
@@ -190,7 +196,42 @@ describe('ticket', function(){
 
       it('should return an array', function(){
         models.should.be.an.instanceof(Array);
-        models.length.should.equal(1);
+        models.length.should.equal(2);
+      });
+
+      it('should sort by created_at', function(){
+        models[0].title.should.equal('test ticket 2');
+        models[1].title.should.equal('test ticket 4');
+      });
+
+      it('should run toClient() on ticket instances', function(){
+        should.not.exist(models[0]._id);
+        should.exist(models[0].id);
+      });
+    });
+
+    /* Get All Closed Tickets */
+    /* Should return an array of tickets */
+    describe('getAll Closed', function(){
+      var models;
+
+      // Run get all and assign to users
+      before(function(done){
+        Ticket.getAll('closed', 1, function(err, results){
+          if(err) return done(err);
+          models = results;
+          done();
+        });
+      });
+
+      it('should return an array', function(){
+        models.should.be.an.instanceof(Array);
+        models.length.should.equal(2);
+      });
+
+      it('should sort by closed_at', function(){
+        models[0].title.should.equal('test ticket 1');
+        models[1].title.should.equal('test ticket 3');
       });
 
       it('should run toClient() on ticket instances', function(){
@@ -207,7 +248,7 @@ describe('ticket', function(){
 
       // Run getSingle and assign result to user
       before(function(done){
-        Ticket.getSingle(fixtures.tickets[1]._id, function(err, model){
+        Ticket.getSingle(fixtures.tickets[3]._id, function(err, model){
           if(err) return done(err);
           ticket = model;
           done();
@@ -215,7 +256,7 @@ describe('ticket', function(){
       });
 
       it('should return a ticket object', function(){
-        ticket.title.should.equal('static example');
+        ticket.title.should.equal('test ticket 4');
         should.not.exist(ticket.user._id);
         should.not.exist(ticket.user.access_token);
         should.exist(ticket.user.id);

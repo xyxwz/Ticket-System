@@ -61,10 +61,12 @@ function seedDatabase(cb){
   addUser(function(err, user){
     if(err) return cb(err);
     fixtures.users.push(user);
-    addTicket(user, function(err, ticket){
+    addTickets(user, function(err, tickets){
       if(err) return cb(err);
-      fixtures.tickets.push(ticket);
-      addComment(ticket, user, function(err, comment){
+      _.each(tickets, function(ticket){
+        fixtures.tickets.push(ticket);
+      });
+      addComment(tickets[0], user, function(err, comment){
         if(err) return cb(err);
         fixtures.comments.push(comment);
         cb(null);
@@ -88,11 +90,51 @@ function addUser(cb){
 }
 
 // Add Ticket
-function addTicket(user, cb){
+function addTickets(user, cb){
+  var i = 1, array = [];
+  while(i <= 4) {
+    if(i % 2 == 0) {
+      addOpenTicket(user, i, function(err, model) {
+        array.push(model);
+        if (array.length == 4) {
+          cb(null, array);
+        }
+      });
+    }
+    else {
+      addClosedTicket(user, i, function(err, model) {
+        array.push(model);
+        if (array.length == 4) {
+          cb(null, array);
+        }
+      });
+    }
+    i++;
+  }
+}
+
+// Add Open Ticket
+function addOpenTicket(user, i, cb){
   var ticket = new Ticket({
-    title: "test ticket",
+    title: "test ticket " + i,
     description: "a ticket to use with test",
-    user: user._id
+    user: user._id,
+    status: 'open'
+  });
+  ticket.save(function(err, model){
+    if(err) return cb(err);
+    cb(null, model);
+  });
+}
+
+// Add Closed Ticket
+function addClosedTicket(user, i, cb){
+  var ticket = new Ticket({
+    title: "test ticket " + i,
+    description: "a ticket to use with test",
+    user: user._id,
+    status: 'closed',
+    closed_at: Date.now()
   });
   ticket.save(function(err, model){
     if(err) return cb(err);
