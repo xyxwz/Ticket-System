@@ -1,7 +1,7 @@
 /* Ticket collection - used to represent a collection of
  * tickets */
 
-define(['underscore', 'backbone', 'models/ticket'], function(_, Backbone, Ticket) {
+define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket) {
   var Tickets = Backbone.Collection.extend({
 
     model: Ticket,
