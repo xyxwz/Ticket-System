@@ -1,7 +1,7 @@
 /* Ticket model - used to represent a single ticket object.
  *  - comments child, tickets have multiple comments */
 
-define(['underscore', 'backbone', 'collections/comments'], function(_, Backbone, Comments) {
+define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone, Comments) {
   var Ticket = Backbone.Model.extend({
     
     defaults: {

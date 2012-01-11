@@ -1,7 +1,7 @@
 /* Comment collection - used to represent a collection
  * of comments on a single ticket model */
 
-define(['underscore', 'backbone', 'models/comment'], function(_, Backbone, Comment) {
+define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comment) {
   var Comments = Backbone.Collection.extend({
 
     model: Comment,
