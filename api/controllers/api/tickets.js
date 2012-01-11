@@ -18,6 +18,21 @@ module.exports = function(app) {
     });
   });
 
+  /* User's Ticket Index
+  *  GET /api/tickets/mine
+  *
+  *  returns a list of all the user's tickets in the database
+  *  marked as :status and :page. Uses the Mongoose Populate method
+  *  to fill in information for the ticket user. */
+  app.get('/api/tickets/mine', function(req, res) {
+    var status = req.query.status ? req.query.status : 'open';
+    var page = req.query.page ? req.query.page : 1;
+    Ticket.getMyTickets(req.user.id, status, page, function(err, tickets){
+      if(err) return res.json({error: 'Error getting tickets'}, 400);
+      res.json(tickets);
+    });
+  });
+
 
   /* Create a new ticket
   *  POST /api/tickets

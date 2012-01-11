@@ -191,11 +191,19 @@ Ticket.statics.getMyTickets = function(user, status, page, callback) {
   var self = this;
 
   client.smembers(user, function(err, res){
-    self
-    .find({'status': status})
+    var query = self
     .where('_id')
     .in(res)
-    .asc('opened_at')
+    .where('status', status);
+
+    if(status === 'open') {
+      query.asc('opened_at')
+    }
+    else {
+      query.desc('closed_at')
+    }
+
+    query
     .populate('user')
     .skip((page - 1) * 10)
     .limit(10)
