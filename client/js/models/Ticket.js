@@ -83,7 +83,12 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         return user === id;
       });
       this.set({assigned_to: _.uniq(newArray)}, {silet: true});
-      this.trigger('unassignedUser', this)
+      this.trigger('unassignedUser', this);
+
+      if(id === ticketer.currentUser.id) {
+        this.trigger("unassignedMe", this);
+      }
+
       this.save(null, { error: callback });
     },
 

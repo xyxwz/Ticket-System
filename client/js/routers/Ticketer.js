@@ -6,13 +6,15 @@ define([
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView',
   'views/tickets/TicketFormView',
+  'views/tickets/MyTicketListView'
 ],
 function(
   Backbone,
   AppView,
   TicketListView,
   TicketDetailsView,
-  TicketFormView
+  TicketFormView,
+  MyTicketListView
 ) {
 
   var Ticketer = Backbone.Router.extend({
@@ -23,6 +25,7 @@ function(
       "tickets/open?*params": "openTickets",
       "tickets/closed": "closedTickets",
       "tickets/closed?*params": "closedTickets",
+      "tickets/mine": "myTickets",
       "tickets/new": "createTicket",
       "tickets/:id": "details",
     },
@@ -58,6 +61,16 @@ function(
       this.appView.showView(View, {
         triggers: ['timeline'],
       });
+    },
+
+    myTickets: function() {
+      var Header = ticketer.views.headers.main,
+          collection = ticketer.collections.openTickets,
+          View = new MyTicketListView({ collection: collection });
+
+      // Transitions
+      this.appView.showHeader(Header, 'myTickets');
+      this.appView.showView(View);
     },
 
     details: function(id) {

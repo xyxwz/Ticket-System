@@ -67,7 +67,7 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
     },
 
     toggleMyTickets: function() {
-      // TODO
+      ticketer.routers.ticketer.navigate("tickets/mine", true);
     },
 
     toggleOpen: function() {

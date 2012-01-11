@@ -21,7 +21,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       this.page = this.options.page ? this.options.page : 1;
 
       $(this.el).attr('data-page', this.page);
-      $(this.el).attr('id', 'id_'+ this.model.get('id'));
+      $(this.el).attr('id', 'id_'+ this.model.id);
 
       /* Keep track of who is assigned to this ticket.
        * Because the id's are stored as an array when the 'change'
