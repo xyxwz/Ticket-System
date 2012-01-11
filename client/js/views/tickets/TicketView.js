@@ -35,7 +35,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       this.bindTo(this.model.comments, 'remove', this.updateCommentCount);
       this.bindTo(this.model.comments, 'reset', this.updateCommentCount);
       this.bindTo(this.model, 'change', this.updateTicket);
-      this.bindTo(this.model, 'addedUser', this.addAssignee);
+      this.bindTo(this.model, 'assignedUser', this.addAssignee);
     },
 
     render: function() {

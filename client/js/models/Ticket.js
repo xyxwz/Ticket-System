@@ -68,7 +68,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       var array = _.clone(this.get('assigned_to'));
       array.push(id);
       this.set({assigned_to: _.uniq(array)}, {silent: true});
-      this.trigger('addedUser', this);
+      this.trigger('assignedUser', this);
       this.save(null, { error: callback });
     },
 
@@ -82,7 +82,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         return user === id;
       });
       this.set({assigned_to: _.uniq(newArray)}, {silet: true});
-      this.trigger('removedUser', this)
+      this.trigger('unassignedUser', this)
       this.save(null, { error: callback });
     },
 
