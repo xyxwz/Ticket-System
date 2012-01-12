@@ -8,6 +8,8 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       'status'  : 'Open',
     },
 
+    urlRoot: '/api/tickets',
+
     initialize: function() {
       var self = this;
 
@@ -18,8 +20,10 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         self.comments.url = '/api/tickets/' + this.id + '/comments';
       });
 
-      this.bind("assignedUser", this.collection.assignMe);
-      this.bind("unassignedUser", this.collection.unassignMe);
+      if (!typeof(this.collection) === 'undefined') {
+        this.bind("assignedUser", this.collection.assignMe);
+        this.bind("unassignedUser", this.collection.unassignMe);
+      }
 
     },
     

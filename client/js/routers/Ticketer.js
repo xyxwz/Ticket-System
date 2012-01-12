@@ -3,6 +3,7 @@
 define([
   'backbone',
   'AppView',
+  'models/Ticket',
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView',
   'views/tickets/TicketFormView',
@@ -11,6 +12,7 @@ define([
 function(
   Backbone,
   AppView,
+  Ticket,
   TicketListView,
   TicketDetailsView,
   TicketFormView,
@@ -66,7 +68,7 @@ function(
     myTickets: function() {
       var Header = ticketer.views.headers.main,
           collection = ticketer.collections.openTickets,
-          View = new MyTicketListView({ collection: collection });
+          View = new MyTicketListView({ collection: collection.getMyTickets() });
 
       // Transitions
       this.appView.showHeader(Header, 'myTickets');
@@ -75,17 +77,35 @@ function(
 
     details: function(id) {
       var Header = ticketer.views.headers.back,
-          ticket = ticketer.collections.openTickets.get(id);
+          self = this;
+      var ticket = ticketer.collections.openTickets.get(id) || 
+                      ticketer.collections.closedTickets.get(id);
 
       if(typeof(ticket) === 'undefined') {
-        ticket = ticketer.collections.closedTickets.get(id);
+        ticket = new Ticket({id: id});
+        ticket.fetch({ success: function()
+        {
+          if (ticket.get('status') === 'open') {
+            ticketer.collections.openTickets.add(ticket);
+          }
+          else {
+            ticketer.collections.closedTickets.add(ticket);
+          }
+
+          var View = new TicketDetailsView({ model: ticket });
+          // Transitions
+          self.appView.showHeader(Header);
+          self.appView.showView(View);
+        },
+        });
+      }
+      else {
+        var View = new TicketDetailsView({ model: ticket });
+        // Transitions
+        this.appView.showHeader(Header);
+        this.appView.showView(View);
       }
 
-      var View = new TicketDetailsView({ model: ticket });
-
-      // Transitions
-      this.appView.showHeader(Header);
-      this.appView.showView(View);
     },
 
     createTicket: function() {
