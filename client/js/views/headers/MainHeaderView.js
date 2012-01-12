@@ -42,9 +42,9 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
 
     renderAssignees: function() {
       var self = this,
-          admins = ticketer.collections.users.admins();
+          admins = ticketer.collections.admins;
 
-      _.each(admins, function(admin) {
+      _.each(admins.models, function(admin) {
         $('ul#assignees', self.el).append(Mustache.to_html(PullTabTmpl, admin.toJSON()));
       });
 

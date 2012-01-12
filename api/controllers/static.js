@@ -23,7 +23,8 @@ module.exports = function(app) {
           token: req.session.passport.user.token,
           openTickets: JSON.stringify(data.openTickets),
           closedTickets: JSON.stringify(data.closedTickets),
-          users: JSON.stringify(data.users),
+          myTickets: JSON.stringify(data.myTickets),
+          admins: JSON.stringify(data.admins),
           currentUser: JSON.stringify(data.currentUser),
         });
       });
@@ -42,30 +43,55 @@ module.exports = function(app) {
 
   function bootstrapModels(req, cb) {
     var data = {};
-    // Get Open Tickets
-    Ticket.getAll('open', 1, function(err, models) {
-      if(err || !models) return cb('error getting open tickets');
-      data.openTickets = models;
 
-      // Get Closed Tickets
-      Ticket.getAll('closed', 1, function(err, models) {
-        if(err || !models) return cb('error getting closed tickets');
-        data.closedTickets = models;
+    bootstrapTickets({status: 'open'}, function(err, tickets) {
+      if(err) return cb('error getting open tickets');
+      data.openTickets = tickets;
 
-        // Get Users
-        User.getAll(function(err, models) {
-          if(err || !models) return cb('error getting users');
-          data.users = models;
+      bootstrapTickets({status: 'closed'}, function(err, tickets) {
+        if(err) return cb('error getting closed tickets');
+        data.closedTickets = tickets;
 
-          // Find Current User in Users Array
-          _.find(data.users, function(user) {
-            if(user.id == req.session.passport.user.id)
-              data.currentUser = user;
+        bootstrapAdmins(function(err, admins) {
+          if(err) return cb('error getting admin users');
+          data.admins = admins;
+          data.currentUser = req.session.passport.user;
+
+          bootstrapTickets({status: 'open', user: data.currentUser.id},
+          function(err, tickets) {
+            if(err) return cb('error getting users tickets');
+            data.myTickets = tickets;
+            return cb(null, data);
           });
-
-          return cb(null, data);
         });
       });
+    });
+  };
+
+  function bootstrapTickets(args, cb) {
+    if (args.user) {
+      Ticket.getMyTickets(args.user, args.status, 1, function(err, models) {
+        if(err || !models) return cb('error getting users tickets');
+        return cb(null, models);
+      });
+    }
+    else {
+      Ticket.getAll(args.status, 1, function(err, models) {
+        if(err || !models) return cb('error getting open tickets');
+        return cb(null, models);
+      });
+    }
+  };
+
+  function bootstrapAdmins(cb) {
+    User
+    .where('role', 'admin')
+    .run(function(err, models) {
+      if(err) return cb('error getting admins');
+      var admins = models.map(function(user) {
+        return user.toClient();
+      });
+      return cb(null, admins);
     });
   };
 

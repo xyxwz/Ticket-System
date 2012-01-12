@@ -60,7 +60,7 @@ define([
       collections: {
         openTickets: new Tickets(),
         closedTickets: new Tickets(),
-        users: new Users(),
+        admins: new Users(),
       },
       views: {
         headers: {
@@ -87,7 +87,7 @@ define([
      * available immediately to views. */
     ticketer.collections.openTickets.reset(openTickets);
     ticketer.collections.closedTickets.reset(closedTickets);
-    ticketer.collections.users.reset(users);
+    ticketer.collections.admins.reset(admins);
 
     // Start Backbone History
     Backbone.history.start();

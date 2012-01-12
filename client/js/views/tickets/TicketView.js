@@ -45,7 +45,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
       data.comments = this.model.comments.length;
       data.showAdmin = this.renderAdminOptions(); // True or False
-      data.user = ticketer.collections.users.get(this.model.get('user').id).toJSON();
+      data.user = this.model.user;
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
       this.setTimestamp();
@@ -131,7 +131,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       var self = this;
 
       _.each(this.model.get('assigned_to'), function(id) {
-        var user = ticketer.collections.users.get(id),
+        var user = ticketer.collections.admins.get(id),
             html = Mustache.to_html(AssignedUserTmpl, user);
 
         $('.ticketHeader ul', self.el).prepend(html);
@@ -176,7 +176,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       _.each(newAssignees, function(user) {
         self.assigned_to.push(user);
 
-        var userObj = ticketer.collections.users.get(user),
+        var userObj = ticketer.collections.admins.get(user),
             html = Mustache.to_html(AssignedUserTmpl, userObj);
 
         $('.ticketHeader ul', self.el).prepend(html);

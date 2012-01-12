@@ -13,13 +13,6 @@ define(['underscore', 'backbone', 'models/User'], function(_, Backbone, User) {
 
     },
 
-    admins: function() {
-      var admins = this.filter(function(model) {
-        return model.get('role') === 'admin';
-      });
-      return admins;
-    },
-
   });
 
   return Users;
