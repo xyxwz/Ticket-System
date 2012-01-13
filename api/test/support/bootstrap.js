@@ -24,6 +24,7 @@ function createServer(){
   app.use(app.router);
 
   app.controllers = require('../../controllers')(app);
+  app.models = require('../../models')(app);
 
   return app.listen(3000);
 }

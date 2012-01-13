@@ -1,10 +1,10 @@
 var should = require("should"),
     helper = require('../support/helper'),
     app = require('../support/bootstrap').app,
-    mongoose = require("mongoose"),
-    User = require('../../models/user').User;
+    mongoose = require("mongoose");
 
-var server = app();
+var server = app(),
+    User = require('../../models/User')(server);
 
 /* User Model Unit Tests */
 
@@ -33,10 +33,9 @@ describe('user', function(){
   describe('validations', function(){
 
     describe('required fields', function(){  
-      var user = new User();
 
       it("should enforce required fields", function(done){
-        user.save(function(err){
+        User.create({}, function(err){
           // Email
           should.exist(err.errors.email);
           err.errors.email.type.should.equal("required");
@@ -79,15 +78,19 @@ describe('user', function(){
     /* Update */
     /* Should test the update method follows the correct rules */
     describe('update', function(){
-      var testObject = {};
-      var data = {};
-      data.email = "updated@test.com";
-      data.name = "John Doe UPDATED";
-      data.role = "member";
-      data.access_token = null;
+      var klass, testObject, data;
 
       before(function(done){
-        fixtures.users[0].update(data, function(err, model){
+        data = {
+          email: "updated@test.com",
+          name: "John Doe UPDATED",
+          role: "member",
+          access_token: null,
+        }
+
+        klass = new User(fixtures.users[0]);
+
+        klass.update(data, function(err, model){
           if(err) return done(err);
           testObject = model;
           done();
@@ -105,14 +108,16 @@ describe('user', function(){
     });
 
 
-    /* Remove User */
+    /* Remove */
     /* Should test a user can be successfully removed */
-    describe('removeUser', function(){
-      var result;
+    describe('remove', function(){
+      var klass, result;
 
       // Run removeUser and return result
       before(function(done){
-        fixtures.users[0].removeUser(function(err, status){
+        klass = new User(fixtures.users[0]);
+
+        klass.remove(function(err, status){
           if(err) return done(err);
           result = status;
           done();
@@ -120,7 +125,7 @@ describe('user', function(){
       });
 
       it('should destroy a user account', function(done){
-        User.find().run(function(err, users){
+        User.all(function(err, users) {
           users.length.should.equal(1);
           done();
         });
@@ -138,16 +143,18 @@ describe('user', function(){
    * Static Methods
    * ------------------------------- */
    describe('static methods', function(){
+    var data;
 
      // Insert a Test User
     before(function(done){
-      var user = new User({
+      data = {
         email: "static.example@example.com",
         name: "John Doe",
         role: "admin",
         access_token: "abc"
-      });
-      user.save(function(err, model){
+      }
+
+      User.create(data, function(err, model) {
         if(err) return done(err);
         fixtures.users.push(model);
         done();
@@ -155,14 +162,14 @@ describe('user', function(){
     });
 
 
-    /* getAll */
+    /* all */
     /* Should return an array of users */
-    describe('getAll', function(){
+    describe('all', function(){
       var users;
 
-      // Run get all and assign to users
+      // Run all and assign to users
       before(function(done){
-        User.getAll(function(err, results){
+        User.all(function(err, results) {
           if(err) return done(err);
           users = results;
           done();
@@ -181,14 +188,14 @@ describe('user', function(){
     });
 
 
-    /* getSingle */
+    /* find */
     /* Should test a single user is returned */
-    describe('getSingle', function(){
+    describe('find', function(){
       var user;
 
-      // Run getSingle and assign result to user
+      // Run find and assign result to user
       before(function(done){
-        User.getSingle(fixtures.users[1]._id, function(err, model){
+        User.find(fixtures.users[1].id, function(err, model){
           if(err) return done(err);
           user = model;
           done();
@@ -216,8 +223,7 @@ describe('user', function(){
       it('should successfully create a user', function(done){
         User.create(data, function(err, user){
           // Perform a query to ensure user is inserted
-          User.findOne({"email":"create.example@example.com"})
-          .run(function(err, model){
+          User.find(user.id, function(err, model){
             model.name.should.equal(user.name);
             done();
           });
@@ -226,7 +232,7 @@ describe('user', function(){
 
       it('should err if validations fail', function(done){
         User.create(data, function(err, user){
-          err.should.equal('Error saving user');
+          should.exist(err);
           done();
         });
       });
@@ -241,11 +247,9 @@ describe('user', function(){
         User.setAccessToken(
         'create.example@example.com', '123', 
         function(err, user){
-          User.findOne({'access_token':user.access_token}).run(function(err, user){
-            should.exist(user.access_token);
-            user.access_token.should.equal('123');
-            done();
-          });
+          should.exist(user.access_token);
+          user.access_token.should.equal('123');
+          done();
         });
       });
 

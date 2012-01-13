@@ -1,9 +1,7 @@
 var mongoose = require("mongoose"),
     should = require("should"),
     _ = require('underscore'),
-    User = require('../../models/user').User,
-    Comment = require('../../models/comment').Comment,
-    Ticket = require('../../models/ticket').Ticket;
+    schemas = require('../../models/schemas');
 
 // Hold values used in async functions
 var fixtures = {
@@ -14,17 +12,17 @@ var fixtures = {
 
 // Setup and Seed Database
 function setup(callback){
+  var collections, coll, collCount, _i, _len;
 
   // Clean Database
-  var models = [User, Ticket];
+  collections = [schemas.User];
 
-  var model, modelCount, _i, _len;
-  modelCount = models.length;
-  for (_i = 0, _len = models.length; _i < _len; _i++) {
-    model = models[_i];
-    modelCount--;
-    model.collection.drop(function(err) {});
-    if (modelCount === 0) {
+  collCount = collections.length;
+  for (_i = 0, _len = collections.length; _i < _len; _i++) {
+    coll = collections[_i];
+    collCount--;
+    coll.collection.drop(function(err) {});
+    if (collCount === 0) {
       seedDatabase(function(err){
         if(err) return callback(err);
         callback(null, fixtures); 
@@ -35,17 +33,17 @@ function setup(callback){
 
 // Teardown Database
 function teardown(callback){
+  var collections, coll, collCount, _i, _len;
 
   // Clean Database
-  var models = [User, Ticket, Comment];
+  collections = [schemas.User];
 
-  var model, modelCount, _i, _len;
-  modelCount = models.length;
-  for (_i = 0, _len = models.length; _i < _len; _i++) {
-    model = models[_i];
-    modelCount--;
-    model.collection.drop(function(err) {});
-    if (modelCount === 0) {
+  collCount = collections.length;
+  for (_i = 0, _len = collections.length; _i < _len; _i++) {
+    coll = collections[_i];
+    collCount--;
+    coll.collection.drop(function(err) {});
+    if (collCount === 0) {
       fixtures = {
         users: [],
         tickets: [],
@@ -87,7 +85,7 @@ function addUsers(cb) {
 
 // Add User
 function addUser(i, cb){
-  var user = new User({
+  var user = new schemas.User({
     email: "example_"+i+"@example.com",
     name: "John Doe",
     role: "member",
