@@ -28,6 +28,7 @@ function(
       "tickets/closed": "closedTickets",
       "tickets/closed?*params": "closedTickets",
       "tickets/mine": "myTickets",
+      "tickets/mine?*params": "myTickets",
       "tickets/new": "createTicket",
       "tickets/:id": "details",
     },
@@ -41,7 +42,7 @@ function(
       this.navigate("tickets/open", true);
     },
 
-    openTickets: function() {
+    openTickets: function(id) {
       var Header = ticketer.views.headers.main,
           collection = ticketer.collections.openTickets,
           View = new TicketListView({ collection: collection, status: 'open' });
@@ -67,8 +68,8 @@ function(
 
     myTickets: function() {
       var Header = ticketer.views.headers.main,
-          collection = ticketer.collections.openTickets,
-          View = new MyTicketListView({ collection: collection.getMyTickets() });
+          collection = ticketer.collections.myTickets,
+          View = new MyTicketListView({ collection: collection });
 
       // Transitions
       this.appView.showHeader(Header, 'myTickets');

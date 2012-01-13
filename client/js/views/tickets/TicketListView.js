@@ -13,6 +13,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
 
     initialize: function() {
       _.bindAll(this);
+      this.models = this.collection.models;
       this.page = 1;
       this.status = this.options.status ? this.options.status : 'open';
       this.bindTo(this, 'timeline', this.initTimeline);
@@ -22,7 +23,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       var self = this,
           i = 0;
 
-      _.each(this.collection.models, function(ticket) {
+      _.each(this.models, function(ticket) {
         if (i < 10) { i++; }
         else {
           self.page++;
@@ -45,7 +46,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
     renderTicket: function(model, page) {
       var view = this.createView(
         TicketView,
-        {model: model, page: page}
+        {model: model, page: page, collection: this.collection}
       );
 
       this.page = page;

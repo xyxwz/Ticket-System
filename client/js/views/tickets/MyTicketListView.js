@@ -13,13 +13,12 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
 
     initialize: function() {
       _.bindAll(this);
-      this.getMyTickets();
     },
 
     render: function() {
       var self = this;
 
-      _.each(this.tickets, function(ticket) {
+      _.each(this.collection.models, function(ticket) {
         var view = self.renderTicket(ticket);
         $(self.el).append(view);
       });
@@ -27,23 +26,14 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       return this;
     },
 
-    getMyTickets: function() {
-      var self = this;
-      this.tickets = [];
-      _.each(this.collection.assignedToMe, function(id) {
-        var ticket = self.collection.get(id);
-        self.tickets.push(ticket);
-        self.bindTo(ticket, 'unassignedMe', self.removeTicket);
-      });
-    },
-
     renderTicket: function(model, page) {
       var view = this.createView(
         TicketView,
-        {model: model, page: page}
+        {model: model, page: page, collection: this.collection}
       );
 
       this.page = page;
+      this.collection.bind('remove', this.removeTicket);
 
       return view.render().el;
     },

@@ -11,22 +11,11 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       _.bindAll(this);
       var self = this;
 
-      this.currentUser = currentUser.id;
-      this.assignedToMe = [];
-
       this.comparator = function(model) {
         return model.get("opened_at");
       };
 
-      this.bind("reset", function() {
-        _.each(self.models, function(model){
-          self.trigger("add", model);
-        });
-      });
-
-      this.bind("add", this.assignMe);
-      this.bind("remove", this.unassignMe);
-
+      this.bind("add", this.syncMyTickets);
       this.bind('reset', this.loadComments);
     },
 
@@ -36,30 +25,25 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       });
     },
 
-    assignMe: function(model) {
-      var self = this,
-          id = model.id;
-
-      _.each(model.get('assigned_to'), function(user) {
-        if(user === self.currentUser) {
-          if(!_.include(self.assignedToMe, id)) {
-            self.assignedToMe.push(id);
-          }
-        }
-      });
-    },
-
-    unassignMe: function(model) {
-      var self = this,
-          id = model.id;
-
-      if(_.include(self.assignedToMe, id)) {
-        idx = _.indexOf(this.assignedToMe, id);
-        this.assignedToMe.splice(idx, 1);
-      }
+    syncMyTickets: function(model) {
+      ticketer.collections.myTickets.checkAssigned(model);
+      model.bind('assignedUser', ticketer.collections.myTickets.checkAssigned);
+      model.bind('unassignedUser', ticketer.collections.myTickets.checkAssigned);
     },
 
   });
+
+  Tickets.prototype.add = function(ticket) {
+    var isDupe = this.any(function(_ticket) {
+      return _ticket.id === ticket.id;
+    });
+
+    if (isDupe) {
+      return;
+    }
+
+    Backbone.Collection.prototype.add.call(this, ticket);
+  };
 
   return Tickets;
 });

@@ -27,14 +27,11 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       this.comments.url = '/api/tickets/' + this.id + '/comments';
 
       this.bind("change", function() {
-        self.comments.url = '/api/tickets/' + this.id + '/comments';
+        self.comments.url = '/api/tickets/' + self.id + '/comments';
       });
 
-      if (!typeof(this.collection) === 'undefined') {
-        this.bind("assignedUser", this.collection.assignMe);
-        this.bind("unassignedUser", this.collection.unassignMe);
-      }
-
+      this.bind('assignedUser', ticketer.collections.myTickets.checkAssigned);
+      this.bind('unassignedUser', ticketer.collections.myTickets.checkAssigned);
     },
     
     /* Updates the Ticket with the matching attributes
@@ -98,14 +95,8 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       });
       this.set({assigned_to: _.uniq(newArray)}, {silet: true});
       this.trigger('unassignedUser', this);
-
-      if(id === ticketer.currentUser.id) {
-        this.trigger("unassignedMe", this);
-      }
-
       this.save(null, { error: callback });
     },
-
 
   });
   
