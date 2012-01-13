@@ -11,7 +11,17 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     urlRoot: '/api/tickets',
 
     initialize: function() {
-      var self = this;
+      var self = this, _new;
+
+      _new = _.any(ticketer.models, function(model){
+        return model.id === self.id;
+      });
+
+      if(!_new) {
+        ticketer.models.push(this);
+      }
+
+      _.bindAll(this);
 
       this.comments = new Comments();
       this.comments.url = '/api/tickets/' + this.id + '/comments';
