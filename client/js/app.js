@@ -6,6 +6,7 @@ define([
   'underscore',
   'backbone',
   'collections/Tickets',
+  'collections/MyTickets',
   'collections/Comments',
   'collections/Users',
   'routers/Ticketer',
@@ -15,6 +16,7 @@ define([
   _,
   Backbone,
   Tickets,
+  MyTickets,
   Comments,
   Users,
   Ticketer,
@@ -33,7 +35,6 @@ define([
       var new_options = _.extend({
 
         beforeSend: function(xhr) {
-
           // Get the authentication token from the page
           var auth_token = $('meta[name="X-Auth-Token"]').attr('content');
           if (auth_token) {
@@ -47,7 +48,6 @@ define([
       Backbone.sync_model(method, model, new_options);
     };
 
-
     /*
      * ticketer - our namespace object, create
      * the object and attach functions and models to it
@@ -60,6 +60,7 @@ define([
       collections: {
         openTickets: new Tickets(),
         closedTickets: new Tickets(),
+        myTickets: new MyTickets(),
         admins: new Users(),
       },
       views: {
@@ -68,6 +69,7 @@ define([
           back: BackHeaderView,
         }
       },
+      models: [],
     };
 
     /* Override the closedTicket collection's comparator
@@ -86,6 +88,7 @@ define([
      * side code to prevent fetch at boot and make collections
      * available immediately to views. */
     ticketer.collections.openTickets.reset(openTickets);
+    ticketer.collections.myTickets.reset(myTickets);
     ticketer.collections.closedTickets.reset(closedTickets);
     ticketer.collections.admins.reset(admins);
 
