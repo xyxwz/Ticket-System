@@ -45,7 +45,8 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
       data.comments = this.model.comments.length;
       data.showAdmin = this.renderAdminOptions(); // True or False
-      data.user = this.model.user;
+      data.user = this.model.get('user');
+      data.user.shortname = data.user.name.split(' ')[0];
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
       this.setTimestamp();

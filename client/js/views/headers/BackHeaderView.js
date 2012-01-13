@@ -47,7 +47,9 @@ function($, _, Backbone, BaseView, HeaderTmpl, PullTabTmpl) {
           admins = ticketer.collections.admins;
 
       _.each(admins.models, function(admin) {
-        $('ul#assignees', self.el).append(Mustache.to_html(PullTabTmpl, admin.toJSON()));
+        var data = admin.toJSON();
+        data.shortname = data.name.split(' ')[0];
+        $('ul#assignees', self.el).append(Mustache.to_html(PullTabTmpl, data));
       });
 
       $('ul#assignees li', this.el).draggable({
