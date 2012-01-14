@@ -15,7 +15,7 @@ function setup(callback){
   var collections, coll, collCount, _i, _len;
 
   // Clean Database
-  collections = [schemas.User];
+  collections = [schemas.User, schemas.Ticket];
 
   collCount = collections.length;
   for (_i = 0, _len = collections.length; _i < _len; _i++) {
@@ -36,7 +36,7 @@ function teardown(callback){
   var collections, coll, collCount, _i, _len;
 
   // Clean Database
-  collections = [schemas.User];
+  collections = [schemas.User, schemas.Ticket];
 
   collCount = collections.length;
   for (_i = 0, _len = collections.length; _i < _len; _i++) {
@@ -100,7 +100,7 @@ function addUser(i, cb){
 // Add Ticket
 function addTickets(user, cb){
   var i = 1;
-  while(i <= 4) {
+  while(i <= 5) {
     if(i % 2 == 0) {
       addOpenTicket(user, i, function(err, model) {
         fixtures.tickets.push(model);
@@ -123,10 +123,10 @@ function addTickets(user, cb){
 
 // Add Open Ticket
 function addOpenTicket(user, i, cb){
-  var ticket = new Ticket({
+  var ticket = new schemas.Ticket({
     title: "test ticket " + i,
     description: "a ticket to use with test",
-    user: user._id,
+    user: user.id,
     status: 'open',
   });
   ticket.save(function(err, model){
@@ -137,13 +137,15 @@ function addOpenTicket(user, i, cb){
 
 // Add Closed Ticket
 function addClosedTicket(user, i, cb){
-  var ticket = new Ticket({
+  var ticket = new schemas.Ticket({
     title: "test ticket " + i,
     description: "a ticket to use with test",
-    user: user._id,
+    user: user.id,
     status: 'closed',
     closed_at: Date.now()
   });
+  var dt = new Date();
+  while ((new Date()) - dt <= 100) {}
   ticket.save(function(err, model){
     if(err) return cb(err);
     cb(null, model);

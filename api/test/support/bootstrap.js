@@ -1,5 +1,6 @@
 var express = require('express'),
     mongoose = require('mongoose'),
+    redis = require('redis'),
     lib = require('../../lib');
 
 
@@ -12,6 +13,8 @@ function createServer(){
   // Load DB Connection
   require('../../conf/configuration.js')(app,express);
   mongoose.connect(app.set('db-uri'));
+  app.redis = redis.createClient();
+  app.redis.select(app.set('redisDB'));
 
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
   app.use(express.bodyParser());

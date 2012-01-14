@@ -32,7 +32,7 @@ describe('user', function(){
   /* Validations */
   describe('validations', function(){
 
-    describe('required fields', function(){  
+    describe('required fields', function(){
 
       it("should enforce required fields", function(done){
         User.create({}, function(err){

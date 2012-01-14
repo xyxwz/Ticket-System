@@ -1,13 +1,12 @@
 var should = require("should"),
     _ = require('underscore'),
     helper = require('../support/helper'),
+    redis = ('redis'),
     app = require('../support/bootstrap').app,
-    mongoose = require("mongoose"),
-    Ticket = require('../../models/ticket').Ticket,
-    redis = require('redis'),
-    client = redis.createClient();
+    mongoose = require("mongoose");
 
-var server = app();
+var server = app(),
+    Ticket = require('../../models/Ticket')(server);
 
 /* Ticket Model Unit Tests */
 
@@ -36,10 +35,9 @@ describe('ticket', function(){
   describe('validations', function(){
 
     describe('required fields', function(){
-      var ticket = new Ticket();
 
       it("should enforce required fields", function(done){
-        ticket.save(function(err){
+        Ticket.create({}, function(err){
           // Title
           should.exist(err.errors.title);
           err.errors.title.type.should.equal("required");
@@ -64,21 +62,29 @@ describe('ticket', function(){
     /* To Client */
     /* Should test the object is ready to be sent to the client */
     describe('toClient', function(){
+      var klass, ticket;
+
+      before(function(done){
+        klass = new Ticket(fixtures.tickets[0]);
+
+        klass._toClient(function(err, obj){
+          if(err) return done(err);
+          ticket = obj;
+          done();
+        });
+      });
 
       it('should strip out user access token', function(){
-        var obj = fixtures.tickets[0].toClient();
-        should.not.exist(obj.user.access_token);
+        should.not.exist(ticket.user.access_token);
       });
 
       it('should strip out embedded comments', function(){
-        var obj = fixtures.tickets[0].toClient();
-        should.not.exist(obj.comments);
+        should.not.exist(ticket.comments);
       });
 
       it('should rename _id property to id', function(){
-        var obj = fixtures.tickets[0].toClient();
-        should.not.exist(obj._id);
-        should.exist(obj.id);
+        should.not.exist(ticket._id);
+        should.exist(ticket.id);
       });
     });
 
@@ -86,25 +92,30 @@ describe('ticket', function(){
     /* Update */
     /* Should test the update method follows the correct rules */
     describe('update', function(){
-      var testObject = {}, origTitle;
+      var klass, data, testObject, origTitle;
 
       before(function(done){
-        var data = {};
-        origTitle = fixtures.tickets[0].title
-        data.title = "title UPDATED";
-        data.description = "description UPDATED";
-        data.status = "closed";
-        data.assigned_to = [fixtures.users[0].id, fixtures.users[0].id];
+        klass = new Ticket(fixtures.tickets[0]);
 
-        fixtures.tickets[0].update(data, function(err, model){
+        origTitle = fixtures.tickets[0].title;
+
+        data = {
+          title: "title UPDATED",
+          description: "description UPDATED",
+          status: "closed",
+          assigned_to: [fixtures.users[0].id, fixtures.users[0].id],
+        };
+
+        klass.update(data, function(err, model){
           if(err) return done(err);
           testObject = model;
           done();
         });
       });
 
+      // Reset Title for future tests
       after(function(done){
-        fixtures.tickets[0].update({title: origTitle}, function(err, model){
+        klass.update({title: origTitle}, function(err, model){
           if(err) return done(err);
           done();
         });
@@ -138,72 +149,99 @@ describe('ticket', function(){
     /* Manage Sets */
     /* Should manage the assigned_to redis sets */
     describe('manageSets', function(){
-      var ticket, user1, user2;
+      var client, klass, data, ticket, user1, user2;
 
       before(function(done){
+        client = server.redis;
+
         /* clear out previous assigned_to's to
          * only test manageSets() */
-        var data = {assigned_to: []};
-        fixtures.tickets[0].update(data, function(err, model){
+        klass = new Ticket(fixtures.tickets[0]);
+
+        data = {assigned_to: []};
+
+        klass.update(data, function(err, model){
           if(err) return done(err);
-          ticket = fixtures.tickets[0];
-          user1 = fixtures.users[0]._id;
-          user2 = fixtures.users[1]._id;
+          user1 = fixtures.users[0].id;
+          user2 = fixtures.users[1].id;
           done();
         });
       });
 
-      it('should add a ticket to user set', function(done){
-        ticket.manageSets([user1, user2], function(){
+      describe('addUsers', function(){
+
+        before(function(done){
+          klass._manageSets([user1, user2], function(){
+            done();
+          });
+        });
+
+        it('should set ticket assigned_to list', function(done){
+          client.SMEMBERS(klass.model.id, function(err, res){
+            res.length.should.equal(2);
+            done();
+          });
+        });
+
+        it('should add a ticket to each users set', function(done){
+          client.SMEMBERS(user1, function(err, res){
+            res.length.should.equal(1);
+            client.SMEMBERS(user2, function(err, res){
+              res.length.should.equal(1);
+              done();
+            });
+          });
+        });
+
+      }); // close addUsers
+
+      describe('removeUsers', function(){
+
+        before(function(done){
+          klass._manageSets([user1], function(){
+            done();
+          });
+        });
+
+        it('should set ticket assigned_to list', function(done){
+          client.SMEMBERS(klass.model.id, function(err, res){
+            res.length.should.equal(1);
+            done();
+          });
+        });
+
+        it('should remove ticket from user2 set', function(done){
           client.smembers(user1, function(err, res){
             res.length.should.equal(1);
             client.smembers(user2, function(err, res){
-              res.length.should.equal(1);
+              res.length.should.equal(0);
               done();
             });
           });
         });
-      });
 
-      it('should remove a ticket from a user set', function(done){
-        ticket.manageSets([user1], function(){
-          client.smembers(user2, function(err, res){
-            res.length.should.equal(0);
-            client.smembers(user1, function(err, res){
-              res.length.should.equal(1);
-              done();
-            });
-          });
-        });
-      });
-    });
+      }); // close removeUsers
+
+    }); // close manageSets
 
 
-    /* Remove Ticket */
+    /* Remove */
     /* Should test a ticket can be successfully removed */
     describe('removeTicket', function(){
-      var result;
+      var data, klass, result;
 
-      // Run removeTicket and return result
       before(function(done){
-        // Insert a Test Ticket and destory it
-        var ticket = new Ticket({
-          title: "destroy example",
-          description: "a ticket to use for static methods",
-          user: fixtures.users[0]._id
-        });
-        ticket.save(function(err, model){
+        klass = new Ticket(fixtures.tickets[0]);
+
+        klass.remove(function(err, status){
           if(err) return done(err);
-          model.removeTicket(function(err, status){
-            if(err) return done(err);
-            result = status;
-            done();
-          });
+          result = status;
+          done();
         });
       });
 
       it('should destroy a ticket', function(done){
-        Ticket.findOne({title: "destroy example"}).run(function(err, ticket){
+        Ticket.find(klass.id, function(err, ticket){
           should.not.exist(ticket);
           done();
         });
@@ -223,17 +261,17 @@ describe('ticket', function(){
   describe('static methods', function(){
 
     /* --------------------
-     * GetAll
+     * All
      * -------------------- */
 
     /* Get All Open Tickets */
     /* Should return an array of tickets */
-    describe('getAll Open', function(){
+    describe('all Open', function(){
       var models;
 
       // Run get all and assign to users
       before(function(done){
-        Ticket.getAll('open', 1, function(err, results){
+        Ticket.all('open', 1, function(err, results){
           if(err) return done(err);
           models = results;
           done();
@@ -258,12 +296,12 @@ describe('ticket', function(){
 
     /* Get All Closed Tickets */
     /* Should return an array of tickets */
-    describe('getAll Closed', function(){
+    describe('all Closed', function(){
       var models;
 
       // Run get all and assign to users
       before(function(done){
-        Ticket.getAll('closed', 1, function(err, results){
+        Ticket.all('closed', 1, function(err, results){
           if(err) return done(err);
           models = results;
           done();
@@ -276,8 +314,8 @@ describe('ticket', function(){
       });
 
       it('should sort by closed_at', function(){
-        models[0].title.should.equal('test ticket 3');
-        models[1].title.should.equal('test ticket 1');
+        models[0].title.should.equal('test ticket 5');
+        models[1].title.should.equal('test ticket 3');
       });
 
       it('should run toClient() on ticket instances', function(){
@@ -286,38 +324,40 @@ describe('ticket', function(){
       });
     });
 
-    /* getMyTickets
+    /* mine
      * Should return an array of tickets assigned to
      * a given user */
-    describe('getMyTickets', function(){
+    describe('mine', function(){
 
       before(function(done){
-        var data = {assigned_to: [fixtures.users[0]._id, fixtures.users[1]._id]};
-        var i = 0, count = 0;
+        var data, _i, count, klass;
+
+        data = {assigned_to: [fixtures.users[0].id, fixtures.users[1].id]};
+        _i = 0;
+        count = 0;
+
         _.each(fixtures.tickets, function(ticket){
-          ticket.update(data, function(err, ticket){
+          klass = new Ticket(ticket);
+
+          klass.update(data, function(err, ticket){
             count++;
             if(count == fixtures.tickets.length){
-              runCallback();
+              done();
             }
           });
-          i++;
+          _i++;
         });
-
-        function runCallback(){
-          done();
-        }
       });
 
       it('should return open tickets assigned to user', function(done){
-        Ticket.getMyTickets(fixtures.users[0]._id, 'open', 1, function(err, models){
+        Ticket.mine(fixtures.users[0]._id, 'open', 1, function(err, models){
           models.length.should.equal(2);
           done();
         });
       });
 
       it('should return closed tickets assigned to user', function(done){
-        Ticket.getMyTickets(fixtures.users[0]._id, 'closed', 1, function(err, models){
+        Ticket.mine(fixtures.users[0]._id, 'closed', 1, function(err, models){
           models.length.should.equal(2);
           done();
         });
@@ -333,7 +373,7 @@ describe('ticket', function(){
 
       // Run getSingle and assign result to user
       before(function(done){
-        Ticket.getSingle(fixtures.tickets[3]._id, function(err, model){
+        Ticket.find(fixtures.tickets[3]._id, function(err, model){
           if(err) return done(err);
           ticket = model;
           done();
@@ -371,8 +411,7 @@ describe('ticket', function(){
 
       it('should successfully create a ticket', function(done){
         // Perform a query to ensure ticket is inserted
-        Ticket.findOne({"title":"create ticket"})
-        .run(function(err, model){
+        Ticket.find(result.id, function(err, model){
           model.title.should.equal(result.title);
           done();
         });
@@ -387,7 +426,7 @@ describe('ticket', function(){
       it('should err if validations fail', function(done){
         data.title = null;
         Ticket.create(data, function(err, ticket){
-          err.should.equal('Error saving ticket');
+          should.exist(err);
           done();
         });
       });
