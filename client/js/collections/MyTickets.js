@@ -17,7 +17,6 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
         return model.get("opened_at");
       };
 
-      this.bind('add', this.syncTickets);
       this.bind('reset', this.loadComments);
     },
 
@@ -25,17 +24,6 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       this.each(function(ticket) {
         ticket.comments.fetch();
       });
-    },
-
-    syncTickets: function(model) {
-      var status = model.get('status');
-
-      if(status === 'open') {
-        ticketer.collections.openTickets.add(model);
-      }
-      else {
-        ticketer.collections.closedTickets.add(model);
-      }
     },
 
     checkAssigned: function(model) {
