@@ -78,30 +78,25 @@ function(
 
     details: function(id) {
       var Header = ticketer.views.headers.back,
-          self = this;
-      var ticket = ticketer.collections.openTickets.get(id) || 
-                      ticketer.collections.closedTickets.get(id);
+          self = this,
+          View,
+          ticket = ticketer.collections.openTickets.get(id) ||
+                   ticketer.collections.closedTickets.get(id) ||
+                   ticketer.collections.myTickets.get(id);
 
       if(typeof(ticket) === 'undefined') {
         ticket = new Ticket({id: id});
-        ticket.fetch({ success: function()
-        {
-          if (ticket.get('status') === 'open') {
-            ticketer.collections.openTickets.add(ticket);
-          }
-          else {
-            ticketer.collections.closedTickets.add(ticket);
-          }
-
-          var View = new TicketDetailsView({ model: ticket });
-          // Transitions
-          self.appView.showHeader(Header);
-          self.appView.showView(View);
-        },
+        ticket.fetch({
+          success: function(){
+            View = new TicketDetailsView({ model: ticket });
+            // Transitions
+            self.appView.showHeader(Header);
+            self.appView.showView(View);
+          },
         });
       }
       else {
-        var View = new TicketDetailsView({ model: ticket });
+        View = new TicketDetailsView({ model: ticket });
         // Transitions
         this.appView.showHeader(Header);
         this.appView.showView(View);
