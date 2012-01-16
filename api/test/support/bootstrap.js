@@ -1,14 +1,14 @@
 var express = require('express'),
     mongoose = require('mongoose'),
-    redis = require('redis'),
-    lib = require('../../lib');
+    redis = require('redis');
 
 
 process.env.NODE_ENV = "test";
 
 
 function createServer(){
-  var app = express.createServer();
+  var app = express.createServer(),
+      lib = require('../../lib')(app);
 
   // Load DB Connection
   require('../../conf/configuration.js')(app,express);
