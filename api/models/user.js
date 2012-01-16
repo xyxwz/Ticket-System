@@ -24,7 +24,7 @@ module.exports = function(app) {
    *  @api public
    */
 
-  User.prototype.update = function update(data, callback) {
+  User.prototype.update = function update(data, cb) {
     var user = this.model;
 
     if (data.email) user.email = data.email;
@@ -33,10 +33,10 @@ module.exports = function(app) {
 
     user.save(function(err, model) {
       if (err || !model) {
-        callback('Error updating model. Check required attributes.');
+        cb('Error updating model. Check required attributes.');
       }
       else {
-        return callback(null, model.toClient());
+        return cb(null, model.toClient());
       }
     });
   };
@@ -52,12 +52,12 @@ module.exports = function(app) {
    * @api public
    */
 
-  User.prototype.remove = function remove(callback) {
+  User.prototype.remove = function remove(cb) {
     var user = this.model;
 
     user.remove(function(err) {
-      if (err) return callback('Error removing user');
-      return callback(null, "ok");
+      if (err) return cb('Error removing user');
+      return cb(null, "ok");
     });
   };
 
@@ -79,12 +79,12 @@ module.exports = function(app) {
    *  @api public
    */
 
-  User.all = function all(callback) {
+  User.all = function all(cb) {
     var array, obj;
 
     UserSchema.find().run(function(err, models) {
       if(err || !models) {
-        return callback("Error finding users");
+        return cb("Error finding users");
       }
       else {
         array = [];
@@ -92,7 +92,7 @@ module.exports = function(app) {
           obj = user.toClient();
           array.push(obj);
         });
-        return callback(null, array);
+        return cb(null, array);
       }
     });
   };
@@ -111,15 +111,15 @@ module.exports = function(app) {
    *  @api public
    */
 
-  User.find = function find(id, callback){
+  User.find = function find(id, cb){
     UserSchema
     .findOne({'_id':id})
     .run(function(err, model){
       if(err || !model) {
-        return callback("User not found");
+        return cb("User not found");
       }
       else {
-        return callback(null, model.toClient());
+        return cb(null, model.toClient());
       }
     });
   };
@@ -140,7 +140,7 @@ module.exports = function(app) {
    *  @api public
    */
 
-  User.create = function create(data, callback) {
+  User.create = function create(data, cb) {
     var user;
 
     user = new UserSchema({
@@ -150,8 +150,8 @@ module.exports = function(app) {
     });
 
     user.save(function(err, model) {
-      if (err || !model) return callback(err);
-      return callback(null, model.toClient());
+      if (err || !model) return cb(err);
+      return cb(null, model.toClient());
     });
   };
 
@@ -167,17 +167,17 @@ module.exports = function(app) {
    *  Returns a user model
    */
 
-  User.setAccessToken = function setAccessToken(email, token, callback) {
+  User.setAccessToken = function setAccessToken(email, token, cb) {
     UserSchema
     .findOne({'email':email})
     .run(function(err, model) {
-      if(err || !model) return callback("Not an authorized user");
+      if(err || !model) return cb("Not an authorized user");
 
       model.access_token = token;
 
       model.save(function(err, user) {
-        if(err) return callback("Error setting access token");
-        return callback(null, user);
+        if(err) return cb("Error setting access token");
+        return cb(null, user);
       });
     });
   };

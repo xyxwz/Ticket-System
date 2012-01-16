@@ -61,7 +61,7 @@ module.exports = function(app) {
    *  @api public
    */
 
-  Ticket.prototype.update = function update(data, callback) {
+  Ticket.prototype.update = function update(data, cb) {
     var _this, model, newAssigned;
 
     _this = this;
@@ -82,11 +82,11 @@ module.exports = function(app) {
       newAssigned = _.uniq(data.assigned_to);
 
       this._manageSets(newAssigned, function() {
-        _this._execUpdate(callback);
+        _this._execUpdate(cb);
       });
     }
     else {
-      this._execUpdate(callback);
+      this._execUpdate(cb);
     }
   };
 
@@ -102,14 +102,14 @@ module.exports = function(app) {
    *
    *    :newArray  -  The array passed in the put request for
    *                  assigned_users
-   *    :callback  -  A callback to run when completed
+   *    :cb        -  A callback to run when completed
    *
-   *  returns callback(null)
+   *  returns cb(null)
    *
    *  @api private
    */
 
-  Ticket.prototype._manageSets = function manageSets(array, callback) {
+  Ticket.prototype._manageSets = function manageSets(array, cb) {
     var redis, _this, model, newArray, currentArray, exists, _add, _rem;
 
     _this = this;
@@ -145,7 +145,7 @@ module.exports = function(app) {
         redis.SREM(model.id, user);
       });
 
-      return callback(null);
+      return cb(null);
     });
   };
 
@@ -157,14 +157,14 @@ module.exports = function(app) {
    *  functions have been run. Takes a callback to return the
    *  saved ticket's toClient() properties.
    *
-   *    :callback - A callback to run
+   *    :cb - A callback to run
    *
    *  returns formatted ticket ready to send to client
    *
    *  @api private
    */
 
-  Ticket.prototype._execUpdate = function execUpdate(callback) {
+  Ticket.prototype._execUpdate = function execUpdate(cb) {
     var _this, model, obj;
 
     _this = this;
@@ -173,14 +173,14 @@ module.exports = function(app) {
 
     model.save(function(err, ticket) {
       if (err || !ticket) {
-        return callback('Error updating model. Check required attributes.');
+        return cb('Error updating model. Check required attributes.');
       }
       else {
         obj = new Ticket(ticket);
 
         obj._toClient(function(err, ticket){
-          if(err) return callback(err);
-          callback(null, ticket);
+          if(err) return cb(err);
+          cb(null, ticket);
         });
       }
     });
@@ -197,12 +197,12 @@ module.exports = function(app) {
    *  @api public
    */
 
-  Ticket.prototype.remove = function remove(callback) {
+  Ticket.prototype.remove = function remove(cb) {
     var ticket = this.model;
 
     ticket.remove(function(err) {
-      if (err) return callback(err);
-      return callback(null, "ok");
+      if (err) return cb(err);
+      return cb(null, "ok");
     });
   };
 
@@ -228,7 +228,7 @@ module.exports = function(app) {
    *  @api public
    */
 
-  Ticket.all = function all(status, page, callback) {
+  Ticket.all = function all(status, page, cb) {
     var query, array, count, _i, obj;
 
     query = TicketSchema.find({'status': status});
@@ -246,7 +246,7 @@ module.exports = function(app) {
     .limit(10)
     .run(function(err, models){
       if(err || !models) {
-        return callback("Error finding tickets");
+        return cb("Error finding tickets");
       }
       else {
         array = [];
@@ -256,10 +256,10 @@ module.exports = function(app) {
           obj = new Ticket(models[_i]);
 
           obj._toClient(function(err, model) {
-            if (err) return callback(err);
+            if (err) return cb(err);
             array.push(model);
             if(array.length === count) {
-              return callback(null, array);
+              return cb(null, array);
             }
           });
           _i++;
@@ -283,7 +283,7 @@ module.exports = function(app) {
    *  @api public
    */
 
-  Ticket.mine = function mine(user, status, page, callback) {
+  Ticket.mine = function mine(user, status, page, cb) {
     var _this, redis, obj, query, array, count, _i;
 
     _this = this;
@@ -308,7 +308,7 @@ module.exports = function(app) {
       .limit(10)
       .run(function(err, models) {
         if(err) {
-          return callback("Error finding tickets");
+          return cb("Error finding tickets");
         }
         else {
           array = [];
@@ -317,10 +317,12 @@ module.exports = function(app) {
           while(_i < count) {
             obj = new Ticket(models[_i]);
             obj._toClient(function(err, model) {
-              if (err) return callback(err);
-              array.push(obj);
+              if (err) return cb(err);
+
+              array.push(model);
+
               if(array.length === count) {
-                return callback(null, array);
+                return cb(null, array);
               }
             });
             _i++;
@@ -343,7 +345,7 @@ module.exports = function(app) {
    *  @api public
    */
 
-  Ticket.find = function find(id, callback) {
+  Ticket.find = function find(id, cb) {
     var _this, obj;
 
     TicketSchema
@@ -351,14 +353,14 @@ module.exports = function(app) {
     .populate('user')
     .run(function(err, model) {
       if(err || !model){
-        return callback("Error finding ticket");
+        return cb("Error finding ticket");
       }
       else {
         obj = new Ticket(model);
 
         obj._toClient(function(err, ticket){
-          if(err) return callback(err);
-          return callback(null, ticket);
+          if(err) return cb(err);
+          return cb(null, ticket);
         });
       }
     });
@@ -380,7 +382,7 @@ module.exports = function(app) {
    *  @api public
    */
 
-  Ticket.create = function create(data, callback) {
+  Ticket.create = function create(data, cb) {
     var _this, ticket;
 
     _this = this;
@@ -393,13 +395,13 @@ module.exports = function(app) {
 
     ticket.save(function(err, ticket) {
       if (err || !ticket) {
-        return callback(err);
+        return cb(err);
       }
       else {
         // Run find() to ensure new ticket is populated
         _this.find(ticket._id, function(err, model){
-          if(err) return callback(err);
-          return callback(null, model);
+          if(err) return cb(err);
+          return cb(null, model);
         });
       }
     });
