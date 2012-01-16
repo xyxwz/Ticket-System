@@ -1,14 +1,15 @@
-var mongoose = require('mongoose'),
-    User = mongoose.model('User');
+var User;
 
 module.exports = function(app) {
+
+  User = app.models.User;
 
   /* User Index
   *  GET /api/users
   *
   *  returns a list of all the users in the database */
   app.get('/api/users', function(req, res) {
-    User.getAll(function(err, users){
+    User.all(function(err, users){
       if(err) return res.json({error: 'Error getting users'}, 400);
       res.json(users);
     });
@@ -55,8 +56,10 @@ module.exports = function(app) {
   *
   *  updates the user instance with the passed in attributes */
   app.put('/api/users/:userID', function(req, res) {
-    var data = req.body;
-    var user = req.user;
+    var data, user;
+
+    data = req.body;
+    user = new User(req.user);
     user.update(data, function(err, model) {
       if(err) return res.json({error: 'Error updating user'}, 400);
       res.json(model);
@@ -71,8 +74,8 @@ module.exports = function(app) {
   *
   *  removes a user from the database */
   app.del('/api/users/:userID', function(req, res) {
-    var user = req.user;
-    user.removeUser(function(err, status) {
+    var user = new User(req.user);
+    user.remove(function(err, status) {
       if(err) return res.json({error: 'Error removing user'}, 400);
       res.json({success: "ok"});
     });

@@ -1,5 +1,5 @@
-var models = require('../../models'),
-    User = models.User;
+var schemas = require("../../models/schemas"),
+    User = schemas.User;
 
 /* ---------------------------------------------- *
  * Authentication Middleware

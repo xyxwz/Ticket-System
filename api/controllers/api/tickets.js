@@ -1,7 +1,8 @@
-var mongoose = require('mongoose'),
-    Ticket = mongoose.model('Ticket');
+var Ticket;
 
 module.exports = function(app) {
+
+  Ticket = app.models.Ticket;
 
   /* Ticket Index
   *  GET /api/tickets
@@ -10,9 +11,12 @@ module.exports = function(app) {
   *  marked as :status and :page. Uses the Mongoose Populate method
   *  to fill in information for the ticket user. */
   app.get('/api/tickets', function(req, res) {
-    var status = req.query.status ? req.query.status : 'open';
-    var page = req.query.page ? req.query.page : 1;
-    Ticket.getAll(status, page, function(err, tickets){
+    var status, page;
+
+    status = req.query.status ? req.query.status : 'open';
+    page = req.query.page ? req.query.page : 1;
+
+    Ticket.all(status, page, function(err, tickets){
       if(err) return res.json({error: 'Error getting tickets'}, 400);
       res.json(tickets);
     });
@@ -25,9 +29,12 @@ module.exports = function(app) {
   *  marked as :status and :page. Uses the Mongoose Populate method
   *  to fill in information for the ticket user. */
   app.get('/api/tickets/mine', function(req, res) {
-    var status = req.query.status ? req.query.status : 'open';
-    var page = req.query.page ? req.query.page : 1;
-    Ticket.getMyTickets(req.user.id, status, page, function(err, tickets){
+    var status, page;
+
+    status = req.query.status ? req.query.status : 'open';
+    page = req.query.page ? req.query.page : 1;
+
+    Ticket.mine(req.user.id, status, page, function(err, tickets){
       if(err) return res.json({error: 'Error getting tickets'}, 400);
       res.json(tickets);
     });
@@ -59,8 +66,14 @@ module.exports = function(app) {
   *
   *  returns a single ticket */
   app.get('/api/tickets/:ticketID', function(req, res) {
-    var ticket = req.ticket;
-    res.json(ticket.toClient());
+    var ticket;
+
+    ticket = new Ticket(req.ticket);
+
+    ticket._toClient(function(err, obj){
+      if(err) return res.json({error: 'Error getting ticket'}, 400);
+      res.json(obj);
+    });
   });
 
 
@@ -75,8 +88,11 @@ module.exports = function(app) {
   *
   *  updates the ticket instance with the passed in attributes */
   app.put('/api/tickets/:ticketID', function(req, res) {
-    var data = req.body;
-    var ticket = req.ticket;
+    var data, ticket;
+
+    data = req.body;
+    ticket = new Ticket(req.ticket);
+
     ticket.update(data, function(err, model) {
       if(err) return res.json({error: 'Error updating ticket'}, 400);
       res.json(model);
@@ -91,8 +107,11 @@ module.exports = function(app) {
   *
   *  removes a ticket from the database */
   app.del('/api/tickets/:ticketID', function(req, res) {
-    var ticket = req.ticket;
-    ticket.removeTicket(function(err, status) {
+    var ticket;
+
+    ticket = new Ticket(req.ticket);
+
+    ticket.remove(function(err, status) {
       if(err) return res.json({error: 'Error removing ticket'}, 400);
       res.json({success: "ok"});
     });

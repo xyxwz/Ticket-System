@@ -1,18 +1,18 @@
 module.exports = function requireControllers(app){
-  var controllers = {};
+  var controllers = {
+    helpers: {
+      preCond: require('./helpers/pre-conditions')(app),
+    },
 
-  controllers.helpers = {
-    preCond: require('./helpers/pre-conditions')(app),
-  }
+    api: {
+      users: require('./api/users')(app),
+      tickets: require('./api/tickets')(app),
+      comments: require('./api/comments')(app),
+    },
 
-  controllers.api = {
-    users: require('./api/users')(app),
-    tickets: require('./api/tickets')(app),
-    comments: require('./api/comments')(app),
-  }
-
-  controllers.authentication = require('./authentication')(app);
-  controllers.client = require('./static')(app);
+    authentication: require('./authentication')(app),
+    client: require('./static')(app),
+  };
 
   return controllers;
 }

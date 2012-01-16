@@ -1,7 +1,8 @@
-var mongoose = require('mongoose'),
-    Comment = mongoose.model('Comment');
+var Comment;
 
 module.exports = function(app) {
+
+  Comment = app.models.Comment;
 
   /* Ticket Comments
   *  GET /api/tickets/:ticketID/comments
@@ -11,8 +12,7 @@ module.exports = function(app) {
   *  returns all of a ticket's comments. Uses the Mongoose
   *  Populate method to fill in information for the comment user. */
   app.get('/api/tickets/:ticketID/comments', function(req, res) {
-    var ticket = req.ticket;
-    Comment.getAll(ticket.comments, function(err, comments) {
+    Comment.all(req.ticket.comments, function(err, comments) {
       res.json(comments);
     })
   });
@@ -27,10 +27,12 @@ module.exports = function(app) {
   *
   *  adds a comment to a ticket */
   app.post('/api/tickets/:ticketID/comments', function(req, res) {
-    var data = req.body;
+    var data;
+
+    data = req.body;
     data.user = req.user.id;
-    var ticket = req.ticket;
-    Comment.create(ticket, req.user, data, function(err, model) {
+
+    Comment.create(req.ticket, req.user, data, function(err, model) {
       if(err) return res.json({error: err}, 400);
       res.json(model, 201);
     });
@@ -45,8 +47,7 @@ module.exports = function(app) {
   *
   *  returns a single comment with user information */
   app.get('/api/tickets/:ticketID/comments/:id', function(req, res) {
-    var ticket = req.ticket;
-    Comment.getSingle(ticket, req.params.id, function(err, model) {
+    Comment.find(req.ticket.comments, req.params.id, function(err, model) {
       if(err) return res.json({error: err}, 404);
       res.json(model);
     })
@@ -63,11 +64,16 @@ module.exports = function(app) {
   *
   *  updates a comment within the ticket instance with the passed in attributes */
   app.put('/api/tickets/:ticketID/comments/:id', function(req, res) {
-    var data = req.body;
-    var ticket = req.ticket;
-    var comment = ticket.comments.id(req.params.id);
+    var data, comment, klass;
+
+    data = req.body;
+    comment = req.ticket.comments.id(req.params.id);
+
     if(!comment) return res.json({error: "Comment not found"}, 404);
-    comment.update(ticket, data, function(err, comment) {
+
+    klass = new Comment(comment, req.ticket);
+
+    klass.update(data, function(err, comment) {
       if(err) return res.json({error: err}, 400);
       res.json(comment);
     });
@@ -82,10 +88,15 @@ module.exports = function(app) {
   *
   * removes a comment from the ticket */
   app.del('/api/tickets/:ticketID/comments/:id', function(req, res) {
-    var ticket = req.ticket;
-    var comment = ticket.comments.id(req.params.id);
+    var comment, klass;
+
+    comment = req.ticket.comments.id(req.params.id);
+
     if(!comment) return res.json({error: "Comment not found"}, 404);
-    comment.removeComment(ticket, function(err, status) {
+
+    klass = new Comment(comment, req.ticket);
+
+    klass.remove(function(err, status) {
       if(err) return res.json({error: "Error removing comment"}, 400);
       res.json({success: status})
     });

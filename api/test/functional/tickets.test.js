@@ -5,7 +5,8 @@ var should = require("should"),
     app = require('../support/bootstrap').app,
     request = require('superagent');
 
-var server = app();
+var server = app(),
+    Ticket = require('../../models/Ticket')(server);
 
 /* Tickets Controller Unit Tests */
 
@@ -98,15 +99,15 @@ describe('tickets', function(){
 
     it('should contain 2 ticket object', function(){
       var tickets = res.body;
-      tickets.length.should.equal(2);
+      tickets.length.should.equal(3);
       should.exist(tickets[0].id);
       should.not.exist(tickets[0].user.access_token);
     });
 
     it('should return correct tickets', function(){
       var tickets = res.body;
-      tickets[0].title.should.equal('test ticket 3');
-      tickets[1].title.should.equal('test ticket 1');
+      tickets[0].title.should.equal('test ticket 5');
+      tickets[1].title.should.equal('test ticket 3');
     });
   });
 
@@ -115,30 +116,36 @@ describe('tickets', function(){
     var res;
 
     before(function(done){
-      var data = {assigned_to: [fixtures.users[0]._id, fixtures.users[1]._id]};
-        var i = 0, count = 0;
-        _.each(fixtures.tickets, function(ticket){
-          ticket.update(data, function(err, ticket){
-            count++;
-            if(count == fixtures.tickets.length){
-              runCallback();
-            }
-          });
-          i++;
-        });
+      var data, _i, _count, ticket;
 
-        function runCallback(){
-          request
-          .get('http://127.0.0.1:3000/api/tickets/mine')
-          .send({status: 'open'})
-          .set('Accept', 'application/json')
-          .set('Content-Type', 'application/json')
-          .set('X-Auth-Token', fixtures.users[0].access_token)
-          .end(function(data){
-            res = data;
-            done();
-          });
-        }
+      data = {assigned_to: [fixtures.users[0]._id, fixtures.users[1]._id]};
+      _i = 0;
+      _count = 0;
+
+      _.each(fixtures.tickets, function(model){
+        ticket = new Ticket(model);
+
+        ticket.update(data, function(err, ticket){
+          _count++;
+          if(_count == fixtures.tickets.length){
+            runCallback();
+          }
+        });
+        _i++;
+      });
+
+      function runCallback(){
+        request
+        .get('http://127.0.0.1:3000/api/tickets/mine')
+        .send({status: 'open'})
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('X-Auth-Token', fixtures.users[0].access_token)
+        .end(function(data){
+          res = data;
+          done();
+        });
+      }
     });
 
     it('should return a 200 status code', function(){
@@ -168,30 +175,36 @@ describe('tickets', function(){
     var res;
 
     before(function(done){
-      var data = {assigned_to: [fixtures.users[0]._id, fixtures.users[1]._id]};
-        var i = 0, count = 0;
-        _.each(fixtures.tickets, function(ticket){
-          ticket.update(data, function(err, ticket){
-            count++;
-            if(count == fixtures.tickets.length){
-              runCallback();
-            }
-          });
-          i++;
-        });
+      var data, _i, _count, ticket;
 
-        function runCallback(){
-          request
-          .get('http://127.0.0.1:3000/api/tickets/mine')
-          .send({status: 'closed'})
-          .set('Accept', 'application/json')
-          .set('Content-Type', 'application/json')
-          .set('X-Auth-Token', fixtures.users[0].access_token)
-          .end(function(data){
-            res = data;
-            done();
-          });
-        }
+      data = {assigned_to: [fixtures.users[0]._id, fixtures.users[1]._id]};
+      _i = 0;
+      _count = 0;
+
+      _.each(fixtures.tickets, function(model){
+        ticket = new Ticket(model);
+
+        ticket.update(data, function(err, ticket){
+          _count++;
+          if(_count == fixtures.tickets.length){
+            runCallback();
+          }
+        });
+        _i++;
+      });
+
+      function runCallback(){
+        request
+        .get('http://127.0.0.1:3000/api/tickets/mine')
+        .send({status: 'closed'})
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set('X-Auth-Token', fixtures.users[0].access_token)
+        .end(function(data){
+          res = data;
+          done();
+        });
+      }
     });
 
     it('should return a 200 status code', function(){
@@ -204,15 +217,15 @@ describe('tickets', function(){
 
     it('should contain 2 ticket object', function(){
       var tickets = res.body;
-      tickets.length.should.equal(2);
+      tickets.length.should.equal(3);
       should.exist(tickets[0].id);
       should.not.exist(tickets[0].user.access_token);
     });
 
     it('should return correct tickets', function(){
       var tickets = res.body;
-      tickets[0].title.should.equal('test ticket 3');
-      tickets[1].title.should.equal('test ticket 1');
+      tickets[0].title.should.equal('test ticket 5');
+      tickets[1].title.should.equal('test ticket 3');
     });
   });
 
