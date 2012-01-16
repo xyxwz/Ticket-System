@@ -79,8 +79,9 @@ define([
      * integer and negate it we can reverse the sort order.
      */
     ticketer.collections.closedTickets.comparator = function(collection) {
-      var id = collection.get("id");
-      return -parseInt(id.substring(0,8), 16);
+      var datum = new Date(collection.get('closed_at'));
+      var closed_at = datum.getTime();
+      return -closed_at;
     };
 
     /* Reset collections with bootstrapped data.
