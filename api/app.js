@@ -1,5 +1,6 @@
 var express = require('express'),
     mongoose = require('mongoose'),
+    redis = require('redis'),
     passport = require('passport'),
     GitHubStrategy = require('passport-github').Strategy,
     lib = require('./lib');
@@ -38,8 +39,11 @@ function bootApplication(app) {
 
 // Bootstrap models
 function bootModels(app) {
-  app.models = require('./models');
   mongoose.connect(app.set('db-uri'));
+  app.redis = redis.createClient();
+  app.redis.select(app.set('redisDB'));
+
+  app.models = require('./models');
 }
 
 // Bootstrap controllers

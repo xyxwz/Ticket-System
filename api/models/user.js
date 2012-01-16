@@ -183,6 +183,33 @@ module.exports = function(app) {
   };
 
 
+  /**
+   *  admins
+   *
+   *  Get all the system admins
+   *
+   *  Returns system admins ready to be sent to the client
+   *
+   *  @api public
+   */
+
+  User.admins = function admins(cb) {
+    var admins;
+
+    UserSchema
+    .where('role', 'admin')
+    .run(function(err, models) {
+      if(err) return cb('error getting admins');
+
+      admins = models.map(function(user) {
+        return user.toClient();
+      });
+
+      return cb(null, admins);
+    });
+  };
+
+
   return User;
 
 };

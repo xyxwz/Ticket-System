@@ -1,9 +1,9 @@
-var mongoose = require('mongoose'),
-    _ = require('underscore'),
-    Ticket = mongoose.model('Ticket'),
-    User = mongoose.model('User');
+var User, Ticket;
 
 module.exports = function(app) {
+
+  User = app.models.User;
+  Ticket = app.models.Ticket;
   
   /* Site Index
    * GET /
@@ -43,7 +43,6 @@ module.exports = function(app) {
 
   function bootstrapModels(req, cb) {
     var data = {};
-
     bootstrapTickets({status: 'open'}, function(err, tickets) {
       if(err) return cb('error getting open tickets');
       data.openTickets = tickets;
@@ -70,13 +69,13 @@ module.exports = function(app) {
 
   function bootstrapTickets(args, cb) {
     if (args.user) {
-      Ticket.getMyTickets(args.user, args.status, 1, function(err, models) {
+      Ticket.mine(args.user, args.status, 1, function(err, models) {
         if(err || !models) return cb('error getting users tickets');
         return cb(null, models);
       });
     }
     else {
-      Ticket.getAll(args.status, 1, function(err, models) {
+      Ticket.all(args.status, 1, function(err, models) {
         if(err || !models) return cb('error getting open tickets');
         return cb(null, models);
       });
@@ -84,14 +83,9 @@ module.exports = function(app) {
   };
 
   function bootstrapAdmins(cb) {
-    User
-    .where('role', 'admin')
-    .run(function(err, models) {
+    User.admins(function(err, models) {
       if(err) return cb('error getting admins');
-      var admins = models.map(function(user) {
-        return user.toClient();
-      });
-      return cb(null, admins);
+      return cb(null, models);
     });
   };
 
