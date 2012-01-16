@@ -11,11 +11,13 @@ var fixtures = {
 }
 
 // Setup and Seed Database
-function setup(callback){
+function setup(app, callback){
   var collections, coll, collCount, _i, _len;
 
   // Clean Database
   collections = [schemas.User, schemas.Ticket];
+
+  app.redis.FLUSHDB();
 
   collCount = collections.length;
   for (_i = 0, _len = collections.length; _i < _len; _i++) {
@@ -32,11 +34,13 @@ function setup(callback){
 }
 
 // Teardown Database
-function teardown(callback){
+function teardown(app, callback){
   var collections, coll, collCount, _i, _len;
 
   // Clean Database
   collections = [schemas.User, schemas.Ticket];
+
+  app.redis.FLUSHDB();
 
   collCount = collections.length;
   for (_i = 0, _len = collections.length; _i < _len; _i++) {

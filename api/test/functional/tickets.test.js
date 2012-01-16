@@ -16,7 +16,7 @@ describe('tickets', function(){
   var fixtures;
 
   before(function(done){
-    helper.Setup(function(err, data){
+    helper.Setup(server, function(err, data){
       if(err) return done(err);
       fixtures = data;
       done();
@@ -24,7 +24,7 @@ describe('tickets', function(){
   });
 
   after(function(done){
-    helper.Teardown(function(err){
+    helper.Teardown(server, function(err){
       if(err) return done(err);
       fixtures = {};
       done();
