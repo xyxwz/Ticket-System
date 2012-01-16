@@ -1,138 +1,204 @@
 var mongoose = require("mongoose"),
-    User = mongoose.model('User'),
+    CommentSchema = require('./schemas/comment').Comment,
     _ = require('underscore');
 
-var Comment = new mongoose.Schema({
-  comment           : {type : String, default : '', required: true, trim: true},
-  created_at        : {type : Date, default : Date.now, index: true, required: true},
-  modified_at       : {type : Date},
-  user              : {type : mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-});
+module.exports = function(app) {
 
 
-/* ---------------------------------------- *
- * Instance Methods *
- * ---------------------------------------- */
+  function Comment (model, parent) {
+    this.model = model || new CommentSchema();
+    this.ticket = parent || null;
+  };
 
 
-/* To Client *
-*
-*  Returns an object for use with client-side js.
-*  Sets the mongo _id property name to id */
-Comment.methods.toClient = function(){
-  var obj = this.toObject();
-  obj.id = obj._id;
-  delete obj._id;
+  /**
+   *  toClient
+   *
+   *  Sets the mongo _id property name to id
+   *
+   *  Returns an object for use with client-side js.
+   *
+   *  @api private
+   */
 
-  var user = {
-    id: obj.user._id,
-    name: obj.user.name,
-  }
-  obj.user = user;
+  Comment.prototype._toClient = function toClient() {
+    var obj, user;
 
-  return obj
-};
+    obj = this.model.toObject();
+    obj.id = obj._id;
+    delete obj._id;
+
+    user = {
+      id: obj.user._id,
+      name: obj.user.name,
+    }
+
+    obj.user = user;
+
+    return obj;
+  };
 
 
-/* Update Comment *
-*
-*  data - A json object representing ticket properties to update
-*          :comment  - string, optional
-*
-*  Updates a comment and returns a comment object
-*  ready to be sent to the client. */
-Comment.methods.update = function(ticket, data, callback) {
-  var self = this;
-  if (data.comment) {
-    this.comment = data.comment;
-    this.modified_at = Date.now();
-  }
-  ticket.save(function(err, model) {
-    if(err || !model) callback("Error updating ticket");
-    return callback(null, self.toClient());
-  });
+  /**
+   *  update
+   *
+   *  Updates a comment
+   *
+   *  data - A json object representing ticket properties to update
+   *          :comment  - string, optional
+   *
+   *  Returns a comment object ready to be sent to the client.
+   *
+   *  @api public
+   */
+
+  Comment.prototype.update = function update(data, cb) {
+    var _this, ticket, model;
+
+    _this = this;
+    ticket = this.ticket;
+    model = this.model;
+
+    if (data.comment) {
+      model.comment = data.comment;
+      model.modified_at = Date.now();
+    }
+
+    ticket.save(function(err, obj) {
+      if(err || !obj) cb(err);
+      return cb(null, _this._toClient());
+    });
+  };
+
+
+  /**
+   *  remove
+   *
+   *  Removes a comment from a ticket.
+   *
+   *  Returns an error or status "ok" to the callback
+   *
+   *  @api public
+   */
+
+  Comment.prototype.remove = function remove(cb) {
+    var ticket, model;
+
+    ticket = this.ticket;
+    model = this.model;
+
+    model.remove();
+    ticket.save(function(err) {
+      if (err) return cb('Error removing comment');
+      return cb(null, "ok");
+    });
+  };
+
+
+  /**
+   * ----------------------------------------
+   * Static Methods
+   * ----------------------------------------
+   */
+
+
+  /**
+   *  all
+   *
+   *  Gets all the comments attached to a ticket
+   *
+   *  :comments - array, an array of a tickets comment objects
+   *
+   *  Returns an array of all a ticket's comments cleaned
+   *  and ready to be sent to the client.
+   *
+   *  @api public
+   */
+
+  Comment.all = function all(comments, cb) {
+    var array, klass, obj;
+
+    array = new Array();
+
+    _.each(comments, function(comment) {
+      klass = new Comment(comment);
+      obj = klass._toClient();
+      array.push(obj);
+    });
+
+    return cb(null, array);
+  };
+
+
+  /**
+   *  find
+   *
+   *  Get A Single Comment
+   *
+   *  :ticket  - a ticket object
+   *  :id      - string, a comments BSON id
+   *
+   *  Returns a single ticket comment object ready to be sent to the client
+   *
+   *  @api public
+   */
+
+  Comment.find = function find(comments, id, cb) {
+    var comment, klass;
+
+    comment = _.find(comments, function(comment) {
+      return comment.id === id;
+    });
+
+    if (!comment) return cb("Comment not found");
+
+    klass = new Comment(comment);
+    cb(null, klass._toClient());
+  };
+
+
+  /**
+   *  create
+   *
+   *  Creates a new comment
+   *
+   *  :ticket - a ticket object
+   *  :user   - the authenticated user id (prevents a lookup)
+   *  :data   - A json object representing a ticket
+   *            :comment   - string
+   *            :user      - string, a user's BSON id in string form (authenticated user)
+   *
+   *  Returns a comment object ready to be sent to the client.
+   */
+
+  Comment.create = function(ticket, user, data, cb) {
+    var comment, obj;
+
+    comment = new CommentSchema({
+      comment: data.comment,
+      user: data.user,
+    });
+
+    ticket.comments.push(comment);
+
+    ticket.save(function(err, model) {
+      if (err) return cb(err);
+
+      // build client data to prevent looking up and populating user & comment
+      obj = {
+        id: comment.id,
+        comment: comment.comment,
+        created_at: comment.created_at,
+        user: {
+          id: user._id,
+          name: user.name,
+        },
+      };
+
+      return cb(null, obj);
+    });
+  };
+
+  return Comment;
+
 }
-
-
-/* Delete Comment *
-*
-*  Removes a comment from a ticket.
-*  Returns an error or status "ok" to the callback */
-Comment.methods.removeComment = function(ticket, callback) {
-  this.remove();
-  ticket.save(function(err) {
-    if (err) return callback('Error removing comment');
-    return callback(null, "ok");
-  });
-}
-
-
-/* ---------------------------------------- *
- * Static Methods *
- * ---------------------------------------- */
-
-
-/* Return All Comments
-*
-*  :comments - array, an array of a tickets comment objects
-*
-*  Returns an array of all a ticket's comments cleaned
-*  and ready to be sent to the client. */
-Comment.statics.getAll = function(comments, callback) {
-  var array = [];
-  _.each(comments, function(comment) {
-    var obj = comment.toClient();
-    array.push(obj);
-  });
-  return callback(null, array);
-}
-
-
-/* Return A Single Comment
-*
-*  :ticket  - a ticket object
-*  :id      - string, a comments BSON id
-*
-*  Return a single ticket comment object ready to be sent to the client */
-Comment.statics.getSingle = function(ticket, id, callback) {
-  var comment = ticket.comments.id(id);
-  if (!comment) return callback("Comment not found");
-  callback(null, comment.toClient());
-}
-
-
-/* Create A Comment *
-*
-*  ticket - a ticket object
-*  user   - the authenticated to user (prevents a lookup)
-*  data   - A json object representing a ticket
-*          :comment   - string
-*          :user      - string, a user's BSON id in string form (authenticated user)
-*
-*  Creates a new comment
-*  Returns a comment object ready to be sent to the client. */
-Comment.statics.create = function(ticket, user, data, callback) {
-  var self = this;
-  var comment = new self({
-    comment: data.comment,
-    user: data.user
-  });
-  ticket.comments.push(comment);
-  ticket.save(function(err, model) {
-    if (err) return callback("Error saving comment");
-    // build client data to prevent looking up and populating user & comment
-    var comment_data = {
-      'id': comment.id,
-      'comment': comment.comment,
-      'created_at': comment.created_at,
-      'user': user.toObject(),
-    };
-    comment_data.user.id = comment_data.user._id;
-    delete comment_data.user._id;
-    delete comment_data.user.access_token;
-    return callback(null, comment_data);
-  });
-}
-
-exports.CommentSchema = Comment;
-exports.Comment = mongoose.model('Comment', Comment);

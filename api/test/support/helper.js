@@ -154,7 +154,7 @@ function addClosedTicket(user, i, cb){
 
 // Add Comment
 function addComment(ticket,user, cb){
-  var comment = new Comment({
+  var comment = new schemas.Comment({
     comment: "test comment",
     user: user._id
   });
