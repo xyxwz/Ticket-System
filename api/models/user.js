@@ -83,7 +83,7 @@ module.exports = function(app) {
     var array, obj;
 
     UserSchema.find().run(function(err, models) {
-      if(err || !models) {
+      if(err) {
         return cb("Error finding users");
       }
       else {

@@ -245,13 +245,17 @@ module.exports = function(app) {
     .skip((page - 1) * 10)
     .limit(10)
     .run(function(err, models){
-      if(err || !models) {
+      if(err) {
         return cb("Error finding tickets");
       }
       else {
         array = [];
         _i = 0;
         count = models.length;
+
+        // return empty array if no tickets
+        if(count === 0) return cb(null, []);
+
         while(_i < count) {
           obj = new Ticket(models[_i]);
 
@@ -314,6 +318,10 @@ module.exports = function(app) {
           array = [];
           _i = 0;
           count = models.length;
+
+          // return empty array if no tickets
+          if(count === 0) return cb(null, []);
+
           while(_i < count) {
             obj = new Ticket(models[_i]);
             obj._toClient(function(err, model) {

@@ -2,11 +2,11 @@ var express = require('express'),
     mongoose = require('mongoose'),
     redis = require('redis'),
     passport = require('passport'),
-    GitHubStrategy = require('passport-github').Strategy,
-    lib = require('./lib');
+    GitHubStrategy = require('passport-github').Strategy;
 
 var path = __dirname,
     settings = require(path + '/conf/settings'),
+    lib,
     app;
 
 /* Initial Bootstrap */
@@ -22,6 +22,8 @@ exports.boot = function(params){
 };
 
 function bootApplication(app) {
+  lib = require('./lib')(app);
+
   app.set('view engine', 'jade');
   app.set('views', path + '/client');
   app.set('view options', { layout: false });
@@ -43,7 +45,7 @@ function bootModels(app) {
   app.redis = redis.createClient();
   app.redis.select(app.set('redisDB'));
 
-  app.models = require('./models');
+  app.models = require('./models')(app);
 }
 
 // Bootstrap controllers
