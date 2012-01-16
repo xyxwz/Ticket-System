@@ -11,7 +11,6 @@ var Ticket = new mongoose.Schema({
   modified_at           : {type : Date},
   user                  : {type : mongoose.Schema.Types.ObjectId, ref: 'User', index: true, required: true},
   comments              : [CommentSchema],
-  participating_users   : [{type : mongoose.Schema.Types.ObjectId, ref: 'User'}],
 });
 
 exports.Ticket = mongoose.model('Ticket', Ticket);
