@@ -18,8 +18,10 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       this.comments = new Comments();
       this.comments.url = '/api/tickets/' + this.id + '/comments';
 
-      this.bind('assignedUser', this.collection.setMyTickets);
-      this.bind('unassignedUser', this.collection.setMyTickets);
+      if (this.get('status') === 'open') {
+        this.bind('assignedUser', this.collection.setMyTickets);
+        this.bind('unassignedUser', this.collection.setMyTickets);
+      }
 
     },
     
@@ -45,6 +47,8 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       this.save(null, {
         error: callback,
         success: function() {
+          self.unbind('assignedUser', self.collection.setMyTickets);
+          self.unbind('unassignedUser', self.collection.setMyTickets);
           // Handles Switching Collections
           ticketer.collections.openTickets.remove(self);
           ticketer.collections.closedTickets.add(self);
