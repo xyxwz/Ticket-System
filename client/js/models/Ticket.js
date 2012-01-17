@@ -18,6 +18,10 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       this.comments = new Comments();
       this.comments.url = '/api/tickets/' + this.id + '/comments';
 
+      this.bind("change", function() {
+        self.comments.url = '/api/tickets/' + this.id + '/comments';
+      });
+
       if (this.get('status') === 'open') {
         this.bind('assignedUser', this.collection.setMyTickets);
         this.bind('unassignedUser', this.collection.setMyTickets);
