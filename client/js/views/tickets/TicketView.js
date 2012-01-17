@@ -18,9 +18,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
     initialize: function() {
       _.bindAll(this);
       this.admin = this.options.admin;
-      this.page = this.options.page ? this.options.page : 1;
 
-      $(this.el).attr('data-page', this.page);
       $(this.el).attr('id', 'id_'+ this.model.id);
 
       /* Keep track of who is assigned to this ticket.

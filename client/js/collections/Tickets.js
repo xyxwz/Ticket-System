@@ -15,8 +15,14 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
         return model.get("opened_at");
       };
 
-      this.bind("add", this.syncMyTickets);
       this.bind('reset', this.loadComments);
+
+      if (currentUser.role === 'admin') {
+        this.mine = new Array();
+        this.bind('reset', this.setMyTickets);
+        this.bind('add', this.setMyTickets);
+        this.bind('remove', this.setMyTickets);
+      }
     },
 
     loadComments: function() {
@@ -25,25 +31,18 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       });
     },
 
-    syncMyTickets: function(model) {
-      ticketer.collections.myTickets.checkAssigned(model);
-      model.bind('assignedUser', ticketer.collections.myTickets.checkAssigned);
-      model.bind('unassignedUser', ticketer.collections.myTickets.checkAssigned);
+    setMyTickets: function(model) {
+      var mine, assigned;
+
+      mine = this.filter(function(ticket) {
+        assigned = _.include(ticket.get('assigned_to'), currentUser.id);
+        if (assigned) return ticket;
+      });
+
+      this.mine = mine;
     },
 
   });
-
-  Tickets.prototype.add = function(ticket) {
-    var isDupe = this.any(function(_ticket) {
-      return _ticket.id === ticket.id;
-    });
-
-    if (isDupe) {
-      return;
-    }
-
-    Backbone.Collection.prototype.add.call(this, ticket);
-  };
 
   return Tickets;
 });

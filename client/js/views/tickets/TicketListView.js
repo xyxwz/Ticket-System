@@ -13,43 +13,25 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
 
     initialize: function() {
       _.bindAll(this);
-      this.models = this.collection.models;
-      this.page = 1;
-      this.status = this.options.status ? this.options.status : 'open';
-      this.bindTo(this, 'timeline', this.initTimeline);
+      this.models = this.options.models;
     },
 
     render: function() {
-      var self = this,
-          i = 0;
+      var self = this, view;
 
       _.each(this.models, function(ticket) {
-        if (i < 10) { i++; }
-        else {
-          self.page++;
-          i = 0;
-        }
-        var view = self.renderTicket(ticket, self.page);
+        view = self.renderTicket(ticket);
         $(self.el).append(view);
       });
 
       return this;
     },
 
-    initTimeline: function() {
-      var self = this;
-      this.timeline = new Timeline(this.collection, this.renderTicket, $(this.el), '.ticket', { status: this.status });
-      this.bindTo($(window), 'scroll', function() { self.timeline.shouldCheckScroll = true });
-      this.createInterval(250, function() { self.timeline.didScroll() });
-    },
-
-    renderTicket: function(model, page) {
+    renderTicket: function(model) {
       var view = this.createView(
         TicketView,
-        {model: model, page: page, collection: this.collection}
+        {model: model}
       );
-
-      this.page = page;
 
       return view.render().el;
     },

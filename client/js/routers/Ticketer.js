@@ -6,8 +6,7 @@ define([
   'models/Ticket',
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView',
-  'views/tickets/TicketFormView',
-  'views/tickets/MyTicketListView'
+  'views/tickets/TicketFormView'
 ],
 function(
   Backbone,
@@ -15,8 +14,7 @@ function(
   Ticket,
   TicketListView,
   TicketDetailsView,
-  TicketFormView,
-  MyTicketListView
+  TicketFormView
 ) {
 
   var Ticketer = Backbone.Router.extend({
@@ -44,32 +42,28 @@ function(
 
     openTickets: function(id) {
       var Header = ticketer.views.headers.main,
-          collection = ticketer.collections.openTickets,
-          View = new TicketListView({ collection: collection, status: 'open' });
+          models = ticketer.collections.openTickets.models,
+          View = new TicketListView({ models: models });
 
       // Transitions
       this.appView.showHeader(Header, 'openTickets');
-      this.appView.showView(View, {
-        triggers: ['timeline'],
-      });
+      this.appView.showView(View);
     },
 
     closedTickets: function() {
       var Header = ticketer.views.headers.main,
-          collection = ticketer.collections.closedTickets,
-          View = new TicketListView({collection: collection, status: 'closed' });
+          models = ticketer.collections.closedTickets.models,
+          View = new TicketListView({ models: models });
 
       // Transitions
       this.appView.showHeader(Header, 'closedTickets');
-      this.appView.showView(View, {
-        triggers: ['timeline'],
-      });
+      this.appView.showView(View);
     },
 
     myTickets: function() {
       var Header = ticketer.views.headers.main,
-          collection = ticketer.collections.myTickets,
-          View = new MyTicketListView({ collection: collection });
+          models = ticketer.collections.openTickets.mine,
+          View = new TicketListView({ models: models });
 
       // Transitions
       this.appView.showHeader(Header, 'myTickets');
