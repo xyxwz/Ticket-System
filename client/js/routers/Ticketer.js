@@ -51,13 +51,37 @@ function(
     },
 
     closedTickets: function() {
-      var Header = ticketer.views.headers.main,
-          models = ticketer.collections.closedTickets.models,
-          View = new TicketListView({ models: models });
+      var self, Header, collection, models, View;
 
-      // Transitions
+      self = this;
+      Header = ticketer.views.headers.main;
+      collection = ticketer.collections.closedTickets;
+
       this.appView.showHeader(Header, 'closedTickets');
-      this.appView.showView(View);
+
+      if (collection.length < 1) {
+        collection.fetch({
+          data: { page: 1, status: 'closed' } ,
+          success: function(collection, response) {
+            models = collection.models;
+            View = new TicketListView({
+              collection: collection,
+              models: models,
+              status: 'closed'
+            });
+            self.appView.showView(View);
+          },
+        });
+      }
+      else {
+        models = collection.models;
+        View = new TicketListView({
+          collection: collection,
+          models: models,
+          status: 'closed'
+        });
+        self.appView.showView(View);
+      }
     },
 
     myTickets: function() {

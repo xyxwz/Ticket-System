@@ -35,7 +35,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
      * Returns nothing. */
     function Timeline(collection, renderFunction, wrapperElement, el, args) {
       var self, params, url, objID, item;
-      
+
       self = this;
 
       this.collection = collection;
@@ -50,34 +50,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
       };
 
       this.shouldCheckScroll = false;
-      this.lastPermalinkPosition = $(document).scrollTop();
       this.didScroll = this.didScroll;
-      
-      /* Should we scroll down once the items are loaded? We should if we're
-       * getting something other than the latest.*/
-      this.shouldScrollDown = false;
-
-      params = this.getUrlVars();
-
-      if (params.id) {
-        objID = params.id.split('id_')[1];
-        item = this.collection.get(objID);
-        if(item) {
-          scrollOffset = this.elements.wrapper.find("#" + params.id).offset().top;
-          $(window).scrollTop(scrollOffset);
-        }
-      }
-    };
-
-    Timeline.prototype.getUrlVars = function(){
-      var vars = [], hash;
-      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-      for(var i = 0; i < hashes.length; i++){
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-      }
-      return vars;
     };
 
     /* Got some data back from the server, time to parse it!
@@ -86,7 +59,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
      *  page    - the page number to append to the item
      *
      * Returns nothing. */
-    Timeline.prototype.receivedData = function(items, page) {
+    Timeline.prototype.receivedData = function(items) {
       var model, context, created_at, rendered, scrollOffset, item;
 
       rendered = (function() {
@@ -96,7 +69,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
         for (_i = 0, _len = items.length; _i < _len; _i++) {
           item = items[_i];
           model = this.collection.get(item.id);
-          context = this.render(model, page);
+          context = this.render(model);
           _results.push(this.elements.wrapper.append(context));
         }
         return _results
@@ -128,58 +101,16 @@ define(['jquery', 'backbone'], function($, Backbone) {
 
       // Get more items for infinite scroll downwards?
       if (this.laterItemsPossible && ((bottomOfLastItem - visibleBottom) < this.infiniteScrollThreshold)) {
-        page = parseInt(this.elements.lastItem.attr('data-page')) + 1;
+        page = this.collection.page + 1;
         this.collection.fetch({
           add: true,
           data: {page: page, status: this.args.status},
           success: function(collection, response) {
-            self.receivedData(response, page);
+            if (response.length != 0) self.collection.page = page;
+            self.receivedData(response);
           },
         });
       }
-
-      // Permalink?
-      scrolledDownEnough = $(document).scrollTop() > (this.lastPermalinkPosition + this.permalinkScrollThreshold);
-      scrolledUpEnough = $(document).scrollTop() < (this.lastPermalinkPosition - this.permalinkScrollThreshold);
-      if (scrolledDownEnough || scrolledUpEnough) {
-        this.lastPermalinkPosition = $(document).scrollTop();
-        _ref = this.elements.wrapper.find(this.el);
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          item = _ref[_i];
-          item = $(item);
-          if (item.offset().top >= (this.lastPermalinkPosition - this.infiniteScrollThreshold)) {
-            if (item.is(':first-child')) {
-              this.permalink(false);
-            } else {
-              this.permalink(item);
-            }
-            break;
-          }
-        }
-        return _results;
-      }
-    };
-
-    /* Permalink the page.
-     *
-     * item - A <el> jQuery collection to permalink to. If false, the
-     *        permalink is cleared.
-     *
-     * Returns nothing. */
-    Timeline.prototype.permalink = function(item) {
-      var url, urlArray, _i, _len;
-
-      // Only give the good stuff to newer folks
-      if (!window.history || !window.history.pushState) {
-        return;
-      }
-
-      url = window.location.hash.split("?")[0];
-      if (item) {
-        url += "?id=" + item.attr('id');
-      }
-      return window.history.replaceState({}, document.title, url);
     };
 
     return Timeline;

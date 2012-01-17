@@ -12,8 +12,13 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
     },
 
     initialize: function() {
+      var self;
+
+      self = this;
       _.bindAll(this);
+
       this.models = this.options.models;
+      this.status = this.options.status ? this.options.status : 'open';
     },
 
     render: function() {
@@ -23,6 +28,8 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
         view = self.renderTicket(ticket);
         $(self.el).append(view);
       });
+
+      if (this.status === 'closed') this.initTimeline();
 
       return this;
     },
@@ -34,6 +41,16 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       );
 
       return view.render().el;
+    },
+
+    initTimeline: function() {
+      var self = this;
+
+      if (this.collection.length === 0) return;
+
+      this.timeline = new Timeline(this.collection, this.renderTicket, $(this.el), '.ticket', { status: this.status });
+      this.bindTo($(window), 'scroll', function() { self.timeline.shouldCheckScroll = true });
+      this.createInterval(250, function() { self.timeline.didScroll() });
     },
 
     showDetails: function(e) {

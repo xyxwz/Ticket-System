@@ -16,6 +16,8 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
         return model.get("opened_at");
       };
 
+      this.page = 1;
+
       this.bind('reset', this.loadAllComments);
       this.bind('add', this.loadComment);
 
