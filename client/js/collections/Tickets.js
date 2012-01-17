@@ -8,8 +8,9 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
     url: '/api/tickets',
     
     initialize: function() {
-      _.bindAll(this);
       var self = this;
+
+      _.bindAll(this);
 
       this.comparator = function(model) {
         return model.get("opened_at");

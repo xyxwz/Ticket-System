@@ -40,7 +40,7 @@ function(
       this.navigate("tickets/open", true);
     },
 
-    openTickets: function(id) {
+    openTickets: function() {
       var Header = ticketer.views.headers.main,
           models = ticketer.collections.openTickets.models,
           View = new TicketListView({ models: models });
