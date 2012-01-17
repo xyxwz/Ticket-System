@@ -36,15 +36,18 @@ describe('user', function(){
 
       it("should enforce required fields", function(done){
         User.create({}, function(err){
-          // Email
-          should.exist(err.errors.email);
-          err.errors.email.type.should.equal("required");
+          // Username
+          should.exist(err.errors.username);
+          err.errors.username.type.should.equal("required");
           // Role
           should.exist(err.errors.role);
           err.errors.role.type.should.equal("required");
           // Name
           should.exist(err.errors.name);
           err.errors.name.type.should.equal("required");
+          // Access Token
+          should.exist(err.errors.access_token);
+          err.errors.access_token.type.should.equal("required");
           done();
         });
       });
@@ -148,7 +151,7 @@ describe('user', function(){
      // Insert a Test User
     before(function(done){
       data = {
-        email: "static.example@example.com",
+        username: "static_example",
         name: "John Doe",
         role: "admin",
         access_token: "abc"
@@ -215,9 +218,10 @@ describe('user', function(){
     /* Should add a user to the database */
     describe('create', function(){
       var data = {
-        email: "create.example@example.com",
+        username: "create.example",
         name: "John Doe",
-        role: "member"
+        role: "member",
+        access_token: "abc123"
       }
 
       it('should successfully create a user', function(done){

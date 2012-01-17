@@ -90,7 +90,7 @@ function addUsers(cb) {
 // Add User
 function addUser(i, cb){
   var user = new schemas.User({
-    email: "example_"+i+"@example.com",
+    username: "example_"+i,
     name: "John Doe",
     role: "member",
     access_token: "abc"+i,

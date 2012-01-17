@@ -1,13 +1,13 @@
 var mongoose = require("mongoose");
 
 var User = new mongoose.Schema({
-  email         : {type : String, default:  '', required: true, trim: true,
+  username      : {type : String, default:  '', required: true, trim: true,
                    lowercase: true, index: { unique: true }},
   name          : {type : String, default : '', required: true, trim: true},
   role          : {type : String, default : '', required: true, trim: true,
                    enum: ['admin', 'member']},
   created_at    : {type : Date,   default : Date.now, required: true},
-  access_token  : {type : String, trim: true, index: true}
+  access_token  : {type : String, required: true, trim: true, index: true},
 });
 
 /**

@@ -16,7 +16,7 @@ module.exports = function(app) {
    *
    *  data - A json object representing user properties to update
    *     :name         - string, optional
-   *     :email        - string, optional
+   *     :username     - string, optional
    *     :role         - string, optional, available options ['admin', 'member']
    *
    *  Returns a user object ready to be sent to the client.
@@ -27,7 +27,7 @@ module.exports = function(app) {
   User.prototype.update = function update(data, cb) {
     var user = this.model;
 
-    if (data.email) user.email = data.email;
+    if (data.username) user.username = data.username;
     if (data.name) user.name = data.name;
     if (data.role) user.role = data.role;
 
@@ -131,9 +131,10 @@ module.exports = function(app) {
    *  Creates a new user.
    *
    *  data - A json object representing user properties
-   *     :name       - string
-   *     :email      - string
-   *     :role       - string, options include ['admin', 'member']
+   *     :username      - string
+   *     :name          - string
+   *     :role          - string, options include ['admin', 'member']
+   *     :access_token  - string, oAuth access token
    *
    *  Returns a user object ready to be sent to the client.
    *
@@ -144,9 +145,10 @@ module.exports = function(app) {
     var user;
 
     user = new UserSchema({
-      email: data.email,
+      username: data.username,
       name: data.name,
-      role: data.role
+      role: data.role,
+      access_token: data.access_token,
     });
 
     user.save(function(err, model) {

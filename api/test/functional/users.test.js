@@ -70,9 +70,10 @@ describe('user', function(){
 
     before(function(done){
       var userObject = {
-        "email":"post@example.com",
+        "username":"post_example",
         "name":"Example User",
-        "role":"admin"
+        "role":"admin",
+        "access_token":"abc123",
       }
 
       request
