@@ -8,6 +8,7 @@ var User = new mongoose.Schema({
                    enum: ['admin', 'member']},
   created_at    : {type : Date,   default : Date.now, required: true},
   access_token  : {type : String, required: true, trim: true, index: true},
+  avatar        : {type: String, trim: true}
 });
 
 /**
@@ -26,7 +27,8 @@ User.methods.toClient = function(){
   user = {
     id: obj.id,
     name: obj.name,
-    role: obj.role
+    role: obj.role,
+    avatar: obj.avatar
   }
 
   return user;

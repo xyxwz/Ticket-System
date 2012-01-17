@@ -242,41 +242,6 @@ describe('user', function(){
       });
     });
 
-
-    /* Set User Access Token *
-    /* Should assign an access token to a user */
-    describe('setAccessToken', function(){
-
-      it('should add an access token', function(done){
-        User.setAccessToken(
-        'create.example@example.com', '123', 
-        function(err, user){
-          should.exist(user.access_token);
-          user.access_token.should.equal('123');
-          done();
-        });
-      });
-
-      it('should return a token', function(done){
-        User.setAccessToken(
-        'create.example@example.com', '123', 
-        function(err, user){
-          user.access_token.should.equal('123');
-          done();
-        });
-      });
-
-      it('should return error for non-authorized user', function(done){
-        User.setAccessToken(
-        'non-valid@example.com', '123', 
-        function(err){
-          err.should.equal('Not an authorized user');
-          done();
-        });
-      });
-
-    });
-
    }); // close static methods
 
 });

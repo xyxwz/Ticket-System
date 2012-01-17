@@ -1,8 +1,7 @@
 var express = require('express'),
     mongoose = require('mongoose'),
     redis = require('redis'),
-    passport = require('passport'),
-    GitHubStrategy = require('passport-github').Strategy;
+    passport = require('passport');
 
 var path = __dirname, lib, app;
 

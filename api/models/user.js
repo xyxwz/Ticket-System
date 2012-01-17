@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
     UserSchema = require('./schemas/user').User,
-    _ = require('underscore');
+    _ = require('underscore'),
+    twitter = require('ntwitter');
 
 module.exports = function(app) {
 
@@ -135,6 +136,7 @@ module.exports = function(app) {
    *     :name          - string
    *     :role          - string, options include ['admin', 'member']
    *     :access_token  - string, oAuth access token
+   *     :avatar        - string, url to a profile photo (optional)
    *
    *  Returns a user object ready to be sent to the client.
    *
@@ -149,6 +151,7 @@ module.exports = function(app) {
       name: data.name,
       role: data.role,
       access_token: data.access_token,
+      avatar: data.avatar
     });
 
     user.save(function(err, model) {
@@ -159,27 +162,59 @@ module.exports = function(app) {
 
 
   /**
-   *  setAccessToken
+   *  authorize
    *
-   *  Sets the access_token field for the user account.
+   *  Takes an oAuth response and gets a User or
+   *  if the user doesn't exist create a user with
+   *  base permissions.
    *
-   *  :email - Email address returned by the authentication system
-   *  :token - Access Token returned by the authentication system
+   *  oAuth should manage access control to the application
    *
-   *  Returns a user model
+   *  :token        - access_token returned from oAuth response
+   *  :tokenSecret  - access_secrect returned from oAuth response
+   *  :profile      - profile information returned from oAuth response
+   *
+   *  Returns an authorized user profile to store in session
+   *
+   *  @api private
    */
 
-  User.setAccessToken = function setAccessToken(email, token, cb) {
-    UserSchema
-    .findOne({'email':email})
-    .run(function(err, model) {
-      if(err || !model) return cb("Not an authorized user");
+  User._authorize = function authorize(token, tokenSecret, profile, cb) {
+    var twit, data, user;
 
-      model.access_token = token;
+    // Setup a connection to get Twitter user's profile
+    twit = new twitter({
+      consumer_key: process.env.CONSUMER_KEY,
+      consumer_secret: process.env.CONSUMER_SECRET,
+      access_token_key: token,
+      access_token_secret: tokenSecret
+    });
 
-      model.save(function(err, user) {
-        if(err) return cb("Error setting access token");
-        return cb(null, user);
+    twit.get('/users/show.json', { id: profile.id }, function(err, res) {
+      if (err) return cb(err);
+
+      UserSchema
+      .findOne({ 'access_token': token })
+      .run(function(err, model) {
+        if(err) return cb(err);
+        if(!model) {
+          // create a new user with base permissions
+          data = {
+            username: profile.username,
+            name: res.name,
+            role: 'member',
+            access_token: token,
+            avatar: res.profile_image_url
+          };
+
+          User.create(data, function(err, model) {
+            if(err) return cb(err);
+            return cb(null, model);
+          });
+        }
+        else {
+          return cb(null, model);
+        }
       });
     });
   };
