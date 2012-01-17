@@ -17,7 +17,8 @@ function($, _, Backbone, BaseView, mustache, form) {
     },
 
     render: function() {
-      $(this.el).html(form);
+
+      $(this.el).html(Mustache.to_html(form, ticketer.currentUser));
 
       // Set input to get form values from
       this.input = this.$('form textarea');

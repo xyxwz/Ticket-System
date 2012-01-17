@@ -139,7 +139,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
       _.each(this.model.get('assigned_to'), function(id) {
         var user = ticketer.collections.admins.get(id),
-            html = Mustache.to_html(AssignedUserTmpl, user);
+            html = Mustache.to_html(AssignedUserTmpl, user.toJSON());
 
         $('.ticketHeader ul', self.el).prepend(html);
       });
@@ -184,7 +184,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
         self.assigned_to.push(user);
 
         var userObj = ticketer.collections.admins.get(user),
-            html = Mustache.to_html(AssignedUserTmpl, userObj);
+            html = Mustache.to_html(AssignedUserTmpl, userObj.toJSON());
 
         $('.ticketHeader ul', self.el).prepend(html);
       })

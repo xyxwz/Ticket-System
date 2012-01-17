@@ -68,12 +68,10 @@ define([
       },
     };
 
-    /* Override the closedTicket collection's comparator
-     *
-     * MongoDB id's are 12-byte values with the first 4 bytes
-     * being a UNIX style timestamp. If we turn the hex into a
-     * integer and negate it we can reverse the sort order.
-     */
+    /* Set Default User Avatar */
+    if (!ticketer.currentUser.avatar) ticketer.currentUser.avatar = "/img/avatars/65x65.gif";
+
+    /* Override the closedTicket collection's comparator */
     ticketer.collections.closedTickets.comparator = function(collection) {
       var datum = new Date(collection.get('closed_at'));
       var closed_at = datum.getTime();

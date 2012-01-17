@@ -20,8 +20,13 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
     },
 
     render: function() {
-      $(this.el).html(TicketForm);
+      var data;
+
+      data = currentUser;
+      data.shortname = data.name.split(' ')[0];
+
       $(this.el).html(Mustache.to_html(TicketForm, currentUser));
+
       return this;
     },
 

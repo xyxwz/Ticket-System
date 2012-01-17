@@ -235,6 +235,8 @@ header.row {
 
     .ticket .avatar a img {
       display: block;
+      width: 65px;
+      height: 65px;
       margin: 0 auto 4px auto;
       border: 1px solid #cfd0d0;
       border: 1px solid rgba(207,208,208,0.7);
@@ -319,6 +321,8 @@ span.miniAvatar {
 
   span.miniAvatar img {
     display: block;
+    width: 35px;
+    height: 35px;
     border: 1px solid #cfd0d0;
     border: 1px solid rgba(207,208,208,0.7);
   }
