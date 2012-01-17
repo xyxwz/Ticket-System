@@ -24,9 +24,9 @@ module.exports = function(app) {
 
   // Use the GitHubStrategy within Passport.
   passport.use(new GitHubStrategy({
-    clientID: settings.github_client_id,
-    clientSecret: settings.github_client_secret,
-    callbackURL: "http://"+settings.host_ip+":3000/login/oauth/callback"
+    consumerKey: process.env.CONSUMER_KEY,
+    consumerSecret: process.env.CONSUMER_SECRET,
+    callbackURL: "http://"+process.env.HOST_IP+"/login/oauth/callback"
     },
     function(accessToken, refreshToken, profile, done) {
       var primaryEmail = profile.emails[0]['value'];

@@ -4,10 +4,7 @@ var express = require('express'),
     passport = require('passport'),
     GitHubStrategy = require('passport-github').Strategy;
 
-var path = __dirname,
-    settings = require(path + '/conf/settings'),
-    lib,
-    app;
+var path = __dirname, lib, app;
 
 /* Initial Bootstrap */
 exports.boot = function(params){
@@ -30,7 +27,7 @@ function bootApplication(app) {
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: settings.session_secret }));
+  app.use(express.session({ secret: process.env.SESSION_SECRET }));
   app.use(passport.initialize());
   app.use(passport.session());
   app.use('/api', lib.middleware.Auth);
