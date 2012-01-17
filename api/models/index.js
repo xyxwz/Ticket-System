@@ -1,9 +1,9 @@
 
 module.exports = function requireModels(app){
   var models = {
-    User: require('./User')(app),
-    Ticket: require('./Ticket')(app),
-    Comment: require('./Comment')(app),
+    User: require('./user')(app),
+    Ticket: require('./ticket')(app),
+    Comment: require('./comment')(app),
   };
 
   return models;

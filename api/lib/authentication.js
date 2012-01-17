@@ -6,7 +6,7 @@ var passport = require('passport'),
 
 module.exports = function(app) {
 
-  User = require('../models/User')(app);
+  User = require('../models')(app).User;
 
   /* -------------------------------- */
   /* Passport Authentication Strategy */

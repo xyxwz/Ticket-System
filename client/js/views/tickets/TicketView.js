@@ -4,7 +4,7 @@
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
 'text!templates/tickets/Ticket.html', 'text!templates/tickets/Timestamp.html',
-'text!templates/tickets/AssignedUser.html', 'timeago', 'jqueryui/droppable'],
+'text!templates/tickets/AssignedUser.html', 'timeago', 'jqueryui/droppable', 'marked'],
 function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, AssignedUserTmpl) {
 
   var TicketView = BaseView.extend({
@@ -41,6 +41,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       var self = this,
           data = this.model.toJSON();
 
+      data.description = marked(data.description);
       data.comments = this.model.comments.length;
       data.showAdmin = this.renderAdminOptions(); // True or False
       data.user = this.model.get('user');
