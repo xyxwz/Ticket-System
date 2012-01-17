@@ -228,21 +228,23 @@ module.exports = function(app) {
    *  @api public
    */
 
-  Ticket.all = function all(status, page, cb) {
+  Ticket.all = function all(args, cb) {
     var query, array, count, _i, obj;
 
-    query = TicketSchema.find({'status': status});
-
-    if(status === 'open') {
-      query.asc('opened_at')
+    if(args.status) {
+      query = TicketSchema.find({'status': args.status});
+      args.status === 'open' ? query.asc('opened_at') : query.desc('closed_at');
     }
     else {
-      query.desc('closed_at')
+      query = TicketSchema.find();
+    }
+
+    if(args.page) {
+      query.skip((args.page - 1) * 10);
     }
 
     query
     .populate('user')
-    .skip((page - 1) * 10)
     .limit(10)
     .run(function(err, models){
       if(err) {

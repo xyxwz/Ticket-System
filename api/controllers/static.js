@@ -21,9 +21,7 @@ module.exports = function(app) {
         // Render Index with bootstrapped tickets
         res.render('index', {
           token: req.session.passport.user.token,
-          openTickets: JSON.stringify(data.openTickets),
-          closedTickets: JSON.stringify(data.closedTickets),
-          myTickets: JSON.stringify(data.myTickets),
+          tickets: JSON.stringify(data.tickets),
           admins: JSON.stringify(data.admins),
           currentUser: JSON.stringify(data.currentUser),
         });
@@ -44,42 +42,23 @@ module.exports = function(app) {
   function bootstrapModels(req, cb) {
     var data = {};
     bootstrapTickets({status: 'open'}, function(err, tickets) {
-      if(err) return cb('error getting open tickets');
-      data.openTickets = tickets;
+      if(err) return cb('error getting tickets');
+      data.tickets = tickets;
 
-      bootstrapTickets({status: 'closed'}, function(err, tickets) {
-        if(err) return cb('error getting closed tickets');
-        data.closedTickets = tickets;
-
-        bootstrapAdmins(function(err, admins) {
-          if(err) return cb('error getting admin users');
-          data.admins = admins;
-          data.currentUser = req.session.passport.user;
-
-          bootstrapTickets({status: 'open', user: data.currentUser.id},
-          function(err, tickets) {
-            if(err) return cb('error getting users tickets');
-            data.myTickets = tickets;
-            return cb(null, data);
-          });
-        });
+      bootstrapAdmins(function(err, admins) {
+        if(err) return cb('error getting admin users');
+        data.admins = admins;
+        data.currentUser = req.session.passport.user;
+        return cb(null, data);
       });
     });
   };
 
   function bootstrapTickets(args, cb) {
-    if (args.user) {
-      Ticket.mine(args.user, args.status, 1, function(err, models) {
-        if(err || !models) return cb('error getting users tickets');
-        return cb(null, models);
-      });
-    }
-    else {
-      Ticket.all(args.status, 1, function(err, models) {
-        if(err || !models) return cb('error getting open tickets');
-        return cb(null, models);
-      });
-    }
+    Ticket.all(args, function(err, models) {
+      if(err || !models) return cb('error getting tickets');
+      return cb(null, models);
+    });
   };
 
   function bootstrapAdmins(cb) {

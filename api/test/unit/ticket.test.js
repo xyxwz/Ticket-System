@@ -271,7 +271,7 @@ describe('ticket', function(){
 
       // Run get all and assign to users
       before(function(done){
-        Ticket.all('open', 1, function(err, results){
+        Ticket.all({status:'open', page: 1}, function(err, results){
           if(err) return done(err);
           models = results;
           done();
@@ -301,7 +301,7 @@ describe('ticket', function(){
 
       // Run get all and assign to users
       before(function(done){
-        Ticket.all('closed', 1, function(err, results){
+        Ticket.all({status: 'closed', page: 1}, function(err, results){
           if(err) return done(err);
           models = results;
           done();
