@@ -33,6 +33,8 @@ module.exports = function(app) {
       name: obj.user.name,
     }
 
+    if (obj.user.avatar) user.avatar = obj.user.avatar;
+
     obj.user = user;
 
     return obj;
@@ -194,6 +196,8 @@ module.exports = function(app) {
           name: user.name,
         },
       };
+
+      if (user.avatar) obj.user.avatar = user.avatar;
 
       return cb(null, obj);
     });

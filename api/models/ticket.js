@@ -33,6 +33,8 @@ module.exports = function(app) {
       name: obj.user.name,
     }
 
+    if (obj.user.avatar) user.avatar = obj.user.avatar;
+
     obj.user = user;
     delete obj.comments;
 
