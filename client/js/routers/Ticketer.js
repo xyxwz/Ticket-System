@@ -99,8 +99,7 @@ function(
           self = this,
           View,
           ticket = ticketer.collections.openTickets.get(id) ||
-                   ticketer.collections.closedTickets.get(id) ||
-                   ticketer.collections.myTickets.get(id);
+                   ticketer.collections.closedTickets.get(id);
 
       if(typeof(ticket) === 'undefined') {
         ticket = new Ticket({id: id});
