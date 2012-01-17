@@ -241,11 +241,11 @@ module.exports = function(app) {
 
     if(args.page) {
       query.skip((args.page - 1) * 10);
+      query.limit(10);
     }
 
     query
     .populate('user')
-    .limit(10)
     .run(function(err, models){
       if(err) {
         return cb("Error finding tickets");

@@ -6,7 +6,6 @@ define([
   'underscore',
   'backbone',
   'collections/Tickets',
-  'collections/MyTickets',
   'collections/Comments',
   'collections/Users',
   'routers/Ticketer',
@@ -16,7 +15,6 @@ define([
   _,
   Backbone,
   Tickets,
-  MyTickets,
   Comments,
   Users,
   Ticketer,
@@ -60,7 +58,6 @@ define([
       collections: {
         openTickets: new Tickets(),
         closedTickets: new Tickets(),
-        myTickets: new MyTickets(),
         admins: new Users(),
       },
       views: {
@@ -69,7 +66,6 @@ define([
           back: BackHeaderView,
         }
       },
-      models: [],
     };
 
     /* Override the closedTicket collection's comparator
@@ -88,9 +84,7 @@ define([
      * Reads in JSON variables written to page by server
      * side code to prevent fetch at boot and make collections
      * available immediately to views. */
-    ticketer.collections.openTickets.reset(openTickets);
-    ticketer.collections.myTickets.reset(myTickets);
-    ticketer.collections.closedTickets.reset(closedTickets);
+    ticketer.collections.openTickets.reset(tickets);
     ticketer.collections.admins.reset(admins);
 
     // Start Backbone History
