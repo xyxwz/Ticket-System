@@ -6,7 +6,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
   
   function AppView() {
 
-    this.showView = function(view, args) {
+    this.showView = function(view) {
       var self = this;
 
       if (this.currentView){
@@ -18,13 +18,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 
       $('#main').fadeOut(200, function() {
         $(this).html(self.currentView.el);
-      }).fadeIn(200, function() {
-        if(args && args.triggers) {
-          _.each(args.triggers, function(trigger) {
-            self.currentView.trigger(trigger);
-          });
-        }
-      });
+      }).fadeIn(200);
     };
 
     /* Manages Headers
@@ -34,8 +28,11 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
      * content and should only be destroyed and transitioned
      * when needed.
      */
-    this.showHeader = function(header, tab) {
+    this.showHeader = function(header, args) {
       var self = this;
+
+      // toggle assign pulltab off by default
+      if(!args) args = { status: 'closed' };
 
       if (this.currentHeader && this.headerView) {
         /* If new header dispose of old header and
@@ -49,14 +46,15 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 
           $('header').fadeOut(200, function() {
             $(this).html(self.currentHeader.el);
-            if(tab) { self.toggleHeaderTab(tab); }
+            if(args.tab) { self.toggleHeaderTab(args.tab); }
+            if(args.status) { self.currentHeader.toggleAssign(args.status); }
           }).fadeIn(200);
 
           return;
         }
 
         /* Not a new header so just toggle tabs if available */
-        if(tab) { self.toggleHeaderTab(tab); }
+        if(args.tab) { self.toggleHeaderTab(args.tab); }
       }
 
       else {
@@ -67,7 +65,8 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 
         $('header').fadeOut(200, function() {
           $(this).html(self.currentHeader.el);
-          if(tab) { self.toggleHeaderTab(tab); }
+          if(args.tab) { self.toggleHeaderTab(args.tab); }
+          if(args.status) { self.currentHeader.toggleAssign(args.status); }
         }).fadeIn(200);
       }
 
@@ -77,6 +76,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
       // If tab variable set correct highlight on tab
       if(typeof(tab) != 'undefined' && typeof(this.currentHeader.toggleTab) === 'function') {
         this.currentHeader.toggleTab(tab);
+        this.currentHeader.toggleAssign(tab);
       }
     };
 

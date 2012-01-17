@@ -46,7 +46,7 @@ function(
           View = new TicketListView({ models: models });
 
       // Transitions
-      this.appView.showHeader(Header, 'openTickets');
+      this.appView.showHeader(Header, { tab: 'openTickets' });
       this.appView.showView(View);
     },
 
@@ -57,7 +57,7 @@ function(
       Header = ticketer.views.headers.main;
       collection = ticketer.collections.closedTickets;
 
-      this.appView.showHeader(Header, 'closedTickets');
+      this.appView.showHeader(Header, { tab: 'closedTickets' });
 
       if (collection.length < 1) {
         collection.fetch({
@@ -90,7 +90,7 @@ function(
           View = new TicketListView({ models: models });
 
       // Transitions
-      this.appView.showHeader(Header, 'myTickets');
+      this.appView.showHeader(Header, { tab: 'myTickets' });
       this.appView.showView(View);
     },
 
@@ -107,7 +107,7 @@ function(
           success: function(){
             View = new TicketDetailsView({ model: ticket });
             // Transitions
-            self.appView.showHeader(Header);
+            self.appView.showHeader(Header, { status: ticket.get('status') });
             self.appView.showView(View);
           },
         });
@@ -115,7 +115,7 @@ function(
       else {
         View = new TicketDetailsView({ model: ticket });
         // Transitions
-        this.appView.showHeader(Header);
+        this.appView.showHeader(Header, { status: ticket.get('status') });
         this.appView.showView(View);
       }
 

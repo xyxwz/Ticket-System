@@ -66,6 +66,12 @@ function($, _, Backbone, BaseView, HeaderTmpl, PullTabTmpl) {
       this.bindTo($('.pullTab', this.el), 'clickoutside', this.hidePullTab);
     },
 
+    toggleAssign: function(status) {
+      if (status === 'closed') {
+        $('.pullTab', self.el).hide();
+      }
+    },
+
     /* Toggles PullTab Menu Up or Down */
     togglePullTab: function(e) {
       var tab = $(e.currentTarget).closest('.pullTab'),

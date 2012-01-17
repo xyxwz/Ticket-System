@@ -93,6 +93,21 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
       }
     },
 
+    toggleAssign: function(tab) {
+      var self = this;
+
+      if(tab === 'closedTickets') {
+        if($('.pullTab', self.el).css('display') != 'none') {
+          $('.pullTab', self.el).hide();
+        }
+      }
+      else {
+        if($('.pullTab', self.el).css('display') == 'none') {
+          $('.pullTab', self.el).fadeIn(200);
+        }
+      }
+    },
+
     /* Toggles PullTab Menu Up or Down */
     togglePullTab: function(e) {
       var tab = $(e.currentTarget).closest('.pullTab'),
