@@ -67,8 +67,15 @@ function($, _, Backbone, BaseView, HeaderTmpl, PullTabTmpl) {
     },
 
     toggleAssign: function(status) {
+      var self = this;
+
       if (status === 'closed') {
         $('.pullTab', self.el).hide();
+      }
+      else {
+        if($('.pullTab', self.el).css('display') == 'none') {
+          $('.pullTab', self.el).fadeIn(200);
+        }
       }
     },
 

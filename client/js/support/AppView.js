@@ -55,6 +55,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 
         /* Not a new header so just toggle tabs if available */
         if(args.tab) { self.toggleHeaderTab(args.tab); }
+        if(args.status) { self.currentHeader.toggleAssign(args.status); }
       }
 
       else {
