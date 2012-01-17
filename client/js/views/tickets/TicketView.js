@@ -110,6 +110,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
     /* Close the ticket using the model's close function */
     closeTicket: function() {
       this.model.close();
+      $(this.el).droppable('destroy');
     },
 
     /* Runs on model 'change' event and updates view elements */
