@@ -16,7 +16,8 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
         return model.get("opened_at");
       };
 
-      this.bind('reset', this.loadComments);
+      this.bind('reset', this.loadAllComments);
+      this.bind('add', this.loadComment);
 
       if (currentUser.role === 'admin') {
         this.mine = new Array();
@@ -26,10 +27,16 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       }
     },
 
-    loadComments: function() {
+    loadAllComments: function() {
+      var self = this;
+
       this.each(function(ticket) {
-        ticket.comments.fetch();
+        self.loadComment(ticket);
       });
+    },
+
+    loadComment: function(model) {
+      model.comments.fetch();
     },
 
     setMyTickets: function(model) {
