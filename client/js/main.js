@@ -5,6 +5,7 @@ require.config( {
     'underscore':       'libs/underscore',
     'text':             'libs/require/text',
     'mustache':         'libs/mustache',
+    'marked':           'libs/marked',
     'timeago':          'libs/jquery.timeago',
     'outsideEvents':    'libs/jquery.ba-outside-events.min',
     'jqueryui':         'libs/jqueryui-1.8.16',

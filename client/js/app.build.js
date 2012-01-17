@@ -6,6 +6,7 @@
     'jquery': 'empty:',
     'backbone':         'libs/AMDbackbone-0.5.3',
     'underscore':       'libs/underscore',
+    'marked':           'libs/marked', 
     'text':             'libs/require/text',
     'mustache':         'libs/mustache',
     'timeago':          'libs/jquery.timeago',
