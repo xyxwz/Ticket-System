@@ -28,3 +28,8 @@ html
       header.row
 
       #main(role='main')
+
+    - if (process.env.TYPEKIT)
+      script(src="http://use.typekit.com/#{process.env.TYPEKIT}.js")
+      script(type='text/javascript')
+        try{Typekit.load();}catch(e){}

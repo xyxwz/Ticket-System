@@ -143,9 +143,17 @@ textarea { resize: none; }
 
 p { line-height: 1.5em; }
 
-.written {
-  font-family: "American Typewriter", "serif";
+.marker {
+  font-family: "skippy-sharp", "cursive";
   font-weight: 400;
+  font-size: 27px;
+  line-height: 1em;
+  color: #222;
+}
+
+.written {
+  font-family: "museo-slab", "American Typewriter", "serif";
+  font-weight: 300;
   font-size: 14px;
   line-height: 1.5em; 
   color: #222;
@@ -173,10 +181,9 @@ header.row {
       background: #fff;
       float: left;
       margin: 0 1em 0 0;
-      padding: 12px 0;
+      padding: 8px 0 12px 0;
       width: 138px;
       text-align: center;
-      font-size: 16px;
       color: #222;
       cursor: pointer;
     }
@@ -243,7 +250,10 @@ header.row {
       z-index: 201;
     }
 
-    .ticket .avatar a span { display: block; }
+    .ticket .avatar a span {
+      display: block;
+      font-weight: 700;
+    }
 
   .ticket .ticketInfo { z-index: 300; }
 
@@ -251,14 +261,13 @@ header.row {
 
       .ticketHeader .ticketName h2 {
         font-size: 18px;
-        font-weight: 400;
+        font-weight: 700;
         margin-bottom: 0;
         line-height: 1.5em;
       }
 
       .ticketHeader .ticketName span.timestamp {
         font-size: 14px;
-        font-weight: 400;
         color: #626262;
       }
       
@@ -278,6 +287,94 @@ header.row {
       border-top: 1px solid #cfd0d0;
       border-top: 1px solid rgba(207,208,208,0.7);
     }
+
+      .ticketBody > h2:first-child, .ticketBody > h1:first-child, .ticketBody > h1:first-child + h2 {
+        border: 0;
+        margin: 0;
+        padding: 0;
+        border-image: initial;
+      }
+
+      .ticketBody > :first-child { margin-top: 0!important; }
+
+      .ticketBody h1 {
+        margin: 15px 0;
+        padding-bottom: 2px;
+        font-size: 24px;
+        border-bottom: 1px solid #EEE;
+      }
+
+      .ticketBody h2 {
+        margin: 20px 0 10px 0;
+        font-size: 18px;
+      }
+
+      .ticketBody h3 {
+        margin: 20px 0 10px 0;
+        padding-bottom: 2px;
+        font-size: 14px;
+        border-bottom: 1px solid #DDD;
+      }
+
+      .ticketBody p { margin: 1em 0; }
+
+      .ticketBody p strong { font-weight: 700; }
+
+      .ticketBody pre {
+        margin: 0 0 18px 0;
+        background-color: #F8F8F8;
+        border: 1px solid #CCC;
+        font-size: 13px;
+        line-height: 19px;
+        overflow: auto;
+        padding: 6px 10px;
+        border-radius: 3px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-image: initial;
+      }
+
+        .ticketBody pre code {
+          border: none;
+        }
+
+      .ticketBody code, .ticketBody tt {
+        margin: 0 2px;
+        padding: 2px 5px;
+        border: 1px solid #CCC;
+        font-size: 13px;
+        line-height: 19px;
+        background-color: #F8F8F8;
+        border-radius: 3px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-image: initial;
+      }
+
+      .ticketBody code, .ticketBody pre { font: 12px 'Bitstream Vera Sans Mono','Courier', monospace; }
+
+      .ticketBody > ul, .ticketBody > .document > ul, .ticketBody > ol, .ticketBody > .document > ol {
+        margin-top: 21px;
+        margin-left: 36px;
+        list-style: disc;
+      }
+
+        .ticketBody ul, .ticketBody ol {
+          margin: 15px 0 15px 25px;
+        }
+
+          .ticketBody ul li, .ticketBody ol li {
+            margin-top: 7px;
+            margin-bottom: 7px;
+          }
+
+            .ticketBody ul li > :first-child, .ticketBody ol li > :first-child {
+              margin-top: 0;
+            }
+
+            .ticketBody ul li > :last-child, .ticketBody ol li > :last-child {
+              margin-bottom: 0;
+            }
 
     .ticketInfo span.chat {
       display: block;
@@ -427,7 +524,12 @@ span.tack {
   #ticketForm form input[type="text"], #ticketForm form textarea {
     width: 100%;
     padding: 8px;
+    font-size: 14px;
+  }
+
+  #ticketForm form input[type="text"] {
     font-size: 16px;
+    font-weight: 700;
   }
 
   #ticketForm form .seperator {
