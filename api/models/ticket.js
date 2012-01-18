@@ -77,7 +77,7 @@ module.exports = function(app) {
     }
 
     if (data.title) model.title = data.title;
-    if (data.description) model.description = data.description;
+    if (data.description) model.description = data.description.replace(/<\/?script>/ig, '');
 
     // Manage assigned users
     if (data.assigned_to) {
@@ -386,7 +386,7 @@ module.exports = function(app) {
    *
    *  data - A json object representing ticket properties
    *     :title       - string
-   *     :description - string
+   *     :description - string, remove any possible script tags
    *     :user        - string, a user instance BSON id
    *
    *  Returns a ticket object ready to be sent to the client.
@@ -401,7 +401,7 @@ module.exports = function(app) {
 
     ticket = new TicketSchema({
       title: data.title,
-      description: data.description,
+      description: data.description.replace(/<\/?script>/ig, ''),
       user: data.user
     });
 
