@@ -40,6 +40,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
     },
 
     redirect: function(model) {
+      window.history.replaceState({}, document.title, "#tickets/open");
       ticketer.routers.ticketer.navigate("tickets/"+model.id, true);
     },
 
