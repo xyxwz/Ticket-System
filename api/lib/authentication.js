@@ -1,6 +1,5 @@
 var passport = require('passport'),
     TwitterStrategy = require('passport-twitter').Strategy,
-    settings = require('../conf/settings'),
     User;
 
 
