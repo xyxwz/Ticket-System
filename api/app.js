@@ -1,5 +1,6 @@
 var express = require('express'),
     mongoose = require('mongoose'),
+    RedisStore = require('connect-redis')(express),
     url = require('url'),
     redis = require('redis'),
     passport = require('passport');
@@ -27,7 +28,16 @@ function bootApplication(app) {
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: process.env.SESSION_SECRET }));
+  app.use(express.session({
+    secret: process.env.SESSION_SECRET,
+    store: new RedisStore({
+      host: app.set('redisHost'),
+      port: app.set('redisPort'),
+      db: app.set('redisDb'),
+      pass: app.set('redisPass')
+    })
+  }));
+
   app.use(passport.initialize());
   app.use(passport.session());
   app.use('/api', lib.middleware.Auth);
@@ -42,10 +52,9 @@ function bootModels(app) {
 
   mongoose.connect(app.set('db-uri'));
 
-  if (process.env.REDISTOGO_URL) {
-    rtg = url.parse(process.env.REDISTOGO_URL);
-    app.redis = redis.createClient(rtg.port, rtg.hostname);
-    app.redis.auth(rtg.auth.split(":")[1]);
+  if (process.env.NODE_ENV === 'production') {
+    app.redis = redis.createClient(app.set('redisPort'), app.set('redisHost'));
+    app.redis.auth(app.set('redisPass'));
   } else {
     app.redis = redis.createClient();
     app.redis.select(app.set('redisDB'));
