@@ -2,7 +2,7 @@
  * Renders a collection of Tickets
  */
 
-define(['jquery', 'underscore', 'backbone', 'BaseView', 'timeline', 'views/tickets/TicketView'],
+define(['jquery', 'underscore', 'backbone', 'BaseView', 'timeline', 'views/tickets/TicketView', 'truncate'],
 function($, _, Backbone, BaseView, Timeline, TicketView) {
 
   var TicketListView = BaseView.extend({
@@ -35,12 +35,17 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
     },
 
     renderTicket: function(model) {
-      var view = this.createView(
+      var view, html;
+
+      view = this.createView(
         TicketView,
         {model: model}
       );
 
-      return view.render().el;
+      html = view.render().el;
+      $('.ticketInfo .ticketBody', html).truncate({max_length: 500});
+
+      return html;
     },
 
     initTimeline: function() {

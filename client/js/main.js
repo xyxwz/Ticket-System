@@ -7,6 +7,7 @@ require.config( {
     'mustache':         'libs/mustache',
     'marked':           'libs/marked',
     'timeago':          'libs/jquery.timeago',
+    'truncate':         'libs/jquery.truncator',
     'outsideEvents':    'libs/jquery.ba-outside-events.min',
     'jqueryui':         'libs/jqueryui-1.8.16',
     'timeline':         'libs/timeline',

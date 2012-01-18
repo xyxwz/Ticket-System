@@ -229,6 +229,7 @@ header.row {
 .ticket {
   position: relative;
   margin-bottom: 50px;
+  cursor: pointer;
 }
 
   .ticket .avatar a {
