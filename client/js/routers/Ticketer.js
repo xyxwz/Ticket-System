@@ -104,7 +104,8 @@ function(
       if(typeof(ticket) === 'undefined') {
         ticket = new Ticket({id: id});
         ticket.fetch({
-          success: function(){
+          success: function(model, response){
+            model.comments.fetch();
             View = new TicketDetailsView({ model: ticket });
             // Transitions
             self.appView.showHeader(Header, { status: ticket.get('status') });
