@@ -29,14 +29,23 @@ function($, _, Backbone, BaseView, mustache, form) {
     // If you hit return submit form to create a
     // a new **Comment** model
     createOnEnter: function(e) {
-      if (e.keyCode != 13) return;
-      e.preventDefault();
+      if (e.keyCode != 13) { return }
+      if (e.keyCode === 13 && !e.ctrlKey) {
+        e.preventDefault();
 
-      this.collection.create({
-        comment: this.input.val(),
+        this.collection.create({
+          comment: this.input.val(),
+        });
+
+        this.input.val('').blur();
+      }
+    },
+
+    bindResize: function() {
+      $('textarea', this.el).autoResize({
+        minHeight: 23,
+        extraSpace: 14
       });
-
-      this.input.val('').blur();
     },
 
   });

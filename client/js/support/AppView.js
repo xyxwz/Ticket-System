@@ -6,7 +6,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
   
   function AppView() {
 
-    this.showView = function(view) {
+    this.showView = function(view, cb) {
       var self = this;
 
       if (this.currentView){
@@ -18,7 +18,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 
       $('#main').fadeOut(200, function() {
         $(this).html(self.currentView.el);
-      }).fadeIn(200);
+      }).fadeIn(200, cb);
     };
 
     /* Manages Headers

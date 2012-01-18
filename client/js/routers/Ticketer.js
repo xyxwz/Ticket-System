@@ -109,7 +109,7 @@ function(
             View = new TicketDetailsView({ model: ticket });
             // Transitions
             self.appView.showHeader(Header, { status: ticket.get('status') });
-            self.appView.showView(View);
+            self.appView.showView(View, function() { View.trigger('viewRendered') });
           },
         });
       }
@@ -117,7 +117,7 @@ function(
         View = new TicketDetailsView({ model: ticket });
         // Transitions
         this.appView.showHeader(Header, { status: ticket.get('status') });
-        this.appView.showView(View);
+        this.appView.showView(View, function() { View.trigger('viewRendered') });
       }
 
     },
@@ -129,7 +129,7 @@ function(
 
       // Transitions
       this.appView.showHeader(Header);
-      this.appView.showView(View);
+      this.appView.showView(View, function() { View.trigger('viewRendered') });
     },
 
   });

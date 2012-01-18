@@ -8,6 +8,11 @@ html
 
     meta(name="viewport", content="width=device-width,initial-scale=1")
 
+    - if (process.env.TYPEKIT)
+      script(src="http://use.typekit.com/#{process.env.TYPEKIT}.js")
+      script(type='text/javascript')
+        try{Typekit.load();}catch(e){}
+
   body
 
     #border
@@ -20,7 +25,7 @@ html
           .eight.columns.offset-by-two.shadow.paper
             span.tack
             #loginForm
-              h2.written Login to begin
+              h2.marker Login to begin
               ul
                 li
                   a.btn-auth.btn-twitter.large(href='/login/oauth/authorize', title='Sign in with Twitter') Sign in with <b>Twitter</b>

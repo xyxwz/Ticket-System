@@ -1,7 +1,7 @@
 /* New Ticket Form */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/tickets/TicketForm.html'],
+'text!templates/tickets/TicketForm.html', 'autoresize'],
 function($, _, Backbone, BaseView, mustache, TicketForm) {
 
   var TicketFormView = BaseView.extend({
@@ -27,6 +27,8 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
 
       $(this.el).html(Mustache.to_html(TicketForm, currentUser));
 
+      this.bindTo(this, 'viewRendered', this.bindResize);
+
       return this;
     },
 
@@ -36,6 +38,13 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
       this.collection.create({
         title: $('[name=title]', this.el).val(),
         description: $('[name=description]', this.el).val(),
+      });
+    },
+
+    bindResize: function() {
+      $('textarea', this.el).autoResize({
+        minHeight: 150,
+        extraSpace: 14
       });
     },
 

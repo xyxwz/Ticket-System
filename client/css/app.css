@@ -11,7 +11,10 @@
 :: Ticket Items
 :: Ticket Admin
 :: Comments
+:: Forms
 :: Comment Form
+:: Ticket Form
+:: Login Form
 :: CSS3 Social Login Buttons
 */
 
@@ -58,7 +61,7 @@ html, body {
   z-index: 200;
 }
 
-input[type="text"], textarea {
+input[type="text"] {
   border: 1px solid #cfd0d0;
   border: 1px solid rgba(207,208,208,0.7);
   -moz-border-radius: 2px;
@@ -483,7 +486,7 @@ span.tack {
 
     .commentBody .commentInfo {
       float: left;
-      padding: 8px 0 0 8px;
+      padding: 8px 0 8px 8px;
       width: 72%;
     }
 
@@ -493,6 +496,8 @@ span.tack {
       }
 
       .commentInfo p { line-height: 1.5em; }
+
+      .commentInfo p:last-child { margin-bottom: 0; }
     
     .commentBody span.commentTime {
       display: block;
@@ -505,14 +510,42 @@ span.tack {
 
   
 /* -----------------------------------------
+   Forms
+----------------------------------------- */
+
+form .outerWrap {
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #cfd0d0;
+  border: 1px solid rgba(207,208,208,0.7);
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+  form textarea {
+    padding: 0;
+    margin: 0;
+    border: none;
+  }
+
+    form textarea:focus { background: #fff; }
+
+
+/* -----------------------------------------
    Comment Form
 ----------------------------------------- */
 
+.commentBody form { margin: 0; }
+
 .commentBody textarea {
   width: 100%;
-  padding: 8px;
   font-size: 14px;
-  height: 2.8em;
+  height: 14px;
+  color: #222;
 }
 
 
@@ -523,14 +556,19 @@ span.tack {
 #ticketForm form { padding: 20px 30px; }
 
   #ticketForm form input[type="text"], #ticketForm form textarea {
-    width: 100%;
-    padding: 8px;
     font-size: 14px;
   }
 
   #ticketForm form input[type="text"] {
+    width: 100%;
+    padding: 8px;
     font-size: 16px;
     font-weight: 700;
+  }
+
+  #ticketForm form textarea {
+    width: 100%;
+    height: 200px;
   }
 
   #ticketForm form .seperator {
@@ -559,7 +597,7 @@ span.tack {
 #loginForm { padding: 20px 30px; }
 
   #loginForm h2 {
-    font-size: 18px;
+    font-size: 38px;
     text-align: center;
   }
 

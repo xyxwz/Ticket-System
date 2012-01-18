@@ -9,6 +9,7 @@ require.config( {
     'timeago':          'libs/plugins/jquery.timeago',
     'truncate':         'libs/plugins/jquery.truncator',
     'outsideEvents':    'libs/plugins/jquery.ba-outside-events.min',
+    'autoresize':       'libs/plugins/jquery.autoresize',
     'jqueryui':         'libs/jqueryui-1.8.16',
     'timeline':         'libs/timeline',
     'BaseView':         'support/GarbageCollector',
