@@ -3,8 +3,7 @@
  */
 module.exports = function(app,express) {
 
-  app.set('db-uri', 'mongodb://127.0.0.1/ticket-system');
-  app.set('redisDB', 0);
+  app.set('db-uri', process.env.MONGOLAB_URI);
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
 }

@@ -26,7 +26,7 @@ module.exports = function(app) {
   passport.use(new TwitterStrategy({
     consumerKey: process.env.CONSUMER_KEY,
     consumerSecret: process.env.CONSUMER_SECRET,
-    callbackURL: "http://"+process.env.HOST_IP+"/login/oauth/callback"
+    callbackURL: "http://"+process.env.CALLBACK_HOST+"/login/oauth/callback"
     },
     function(token, tokenSecret, profile, done) {
       var sessionData;

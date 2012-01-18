@@ -1,9 +1,10 @@
 var express = require('express'),
     mongoose = require('mongoose'),
+    url = require('url'),
     redis = require('redis'),
     passport = require('passport');
 
-var path = __dirname, lib, app;
+var path = __dirname, lib, app, port;
 
 /* Initial Bootstrap */
 exports.boot = function(params){
@@ -37,9 +38,18 @@ function bootApplication(app) {
 
 // Bootstrap models
 function bootModels(app) {
+  var rtg;
+
   mongoose.connect(app.set('db-uri'));
-  app.redis = redis.createClient();
-  app.redis.select(app.set('redisDB'));
+
+  if (process.env.REDISTOGO_URL) {
+    rtg = url.parse(process.env.REDISTOGO_URL);
+    app.redis = redis.createClient(rtg.port, rtg.hostname);
+    app.redis.auth(rtg.auth.split(":")[1]);
+  } else {
+    app.redis = redis.createClient();
+    app.redis.select(app.set('redisDB'));
+  }
 
   app.models = require('./models')(app);
 }
@@ -51,5 +61,6 @@ function bootControllers(app) {
 
 // allow normal node loading if appropriate
 if (!module.parent) {
-  exports.boot().listen(3000);
+  port = process.env.PORT || 3000;
+  exports.boot().listen(port);
 }
