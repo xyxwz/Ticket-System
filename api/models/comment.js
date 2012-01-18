@@ -62,7 +62,7 @@ module.exports = function(app) {
     model = this.model;
 
     if (data.comment) {
-      model.comment = data.comment;
+      model.comment = data.comment.replace(/<\/?script>/ig, '');
       model.modified_at = Date.now();
     }
 
@@ -177,7 +177,7 @@ module.exports = function(app) {
     var comment, obj;
 
     comment = new CommentSchema({
-      comment: data.comment,
+      comment: data.comment.replace(/<\/?script>/ig, ''),
       user: data.user,
     });
 
