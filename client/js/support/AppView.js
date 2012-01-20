@@ -14,6 +14,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
       }
 
       if(this.currentError) {
+        $('#error').hide();
         this.currentError.dispose();
       }
 

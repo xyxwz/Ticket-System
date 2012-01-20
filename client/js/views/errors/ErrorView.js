@@ -29,6 +29,7 @@ function($, _, Backbone, BaseView, mustache, ErrorTmpl) {
       var self = this;
 
       $(this.el).slideUp(400, 'swing', function() {
+        $(self.el).parent().hide();
         self.remove();
       });
     },
