@@ -3,13 +3,14 @@
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/comments/CommentForm.html'],
-function($, _, Backbone, BaseView, mustache, form) {
+'text!templates/comments/CommentForm.html', 'text!templates/errors/FormError.html'],
+function($, _, Backbone, BaseView, mustache, form, FormError) {
 
   var CommentFormView = BaseView.extend({
 
     events: {
       "keypress textarea":  "createOnEnter",
+      "click #formError .close": "closeError",
     },
 
     initialize: function() {
@@ -35,10 +36,35 @@ function($, _, Backbone, BaseView, mustache, form) {
 
         this.collection.create({
           comment: this.input.val(),
-        });
+        }, { error: this.creationError,
+             success: this.creationSuccess });
 
         this.input.val('').blur();
       }
+    },
+
+    creationError: function(model, err) {
+      var errElement = $('#formError', self.el);
+      if(errElement.length != 0) {
+        errElement.remove();
+      }
+      var slideErr = $(Mustache.to_html(FormError, { error: err }));
+      slideErr.children('.close').click(function(e) {
+        e.preventDefault();
+        slideErr.remove();
+      });
+
+      $('body').append(slideErr.fadeIn(500));
+    },
+
+    creationSuccess: function() {
+      $('#formError', self.el).remove();
+    },
+
+    closeError: function(e) {
+      e.preventDefault();
+      console.log('fired');
+      $('#formError').remove();
     },
 
     bindResize: function() {

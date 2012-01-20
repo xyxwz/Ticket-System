@@ -92,6 +92,7 @@ function(
       // Transitions
       this.appView.showHeader(Header, { tab: 'myTickets' });
       this.appView.showView(View);
+      
     },
 
     details: function(id) {

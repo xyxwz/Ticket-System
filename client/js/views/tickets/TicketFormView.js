@@ -36,6 +36,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm, FormError) {
     createTicket: function(e) {
       e.preventDefault();
 
+      var self = this;
       var title = $('[name=title]', this.el).val();
       var description = $('[name=description]', this.el).val();
 
@@ -45,12 +46,13 @@ function($, _, Backbone, BaseView, mustache, TicketForm, FormError) {
         description: description,
       }, {
         error: function(model, err) {
-          var errElement = $('#ticketForm > form > #formError');
+          var errElement = $('#formError');
           if(errElement.length != 0) {
             errElement.remove();
           }
-          $('#ticketForm > form', this.el)
-          .prepend($(Mustache.to_html(FormError, { error: err })).hide().fadeIn(500));
+          $('body').prepend(
+            $(Mustache.to_html(FormError, { error: err })).hide().fadeIn(500)
+          );
         }
       });
     },
