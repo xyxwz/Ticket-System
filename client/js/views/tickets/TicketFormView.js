@@ -1,8 +1,9 @@
 /* New Ticket Form */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/tickets/TicketForm.html', 'autoresize'],
-function($, _, Backbone, BaseView, mustache, TicketForm) {
+'text!templates/tickets/TicketForm.html', 'text!templates/errors/FormError.html', 
+'autoresize'],
+function($, _, Backbone, BaseView, mustache, TicketForm, FormError) {
 
   var TicketFormView = BaseView.extend({
     tagName: 'div',
@@ -35,9 +36,22 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
     createTicket: function(e) {
       e.preventDefault();
 
+      var title = $('[name=title]', this.el).val();
+      var description = $('[name=description]', this.el).val();
+
+      
       this.collection.create({
-        title: $('[name=title]', this.el).val(),
-        description: $('[name=description]', this.el).val(),
+        title: title,
+        description: description,
+      }, {
+        error: function(model, err) {
+          var errElement = $('#ticketForm > form > #formError');
+          if(errElement.length != 0) {
+            errElement.remove();
+          }
+          $('#ticketForm > form', this.el)
+          .prepend($(Mustache.to_html(FormError, { error: err })).hide().fadeIn(500));
+        }
       });
     },
 
