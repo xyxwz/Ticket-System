@@ -1,9 +1,8 @@
 /* New Ticket Form */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/tickets/TicketForm.html', 'text!templates/errors/FormError.html', 
-'autoresize'],
-function($, _, Backbone, BaseView, mustache, TicketForm, FormError) {
+'text!templates/tickets/TicketForm.html', 'autoresize'],
+function($, _, Backbone, BaseView, mustache, TicketForm) {
 
   var TicketFormView = BaseView.extend({
     tagName: 'div',
@@ -45,15 +44,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm, FormError) {
         title: title,
         description: description,
       }, {
-        error: function(model, err) {
-          var errElement = $('#formError');
-          if(errElement.length != 0) {
-            errElement.remove();
-          }
-          $('body').prepend(
-            $(Mustache.to_html(FormError, { error: err })).hide().fadeIn(500)
-          );
-        }
+        error: self.triggerViewError,
       });
     },
 
@@ -67,6 +58,10 @@ function($, _, Backbone, BaseView, mustache, TicketForm, FormError) {
     redirect: function(model) {
       window.history.replaceState({}, document.title, "#tickets/open");
       ticketer.routers.ticketer.navigate("tickets/"+model.id, true);
+    },
+
+    triggerViewError: function(model, err) {
+      this.trigger('view:error', err);
     },
 
   });

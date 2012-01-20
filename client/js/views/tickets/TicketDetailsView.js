@@ -46,6 +46,7 @@ function($, _, Backbone, BaseView, TicketView, CommentListView, CommentFormView)
       );
 
       this.bindTo(this, 'viewRendered', view.bindResize);
+      this.bindTo(view, 'view:error', function(err) { self.trigger('view:error', err) });
 
       $(this.el).append(view.render().el);
     },

@@ -831,11 +831,21 @@ form .outerWrap {
 
 
 /* alert-message styles */
-.alert-message.error {
-  position: absolute;
+#error {
+  display: none;
+  position: fixed;
   left: 20%;
   right: 20%;
+  top: 0%;
+  height: 40px;
   z-index: 400;
+}
+
+.alert-message.error {
+  position: absolute;
+  left: 34%;
+  right: 34%;
+  z-index: 401;
 }
 
 .alert-message.error p {

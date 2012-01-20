@@ -6,7 +6,8 @@ define([
   'models/Ticket',
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView',
-  'views/tickets/TicketFormView'
+  'views/tickets/TicketFormView',
+  'views/errors/ErrorView'
 ],
 function(
   Backbone,
@@ -14,7 +15,8 @@ function(
   Ticket,
   TicketListView,
   TicketDetailsView,
-  TicketFormView
+  TicketFormView,
+  ErrorView
 ) {
 
   var Ticketer = Backbone.Router.extend({
@@ -92,12 +94,11 @@ function(
       // Transitions
       this.appView.showHeader(Header, { tab: 'myTickets' });
       this.appView.showView(View);
-      
+
     },
 
     details: function(id) {
-      var Header = ticketer.views.headers.back,
-          self = this,
+      var self = this,
           View,
           ticket = ticketer.collections.openTickets.get(id) ||
                    ticketer.collections.closedTickets.get(id);
@@ -107,20 +108,13 @@ function(
         ticket.fetch({
           success: function(model, response){
             model.comments.fetch();
-            View = new TicketDetailsView({ model: ticket });
-            // Transitions
-            self.appView.showHeader(Header, { status: ticket.get('status') });
-            self.appView.showView(View, function() { View.trigger('viewRendered') });
+            self.displayView(ticket);
           },
         });
       }
       else {
-        View = new TicketDetailsView({ model: ticket });
-        // Transitions
-        this.appView.showHeader(Header, { status: ticket.get('status') });
-        this.appView.showView(View, function() { View.trigger('viewRendered') });
+        this.displayView(ticket);
       }
-
     },
 
     createTicket: function() {
@@ -128,8 +122,24 @@ function(
           collection = ticketer.collections.openTickets,
           View = new TicketFormView({ collection: collection });
 
+      View.bind('view:error', this.displayError, this);
+
       // Transitions
       this.appView.showHeader(Header);
+      this.appView.showView(View, function() { View.trigger('viewRendered') });
+    },
+
+    /* All helper functions */
+    displayError: function(err) {
+      this.appView.showError(ErrorView, err);
+    },
+
+    displayView: function(model) {
+      var Header = ticketer.views.headers.back,
+          View = new TicketDetailsView({ model: model });
+      
+      View.bind('view:error', this.displayError, this);
+      this.appView.showHeader(Header, { status: model.get('status') });
       this.appView.showView(View, function() { View.trigger('viewRendered') });
     },
 
