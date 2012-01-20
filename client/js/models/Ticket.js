@@ -28,6 +28,16 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       }
 
     },
+
+    /* Validate the model to ensure that the title and body have content */
+    validate: function(attrs) {
+      if(typeof(attrs.title) !== 'undefined' && !attrs.title.replace(/ /g, '').length) {
+        return "You must enter a ticket title.";
+      }
+      if(typeof(attrs.description) !== 'undefined' && !attrs.description.replace(/ /g, '').length) {
+        return "You must enter a ticket description.";
+      }
+    },
     
     /* Updates the Ticket with the matching attributes
      * of the ticket argument, also takes a save error
@@ -47,8 +57,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     close: function(callback) {
       var self = this;
 
-      this.set({ status: 'closed' });
-      this.save(null, {
+      this.save({ status: 'closed' }, {
         error: callback,
         success: function() {
           self.unbind('assignedUser', self.collection.setMyTickets);
