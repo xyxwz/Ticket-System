@@ -54,6 +54,7 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
         revert: true,
         helper: "clone",
         scope: "assigned_to",
+        zIndex: 302,
         cursorAt: {
           top: 28,
           left: 69,

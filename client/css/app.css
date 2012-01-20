@@ -838,14 +838,14 @@ form .outerWrap {
   right: 20%;
   top: 0%;
   height: 40px;
-  z-index: 400;
+  z-index: 300;
 }
 
 .alert-message.error {
   position: absolute;
   left: 34%;
   right: 34%;
-  z-index: 401;
+  z-index: 301;
 }
 
 .alert-message.error p {
