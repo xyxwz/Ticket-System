@@ -42,6 +42,7 @@ function bootApplication(app) {
   app.use(passport.session());
   app.use('/api', lib.middleware.Auth);
   app.use('/api', lib.middleware.Error);
+  app.use('/api', lib.middleware.AccessControl);
   app.use(app.router);
   app.use(express.static(path + '/../client/'));
 }
