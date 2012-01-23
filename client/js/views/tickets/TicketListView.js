@@ -44,6 +44,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
 
       html = view.render().el;
       $('.ticketInfo .ticketBody', html).truncate({max_length: 500});
+      $('.ticketInfo', html).addClass('hover');
 
       return html;
     },

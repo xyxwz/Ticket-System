@@ -232,7 +232,6 @@ header.row {
 .ticket {
   position: relative;
   margin-bottom: 50px;
-  cursor: pointer;
 }
 
   .ticket .avatar a {
@@ -260,6 +259,8 @@ header.row {
     }
 
   .ticket .ticketInfo { z-index: 300; }
+
+    .ticketInfo.hover { cursor: pointer; }
 
     .ticket .ticketHeader { padding: 10px 20px 8px 20px; }
 
