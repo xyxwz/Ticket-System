@@ -177,9 +177,11 @@ module.exports = function(app) {
     var comment, obj;
 
     comment = new CommentSchema({
-      comment: data.comment.replace(/<\/?script>/ig, ''),
-      user: data.user,
+      comment: data.comment,
+      user: data.user
     });
+
+    if(comment.comment) comment.comment.replace(/<\/?script>/ig, '');
 
     ticket.comments.push(comment);
 

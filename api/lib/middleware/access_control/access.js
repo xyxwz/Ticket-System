@@ -41,9 +41,9 @@ function Access(route, accessLevels) {
  */
 
 Access.prototype.checkAccess = function(user) {
-  var accessModel, status;
+  var accessModel, status, self;
   
-  accessModel = this.keys[this.keys.length-1][1];
+  self = this;
   status = false;
 
   this.accessLevels.forEach(function(level) {
@@ -51,8 +51,18 @@ Access.prototype.checkAccess = function(user) {
       status = level === user.role ? true : false;
     }
     else {
+      // Only Check Access for the last model in the
+      // path since this is the resource being requested.
+      accessModel = self.keys[self.keys.length-1][1];
+
       // check the accessModel's user.id
-      status = user.id.toString() === accessModel.user._id.toString() ? true : false;
+      if(accessModel.user) {
+        status = user.id.toString() === accessModel.user._id.toString() ? true : false;
+      }
+      else {
+        // It's the User model so just check the _id property
+        status = user.id.toString() === accessModel._id.toString() ? true : false;
+      }
     }
 
     if (status === true) return true;
@@ -204,12 +214,13 @@ Access.prototype.resolveKeys = function(cb) {
     function paramCallback(err) {
       var fn = paramCallbacks[paramIndex++];
       if (err || !fn) return param(err);
-      fn(paramVal, key.name, keyLookupCallback);
+      fn(paramVal, key.name, self.keys, keyLookupCallback);
     }
 
     function keyLookupCallback(err, key, model) {
       if (err) return cb(err);
       self.setKeys(key, model, cb);
+      param(err);
     }
 
     function emptyKeysCallback() {

@@ -29,17 +29,38 @@ var parse = require('url').parse,
 
 var Routes = {
 
+  // Members and Admins can access all paths
+  // except /users and /tickets/mine
+  "get": {
+    "/users": ["admin"],
+    "/users/:userID": ["admin"],
+    "/tickets": ["member", "admin"],
+    "/tickets/mine": ["admin"],
+    "/tickets/:ticketID": ["member", "admin"],
+    "/tickets/:ticketID/comments": ["member", "admin"],
+    "/tickets/:ticketID/comments/:commentID": ["member", "admin"]
+  },
+
+  // Only admins may create users
   "post": {
     "/users": ["admin"],
-    "/tickets": ["member", "admin"]
+    "/tickets": ["member", "admin"],
+    "/tickets/:ticketID/comments": ["member", "admin"]
   },
+
+  // Limit updates to only the resource owner, except for
+  // Users where an admin may need to make a change
   "put": {
-    "/users/:user": ["owner", "admin"],
+    "/users/:userID": ["owner", "admin"],
     "/tickets/:ticketID": ["owner"],
     "/tickets/:ticketID/comments/:commentID": ["owner"]
   },
+
+  // Only Admins or the resource owner may delete a resource
   "delete": {
-    "/tickets/:ticketID": ["owner", "admin"]
+    "/users/:userID": ["admin"],
+    "/tickets/:ticketID": ["owner", "admin"],
+    "/tickets/:ticketID/comments/:commentID": ["owner", "admin"]
   }
 };
 
@@ -58,14 +79,10 @@ exports.AccessControl = function(req, res, next) {
       url = parse(req.url),
       path = url.pathname,
       found,
+      captured,
       accessLevels,
       accessControl,
       routes = Routes;
-
-  if(method === 'get') {
-    // Don't worry about access control on GET request
-    return next();
-  }
 
   // routes for the method
   routes = Object.getOwnPropertyDescriptor(routes, method).value;
@@ -77,28 +94,30 @@ exports.AccessControl = function(req, res, next) {
     found = route.match(path);
 
     if (found) {
+      captured = found;
       route.mapKeys(found);
       accessControl = new AC(route, accessLevels);
       accessControl.resolveKeys(checkAccess);
+      break;
     }
   }
 
-  if (found === null) return next(new Error("Not Authenticated"));
+  if (captured === null) return next(new Error("Not Authorized"));
 
   function checkAccess(err) {
-    if(err) next(new Error("Not Authenticated"));
+    if(err) next(new Error("Not Authorized"));
 
     if(accessControl.checkAccess(req.user)) {
       setReqObjects();
     } else {
-      return next(new Error("Not Authenticated"));
+      return next(new Error("Not Authorized"));
     }
   }
 
   function setReqObjects() {
     var _i = 0;
 
-    if (accessControl.keys.length === 0) done();
+    if (accessControl.keys.length === 0) return next();
 
     for(_i = 0; _i < accessControl.keys.length; _i++) {
       var key, model;

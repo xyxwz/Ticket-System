@@ -12,12 +12,13 @@ describe('Access', function(){
   // Hold values used in async hooks
   var fixtures, route, user, accessLevels, access;
 
+  // Use a nested route to ensure nested paths work
   before(function(done){
     helper.Setup(server, function(err, data){
       if(err) return done(err);
       fixtures = data;
-      var path = "/tickets/:ticketID";
-      var url = "/tickets/"+fixtures.tickets[0].id;
+      var path = "/tickets/:ticketID/comments/:commentID";
+      var url = "/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id;
       route = new Route(path);
       route.match(url);
       route.mapKeys();
@@ -38,7 +39,7 @@ describe('Access', function(){
 
     describe('roles', function() {
 
-      before(function(done){
+      beforeEach(function(done){
         accessLevels = ["member"];
         access = new Access(route, accessLevels);
         access.resolveKeys(function(err){

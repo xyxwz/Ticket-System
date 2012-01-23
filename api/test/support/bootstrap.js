@@ -23,6 +23,7 @@ function createServer(){
 
   app.use('/api', lib.middleware.Auth);
   app.use('/api', lib.middleware.Error);
+  app.use('/api', lib.middleware.AccessControl);
 
   app.use(app.router);
 

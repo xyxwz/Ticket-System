@@ -401,9 +401,11 @@ module.exports = function(app) {
 
     ticket = new TicketSchema({
       title: data.title,
-      description: data.description.replace(/<\/?script>/ig, ''),
+      description: data.description,
       user: data.user
     });
+
+    if (ticket.description) ticket.description.replace(/<\/?script>/ig, '');
 
     ticket.save(function(err, ticket) {
       if (err || !ticket) {

@@ -95,6 +95,10 @@ function addUser(i, cb){
     role: "member",
     access_token: "abc"+i,
   });
+
+  // Set the first user to an admin role
+  if(i === 0) user.role = 'admin';
+
   user.save(function(err, model){
     if(err) return cb(err);
     cb(null, model);
