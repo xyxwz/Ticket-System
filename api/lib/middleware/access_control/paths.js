@@ -34,7 +34,7 @@ module.exports = {
   // Users where an admin may need to make a change
   "put": {
     "/users/:userID": ["owner", "admin"],
-    "/tickets/:ticketID": ["owner"],
+    "/tickets/:ticketID": ["owner", "admin"],
     "/tickets/:ticketID/comments/:commentID": ["owner"]
   },
 
