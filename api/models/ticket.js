@@ -9,7 +9,7 @@ module.exports = function(app) {
   function Ticket (model) {
     this.model = model || new TicketSchema();
     this.redis = app.redis;
-  };
+  }
 
 
   /**
@@ -30,8 +30,8 @@ module.exports = function(app) {
 
     user = {
       id: obj.user._id,
-      name: obj.user.name,
-    }
+      name: obj.user.name
+    };
 
     if (obj.user.avatar) user.avatar = obj.user.avatar;
 
@@ -117,10 +117,10 @@ module.exports = function(app) {
     _this = this;
     model = this.model;
     redis = this.redis;
-    newArray = new Array();
-    currentArray = new Array();
-    _add = new Array();
-    _rem = new Array();
+    newArray = [];
+    currentArray = [];
+    _add = [];
+    _rem = [];
 
     redis.SMEMBERS(model.id, function(err, members) {
 
@@ -235,7 +235,12 @@ module.exports = function(app) {
 
     if(args.status) {
       query = TicketSchema.find({'status': args.status});
-      args.status === 'open' ? query.asc('opened_at') : query.desc('closed_at');
+      if (args.status === 'open') {
+        query.asc('opened_at');
+      }
+      else {
+        query.desc('closed_at');
+      }
     }
     else {
       query = TicketSchema.find();
@@ -304,10 +309,10 @@ module.exports = function(app) {
       .where('status', status);
 
       if(status === 'open') {
-        query.asc('opened_at')
+        query.asc('opened_at');
       }
       else {
-        query.desc('closed_at')
+        query.desc('closed_at');
       }
 
       query

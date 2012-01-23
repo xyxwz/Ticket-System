@@ -17,6 +17,6 @@ module.exports = function(app,express) {
   // PRODUCTION
   app.configure('production', function() {
     require("./production.js")(app,express);
-  });   
+  });
 
-}
+};

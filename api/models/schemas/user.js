@@ -29,10 +29,10 @@ User.methods.toClient = function(){
     name: obj.name,
     role: obj.role,
     avatar: obj.avatar
-  }
+  };
 
   return user;
-}
+};
 
 
 exports.User = mongoose.model('User', User);

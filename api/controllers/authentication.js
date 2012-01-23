@@ -19,7 +19,7 @@ module.exports = function(app) {
   /* OAuth Callback *
    * GET /login/oauth/callback
    *
-   * Use passport.authenticate() as route middleware to authenticate the request. 
+   * Use passport.authenticate() as route middleware to authenticate the request.
    * Currently if authentication fails redirect back to home page. */
   app.get('/login/oauth/callback',
     passport.authenticate('twitter', { failureRedirect: '/' }),

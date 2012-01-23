@@ -8,7 +8,7 @@ module.exports = function(app) {
   function Comment (model, parent) {
     this.model = model || new CommentSchema();
     this.ticket = parent || null;
-  };
+  }
 
 
   /**
@@ -30,8 +30,8 @@ module.exports = function(app) {
 
     user = {
       id: obj.user._id,
-      name: obj.user.name,
-    }
+      name: obj.user.name
+    };
 
     if (obj.user.avatar) user.avatar = obj.user.avatar;
 
@@ -120,7 +120,7 @@ module.exports = function(app) {
   Comment.all = function all(comments, cb) {
     var array, klass, obj;
 
-    array = new Array();
+    array = [];
 
     _.each(comments, function(comment) {
       klass = new Comment(comment);
@@ -195,8 +195,8 @@ module.exports = function(app) {
         created_at: comment.created_at,
         user: {
           id: user._id,
-          name: user.name,
-        },
+          name: user.name
+        }
       };
 
       if (user.avatar) obj.user.avatar = user.avatar;
@@ -207,4 +207,4 @@ module.exports = function(app) {
 
   return Comment;
 
-}
+};

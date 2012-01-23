@@ -14,7 +14,7 @@ module.exports = function(app) {
   app.get('/api/tickets/:ticketID/comments', function(req, res) {
     Comment.all(req.ticket.comments, function(err, comments) {
       res.json(comments);
-    })
+    });
   });
 
 
@@ -50,7 +50,7 @@ module.exports = function(app) {
     Comment.find(req.ticket.comments, req.params.id, function(err, model) {
       if(err) return res.json({error: err}, 404);
       res.json(model);
-    })
+    });
   });
 
 
@@ -98,7 +98,7 @@ module.exports = function(app) {
 
     klass.remove(function(err, status) {
       if(err) return res.json({error: "Error removing comment"}, 400);
-      res.json({success: status})
+      res.json({success: status});
     });
   });
 

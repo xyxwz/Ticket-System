@@ -14,4 +14,4 @@ module.exports = function(app,express) {
 
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
-}
+};

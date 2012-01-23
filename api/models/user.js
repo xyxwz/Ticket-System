@@ -8,7 +8,7 @@ module.exports = function(app) {
 
   function User (model) {
     this.model = model || new UserSchema();
-  };
+  }
 
   /**
    *  update
@@ -231,18 +231,18 @@ module.exports = function(app) {
    */
 
   User.admins = function admins(cb) {
-    var admins;
+    var users;
 
     UserSchema
     .where('role', 'admin')
     .run(function(err, models) {
       if(err) return cb('error getting admins');
 
-      admins = models.map(function(user) {
+      users = models.map(function(user) {
         return user.toClient();
       });
 
-      return cb(null, admins);
+      return cb(null, users);
     });
   };
 

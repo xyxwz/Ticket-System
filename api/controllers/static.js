@@ -23,7 +23,7 @@ module.exports = function(app) {
           token: req.session.passport.user.token,
           tickets: JSON.stringify(data.tickets),
           admins: JSON.stringify(data.admins),
-          currentUser: JSON.stringify(data.currentUser),
+          currentUser: JSON.stringify(data.currentUser)
         });
       });
     }
@@ -31,7 +31,7 @@ module.exports = function(app) {
       /* If no session the user is not authenticated
        * redirect to login page to allow oAuth authentication.
        * TODO: Add error message on unsuccessfull authentication */
-      res.redirect('/login'); 
+      res.redirect('/login');
     }
   });
 
@@ -52,20 +52,20 @@ module.exports = function(app) {
         return cb(null, data);
       });
     });
-  };
+  }
 
   function bootstrapTickets(args, cb) {
     Ticket.all(args, function(err, models) {
       if(err || !models) return cb('error getting tickets');
       return cb(null, models);
     });
-  };
+  }
 
   function bootstrapAdmins(cb) {
     User.admins(function(err, models) {
       if(err) return cb('error getting admins');
       return cb(null, models);
     });
-  };
+  }
 
 };

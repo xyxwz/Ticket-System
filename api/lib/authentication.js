@@ -36,7 +36,7 @@ module.exports = function(app) {
           token: token,
           name: user.name,
           role: user.role
-        }
+        };
 
         if (user.avatar) sessionData.avatar = user.avatar;
 
