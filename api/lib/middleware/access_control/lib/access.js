@@ -21,7 +21,7 @@ function Access(route, accessLevels) {
   this.params = {};
   this._params = [];
   this.keys = [];
-  require('./params')(this);
+  require('../params')(this);
 }
 
 

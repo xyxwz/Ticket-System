@@ -1,5 +1,5 @@
 var should = require("should"),
-    Route = require("../../../lib/middleware/access_control/route");
+    Route = require("../../../lib/middleware/access_control/lib/route");
 
 /* Access Control Route Unit Test */
 

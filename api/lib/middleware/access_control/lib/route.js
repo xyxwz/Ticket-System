@@ -1,5 +1,5 @@
 "use strict";
-var schemas = require('../../../models/schemas');
+var schemas = require('../../../../models/schemas');
 
 /**
  *  Taken and modified from the express router code by TJ

@@ -1,8 +1,8 @@
 var should = require("should"),
     helper = require('../../support/helper'),
     app = require('../../support/bootstrap').app,
-    Route = require("../../../lib/middleware/access_control/route"),
-    Access = require("../../../lib/middleware/access_control/access");
+    Route = require("../../../lib/middleware/access_control/lib/route"),
+    Access = require("../../../lib/middleware/access_control/lib/access");
 
 var server = app();
 
