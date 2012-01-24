@@ -11,7 +11,9 @@ function($, _, Backbone, BaseView, mustache, comment) {
     className: 'row comment written',
 
     events: {
-      "click li.delete": "removeComment"
+      "click li.delete": "removeComment",
+      "mouseenter": "toggleOptions",
+      "mouseleave": "toggleOptions"
     },
 
     initialize: function() {
@@ -40,7 +42,7 @@ function($, _, Backbone, BaseView, mustache, comment) {
      */
     checkAbilities: function(data) {
       if(data.user.id === currentUser.id || currentUser.role === 'admin') {
-        var html = "<ul class='commentOptions'></ul>";
+        var html = "<ul class='commentOptions hide'></ul>";
         $('.commentBody', this.el).append(html);
 
         // If currentUser is owner allow to both edit and delete
@@ -50,6 +52,18 @@ function($, _, Backbone, BaseView, mustache, comment) {
         }
         else {
           $('ul.commentOptions', this.el).append('<li class="delete">x</li>');
+        }
+      }
+    },
+
+    toggleOptions: function() {
+      if ($('ul.commentOptions', this.el).length > 0) {
+        // element exists so check if it's showing
+        if($('ul.commentOptions', this.el).is(":visible")) {
+          $('ul.commentOptions', this.el).fadeOut('100').addClass('hide');
+        }
+        else {
+          $('ul.commentOptions', this.el).hide().removeClass('hide').fadeIn('100');
         }
       }
     },
