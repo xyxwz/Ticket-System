@@ -5,8 +5,8 @@
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
 'text!templates/tickets/Ticket.html', 'text!templates/tickets/Timestamp.html',
 'text!templates/tickets/AssignedUser.html', "text!templates/tickets/AdminPopupOptions.html",
-'timeago', 'jqueryui/droppable', 'marked'],
-function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, AssignedUserTmpl, AdminPopupTmpl) {
+'text!templates/tickets/EditTicket.html', 'timeago', 'jqueryui/droppable', 'marked'],
+function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, AssignedUserTmpl, AdminPopupTmpl, EditTmpl) {
 
   var TicketView = BaseView.extend({
     tagName: 'div',
@@ -14,7 +14,10 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
     events: {
       "click #closeTicket": "closeTicket",
-      "click .popupChoices li.remove": "deleteTicket"
+      "click .popupChoices li.remove": "deleteTicket",
+      "click .popupChoices li.edit": "editTicket",
+      "click #saveTicket": "saveTicket",
+      "click #cancelEdit": "renderEdit"
     },
 
     initialize: function() {
@@ -104,7 +107,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
         // If currentUser is owner but not an admin go directly to
         // edit mode on click
         if(data.user.id === currentUser.id && currentUser.role != 'admin') {
-          // Bind click to `Edit Mode`
+          this.bindTo($('ul.ticketMeta li.gears', this.el), 'click', this.editTicket);
         }
         else {
           $('ul.ticketMeta li.gears', this.el).append(AdminPopupTmpl);
@@ -121,7 +124,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
     // Hide the popup
     hideEditOptions: function() {
-       $('ul.ticketMeta li.gears ul', this.el).hide();
+       $('ul.ticketMeta li.gears ul', this.el).fadeOut(200);
     },
 
     /* Edit/Delete functionality
@@ -283,6 +286,41 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       else {
         $('figure', html).remove();
       }
+    },
+
+    /* open the ticket for editing */
+    editTicket: function() {
+      var self = this;
+
+      if($('.ticketBody > .ticketEdit', self.el).length === 0) {
+        $('.ticketBody').html(Mustache.to_html(EditTmpl, { description: self.model.get('description') }));
+      }
+    },
+
+    saveTicket: function(e) {
+      e.preventDefault();
+
+      var self = this,
+          description = $('.outerWrap > textarea', self.el).val();
+      self.model.save({ description: description }, {error: self.throwError, success: self.renderEdit });
+    },
+
+    throwError: function(model, err) {
+      this.trigger('view:error', err);
+    },
+
+    renderEdit: function(e) {
+      /* just so we don't have to create another function */
+      if(e instanceof jQuery.Event) {
+        e.preventDefault();
+      }
+
+      var self = this;
+
+      $(this.el).fadeOut(200, function() {
+        self.render();
+        $(self.el).fadeIn(400);
+      });
     }
 
   });
