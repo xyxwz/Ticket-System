@@ -281,10 +281,7 @@ p { line-height: 1.5em; }
       font-weight: 700;
     }
 
-  .ticket .ticketInfo {
-    z-index: 300;
-    cursor: pointer;
-  }
+  .ticket .ticketInfo { z-index: 300; }
 
     .ticketInfo.hover { cursor: pointer; }
 
@@ -686,16 +683,25 @@ form .outerWrap {
     border-bottom: 1px solid rgba(207,208,208,0.7);
   }
 
-  #ticketForm form button {
-    cursor: pointer;
-    margin: 12px 0 0 0;
-    -moz-border-radius: 20px;
-    -webkit-border-radius: 20px;
-    border-radius: 20px;
-    padding: 0.4em 2em;
-    color: #fff;
-    border: none;
+  #ticketForm ul.optionButtons {
+    float: right;
   }
+
+    #ticketForm ul.optionButtons li {
+      float: right;
+      margin: 0 0 0 12px;
+    }
+
+      #ticketForm form button {
+        cursor: pointer;
+        margin: 12px 0 0 0;
+        -moz-border-radius: 20px;
+        -webkit-border-radius: 20px;
+        border-radius: 20px;
+        padding: 0.4em 2em;
+        color: #fff;
+        border: none;
+      }
 
 
 /* -----------------------------------------

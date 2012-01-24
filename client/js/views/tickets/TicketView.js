@@ -293,7 +293,14 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       var self = this;
 
       if($('.ticketBody > .ticketEdit', self.el).length === 0) {
+        $('ul.ticketMeta li.gears ul', this.el).hide();
+
         $('.ticketBody').html(Mustache.to_html(EditTmpl, { description: self.model.get('description') }));
+
+        $('textarea', this.el).autoResize({
+          minHeight: 150,
+          extraSpace: 14
+        });
       }
     },
 
