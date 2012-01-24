@@ -9,7 +9,7 @@ function($, _, Backbone, BaseView, mustache, form) {
   var CommentFormView = BaseView.extend({
 
     events: {
-      "keypress textarea":  "createOnEnter",
+      "keypress textarea":  "createOnEnter"
     },
 
     initialize: function() {
@@ -29,19 +29,20 @@ function($, _, Backbone, BaseView, mustache, form) {
     // If you hit return submit form to create a
     // a new **Comment** model
     createOnEnter: function(e) {
-      if (e.keyCode != 13) { return }
+      if (e.keyCode != 13) { return; }
       if (e.keyCode === 13 && !e.ctrlKey) {
         e.preventDefault();
 
         var self = this;
 
         this.collection.create({
-          comment: this.input.val(),
+          comment: this.input.val()
         }, {
-          error: self.triggerViewError,
+          error: self.triggerViewError
         });
 
         this.input.val('').blur();
+        this.input.css('height', '23px');
       }
     },
 
@@ -54,7 +55,7 @@ function($, _, Backbone, BaseView, mustache, form) {
 
     triggerViewError: function(model, err) {
       this.trigger('view:error', err);
-    },
+    }
 
   });
 
