@@ -354,6 +354,67 @@ span.tack {
   background: url('/img/assets/tack.png') no-repeat;
 }
 
+/* Ticket Meta */
+
+.ticketInfo ul.ticketMeta {
+  position: absolute;
+  bottom: 12px;
+  right: 20px;
+  margin: 0;
+  height: 24px;
+}
+
+  .ticketInfo ul.ticketMeta li {
+    float: right;
+    margin: 0 0 0 12px;
+  }
+
+    ul.ticketMeta li.chat {
+      width: 24px;
+      height: 22px;
+      background: url('/img/assets/08-chat.png') no-repeat;
+      color: #fff;
+      font-size: 10px;
+      line-height: 1.75em;
+      text-align: center;
+    }
+
+    ul.ticketMeta li.gears {
+      position: relative;
+      width: 20px;
+      height: 23px;
+      background: url('/img/assets/gears.png') no-repeat;
+      cursor: pointer;
+    }
+
+      ul.ticketMeta li.gears ul {
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 1px solid rgba(85,85,85,0.4);
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        background: rgb(250,250,250);
+        background: -moz-radial-gradient(center, ellipse cover,  rgba(250,250,250,1) 30%, rgba(220,220,220,1) 100%);
+        background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(30%,rgba(250,250,250,1)), color-stop(100%,rgba(220,220,220,1)));
+        background: -webkit-radial-gradient(center, ellipse cover,  rgba(250,250,250,1) 30%,rgba(220,220,220,1) 100%);
+        background: -o-radial-gradient(center, ellipse cover,  rgba(250,250,250,1) 30%,rgba(220,220,220,1) 100%);
+        background: -ms-radial-gradient(center, ellipse cover,  rgba(250,250,250,1) 30%,rgba(220,220,220,1) 100%);
+        background: radial-gradient(center, ellipse cover,  rgba(250,250,250,1) 30%,rgba(220,220,220,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#dcdcdc',GradientType=1 );
+      }
+
+        ul.ticketMeta li.gears ul li {
+          width: 100px;
+          margin: 0 4px;
+          padding: 4px 8px;
+          border-bottom: 1px solid rgba(120,120,120,0.4);
+          border-top: 1px solid rgba(235,235,235,0.3);
+        }
+
+          ul.ticketMeta li.gears ul li:first-child { border-top: none; }
+          ul.ticketMeta li.gears ul li:last-child { border-bottom: none; }
 
 /* -----------------------------------------
    Ticket Admin

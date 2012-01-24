@@ -13,7 +13,7 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
       "click #createTicket"  : "navigateToForm",
       "click #myTickets"     : "toggleMyTickets",
       "click #openTickets"   : "toggleOpen",
-      "click #closedTickets" : "toggleClosed",
+      "click #closedTickets" : "toggleClosed"
     },
 
     initialize: function() {
@@ -56,8 +56,8 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
         scope: "assigned_to",
         cursorAt: {
           top: 28,
-          left: 69,
-        },
+          left: 69
+        }
       });
 
       this.bindTo($('.pullTab .tab', this.el), 'click', this.togglePullTab);
@@ -81,8 +81,8 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
     },
 
     /* Sets the correct highlighted state (.yellow) on
-     * the selected tab. Checks that the tab isn't currently 
-     * highlighted then clears out all highlights on the tabs 
+     * the selected tab. Checks that the tab isn't currently
+     * highlighted then clears out all highlights on the tabs
      * and adds class to correct tab.
      *    :tab - a div ID to represent the desired page tab
      */
@@ -135,7 +135,7 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
           $(tab).removeClass('lightShadow').addClass('shadow');
         });
       }
-    },
+    }
 
   });
 

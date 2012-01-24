@@ -8,7 +8,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
   var TicketListView = BaseView.extend({
 
     events: {
-      "click .ticketInfo": "showDetails",
+      "click .ticketInfo": "showDetails"
     },
 
     initialize: function() {
@@ -55,14 +55,14 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       if (this.collection.length === 0) return;
 
       this.timeline = new Timeline(this.collection, this.renderTicket, $(this.el), '.ticket', { status: this.status });
-      this.bindTo($(window), 'scroll', function() { self.timeline.shouldCheckScroll = true });
-      this.createInterval(250, function() { self.timeline.didScroll() });
+      this.bindTo($(window), 'scroll', function() { self.timeline.shouldCheckScroll = true ;});
+      this.createInterval(250, function() { self.timeline.didScroll(); });
     },
 
     showDetails: function(e) {
       var id = $(e.currentTarget).closest('.ticket').attr('id').split('id_')[1];
       ticketer.routers.ticketer.navigate("tickets/"+id, true);
-    },
+    }
 
   });
 

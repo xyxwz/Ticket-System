@@ -4,8 +4,9 @@
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
 'text!templates/tickets/Ticket.html', 'text!templates/tickets/Timestamp.html',
-'text!templates/tickets/AssignedUser.html', 'timeago', 'jqueryui/droppable', 'marked'],
-function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, AssignedUserTmpl) {
+'text!templates/tickets/AssignedUser.html', "text!templates/tickets/AdminPopupOptions.html",
+'timeago', 'jqueryui/droppable', 'marked'],
+function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, AssignedUserTmpl, AdminPopupTmpl) {
 
   var TicketView = BaseView.extend({
     tagName: 'div',
@@ -13,6 +14,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
     events: {
       "click #closeTicket": "closeTicket",
+      "click .popupChoices li.remove": "deleteTicket"
     },
 
     initialize: function() {
@@ -64,6 +66,9 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
         }
       });
 
+      // Check Abilities to add edit/delete functionality
+      this.checkAbilities(data);
+
       return this;
     },
 
@@ -84,18 +89,68 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       }
     },
 
+    /* Check whether or not to display edit/remove options.
+     * The ticket must belong to the current user or the
+     * current user must have the role admin. If so append the
+     * edit button and setup click bindings.
+     *
+     * :data - the current model in JSON form
+     */
+    checkAbilities: function(data) {
+      if(this.admin && (data.user.id === currentUser.id || currentUser.role === 'admin')) {
+        var html = "<li class='gears'></li>";
+        $('ul.ticketMeta', this.el).append(html);
+
+        // If currentUser is owner but not an admin go directly to
+        // edit mode on click
+        if(data.user.id === currentUser.id && currentUser.role != 'admin') {
+          // Bind click to `Edit Mode`
+        }
+        else {
+          $('ul.ticketMeta li.gears', this.el).append(AdminPopupTmpl);
+          this.bindTo($('ul.ticketMeta li.gears', this.el), 'click', this.showEditOptions);
+        }
+      }
+    },
+
+    // Display a pop-up with multiple actions to choose from
+    showEditOptions: function() {
+      $('ul.ticketMeta li.gears ul', this.el).show();
+      this.bindTo($('ul.ticketMeta li.gears', this.el), 'clickoutside', this.hideEditOptions);
+    },
+
+    // Hide the popup
+    hideEditOptions: function() {
+       $('ul.ticketMeta li.gears ul', this.el).hide();
+    },
+
+    /* Edit/Delete functionality
+     */
+
+    deleteTicket: function() {
+      var resp;
+
+      resp = confirm("Are you sure you want to delete this ticket? It can not be undone");
+      if (resp === true) {
+        this.model.destroy();
+        window.history.back();
+      }
+    },
+
     /* Renders the timestamp with the jQuery timeago plugin
      * auto updates */
     setTimestamp: function() {
+      var timestamp;
+
       if (this.model.get('closed_at')) {
         $('.timestamp', this.el).remove();
-        var timestamp = { time: this.model.get('closed_at') };
+        timestamp = { time: this.model.get('closed_at') };
         $('.ticketName', this.el).append(Mustache.to_html(TimestampTmpl, timestamp));
         $('.timestamp', this.el).prepend('closed: ');
         $('time.timeago', this.el).timeago();
       }
       else {
-        var timestamp = { time: this.model.get('opened_at') };
+        timestamp = { time: this.model.get('opened_at') };
         $('.ticketName', this.el).append(Mustache.to_html(TimestampTmpl, timestamp));
         $('time.timeago', this.el).timeago();
       }
@@ -117,7 +172,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       $('.ticketHeader ul', this.el).off();
       $('.ticketHeader ul li', this.el).each(function(){
         $(this).draggable('destroy');
-      })
+      });
 
     },
 
@@ -158,8 +213,8 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
               distance: 30,
               cursorAt: {
                 top: 21,
-                left: 21,
-              },
+                left: 21
+              }
             });
 
             $('.ticketHeader ul li', self.el).bind("drag", self.dragAvatar);
@@ -188,7 +243,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
             html = Mustache.to_html(AssignedUserTmpl, userObj.toJSON());
 
         $('.ticketHeader ul', self.el).prepend(html);
-      })
+      });
     },
 
     /* Removes a signle assignee from a ticket's assigned users avatars list.
@@ -228,7 +283,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       else {
         $('figure', html).remove();
       }
-    },
+    }
 
   });
 
