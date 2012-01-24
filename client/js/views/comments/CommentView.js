@@ -10,6 +10,10 @@ function($, _, Backbone, BaseView, mustache, comment) {
     tagName: 'div',
     className: 'row comment written',
 
+    events: {
+      "click li.delete": "removeComment"
+    },
+
     initialize: function() {
       _.bindAll(this);
     },
@@ -21,8 +25,47 @@ function($, _, Backbone, BaseView, mustache, comment) {
       data.comment = marked(data.comment);
       $(this.el).html(Mustache.to_html(comment, data));
       $('.commentTime time', this.el).timeago();
+
+      this.checkAbilities(data);
+
       return this;
     },
+
+    /* Check whether or not to display edit/remove options.
+     * The comment must belong to the current user or the
+     * current user must have the role admin. If so append the
+     * edit button and setup click bindings.
+     *
+     * :data - the current model in JSON form
+     */
+    checkAbilities: function(data) {
+      if(data.user.id === currentUser.id || currentUser.role === 'admin') {
+        var html = "<ul class='commentOptions'></ul>";
+        $('.commentBody', this.el).append(html);
+
+        // If currentUser is owner allow to both edit and delete
+        if(data.user.id === currentUser.id) {
+          $('ul.commentOptions', this.el).append('<li class="edit"></li>');
+          $('ul.commentOptions', this.el).append('<li class="delete">x</li>');
+        }
+        else {
+          $('ul.commentOptions', this.el).append('<li class="delete">x</li>');
+        }
+      }
+    },
+
+    removeComment: function() {
+      var resp,
+          self = this;
+
+      resp = confirm("Are you sure you want to delete this comment? It can not be undone");
+      if (resp === true) {
+        this.model.destroy();
+        $(this.el).fadeOut(200, function() {
+          self.remove();
+        });
+      }
+    }
 
   });
 
