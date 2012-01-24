@@ -126,7 +126,7 @@ function(
 
       // Transitions
       this.appView.showHeader(Header);
-      this.appView.showView(View, function() { View.trigger('viewRendered') });
+      this.appView.showView(View, function() { View.trigger('viewRendered'); });
     },
 
     /* All helper functions */
@@ -140,7 +140,7 @@ function(
       
       View.bind('view:error', this.displayError, this);
       this.appView.showHeader(Header, { status: model.get('status') });
-      this.appView.showView(View, function() { View.trigger('viewRendered') });
+      this.appView.showView(View, function() { View.trigger('viewRendered'); });
     },
 
   });
