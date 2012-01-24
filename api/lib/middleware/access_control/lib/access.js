@@ -46,9 +46,10 @@ Access.prototype.checkAccess = function(user) {
   self = this;
   status = false;
 
-  this.accessLevels.forEach(function(level) {
+  //this.accessLevels.forEach(function(level) {
+  for (var level in this.accessLevels) {
     if (level != "owner") {
-      status = level === user.role ? true : false;
+      status = this.accessLevels[level] === user.role ? true : false;
     }
     else {
       // Only Check Access for the last model in the
@@ -65,8 +66,8 @@ Access.prototype.checkAccess = function(user) {
       }
     }
 
-    if (status === true) return true;
-  });
+    if (status === true) { break; }
+  }
 
   return status;
 };
