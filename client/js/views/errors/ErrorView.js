@@ -5,11 +5,11 @@ function($, _, Backbone, BaseView, mustache, ErrorTmpl) {
 
   var ErrorView = BaseView.extend({
 
+    id: "error",
     tagName: "div",
-    className: "alert-message error",
 
     events: {
-      "click .close" : "closeError",
+      "click .close" : "closeError"
     },
 
     initialize: function() {
@@ -28,11 +28,10 @@ function($, _, Backbone, BaseView, mustache, ErrorTmpl) {
 
       var self = this;
 
-      $(this.el).slideUp(400, 'swing', function() {
-        $(self.el).parent().hide();
+      $(this.el).slideUp(200, 'swing', function() {
         self.remove();
       });
-    },
+    }
 
   });
 

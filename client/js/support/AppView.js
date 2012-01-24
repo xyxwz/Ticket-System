@@ -1,5 +1,5 @@
 /* AppView
- * 
+ *
  * Manages Garbage Collection on view renders
  */
 define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
@@ -14,7 +14,6 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
       }
 
       if(this.currentError) {
-        $('#error').hide();
         this.currentError.dispose();
       }
 
@@ -88,28 +87,32 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     };
 
     this.showError = function(ErrorView, error) {
-      //same view, but different message
-      if(this.currentError && this.errorView) {
+      var self = this;
 
-        if(this.errorView == ErrorView) {
-
-          this.currentError.message = error;
-          this.errorView = ErrorView;
-        }
-        else {
-
-          this.currentError.dispose();
-        }
-      }
+      if(this.currentError) this.currentError.dispose();
 
       this.currentError = new ErrorView({ message: error });
       this.currentError.render();
 
       //slide animation
-      $('#error').hide().html(this.currentError.el).slideDown(500);
+      $(this.currentError.el).hide();
+      $('body').prepend(this.currentError.el);
+      $(this.currentError.el).slideDown(200, function() {
+        var el = this;
+
+        setTimeout(function() {
+          dispose();
+        }, 4000);
+
+        function dispose() {
+          $(el).slideUp(200, function(){
+            self.currentError.dispose();
+          });
+        }
+      });
     };
 
-  };
+  }
 
   return AppView;
 });
