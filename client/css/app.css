@@ -647,7 +647,7 @@ form .outerWrap {
     margin: 0 0 0 12px;
   }
 
-  form ul.optionButtons button {
+  form button {
     cursor: pointer;
     margin: 12px 0 0 0;
     -moz-border-radius: 20px;
