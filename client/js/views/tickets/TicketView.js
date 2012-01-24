@@ -302,10 +302,10 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
       var self = this,
           description = $('.outerWrap > textarea', self.el).val();
-      self.model.save({ description: description }, {error: self.throwError, success: self.renderEdit });
+      self.model.save({ description: description }, {error: self.triggerViewError, success: self.renderEdit });
     },
 
-    throwError: function(model, err) {
+    triggerViewError: function(model, err) {
       this.trigger('view:error', err);
     },
 
