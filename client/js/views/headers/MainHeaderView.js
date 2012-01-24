@@ -9,6 +9,9 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
 
   var MainHeadersView = BaseView.extend({
 
+    className: "row",
+    tagName: "header",
+
     events: {
       "click #createTicket"  : "navigateToForm",
       "click #myTickets"     : "toggleMyTickets",
@@ -89,8 +92,8 @@ function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
      */
     toggleTab: function(tab) {
       if ($('#' + tab + ' .yellow', 'header').length === 0) {
-        $('header li').removeClass('yellow');
-        $('#' + tab, 'header').addClass('yellow');
+        $('li', this.el).removeClass('yellow');
+        $('#' + tab, this.el).addClass('yellow');
       }
     },
 

@@ -9,8 +9,11 @@ function($, _, Backbone, BaseView, HeaderTmpl, PullTabTmpl) {
 
   var BackHeadersView = BaseView.extend({
 
+    className: "row",
+    tagName: "header",
+
     events: {
-      "click li#back": "navigateBack",
+      "click li#back": "navigateBack"
     },
 
     initialize: function() {

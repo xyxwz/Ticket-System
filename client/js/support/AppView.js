@@ -34,7 +34,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
      * when needed.
      */
     this.showHeader = function(header, args) {
-      var self = this;
+      var self = this, el;
 
       // toggle assign pulltab off by default
       if(!args) args = { status: 'closed' };
@@ -43,17 +43,18 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
         /* If new header dispose of old header and
          * transition to new one */
         if (this.headerView != header) {
-          this.currentHeader.dispose();
-          this.headerView = null;
-          this.currentHeader = new header();
-          this.headerView = header;
-          this.currentHeader.render();
-
-          $('header').fadeOut(200, function() {
-            $(this).html(self.currentHeader.el);
+          $(this.currentHeader.el).fadeOut(200, function() {
+            self.currentHeader.dispose();
+            self.headerView = null;
+            self.currentHeader = new header();
+            self.headerView = header;
+            el = self.currentHeader.render().el;
+            $(el).hide();
             if(args.tab) { self.toggleHeaderTab(args.tab); }
             if(args.status) { self.currentHeader.toggleAssign(args.status); }
-          }).fadeIn(200);
+            $('#tabs .container').append(el);
+            $(el).fadeIn(200);
+          });
 
           return;
         }
@@ -67,13 +68,14 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
         /* No header exists so create one */
         this.currentHeader = new header({admin: true});
         this.headerView = header;
-        this.currentHeader.render();
+        el = this.currentHeader.render().el;
 
-        $('header').fadeOut(200, function() {
-          $(this).html(self.currentHeader.el);
-          if(args.tab) { self.toggleHeaderTab(args.tab); }
-          if(args.status) { self.currentHeader.toggleAssign(args.status); }
-        }).fadeIn(200);
+        // Toogle Tab and Assignees then fade in
+        $(el).hide();
+        if(args.tab) { this.toggleHeaderTab(args.tab); }
+        if(args.status) { this.currentHeader.toggleAssign(args.status); }
+        $('#tabs .container').append(el);
+        $(el).fadeIn(200);
       }
 
     };

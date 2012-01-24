@@ -59,7 +59,7 @@ html, body {
 #main {
   position: relative;
   margin: 100px 0 50px 0;
-  z-index: 200;
+  z-index: 100;
 }
 
 input[type="text"] {
@@ -167,63 +167,78 @@ p { line-height: 1.5em; }
    Header
 ----------------------------------------- */
 
-header.row {
+#top {
   position: relative;
-  z-index: 201;
-  margin-top: -10px;
+  width: 100%;
+  z-index: 200;
 }
 
-  header nav {
-    position: absolute;
+  #options {
+    position: relative;
     width: 100%;
+    height: 30px;
+    z-index: 201;
+    background: yellow;
   }
 
-  header ul { margin: 0; }
+  #tabs {}
 
-    header li {
+    header.row {
       position: relative;
-      background: #fff;
-      float: left;
-      margin: 0 1em 0 0;
-      padding: 8px 0 12px 0;
-      width: 138px;
-      text-align: center;
-      color: #222;
-      cursor: pointer;
+      z-index: 200;
     }
 
-      header li:last-child { margin-right: 0; }
-
-      header li.pullTab { padding: 0; }
-
-      header ul#assignees {
-        display: none;
-        background: #fff;
-        padding: 0;
-        z-index: 300;
-        margin: 0;
+      header nav {
+        position: absolute;
+        width: 100%;
       }
 
-        header li.pullTab span.tab { display: block; }
+    header ul { margin: 0; }
 
-        header li.assign {
+      header li {
+        position: relative;
+        background: #fff;
+        float: left;
+        margin: 0 1em 0 0;
+        padding: 8px 0 12px 0;
+        width: 138px;
+        text-align: center;
+        color: #222;
+        cursor: pointer;
+      }
+
+        header li:last-child { margin-right: 0; }
+
+        header li.pullTab { padding: 0; }
+
+        header ul#assignees {
+          display: none;
+          background: #fff;
+          padding: 0;
+          z-index: 300;
           margin: 0;
-          padding: 8px 10px;
-          width: 118px;
-          border-bottom: 1px solid #cfd0d0;
-          border-bottom: 1px solid rgba(207,208,208,0.7);
-          cursor: move;
         }
 
-          header li.assign span { display: block; }
+          header li.pullTab span.tab { display: block; }
 
-          header li.assign span.name {
-            float: left;
-            margin-right: 6px;
-            line-height: 41px;
+          header li.assign {
+            margin: 0;
+            padding: 8px 10px;
+            width: 118px;
+            border-bottom: 1px solid #cfd0d0;
+            border-bottom: 1px solid rgba(207,208,208,0.7);
+            cursor: move;
           }
 
-          header li.assign span.miniAvatar { float: right; }
+            header li.assign span { display: block; }
+
+            header li.assign span.name {
+              float: left;
+              margin-right: 6px;
+              line-height: 41px;
+            }
+
+            header li.assign span.miniAvatar { float: right; }
 
 
 /* -----------------------------------------

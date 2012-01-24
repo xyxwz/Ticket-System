@@ -21,13 +21,14 @@ html
 
   body
 
-    #border
+    #top
+      #options
+        .container.clearfix
 
-    .container
+      #tabs
+        .container.clearfix
 
-      header.row
-
-      #main(role='main')
+    #main.container(role='main')
 
     - if (process.env.TYPEKIT)
       script(src="http://use.typekit.com/#{process.env.TYPEKIT}.js")
