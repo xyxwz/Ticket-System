@@ -3,8 +3,8 @@
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/comments/Comment.html', 'timeago', 'marked'],
-function($, _, Backbone, BaseView, mustache, comment) {
+'text!templates/comments/Comment.html', 'text!templates/comments/EditComment.html', 'timeago', 'marked'],
+function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
 
   var CommentView = BaseView.extend({
     tagName: 'div',
@@ -12,6 +12,9 @@ function($, _, Backbone, BaseView, mustache, comment) {
 
     events: {
       "click li.delete": "removeComment",
+      "click li.edit": "editComment",
+      "click .saveComment": "saveComment",
+      "click .cancelEdit": "renderEdit",
       "mouseenter": "toggleOptions",
       "mouseleave": "toggleOptions"
     },
@@ -25,7 +28,7 @@ function($, _, Backbone, BaseView, mustache, comment) {
 
       data = this.model.toJSON();
       data.comment = marked(data.comment);
-      $(this.el).html(Mustache.to_html(comment, data));
+      $(this.el).html(Mustache.to_html(CommentTmpl, data));
       $('.commentTime time', this.el).timeago();
 
       this.checkAbilities(data);
@@ -66,6 +69,48 @@ function($, _, Backbone, BaseView, mustache, comment) {
           $('ul.commentOptions', this.el).hide().removeClass('hide').fadeIn('100');
         }
       }
+    },
+
+    editComment: function() {
+      var self = this;
+
+      if($('.commentBody > .commentEdit', this.el).length === 0) {
+
+        $('.commentInfo', this.el).html(Mustache.to_html(EditTmpl, { comment: self.model.get('comment') }));
+
+        $('textarea', this.el).autoResize({
+          minHeight: 23,
+          extraSpace: 14
+        });
+      }
+    },
+
+    saveComment: function(e) {
+      e.preventDefault();
+
+      var self = this,
+          comment = $('textarea', this.el).val();
+      self.model.save({ comment: comment }, {error: self.triggerViewError, success: self.renderEdit });
+    },
+
+    triggerViewError: function(model, err) {
+      this.trigger('view:error', err);
+    },
+
+    renderEdit: function(e) {
+      /* just so we don't have to create another function */
+      if(e instanceof jQuery.Event) {
+        e.preventDefault();
+      }
+
+      var self = this;
+
+      $('textarea', this.el).data('AutoResizer').destroy();
+
+      $(this.el).fadeOut(200, function() {
+        self.render();
+        $(self.el).fadeIn(200);
+      });
     },
 
     removeComment: function() {

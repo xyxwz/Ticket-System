@@ -324,9 +324,11 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
       var self = this;
 
+      $('textarea', this.el).data('AutoResizer').destroy();
+
       $(this.el).fadeOut(200, function() {
         self.render();
-        $(self.el).fadeIn(400);
+        $(self.el).fadeIn(200);
       });
     }
 

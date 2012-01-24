@@ -46,16 +46,14 @@ Access.prototype.checkAccess = function(user) {
   self = this;
   status = false;
 
-  //this.accessLevels.forEach(function(level) {
   for (var level in this.accessLevels) {
-    if (level != "owner") {
+    if (this.accessLevels[level] != "owner") {
       status = this.accessLevels[level] === user.role ? true : false;
     }
     else {
       // Only Check Access for the last model in the
       // path since this is the resource being requested.
       accessModel = self.keys[self.keys.length-1][1];
-
       // check the accessModel's user.id
       if(accessModel.user) {
         status = user.id.toString() === accessModel.user._id.toString() ? true : false;
