@@ -35,9 +35,16 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
     createTicket: function(e) {
       e.preventDefault();
 
+      var self = this;
+      var title = $('[name=title]', this.el).val();
+      var description = $('[name=description]', this.el).val();
+
+      
       this.collection.create({
-        title: $('[name=title]', this.el).val(),
-        description: $('[name=description]', this.el).val(),
+        title: title,
+        description: description,
+      }, {
+        error: self.triggerViewError,
       });
     },
 
@@ -51,6 +58,10 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
     redirect: function(model) {
       window.history.replaceState({}, document.title, "#tickets/open");
       ticketer.routers.ticketer.navigate("tickets/"+model.id, true);
+    },
+
+    triggerViewError: function(model, err) {
+      this.trigger('view:error', err);
     },
 
   });

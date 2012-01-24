@@ -33,8 +33,12 @@ function($, _, Backbone, BaseView, mustache, form) {
       if (e.keyCode === 13 && !e.ctrlKey) {
         e.preventDefault();
 
+        var self = this;
+
         this.collection.create({
           comment: this.input.val(),
+        }, {
+          error: self.triggerViewError,
         });
 
         this.input.val('').blur();
@@ -46,6 +50,10 @@ function($, _, Backbone, BaseView, mustache, form) {
         minHeight: 23,
         extraSpace: 14
       });
+    },
+
+    triggerViewError: function(model, err) {
+      this.trigger('view:error', err);
     },
 
   });

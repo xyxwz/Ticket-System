@@ -7,6 +7,13 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     initialize: function() {
       
     },
+
+    /* Validate the comment */
+    validate: function(attrs) {
+      if(typeof(attrs.comment) !== 'undefined' && !attrs.comment.replace(/ /g, '').length) {
+        return "Comment must have content to post.";
+      }
+    },
     
     /* Updates the Comment with the attributes passed in
      * the comment argument, also take a save error callback */
