@@ -11,6 +11,7 @@
 :: Ticket Items
 :: Ticket Admin
 :: Comments
+:: Markdown Styles
 :: Forms
 :: Comment Form
 :: Ticket Form
@@ -293,107 +294,10 @@ header.row {
       border-top: 1px solid rgba(207,208,208,0.7);
     }
 
-      .ticketBody > h2:first-child, .ticketBody > h1:first-child, .ticketBody > h1:first-child + h2 {
-        border: 0;
-        margin: 0;
-        padding: 0;
-        border-image: initial;
+      .ticketBody ul.ticketAdmin {
+        position: absolute;
+        right: 20px;
       }
-
-      .ticketBody > :first-child { margin-top: 0!important; }
-
-      .ticketBody h1 {
-        margin: 15px 0;
-        padding-bottom: 2px;
-        font-size: 24px;
-        border-bottom: 1px solid #EEE;
-      }
-
-      .ticketBody h2 {
-        margin: 20px 0 10px 0;
-        font-size: 18px;
-      }
-
-      .ticketBody h3 {
-        margin: 20px 0 10px 0;
-        padding-bottom: 2px;
-        font-size: 14px;
-        border-bottom: 1px solid #DDD;
-      }
-
-      .ticketBody p { margin: 1em 0; }
-
-      .ticketBody p strong { font-weight: 700; }
-
-      .ticketBody pre {
-        margin: 0 0 18px 0;
-        background-color: #F8F8F8;
-        border: 1px solid #CCC;
-        font-size: 13px;
-        line-height: 19px;
-        overflow: auto;
-        padding: 6px 10px;
-        border-radius: 3px;
-        -moz-border-radius: 3px;
-        -webkit-border-radius: 3px;
-        border-image: initial;
-      }
-
-        .ticketBody pre code {
-          border: none;
-        }
-
-      .ticketBody code, .ticketBody tt {
-        margin: 0 2px;
-        padding: 2px 5px;
-        border: 1px solid #CCC;
-        font-size: 13px;
-        line-height: 19px;
-        background-color: #F8F8F8;
-        border-radius: 3px;
-        -moz-border-radius: 3px;
-        -webkit-border-radius: 3px;
-        border-image: initial;
-      }
-
-      .ticketBody code, .ticketBody pre { font: 12px 'Bitstream Vera Sans Mono','Courier', monospace; }
-
-      .ticketBody > ul, .ticketBody > .document > ul, .ticketBody > ol, .ticketBody > .document > ol {
-        margin-top: 21px;
-        margin-left: 36px;
-        list-style: disc;
-      }
-
-        .ticketBody ul, .ticketBody ol {
-          margin: 15px 0 15px 25px;
-        }
-
-          .ticketBody ul li, .ticketBody ol li {
-            margin-top: 7px;
-            margin-bottom: 7px;
-          }
-
-            .ticketBody ul li > :first-child, .ticketBody ol li > :first-child {
-              margin-top: 0;
-            }
-
-            .ticketBody ul li > :last-child, .ticketBody ol li > :last-child {
-              margin-bottom: 0;
-            }
-
-    .ticketInfo span.chat {
-      display: block;
-      width: 24px;
-      height: 22px;
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      background: url('/img/assets/08-chat.png') no-repeat;
-      color: #fff;
-      font-size: 10px;
-      line-height: 1.75em;
-      text-align: center;
-    }
 
 /* -----------------------------------------
    Ticket Items
@@ -508,6 +412,91 @@ span.tack {
       color: #626262;
       font-size: 12px;
     }
+
+
+/* -----------------------------------------
+   Markdown Styles
+----------------------------------------- */
+
+.md > h2:first-child, .md > h1:first-child, .md > h1:first-child + h2 {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  border-image: initial;
+}
+
+.md > :first-child { margin-top: 0!important; }
+
+.md h1 {
+  margin: 15px 0;
+  padding-bottom: 2px;
+  font-size: 24px;
+  border-bottom: 1px solid #EEE;
+}
+
+.md h2 {
+  margin: 20px 0 10px 0;
+  font-size: 18px;
+}
+
+.md h3 {
+  margin: 20px 0 10px 0;
+  padding-bottom: 2px;
+  font-size: 14px;
+  border-bottom: 1px solid #DDD;
+}
+
+.md p { margin: 1em 0; }
+
+  .md p strong { font-weight: 700; }
+
+.md pre {
+  margin: 0 0 18px 0;
+  background-color: #F8F8F8;
+  border: 1px solid #CCC;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-image: initial;
+}
+
+ .md pre code { border: none; }
+
+.md code, .md tt {
+  margin: 0 2px;
+  padding: 2px 5px;
+  border: 1px solid #CCC;
+  font-size: 13px;
+  line-height: 19px;
+  background-color: #F8F8F8;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-image: initial;
+}
+
+  .md code, .md pre { font: 12px 'Bitstream Vera Sans Mono','Courier', monospace; }
+
+.md > ul, .md > .document > ul, .md > ol, .md > .document > ol {
+  margin-top: 21px;
+  margin-left: 36px;
+  list-style: disc;
+}
+
+  .md ul, .md ol { margin: 15px 0 15px 25px; }
+
+    .md ul li, .md ol li {
+      margin-top: 7px;
+      margin-bottom: 7px;
+    }
+
+    .md ul li > :first-child, .md ol li > :first-child { margin-top: 0; }
+
+    .md ul li > :last-child, .md ol li > :last-child { margin-bottom: 0; }
 
   
 /* -----------------------------------------
