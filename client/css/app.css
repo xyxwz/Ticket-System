@@ -466,7 +466,8 @@ span.tack {
 
       .commentInfo p { line-height: 1.5em; }
 
-      .commentInfo p:last-child { margin-bottom: 0; }
+      .commentInfo div p:last-child { margin-bottom: 0; }
+      .commentInfo div p:first-child { margin-top: 0; }
     
     .commentBody span.commentTime {
       display: block;
