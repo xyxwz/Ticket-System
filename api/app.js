@@ -3,6 +3,7 @@ var express = require('express'),
     RedisStore = require('connect-redis')(express),
     url = require('url'),
     redis = require('redis'),
+    io = require('socket.io'),
     passport = require('passport');
 
 var path = __dirname, lib, app, port;
@@ -66,6 +67,7 @@ function bootModels(app) {
 
 // Bootstrap controllers
 function bootControllers(app) {
+  app.socket = io.listen(app);
   app.controllers = require('./controllers')(app);
 }
 

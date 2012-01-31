@@ -1,4 +1,5 @@
-module.exports = function requireControllers(app){
+module.exports = function requireControllers(app) {
+
   var controllers = {
     api: {
       users: require('./api/users')(app),
