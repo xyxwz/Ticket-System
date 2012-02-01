@@ -4,7 +4,8 @@ var express = require('express'),
     url = require('url'),
     redis = require('redis'),
     io = require('socket.io'),
-    passport = require('passport');
+    passport = require('passport'),
+    events = require('events').EventEmitter;
 
 var path = __dirname, lib, app, port;
 
@@ -46,6 +47,9 @@ function bootApplication(app) {
   app.use('/api', lib.middleware.AccessControl);
   app.use(app.router);
   app.use(express.static(path + '/../client/'));
+
+  // Create a new global events emitter
+  app.eventEmitter = new events();
 }
 
 // Bootstrap models
