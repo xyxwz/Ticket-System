@@ -3,7 +3,9 @@ var express = require('express'),
     RedisStore = require('connect-redis')(express),
     url = require('url'),
     redis = require('redis'),
-    passport = require('passport');
+    io = require('socket.io'),
+    passport = require('passport'),
+    events = require('events').EventEmitter;
 
 var path = __dirname, lib, app, port;
 
@@ -16,6 +18,7 @@ exports.boot = function(params){
   bootApplication(app);
   bootModels(app);
   bootControllers(app);
+  socketBindings(app);
   return app;
 };
 
@@ -45,6 +48,9 @@ function bootApplication(app) {
   app.use('/api', lib.middleware.AccessControl);
   app.use(app.router);
   app.use(express.static(path + '/../client/'));
+
+  // Create a new global events emitter
+  app.eventEmitter = new events();
 }
 
 // Bootstrap models
@@ -67,6 +73,12 @@ function bootModels(app) {
 // Bootstrap controllers
 function bootControllers(app) {
   app.controllers = require('./controllers')(app);
+}
+
+// Include Socket.io Bindings
+function socketBindings(app) {
+  app.socket = io.listen(app);
+  app.socketBindings = require('./sockets')(app);
 }
 
 // allow normal node loading if appropriate

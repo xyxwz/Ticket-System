@@ -10,7 +10,8 @@ var Ticket = new mongoose.Schema({
   closed_at             : {type : Date, index: true},
   modified_at           : {type : Date},
   user                  : {type : mongoose.Schema.Types.ObjectId, ref: 'User', index: true, required: true},
-  comments              : [CommentSchema]
+  comments              : [CommentSchema],
+  read                  : {type: Boolean, default: false}
 });
 
 exports.Ticket = mongoose.model('Ticket', Ticket);

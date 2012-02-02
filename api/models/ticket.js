@@ -81,6 +81,9 @@ module.exports = function(app) {
 
     // Manage assigned users
     if (data.assigned_to) {
+      // if someone is assigned set read status to true
+      model.read = true;
+
       newAssigned = _.uniq(data.assigned_to);
 
       this._manageSets(newAssigned, function() {
@@ -400,7 +403,7 @@ module.exports = function(app) {
    */
 
   Ticket.create = function create(data, cb) {
-    var _this, ticket;
+    var _this, ticket, obj;
 
     _this = this;
 
@@ -420,6 +423,17 @@ module.exports = function(app) {
         // Run find() to ensure new ticket is populated
         _this.find(ticket._id, function(err, model){
           if(err) return cb(err);
+
+          // Build object to be emitted by eventEmitter
+          obj = {
+            action: 'new',
+            body: model
+          };
+          // If data came from client include socket id
+          if (data.socket) { obj.socket = data.socket; }
+
+          // Emit a 'newTicket' event
+          app.eventEmitter.emit('newTicket', obj);
           return cb(null, model);
         });
       }
