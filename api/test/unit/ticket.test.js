@@ -392,15 +392,20 @@ describe('ticket', function(){
     /* create */
     /* Should add a ticket to the database */
     describe('create', function(){
-      var data, result;
+      var data, result, events = [];
 
       before(function(done){
         var obj = {
           title: "create ticket",
           description: "create description",
           user: fixtures.users[0]._id
-        }
+        };
         data = obj;
+
+        // Bind an event listener
+        server.eventEmitter.on('newTicket', function(event) {
+          events.push(event);
+        });
 
         Ticket.create(data, function(err, ticket){
           result = ticket;
@@ -429,6 +434,10 @@ describe('ticket', function(){
           should.exist(err);
           done();
         });
+      });
+
+      it('should emit a newTicket event', function() {
+        events.length.should.equal(1);
       });
     });
 

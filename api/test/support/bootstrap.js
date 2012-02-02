@@ -1,6 +1,7 @@
 var express = require('express'),
     mongoose = require('mongoose'),
-    redis = require('redis');
+    redis = require('redis'),
+    events = require('events').EventEmitter;
 
 
 process.env.NODE_ENV = "test";
@@ -26,6 +27,9 @@ function createServer(){
   app.use('/api', lib.middleware.AccessControl);
 
   app.use(app.router);
+
+  // Create a new global events emitter
+  app.eventEmitter = new events();
 
   app.models = require('../../models')(app);
   app.controllers = require('../../controllers')(app);
