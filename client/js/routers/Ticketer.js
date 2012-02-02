@@ -122,23 +122,16 @@ function(
           collection = ticketer.collections.openTickets,
           View = new TicketFormView({ collection: collection });
 
-      View.bind('view:error', this.displayError, this);
-
       // Transitions
       this.appView.showHeader(Header);
       this.appView.showView(View, function() { View.trigger('viewRendered'); });
     },
 
     /* All helper functions */
-    displayError: function(err) {
-      this.appView.showError(ErrorView, err);
-    },
-
     displayView: function(model) {
       var Header = ticketer.views.headers.back,
           View = new TicketDetailsView({ model: model });
-      
-      View.bind('view:error', this.displayError, this);
+
       this.appView.showHeader(Header, { status: model.get('status') });
       this.appView.showView(View, function() { View.trigger('viewRendered'); });
     },

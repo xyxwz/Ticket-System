@@ -7,6 +7,9 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     initialize: function() {
       this.validate = this._validate;
 
+      this.on('error', function(model, err) {
+        ticketer.EventEmitter.trigger('error', err);
+      });
     },
 
     /* Validate the comment */

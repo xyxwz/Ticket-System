@@ -29,6 +29,10 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         this.bind('unassignedUser', this.collection.setMyTickets);
       }
 
+      this.on('error', function(model, err) {
+        ticketer.EventEmitter.trigger('error', err);
+      });
+
     },
 
     /* Validate the model to ensure that the title and body have content */

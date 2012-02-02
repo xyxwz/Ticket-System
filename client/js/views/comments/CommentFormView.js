@@ -37,8 +37,8 @@ function($, _, Backbone, BaseView, mustache, form) {
 
         this.collection.create({
           comment: this.input.val()
-        }, {
-          error: self.triggerViewError
+        },{
+          wait: true
         });
 
         this.input.val('').blur();
@@ -51,10 +51,6 @@ function($, _, Backbone, BaseView, mustache, form) {
         minHeight: 23,
         extraSpace: 14
       });
-    },
-
-    triggerViewError: function(model, err) {
-      this.trigger('view:error', err);
     }
 
   });

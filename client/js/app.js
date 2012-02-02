@@ -73,6 +73,16 @@ define([
       }
     };
 
+    /**
+     * Create a global namespaced event emitter to deal with
+     * arbitrary backbone events.
+     *
+     * Events bound to this should always live and not need to be
+     * unbound. It's useful for things like error messages and alerts.
+     */
+
+    ticketer.EventEmitter = {};
+    _.extend(ticketer.EventEmitter, Backbone.Events);
     // On Connect set the socket id if not already set
     ticketer.sockets.tickets.on('connect', function() {
       ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;

@@ -13,10 +13,6 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
         this.currentView.dispose();
       }
 
-      if(this.currentError) {
-        this.currentError.dispose();
-      }
-
       this.currentView = view;
       this.currentView.render();
 
@@ -86,32 +82,6 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
         this.currentHeader.toggleTab(tab);
         this.currentHeader.toggleAssign(tab);
       }
-    };
-
-    this.showError = function(ErrorView, error) {
-      var self = this;
-
-      if(this.currentError) this.currentError.dispose();
-
-      this.currentError = new ErrorView({ message: error });
-      this.currentError.render();
-
-      //slide animation
-      $(this.currentError.el).hide();
-      $('body').prepend(this.currentError.el);
-      $(this.currentError.el).slideDown(200, function() {
-        var el = this;
-
-        setTimeout(function() {
-          dispose();
-        }, 4000);
-
-        function dispose() {
-          $(el).slideUp(200, function(){
-            self.currentError.dispose();
-          });
-        }
-      });
     };
 
   }

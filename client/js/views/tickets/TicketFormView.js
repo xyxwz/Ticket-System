@@ -9,7 +9,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
     className: 'row ticket',
 
     events: {
-      "click button":  "createTicket",
+      "click button":  "createTicket"
     },
 
     initialize: function() {
@@ -38,14 +38,12 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
       var self = this;
       var title = $('[name=title]', this.el).val();
       var description = $('[name=description]', this.el).val();
-
       
       this.collection.create({
         title: title,
-        description: description,
-      }, {
-        error: self.triggerViewError,
-      });
+        description: description
+      },
+      { wait: true });
     },
 
     bindResize: function() {
@@ -58,11 +56,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
     redirect: function(model) {
       window.history.replaceState({}, document.title, "#tickets/open");
       ticketer.routers.ticketer.navigate("tickets/"+model.id, true);
-    },
-
-    triggerViewError: function(model, err) {
-      this.trigger('view:error', err);
-    },
+    }
 
   });
 
