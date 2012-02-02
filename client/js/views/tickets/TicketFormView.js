@@ -41,7 +41,8 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
       
       this.collection.create({
         title: title,
-        description: description
+        description: description,
+        socket: ticketer.sockets.id
       },
       { wait: true });
     },

@@ -12,6 +12,7 @@ define([
   'views/headers/MainHeaderView',
   'views/headers/BackHeaderView',
   'views/alerts/ErrorView',
+  'views/alerts/AlertView',
   'SocketEvents',
   'socket.io'
 ], function(
@@ -24,6 +25,7 @@ define([
   MainHeaderView,
   BackHeaderView,
   ErrorView,
+  AlertView,
   SocketEvents
 ) {
 
@@ -89,7 +91,8 @@ define([
 
     // Create new instances of alert views and start event bindings
     ticketer.views.alerts = {
-      error: new ErrorView()
+      error: new ErrorView(),
+      alert: new AlertView()
     };
 
     // On Connect set the socket id if not already set

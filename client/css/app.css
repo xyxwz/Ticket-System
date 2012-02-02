@@ -959,8 +959,11 @@ form .outerWrap {
   #alert div.alert p {
     margin-bottom: 0px;
     text-align: center;
-    font-weight: bold;
     font-family: "museo-slab", "American Typewriter", "serif";
     font-size: 14px;
+  }
+
+  #alert div.alert.error p {
+    font-weight: bold;
     color: #D0D0D0;
   }

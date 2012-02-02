@@ -7,6 +7,9 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     var View = ticketer.routers.ticketer.appView;
     
     ticketer.sockets.tickets.on('new', function(model) {
+
+      ticketer.EventEmitter.trigger('ticket', model);
+
       if(View.currentView.options.namespace || View.currentView.options.namespace === 'openTickets') {
         // We need to show a notification
       }

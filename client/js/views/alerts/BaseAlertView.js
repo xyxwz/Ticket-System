@@ -15,13 +15,15 @@ function($, _, Backbone) {
     },
 
     close: function(e) {
-      e.preventDefault();
+      if(e.type === 'click') e.preventDefault();
 
       var self = this;
 
       $(this.el).slideUp(200, 'swing', function() {
         $('.alert', self).remove();
       });
+
+      $('body').off('mousedown DOMMouseScroll mousewheel touchstart touchmove', self.close);
     }
 
   });

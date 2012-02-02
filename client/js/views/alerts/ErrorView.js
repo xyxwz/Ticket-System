@@ -1,5 +1,5 @@
 define(['jquery', 'underscore', 'backbone', 'views/alerts/BaseAlertView', 'mustache',
-'text!templates/errors/Error.html'],
+'text!templates/alerts/Error.html'],
 
 function($, _, Backbone, BaseAlertView, mustache, ErrorTmpl) {
 
@@ -12,7 +12,7 @@ function($, _, Backbone, BaseAlertView, mustache, ErrorTmpl) {
     },
 
     render: function(msg) {
-      $(this.el).html(Mustache.to_html(ErrorTmpl, { error: msg })).hide();
+      $(this.el).html(Mustache.to_html(ErrorTmpl, { msg: msg })).hide();
       $('body').prepend(this.el);
       $(this.el).slideDown(200, function() {
         var el = this;
