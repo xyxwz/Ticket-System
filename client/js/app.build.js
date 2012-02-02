@@ -4,7 +4,7 @@
   dir: "./release",
   paths: {
     'jquery':           'empty:',
-    'backbone':         'libs/AMDbackbone-0.5.3',
+    'backbone':         'libs/AMDbackbone-0.9.0',
     'underscore':       'libs/underscore',
     'text':             'libs/require/text',
     'mustache':         'libs/mustache',
