@@ -14,6 +14,8 @@ require.config( {
     'timeline':         'libs/timeline',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
+    'SocketEvents':     'support/SocketEvents',
+    'socket.io':        '/socket.io/socket.io'
   },
 });
 

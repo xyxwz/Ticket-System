@@ -10,7 +10,9 @@ define([
   'collections/Users',
   'routers/Ticketer',
   'views/headers/MainHeaderView',
-  'views/headers/BackHeaderView'
+  'views/headers/BackHeaderView',
+  'SocketEvents',
+  'socket.io'
 ], function(
   _,
   Backbone,
@@ -58,15 +60,26 @@ define([
       collections: {
         openTickets: new Tickets(),
         closedTickets: new Tickets(),
-        admins: new Users(),
+        admins: new Users()
       },
       views: {
         headers: {
           main: MainHeaderView,
-          back: BackHeaderView,
+          back: BackHeaderView
         }
       },
+      sockets: {
+        tickets: io.connect('/tickets')
+      }
     };
+
+    // On Connect set the socket id if not already set
+    ticketer.sockets.tickets.on('connect', function() {
+      ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;
+    });
+
+    // Initialize Socket Event Handlers
+    new SocketEvents();
 
     /* Set Default User Avatar */
     if (!ticketer.currentUser.avatar) ticketer.currentUser.avatar = "/img/avatars/65x65.gif";
