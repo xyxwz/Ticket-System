@@ -18,6 +18,7 @@ exports.boot = function(params){
   bootApplication(app);
   bootModels(app);
   bootControllers(app);
+  socketBindings(app);
   return app;
 };
 
@@ -71,8 +72,13 @@ function bootModels(app) {
 
 // Bootstrap controllers
 function bootControllers(app) {
-  app.socket = io.listen(app);
   app.controllers = require('./controllers')(app);
+}
+
+// Include Socket.io Bindings
+function socketBindings(app) {
+  app.socket = io.listen(app);
+  app.socketBindings = require('./sockets')(app);
 }
 
 // allow normal node loading if appropriate
