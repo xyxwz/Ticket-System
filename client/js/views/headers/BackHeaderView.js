@@ -62,8 +62,8 @@ function($, _, Backbone, BaseView, HeaderTmpl, PullTabTmpl) {
         zIndex: 302,
         cursorAt: {
           top: 28,
-          left: 69,
-        },
+          left: 69
+        }
       });
 
       this.bindTo($('.pullTab .tab', this.el), 'click', this.togglePullTab);
@@ -110,7 +110,7 @@ function($, _, Backbone, BaseView, HeaderTmpl, PullTabTmpl) {
           $(tab).removeClass('lightShadow').addClass('shadow');
         });
       }
-    },
+    }
 
   });
 

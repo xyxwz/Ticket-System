@@ -24,7 +24,7 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
 
       });
 
-    },
+    }
 
   });
 

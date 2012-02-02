@@ -1,7 +1,7 @@
 /* Garbage Collector
  *
  * Manages views creation and destruction to prevent memory leaks.
- * All views should inherit from BaseView to allow proper 
+ * All views should inherit from BaseView to allow proper
  * Garbage Collection on view destruction.
  *
  * http://stackoverflow.com/questions/7567404/backbone-js-repopulate-or-recreate-the-view/7607853#7607853
@@ -18,15 +18,15 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
   _.extend(BaseView.prototype, Backbone.View.prototype, {
 
     /* Create a nested view
-     * 
+     *
      * All views that are instatiated from within a view
      * aka nested views should use the createView function.
      * This adds the nested view to the BaseView views array and
-     * runs destroy when the parent object is destroyed. 
+     * runs destroy when the parent object is destroyed.
      *     :name  - The view name to create. Must be available in
      *              the app namespace for it to be accessed in this module
-     *      
-     *     :args  - Any arguments the view make take such as 
+     *
+     *     :args  - Any arguments the view make take such as
      *              model or collections.
      *
      *  ex: this.createView(
@@ -50,34 +50,34 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
      * All bindings should use this function to ensure
      * that unbind is called when the view is trashed.
      * It adds the binding to the bindings array.
-     *    :model     -  a model or collection to bind to
+     *    :item      -  a model or collection to bind to
      *    :ev        -  an event to bind to
      *    :callback  -  a callback to run when event is triggered
      *
      *  ex:  this.bindTo(this.model, 'change', someFunction);
      */
-    bindTo: function(model, ev, callback) {
-      model.bind(ev, callback);
-      this.bindings.push({ model: model, ev: ev, callback: callback });
+    bindTo: function(item, ev, callback) {
+      item.on(ev, callback);
+      this.bindings.push({ item: item, ev: ev, callback: callback });
     },
 
     unbindFromAll: function() {
       _.each(this.bindings, function(binding) {
-        binding.model.unbind(binding.ev, binding.callback);
+        binding.item.off(binding.ev, binding.callback);
       });
       this.bindings = [];
     },
 
     trash: function(view) {
-      view.unbindFromAll(); // this will unbind all events that this view has bound to 
-      view.unbind(); // this will unbind all listeners to events from this view. This is probably not necessary because this view will be garbage collected.
+      view.unbindFromAll(); // this will unbind all events that this view has bound to
+      view.off(); // this will unbind all listeners to events from this view. This is probably not necessary because this view will be garbage collected.
       view.remove(); // uses the default Backbone.View.remove() method which removes this.el from the DOM and removes DOM events.
     },
 
     /* Dispose of view
      *
      * Is automatically triggered when a new view is rendered
-     * while using the AppView application object. Usually 
+     * while using the AppView application object. Usually
      * referenced from the router. This unbinds all the bindings
      * in the bindings array and removes the el from the dom.
      * It can also be called manually, for example in a collection's
@@ -105,7 +105,7 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
         clearInterval(interval);
       });
       this.intervals = [];
-    },
+    }
 
   });
 

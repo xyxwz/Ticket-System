@@ -28,7 +28,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       }
       this.save(null, { error: callback });
 
-    },
+    }
   
   });
 

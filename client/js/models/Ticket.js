@@ -5,7 +5,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
   var Ticket = Backbone.Model.extend({
     
     defaults: {
-      'status'  : 'Open',
+      'status'  : 'Open'
     },
 
     urlRoot: '/api/tickets',
@@ -20,13 +20,13 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       this.comments = new Comments();
       this.comments.url = '/api/tickets/' + this.id + '/comments';
 
-      this.bind("change", function() {
+      this.on("change", function() {
         self.comments.url = '/api/tickets/' + this.id + '/comments';
       });
 
       if (this.get('status') === 'open') {
-        this.bind('assignedUser', this.collection.setMyTickets);
-        this.bind('unassignedUser', this.collection.setMyTickets);
+        this.on('assignedUser', this.collection.setMyTickets);
+        this.on('unassignedUser', this.collection.setMyTickets);
       }
 
       this.on('error', function(model, err) {
@@ -71,7 +71,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
           // Handles Switching Collections
           ticketer.collections.openTickets.remove(self);
           ticketer.collections.closedTickets.add(self);
-        },
+        }
 
       });
 
@@ -101,9 +101,9 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       this.set({assigned_to: _.uniq(newArray)}, {silent: true});
       this.trigger('unassignedUser', this);
       this.save(null, { error: callback });
-    },
+    }
 
   });
   
-  return Ticket;  
-}); 
+  return Ticket;
+});

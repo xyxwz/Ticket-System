@@ -11,7 +11,7 @@ define(['underscore', 'backbone', 'models/User'], function(_, Backbone, User) {
         return model.get("name");
       };
 
-    },
+    }
 
   });
 

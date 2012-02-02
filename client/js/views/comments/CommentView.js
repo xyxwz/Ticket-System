@@ -90,11 +90,9 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
 
       var self = this,
           comment = $('textarea', this.el).val();
-      self.model.save({ comment: comment }, {error: self.triggerViewError, success: self.renderEdit });
-    },
 
-    triggerViewError: function(model, err) {
-      this.trigger('view:error', err);
+      self.model.save(
+        { comment: comment }, { success: self.renderEdit });
     },
 
     renderEdit: function(e) {

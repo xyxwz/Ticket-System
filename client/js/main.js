@@ -16,7 +16,7 @@ require.config( {
     'AppView':          'support/AppView',
     'SocketEvents':     'support/SocketEvents',
     'socket.io':        '/socket.io/socket.io'
-  },
+  }
 });
 
 require(['jquery', 'underscore', 'backbone', 'BaseView'],

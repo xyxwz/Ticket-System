@@ -1,4 +1,4 @@
-/* User model - used to get the current user and store that 
+/* User model - used to get the current user and store that
  * information in memory. */
 
 define(['underscore', 'backbone'], function(_, Backbone) {
@@ -8,7 +8,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
 
     initialize: function() {
 
-    },
+    }
 
   });
 

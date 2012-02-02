@@ -42,7 +42,7 @@ function($, _, Backbone, BaseView, CommentView) {
       $(html).hide();
       $(this.el).append(html);
       $(html).fadeIn(200);
-    },
+    }
 
   });
 

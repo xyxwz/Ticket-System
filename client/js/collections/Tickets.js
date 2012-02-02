@@ -18,14 +18,14 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
       this.page = 1;
 
-      this.bind('reset', this.loadAllComments);
-      this.bind('add', this.loadComment);
+      this.on('reset', this.loadAllComments);
+      this.on('add', this.loadComment);
 
       if (currentUser.role === 'admin') {
-        this.mine = new Array();
-        this.bind('reset', this.setMyTickets);
-        this.bind('add', this.setMyTickets);
-        this.bind('remove', this.setMyTickets);
+        this.mine = [];
+        this.on('reset', this.setMyTickets);
+        this.on('add', this.setMyTickets);
+        this.on('remove', this.setMyTickets);
       }
     },
 
@@ -50,7 +50,7 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       });
 
       this.mine = mine;
-    },
+    }
 
   });
 

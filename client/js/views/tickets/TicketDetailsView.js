@@ -22,12 +22,10 @@ function($, _, Backbone, BaseView, TicketView, CommentListView, CommentFormView)
     renderTicket: function() {
       var self = this,
           view = this.createView(
-        TicketView,
-        { model: this.model, admin: true }
-      );
+            TicketView,
+            { model: this.model, admin: true }
+          );
 
-
-      this.bindTo(view, 'view:error', function(err) { self.trigger('view:error', err); });
       $(this.el).html(view.render().el);
     },
 
@@ -49,7 +47,6 @@ function($, _, Backbone, BaseView, TicketView, CommentListView, CommentFormView)
       );
 
       this.bindTo(this, 'viewRendered', view.bindResize);
-      this.bindTo(view, 'view:error', function(err) { self.trigger('view:error', err); });
 
       $(this.el).append(view.render().el);
     }
