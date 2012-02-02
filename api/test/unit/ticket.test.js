@@ -37,7 +37,7 @@ describe('ticket', function(){
     describe('required fields', function(){
 
       it("should enforce required fields", function(done){
-        Ticket.create({}, function(err){
+        Ticket.create({}, {}, function(err){
           // Title
           should.exist(err.errors.title);
           err.errors.title.type.should.equal("required");
@@ -109,7 +109,9 @@ describe('ticket', function(){
           status: "closed"
         };
 
-        klass.update(data, function(err, model){
+        var user = fixtures.users[0];
+
+        klass.update(data, user, function(err, model){
           if(err) return done(err);
           testObject = model;
           done();
@@ -118,7 +120,8 @@ describe('ticket', function(){
 
       // Reset Title for future tests
       after(function(done){
-        klass.update({title: origTitle}, function(err, model){
+        var user = fixtures.users[0];
+        klass.update({title: origTitle}, user, function(err, model){
           if(err) return done(err);
           done();
         });
@@ -152,7 +155,9 @@ describe('ticket', function(){
           assigned_to: [fixtures.users[0].id, fixtures.users[0].id]
         };
 
-        klass.update(data, function(err, model){
+        var user = fixtures.users[0];
+
+        klass.update(data, user, function(err, model){
           if(err) return done(err);
           testObject = model;
           done();
@@ -188,7 +193,9 @@ describe('ticket', function(){
 
         data = {assigned_to: []};
 
-        klass.update(data, function(err, model){
+        var user = fixtures.users[0];
+
+        klass.update(data, user, function(err, model){
           if(err) return done(err);
           user1 = fixtures.users[0].id;
           user2 = fixtures.users[1].id;
@@ -358,16 +365,18 @@ describe('ticket', function(){
     describe('mine', function(){
 
       before(function(done){
-        var data, _i, count, klass;
+        var data, _i, count, klass, user;
 
         data = {assigned_to: [fixtures.users[0].id, fixtures.users[1].id]};
         _i = 0;
         count = 0;
 
+        user = fixtures.users[0];
+
         _.each(fixtures.tickets, function(ticket){
           klass = new Ticket(ticket);
 
-          klass.update(data, function(err, ticket){
+          klass.update(data, user, function(err, ticket){
             count++;
             if(count == fixtures.tickets.length){
               done();
@@ -419,7 +428,7 @@ describe('ticket', function(){
 
     /* create */
     /* Should add a ticket to the database */
-    describe('create', function(){
+    describe('create - non admin', function(){
       var data, result, events = [];
 
       before(function(done){
@@ -430,12 +439,14 @@ describe('ticket', function(){
         };
         data = obj;
 
+        var user = fixtures.users[1];
+
         // Bind an event listener
         server.eventEmitter.on('newTicket', function(event) {
           events.push(event);
         });
 
-        Ticket.create(data, function(err, ticket){
+        Ticket.create(data, user, function(err, ticket){
           result = ticket;
           done();
         });
@@ -458,7 +469,7 @@ describe('ticket', function(){
 
       it('should err if validations fail', function(done){
         data.title = null;
-        Ticket.create(data, function(err, ticket){
+        Ticket.create(data, {}, function(err, ticket){
           should.exist(err);
           done();
         });

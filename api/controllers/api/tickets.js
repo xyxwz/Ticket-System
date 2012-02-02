@@ -52,7 +52,7 @@ module.exports = function(app) {
   app.post('/api/tickets', function(req, res) {
     var data = req.body;
     data.user = req.user.id;
-    Ticket.create(data, function(err, ticket) {
+    Ticket.create(data, req.user, function(err, ticket) {
       if(err) return res.json({error: 'Missing required attributes'}, 400);
       res.json(ticket, 201);
     });
@@ -93,7 +93,7 @@ module.exports = function(app) {
     data = req.body;
     ticket = new Ticket(req.ticket);
 
-    ticket.update(data, function(err, model) {
+    ticket.update(data, req.user, function(err, model) {
       if(err) return res.json({error: 'Error updating ticket'}, 400);
       res.json(model);
     });

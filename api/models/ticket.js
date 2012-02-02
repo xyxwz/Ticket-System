@@ -52,18 +52,20 @@ module.exports = function(app) {
    *
    *  Updates a ticket.
    *
-   *  data - A json object representing ticket properties to update
+   *  @data - A json object representing ticket properties to update
    *     :title       - string, optional
    *     :description - string, optional
    *     :status      - string, optional, available options ['open', 'closed']
    *     :assigned_to - array, optional, collection of userID's
+   *
+   *  @user - A user object
    *
    *  Returns an object ready to be sent to the client
    *
    *  @api public
    */
 
-  Ticket.prototype.update = function update(data, cb) {
+  Ticket.prototype.update = function update(data, user, cb) {
     var _this, model, newAssigned;
 
     _this = this;
@@ -392,20 +394,22 @@ module.exports = function(app) {
    *
    *  Creates a new ticket with the status of "open"
    *
-   *  data - A json object representing ticket properties
+   *  @data - A json object representing ticket properties
    *     :title       - string
    *     :description - string, remove any possible script tags
    *     :user        - string, a user instance BSON id
+   *
+   *  @user - A user object
    *
    *  Returns a ticket object ready to be sent to the client.
    *
    *  @api public
    */
 
-  Ticket.create = function create(data, cb) {
     var _this, ticket, obj;
 
     _this = this;
+  Ticket.create = function create(data, user, cb) {
 
     ticket = new TicketSchema({
       title: data.title,

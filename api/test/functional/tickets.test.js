@@ -122,10 +122,12 @@ describe('tickets', function(){
       _i = 0;
       _count = 0;
 
+      var user = fixtures.users[0];
+
       _.each(fixtures.tickets, function(model){
         ticket = new Ticket(model);
 
-        ticket.update(data, function(err, ticket){
+        ticket.update(data, user, function(err, ticket){
           _count++;
           if(_count == fixtures.tickets.length){
             runCallback();
@@ -181,10 +183,12 @@ describe('tickets', function(){
       _i = 0;
       _count = 0;
 
+      var user = fixtures.users[0];
+
       _.each(fixtures.tickets, function(model){
         ticket = new Ticket(model);
 
-        ticket.update(data, function(err, ticket){
+        ticket.update(data, user, function(err, ticket){
           _count++;
           if(_count == fixtures.tickets.length){
             runCallback();
