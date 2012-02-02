@@ -6,8 +6,7 @@ define([
   'models/Ticket',
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView',
-  'views/tickets/TicketFormView',
-  'views/errors/ErrorView'
+  'views/tickets/TicketFormView'
 ],
 function(
   Backbone,
@@ -15,8 +14,7 @@ function(
   Ticket,
   TicketListView,
   TicketDetailsView,
-  TicketFormView,
-  ErrorView
+  TicketFormView
 ) {
 
   var Ticketer = Backbone.Router.extend({
@@ -30,7 +28,7 @@ function(
       "tickets/mine": "myTickets",
       "tickets/mine?*params": "myTickets",
       "tickets/new": "createTicket",
-      "tickets/:id": "details",
+      "tickets/:id": "details"
     },
 
     /* Routing */
@@ -72,7 +70,7 @@ function(
               status: 'closed'
             });
             self.appView.showView(View);
-          },
+          }
         });
       }
       else {
@@ -109,7 +107,7 @@ function(
           success: function(model, response){
             model.comments.fetch();
             self.displayView(ticket);
-          },
+          }
         });
       }
       else {
@@ -134,7 +132,7 @@ function(
 
       this.appView.showHeader(Header, { status: model.get('status') });
       this.appView.showView(View, function() { View.trigger('viewRendered'); });
-    },
+    }
 
   });
 

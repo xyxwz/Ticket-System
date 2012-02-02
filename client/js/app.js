@@ -11,6 +11,7 @@ define([
   'routers/Ticketer',
   'views/headers/MainHeaderView',
   'views/headers/BackHeaderView',
+  'views/alerts/ErrorView',
   'SocketEvents',
   'socket.io'
 ], function(
@@ -21,7 +22,9 @@ define([
   Users,
   Ticketer,
   MainHeaderView,
-  BackHeaderView
+  BackHeaderView,
+  ErrorView,
+  SocketEvents
 ) {
 
   $(function() {
@@ -83,6 +86,12 @@ define([
 
     ticketer.EventEmitter = {};
     _.extend(ticketer.EventEmitter, Backbone.Events);
+
+    // Create new instances of alert views and start event bindings
+    ticketer.views.alerts = {
+      error: new ErrorView()
+    };
+
     // On Connect set the socket id if not already set
     ticketer.sockets.tickets.on('connect', function() {
       ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;

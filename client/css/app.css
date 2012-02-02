@@ -943,24 +943,24 @@ form .outerWrap {
 
 
 /* alert-message styles */
-#error {
+#alert {
   position: fixed;
   width: 100%;
   z-index: 300;
 }
 
-  #error div.error {
+  #alert div.alert {
     margin: 0 auto;
     width: 45%;
     padding: 6px 12px;
     z-index: 301;
   }
 
-.alert-message.error p {
-  margin-bottom: 0px;
-  text-align: center;
-  font-weight: bold;
-  font-family: "museo-slab", "American Typewriter", "serif";
-  font-size: 14px;
-  color: #D0D0D0;
-}
+  #alert div.alert p {
+    margin-bottom: 0px;
+    text-align: center;
+    font-weight: bold;
+    font-family: "museo-slab", "American Typewriter", "serif";
+    font-size: 14px;
+    color: #D0D0D0;
+  }
