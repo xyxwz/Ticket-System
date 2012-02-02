@@ -81,6 +81,9 @@ module.exports = function(app) {
 
     // Manage assigned users
     if (data.assigned_to) {
+      // if someone is assigned set read status to true
+      model.read = true;
+
       newAssigned = _.uniq(data.assigned_to);
 
       this._manageSets(newAssigned, function() {

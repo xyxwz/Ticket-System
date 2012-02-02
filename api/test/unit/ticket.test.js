@@ -86,6 +86,10 @@ describe('ticket', function(){
         should.not.exist(ticket._id);
         should.exist(ticket.id);
       });
+
+      it('should include an assigned_to property', function(){
+        should.exist(ticket.assigned_to);
+      });
     });
 
 
@@ -102,8 +106,7 @@ describe('ticket', function(){
         data = {
           title: "title UPDATED",
           description: "description UPDATED",
-          status: "closed",
-          assigned_to: [fixtures.users[0].id, fixtures.users[0].id],
+          status: "closed"
         };
 
         klass.update(data, function(err, model){
@@ -119,7 +122,7 @@ describe('ticket', function(){
           if(err) return done(err);
           done();
         });
-      })
+      });
 
       it('should update required fields', function(){
         testObject.title.should.equal("title UPDATED");
@@ -135,6 +138,26 @@ describe('ticket', function(){
         should.exist(testObject.modified_at);
         testObject.modified_at.should.not.equal(testObject.opened_at);
       });
+    });
+
+    /* Update - assigning users
+     * Should test assigning users to a ticket works correctly */
+    describe('update - assign users', function(){
+      var klass, data, testObject;
+
+      before(function(done){
+        klass = new Ticket(fixtures.tickets[0]);
+
+        data = {
+          assigned_to: [fixtures.users[0].id, fixtures.users[0].id]
+        };
+
+        klass.update(data, function(err, model){
+          if(err) return done(err);
+          testObject = model;
+          done();
+        });
+      });
 
       it('should assign user to ticket', function(){
         var assignedTo = testObject.assigned_to[0].toString();
@@ -144,7 +167,12 @@ describe('ticket', function(){
       it('should strip out duplicate ids', function(){
         testObject.assigned_to.length.should.equal(1);
       });
+
+      it('should set read to true because we are assigning users', function(){
+        testObject.read.should.be.true;
+      });
     });
+
 
     /* Manage Sets */
     /* Should manage the assigned_to redis sets */
