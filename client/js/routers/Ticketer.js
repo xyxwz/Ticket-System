@@ -42,8 +42,9 @@ function(
 
     openTickets: function() {
       var Header = ticketer.views.headers.main,
+          collection = ticketer.collections.openTickets,
           models = ticketer.collections.openTickets.models,
-          View = new TicketListView({ models: models });
+          View = new TicketListView({ collection: collection, models: models });
 
       // Transitions
       this.appView.showHeader(Header, { tab: 'openTickets' });
@@ -86,8 +87,9 @@ function(
 
     myTickets: function() {
       var Header = ticketer.views.headers.main,
+          collection = ticketer.collections.openTickets,
           models = ticketer.collections.openTickets.mine,
-          View = new TicketListView({ models: models });
+          View = new TicketListView({ collection:collection, models: models });
 
       // Transitions
       this.appView.showHeader(Header, { tab: 'myTickets' });

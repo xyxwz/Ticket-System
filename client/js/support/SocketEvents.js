@@ -8,15 +8,11 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     
     ticketer.sockets.tickets.on('new', function(model) {
 
+      // Trigger a `ticket` event
       ticketer.EventEmitter.trigger('ticket', model);
 
-      if(View.currentView.options.namespace || View.currentView.options.namespace === 'openTickets') {
-        // We need to show a notification
-      }
-      else {
-        // Just add the new ticket to the open tickets collection
-        ticketer.collections.openTickets.add(model);
-      }
+      // Add the new ticket to the openTickets collection
+      ticketer.collections.openTickets.add(model);
     });
 
   };

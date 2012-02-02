@@ -19,6 +19,11 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
 
       this.models = this.options.models;
       this.status = this.options.status ? this.options.status : 'open';
+
+      this.bindTo(this.collection, 'add', function(model) {
+        var html = self.renderTicket(model);
+        $(self.el).append(html);
+      });
     },
 
     render: function() {
