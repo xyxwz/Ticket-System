@@ -15,6 +15,8 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
 
       _.bindAll(this);
 
+      this.validate = this._validate;
+
       this.comments = new Comments();
       this.comments.url = '/api/tickets/' + this.id + '/comments';
 
@@ -30,7 +32,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     },
 
     /* Validate the model to ensure that the title and body have content */
-    validate: function(attrs) {
+    _validate: function(attrs) {
       if(typeof(attrs.title) !== 'undefined' && !attrs.title.replace(/ /g, '').length) {
         return "You must enter a ticket title.";
       }

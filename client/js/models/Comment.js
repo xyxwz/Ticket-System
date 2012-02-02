@@ -5,11 +5,12 @@ define(['underscore', 'backbone'], function(_, Backbone) {
   var Comment = Backbone.Model.extend({
 
     initialize: function() {
-      
+      this.validate = this._validate;
+
     },
 
     /* Validate the comment */
-    validate: function(attrs) {
+    _validate: function(attrs) {
       if(typeof(attrs.comment) !== 'undefined' && !attrs.comment.replace(/ /g, '').length) {
         return "Comment must have content to post.";
       }
