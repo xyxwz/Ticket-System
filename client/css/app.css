@@ -377,8 +377,10 @@ span.tack {
   height: 26px;
   top: -15px;
   left: -8px;
-  background: url('/img/assets/tack.png') no-repeat;
 }
+
+  span.tack.read { background: url('/img/assets/tack.png') no-repeat; }
+  span.tack.unread { background: url('/img/assets/tack-red.png') no-repeat; }
 
 /* Ticket Meta */
 
