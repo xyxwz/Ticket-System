@@ -480,6 +480,37 @@ describe('ticket', function(){
       });
     });
 
+    /* create */
+    /* Should add a ticket to the database */
+    describe('create - admin', function(){
+      var data, result, events = [];
+
+      before(function(done){
+        var obj = {
+          title: "create ticket",
+          description: "create description",
+          user: fixtures.users[0]._id
+        };
+        data = obj;
+
+        var user = fixtures.users[0];
+
+        Ticket.create(data, user, function(err, ticket){
+          result = ticket;
+          done();
+        });
+      });
+
+      it('should assign admin user to ticket', function(){
+        var assignedTo = result.assigned_to[0].toString();
+        assignedTo.should.equal(fixtures.users[0].id);
+      });
+
+      it('should set read to true because we are assigning users', function(){
+        result.read.should.be.true;
+      });
+    });
+
   }); // close static methods
 
 });

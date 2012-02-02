@@ -406,10 +406,8 @@ module.exports = function(app) {
    *  @api public
    */
 
-    var _this, ticket, obj;
-
-    _this = this;
   Ticket.create = function create(data, user, cb) {
+    var ticket, klass, assigned_to;
 
     ticket = new TicketSchema({
       title: data.title,
@@ -419,13 +417,33 @@ module.exports = function(app) {
 
     if (ticket.description) ticket.description.replace(/<\/?script>/ig, '');
 
+    // Check if user is admin and automatically assign them if true
+    if(user.role && user.role === 'admin') {
+      assigned_to = [user._id];
+      ticket.read = true;
+
+      klass = new Ticket(ticket);
+
+      klass._manageSets(assigned_to, function() {
+        createTicketObject(ticket, data, cb);
+      });
+    }
+    else {
+      createTicketObject(ticket, data, cb);
+    }
+  };
+
+  // Perform the actual I/O in seperate function
+  function createTicketObject(ticket, data, cb) {
+    var obj;
+
     ticket.save(function(err, ticket) {
       if (err || !ticket) {
         return cb(err);
       }
       else {
         // Run find() to ensure new ticket is populated
-        _this.find(ticket._id, function(err, model){
+        Ticket.find(ticket._id, function(err, model){
           if(err) return cb(err);
 
           // Build object to be emitted by eventEmitter
@@ -442,7 +460,7 @@ module.exports = function(app) {
         });
       }
     });
-  };
+  }
 
   return Ticket;
 
