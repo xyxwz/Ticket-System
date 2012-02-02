@@ -1,6 +1,3 @@
-var UserSchema = require('../schemas').User;
-
-
  module.exports = function() {
 
 
