@@ -71,7 +71,7 @@ exports.hasNotification = function(redis, user, ticket, cb) {
     if(err) return cb(err);
 
     notify = tickets.some(function(tick) {
-      return tick === ticket;
+      return tick.toString() === ticket.toString();
     });
 
     return cb(null, notify);
@@ -95,7 +95,7 @@ exports.pushNotification = function(redis, user, ticket, cb) {
     if(err) return cb('Error getting participating users');
 
     users.forEach(function(userID) {
-      if(userID !== user) {
+      if(userID.toString() !== user.toString()) {
         tempUserRef = userID + '_notifications';
         redis.SADD(tempUserRef, ticket, function(err) {
           if(err) error = 'Error pushing to users';

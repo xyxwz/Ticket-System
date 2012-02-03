@@ -70,7 +70,7 @@ module.exports = function(app) {
     }
 
     function checkNotification(user, ticket, cb) {
-      notifications.hasNotification(app.redis, user, ticket, function(err, notify) {
+      notifications.hasNotification(app.redis, user, ticket.id, function(err, notify) {
         if(err) return cb(err);
         if(notify) ticket.notification = true;
         return cb(null, ticket);

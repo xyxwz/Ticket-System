@@ -466,7 +466,7 @@ module.exports = function(app) {
         Ticket.find(ticket._id, function(err, model){
           if(err) return cb(err);
 
-          Notifications.nowParticipating(redis, ticket.user, ticket.id, function(err) {
+          Notifications.nowParticipating(redis, model.user.id, ticket.id, function(err) {
             if(err) return cb(err);
 
             //Build model to emit
