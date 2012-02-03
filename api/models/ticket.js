@@ -1,7 +1,9 @@
 var mongoose = require('mongoose'),
     redis = require('redis'),
+    _ = require('underscore'),
     TicketSchema = require('./schemas/ticket').Ticket,
-    _ = require('underscore');
+    Notifications = require('./helpers/').Notifications;
+
 
 module.exports = function(app) {
 
@@ -89,11 +91,11 @@ module.exports = function(app) {
       newAssigned = _.uniq(data.assigned_to);
 
       this._manageSets(newAssigned, function() {
-        _this._execUpdate(cb);
+        _this._execUpdate(user.id, cb);
       });
     }
     else {
-      this._execUpdate(cb);
+      this._execUpdate(user.id, cb);
     }
   };
 
@@ -117,7 +119,8 @@ module.exports = function(app) {
    */
 
   Ticket.prototype._manageSets = function manageSets(array, cb) {
-    var redis, _this, model, newArray, currentArray, exists, _add, _rem;
+    var redis, _this, model, newArray, currentArray, exists, _add, _rem,
+        error = null;
 
     _this = this;
     model = this.model;
@@ -145,14 +148,22 @@ module.exports = function(app) {
       _.each(_add, function(user) {
         redis.SADD(user, model.id);
         redis.SADD(model.id, user);
+        Notifications.nowParticipating(redis, user, model.id, function(err) {
+          if(err) error = err;
+        });
       });
 
       _.each(_rem, function(user) {
         redis.SREM(user, model.id);
         redis.SREM(model.id, user);
+
+        //remove user from participating if they are removed from assigned
+        Notifications.removeParticipating(redis, user, model.id, function(err) {
+          if(err) error = err;
+        });
       });
 
-      return cb(null);
+      return cb(error);
     });
   };
 
@@ -164,6 +175,7 @@ module.exports = function(app) {
    *  functions have been run. Takes a callback to return the
    *  saved ticket's toClient() properties.
    *
+   *    :userID - User's id in string form
    *    :cb - A callback to run
    *
    *  returns formatted ticket ready to send to client
@@ -171,11 +183,12 @@ module.exports = function(app) {
    *  @api private
    */
 
-  Ticket.prototype._execUpdate = function execUpdate(cb) {
-    var _this, model, obj;
+  Ticket.prototype._execUpdate = function execUpdate(userID, cb) {
+    var _this, model, obj, redis;
 
     _this = this;
     model = this.model;
+    redis = this.redis;
     model.modified_at = Date.now();
 
     model.save(function(err, ticket) {
@@ -187,7 +200,14 @@ module.exports = function(app) {
 
         obj._toClient(function(err, ticket){
           if(err) return cb(err);
-          cb(null, ticket);
+
+          //If toClient was successful, push a notification and emit a ticket:update event
+          Notifications.pushNotification(redis, userID, ticket.id, function(err) {
+            if(err) return cb(err);
+
+            app.eventEmitter.emit('ticket:update', ticket);
+            return cb(null, ticket);
+          });
         });
       }
     });
@@ -435,7 +455,7 @@ module.exports = function(app) {
 
   // Perform the actual I/O in seperate function
   function createTicketObject(ticket, data, cb) {
-    var obj;
+    var redis = app.redis;
 
     ticket.save(function(err, ticket) {
       if (err || !ticket) {
@@ -446,14 +466,18 @@ module.exports = function(app) {
         Ticket.find(ticket._id, function(err, model){
           if(err) return cb(err);
 
-          // Build object to be emitted by eventEmitter
-          obj = { body: model };
-          // If data came from client include socket id
-          if (data.socket) { obj.socket = data.socket; }
+          Notifications.nowParticipating(redis, ticket.user, ticket.id, function(err) {
+            if(err) return cb(err);
 
-          // Emit a 'newTicket' event
-          app.eventEmitter.emit('ticket:new', obj);
-          return cb(null, model);
+            //Build model to emit
+            obj = { body: model };
+            // If data came from client include socket id
+            if (data.socket) { obj.socket = data.socket; }
+
+            // Emit a 'ticket:new' event
+            app.eventEmitter.emit('ticket:new', obj);
+            return cb(null, model);
+          });
         });
       }
     });

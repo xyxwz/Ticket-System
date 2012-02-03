@@ -475,7 +475,7 @@ describe('ticket', function(){
         });
       });
 
-      it('should emit a newTicket event', function() {
+      it('should emit a ticket:new event', function() {
         events.length.should.equal(1);
       });
     });

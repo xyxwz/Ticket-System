@@ -1,6 +1,8 @@
 var mongoose = require("mongoose"),
+    _ = require('underscore'),
     CommentSchema = require('./schemas/comment').Comment,
-    _ = require('underscore');
+    Notifications = require('./helpers/').Notifications;
+
 
 module.exports = function(app) {
 
@@ -174,7 +176,9 @@ module.exports = function(app) {
    */
 
   Comment.create = function(ticket, user, data, cb) {
-    var comment, obj;
+    var comment, obj, redis;
+
+    redis = app.redis;
 
     comment = new CommentSchema({
       comment: data.comment,
@@ -201,7 +205,14 @@ module.exports = function(app) {
 
       if (user.avatar) obj.user.avatar = user.avatar;
 
-      return cb(null, obj);
+      Notifications.nowParticipating(redis, user.id, ticket.id, function(err) {
+        Notifications.pushNotification(redis, user.id, ticket.id, function(err) {
+          if(err) return cb(err);
+
+          app.eventEmitter.emit('comment:new', obj);
+          return cb(null, obj);
+        });
+      });
     });
   };
 

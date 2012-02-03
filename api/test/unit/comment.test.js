@@ -261,13 +261,18 @@ describe('comment', function(){
     /* create */
     /* Should add a comment to a ticket */
     describe('create', function(){
-      var data, user, ticket, result;
+      var data, user, ticket, result, events = [];
 
       before(function(done){
         data = {
           comment: "create comment",
           user: fixtures.users[0]._id
-        }
+        };
+
+        //bind function to new comment
+        server.eventEmitter.on('comment:new', function(obj) {
+          events.push(obj);
+        });
 
         user = fixtures.users[0];
 
@@ -314,6 +319,10 @@ describe('comment', function(){
           should.exist(err.errors.comment);
           done();
         });
+      });
+
+      it('should trigger a comment:new event', function() {
+        events.length.should.equal(1);
       });
     });
 
