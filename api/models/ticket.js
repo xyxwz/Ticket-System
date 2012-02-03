@@ -447,15 +447,12 @@ module.exports = function(app) {
           if(err) return cb(err);
 
           // Build object to be emitted by eventEmitter
-          obj = {
-            action: 'new',
-            body: model
-          };
+          obj = { body: model };
           // If data came from client include socket id
           if (data.socket) { obj.socket = data.socket; }
 
           // Emit a 'newTicket' event
-          app.eventEmitter.emit('newTicket', obj);
+          app.eventEmitter.emit('ticket:new', obj);
           return cb(null, model);
         });
       }

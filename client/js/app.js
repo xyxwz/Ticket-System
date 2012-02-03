@@ -98,6 +98,7 @@ define([
     // On Connect set the socket id if not already set
     ticketer.sockets.sock.on('connect', function() {
       ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;
+      ticketer.sockets.sock.emit('set:user', currentUser.id);
     });
 
     // Initialize Socket Event Handlers

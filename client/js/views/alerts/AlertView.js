@@ -10,7 +10,7 @@ function($, _, Backbone, BaseAlertView, mustache, AlertTmpl) {
 
       this.ticketCount = 0;
 
-      ticketer.EventEmitter.on('ticket', this.render);
+      ticketer.EventEmitter.on('ticket:new', this.render);
     },
 
     render: function() {

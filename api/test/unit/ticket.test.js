@@ -442,7 +442,7 @@ describe('ticket', function(){
         var user = fixtures.users[1];
 
         // Bind an event listener
-        server.eventEmitter.on('newTicket', function(event) {
+        server.eventEmitter.on('ticket:new', function(event) {
           events.push(event);
         });
 
