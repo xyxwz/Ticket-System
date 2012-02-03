@@ -3,7 +3,7 @@ var redis = require('redis'),
 
 module.exports = function(app) {
 
-  app.socket.of('/tickets').on('connection', function(socket) {
+  app.socket.sockets.on('connection', function(socket) {
 
     /**
      * Bind to the eventEmitter's newTicket action and

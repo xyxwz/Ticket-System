@@ -74,7 +74,7 @@ define([
         }
       },
       sockets: {
-        tickets: io.connect('/tickets')
+        sock: io.connect()
       }
     };
 
@@ -96,7 +96,7 @@ define([
     };
 
     // On Connect set the socket id if not already set
-    ticketer.sockets.tickets.on('connect', function() {
+    ticketer.sockets.sock.on('connect', function() {
       ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;
     });
 
