@@ -6,7 +6,7 @@ var should = require("should"),
     request = require('superagent');
 
 var server = app(),
-    Ticket = require('../../models/Ticket')(server);
+    Ticket = require('../../models/ticket')(server);
 
 /* Tickets Controller Unit Tests */
 
@@ -272,7 +272,7 @@ describe('tickets', function(){
     it('should return an embedded user object', function(){
       var ticket = res.body;
       should.exist(ticket.user.id);
-      should.not.exist(ticket.user.access_token); 
+      should.not.exist(ticket.user.access_token);
     });
   });
 
@@ -308,7 +308,7 @@ describe('tickets', function(){
     it('should return an embedded user object', function(){
       var ticket = res.body;
       should.exist(ticket.user.id);
-      should.not.exist(ticket.user.access_token); 
+      should.not.exist(ticket.user.access_token);
     });
   });
 
@@ -328,7 +328,7 @@ describe('tickets', function(){
       .end(function(data){
         res = data;
         done();
-      });  
+      });
     });
 
     it('should return a 200 status code', function(){
@@ -338,7 +338,7 @@ describe('tickets', function(){
     it('should update ticker title', function(){
       res.body.title.should.equal('UPDATED');
     });
-    
+
     it('should return ticket object', function(){
       var ticket = res.body;
       should.exist(ticket.id);
@@ -349,7 +349,7 @@ describe('tickets', function(){
     it('should return an embedded user object', function(){
       var ticket = res.body;
       should.exist(ticket.user.id);
-      should.not.exist(ticket.user.access_token); 
+      should.not.exist(ticket.user.access_token);
     });
   });
 
@@ -368,13 +368,13 @@ describe('tickets', function(){
       .end(function(data){
         res = data;
         done();
-      });  
+      });
     });
 
     it('should return a 200 status code', function(){
       res.status.should.equal(200);
     });
-    
+
     it('should return success', function(){
       should.exist(res.body.success);
     });

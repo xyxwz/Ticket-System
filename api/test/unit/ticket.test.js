@@ -6,7 +6,7 @@ var should = require("should"),
     mongoose = require("mongoose");
 
 var server = app(),
-    Ticket = require('../../models/Ticket')(server);
+    Ticket = require('../../models/ticket')(server);
 
 /* Ticket Model Unit Tests */
 
@@ -57,7 +57,7 @@ describe('ticket', function(){
   /* ------------------------------- *
    * Instance Methods
    * ------------------------------- */
-  describe('instance methods', function(){  
+  describe('instance methods', function(){
 
     /* To Client */
     /* Should test the object is ready to be sent to the client */
