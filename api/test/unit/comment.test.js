@@ -6,7 +6,7 @@ var should = require("should"),
     mongoose = require("mongoose");
 
 var server = app(),
-    Comment = require('../../models/Comment')(server);
+    Comment = require('../../models/comment')(server);
 
 /* Comment Model Unit Tests */
 
@@ -61,7 +61,7 @@ describe('comment', function(){
   /* ------------------------------- *
    * Instance Methods
    * ------------------------------- */
-  describe('instance methods', function(){  
+  describe('instance methods', function(){
 
     /* To Client */
     /* Should test the object is ready to be sent to the client */
