@@ -1,13 +1,13 @@
 /* Handle Events Coming From Socket.io */
 
 define(['underscore', 'backbone'], function(_, Backbone) {
-  
+
   var SocketEvents = function() {
 
     /**
      * Binding for a `ticket:new` event
      */
-    
+
     ticketer.sockets.sock.on('ticket:new', function(model) {
 
       // Trigger a `ticket` event
@@ -29,6 +29,21 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     });
 
     /**
+     * Binding for tickets:fetch, reset the collection
+     * with the returned tickets.
+     */
+
+    ticketer.sockets.sock.on('tickets:fetch', function(err, tickets) {
+      //Return an array of ticket models and bootstrap into tickets collection
+      if(err) {
+        ticketer.EventEmitter.trigger('error', err);
+      }
+      else {
+        ticketer.collections.openTickets.reset(tickets);
+      }
+    });
+
+    /**
      * Binding for a `comment:new` event
      */
 
@@ -38,6 +53,8 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       ticketer.EventEmitter.trigger('comment:new', message);
 
     });
+
+
 
   };
 

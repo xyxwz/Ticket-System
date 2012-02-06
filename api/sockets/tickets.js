@@ -3,6 +3,8 @@ var io = require('socket.io'),
 
 module.exports = function(app) {
 
+  var Ticket = require('../models')(app).Ticket;
+
   app.socket.sockets.on('connection', function(socket) {
 
     /**
@@ -12,6 +14,12 @@ module.exports = function(app) {
     socket.on('set:user', function(user) {
       socket.set('user', user);
     });
+
+    /*
+     * Bind to the ticket:fetch client event
+     * and send all tickets to the client
+     */
+    socket.on('tickets:fetch', getTickets);
 
     /**
      * Bind to the eventEmitter events
@@ -113,6 +121,35 @@ module.exports = function(app) {
         checkNotification(user, message.body, message.ticket, function(err, msg) {
           msg.ticket = message.ticket;
           socket.emit('comment:new', msg);
+        });
+      });
+    }
+
+
+    /*
+     * Get all tickets and return them to the client
+     * :emits tickets:fetch event with an error, and or tickets
+     */
+
+    function getTickets() {
+      var i,
+          length,
+          ret = [];
+
+      socket.get('user', function(err, user) {
+        Ticket.all({ status: 'open' }, function(err, tickets) {
+          if(err) return ccb(err);
+
+          length = tickets.length;
+          for(i = 0; i < length; i++) {
+            checkNotification(user, tickets[i], tickets[i].id, function(err, ticket) {
+              if(err) return socket.emit('tickets:fetch', err);
+              ret.push(ticket);
+              if(ret.length === length) {
+                return socket.emit('tickets:fetch', null, ret);
+              }
+            });
+          }
         });
       });
     }

@@ -28,12 +28,14 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       this.bindTo(this.collection, 'remove', function(model) {
         $('#id_'+model.id, self.el).remove();
       });
+
+      this.bindTo(this.collection, 'reset', this.render);
     },
 
     render: function() {
       var self = this, view;
 
-      _.each(this.models, function(ticket) {
+      self.collection.each(function(ticket) {
         view = self.renderTicket(ticket);
         $(self.el).append(view);
       });

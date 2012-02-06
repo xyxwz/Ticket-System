@@ -103,6 +103,9 @@ define([
     ticketer.sockets.sock.on('connect', function() {
       ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;
       ticketer.sockets.sock.emit('set:user', currentUser.id);
+
+      //Bootstrap models over socket
+      ticketer.sockets.sock.emit('tickets:fetch');
     });
 
     // Initialize Socket Event Handlers
@@ -122,7 +125,6 @@ define([
      * Reads in JSON variables written to page by server
      * side code to prevent fetch at boot and make collections
      * available immediately to views. */
-    ticketer.collections.openTickets.reset(tickets);
     ticketer.collections.admins.reset(admins);
 
     // Start Backbone History
