@@ -24,6 +24,10 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
         var html = self.renderTicket(model);
         $(self.el).append(html);
       });
+
+      this.bindTo(this.collection, 'remove', function(model) {
+        $('#id_'+model.id, self.el).remove();
+      });
     },
 
     render: function() {

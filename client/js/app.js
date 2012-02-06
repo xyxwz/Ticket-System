@@ -62,11 +62,6 @@ define([
       routers: {
         ticketer: new Ticketer()
       },
-      collections: {
-        openTickets: new Tickets(),
-        closedTickets: new Tickets(),
-        admins: new Users()
-      },
       views: {
         headers: {
           main: MainHeaderView,
@@ -88,6 +83,15 @@ define([
 
     ticketer.EventEmitter = {};
     _.extend(ticketer.EventEmitter, Backbone.Events);
+
+    /**
+     * Load Global Collections after EventEmitter
+     */
+    ticketer.collections = {
+      openTickets: new Tickets(),
+      closedTickets: new Tickets(),
+      admins: new Users()
+    };
 
     // Create new instances of alert views and start event bindings
     ticketer.views.alerts = {

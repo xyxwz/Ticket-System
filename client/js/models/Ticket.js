@@ -47,6 +47,16 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         ticketer.EventEmitter.trigger('error', err);
       });
 
+      // When a ticket is closed move it to the closed tickets collection
+      this.on("change:status", function(model, status) {
+        console.log(status);
+        if(status === 'closed') {
+          ticketer.collections.openTickets.remove(this);
+          ticketer.collections.closedTickets.add(this);
+        }
+      });
+
+
     },
 
     /* Validate the model to ensure that the title and body have content */
@@ -82,9 +92,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         success: function() {
           self.unbind('assignedUser', self.collection.setMyTickets);
           self.unbind('unassignedUser', self.collection.setMyTickets);
-          // Handles Switching Collections
-          ticketer.collections.openTickets.remove(self);
-          ticketer.collections.closedTickets.add(self);
         }
 
       });
