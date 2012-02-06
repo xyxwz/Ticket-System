@@ -19,6 +19,7 @@ module.exports = function(app) {
 
     app.eventEmitter.on('ticket:new', newTicket);
     app.eventEmitter.on('ticket:update', updateTicket);
+    app.eventEmitter.on('comment:new', addComment);
 
     socket.on('disconnect', function() {
       //app.eventEmitter.removeListener('newTicket', sendMessage);
@@ -62,7 +63,6 @@ module.exports = function(app) {
      */
 
     function updateTicket(message) {
-      console.log(message);
       if(message.socket) {
         // This ticket originated from a browser
         if(message.socket !== socket.id) {
@@ -77,18 +77,42 @@ module.exports = function(app) {
       }
     }
 
-    function checkNotification(user, ticket, cb) {
-      notifications.hasNotification(app.redis, user, ticket.id, function(err, notify) {
+    function checkNotification(user, obj, ticket, cb) {
+      notifications.hasNotification(app.redis, user, ticket, function(err, notify) {
         if(err) return cb(err);
-        if(notify) ticket.notification = true;
-        return cb(null, ticket);
+        if(notify) obj.notification = true;
+        return cb(null, obj);
       });
     }
 
     function emitTicketUpdate(message) {
       var user = socket.get('user', function(err, user){
-        checkNotification(user, message.body, function(err, ticket) {
+        checkNotification(user, message.body, message.body.id, function(err, ticket) {
           socket.emit('ticket:update', ticket);
+        });
+      });
+    }
+
+    function addComment(message) {
+      if(message.socket) {
+        // This comment originated from a browser
+        if(message.socket !== socket.id) {
+
+          // Only emit to other users
+          emitNewComment(message);
+        }
+      }
+      else {
+        // Update originated from elsewhere so emit to everyone
+        emitNewComment(message);
+      }
+    }
+
+    function emitNewComment(message) {
+       var user = socket.get('user', function(err, user){
+        checkNotification(user, message.body, message.ticket, function(err, msg) {
+          msg.ticket = message.ticket;
+          socket.emit('comment:new', msg);
         });
       });
     }

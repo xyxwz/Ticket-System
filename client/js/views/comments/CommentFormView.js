@@ -36,7 +36,8 @@ function($, _, Backbone, BaseView, mustache, form) {
         var self = this;
 
         this.collection.create({
-          comment: this.input.val()
+          comment: this.input.val(),
+          socket: ticketer.sockets.id
         },{
           wait: true
         });

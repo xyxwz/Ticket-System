@@ -209,7 +209,11 @@ module.exports = function(app) {
         Notifications.pushNotification(redis, user.id, ticket.id, function(err) {
           if(err) return cb(err);
 
-          app.eventEmitter.emit('comment:new', obj);
+          var emitObj = {body: obj};
+          emitObj.ticket = ticket.id;
+          if(data.socket) emitObj.socket = data.socket;
+          app.eventEmitter.emit('comment:new', emitObj);
+
           return cb(null, obj);
         });
       });

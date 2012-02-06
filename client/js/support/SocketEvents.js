@@ -28,6 +28,17 @@ define(['underscore', 'backbone'], function(_, Backbone) {
 
     });
 
+    /**
+     * Binding for a `comment:new` event
+     */
+
+    ticketer.sockets.sock.on('comment:new', function(message) {
+
+      // trigger a `comment:new` event
+      ticketer.EventEmitter.trigger('comment:new', message);
+
+    });
+
   };
 
   return SocketEvents;

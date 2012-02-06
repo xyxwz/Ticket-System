@@ -34,6 +34,14 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       this.comments = new Comments();
       this.comments.url = '/api/tickets/' + this.id + '/comments';
 
+      // Add Comment
+      ticketer.EventEmitter.on('comment:new', function(message) {
+        if(message.ticket === self.id) {
+          delete message.ticket;
+          self.comments.add(message);
+        }
+      });
+
       this.on("change", function() {
         self.comments.url = '/api/tickets/' + this.id + '/comments';
       });
