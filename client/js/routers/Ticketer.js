@@ -43,8 +43,7 @@ function(
     openTickets: function() {
       var Header = ticketer.views.headers.main,
           collection = ticketer.collections.openTickets,
-          models = ticketer.collections.openTickets.models,
-          View = new TicketListView({ collection: collection, models: models });
+          View = new TicketListView({ collection: collection });
 
       // Transitions
       this.appView.showHeader(Header, { tab: 'openTickets' });
@@ -64,10 +63,8 @@ function(
         collection.fetch({
           data: { page: 1, status: 'closed' } ,
           success: function(collection, response) {
-            models = collection.models;
             View = new TicketListView({
               collection: collection,
-              models: models,
               status: 'closed'
             });
             self.appView.showView(View);
@@ -75,10 +72,8 @@ function(
         });
       }
       else {
-        models = collection.models;
         View = new TicketListView({
           collection: collection,
-          models: models,
           status: 'closed'
         });
         self.appView.showView(View);
