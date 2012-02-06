@@ -191,6 +191,19 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       if(changedAttributes.closed_at) {
         this.setTimestamp();
       }
+
+      if(changedAttributes.title) {
+        $('.ticketName h2', this.el).html(changedAttributes.title);
+      }
+
+      if(changedAttributes.description) {
+        $('.ticketBody', this.el).html(marked(changedAttributes.description));
+      }
+
+      if(changedAttributes.assigned_to) {
+        $('.ticketHeader ul', this.el).html('');
+        this.setAssignedUsers();
+      }
     },
 
     /* Renders the ticket's assigned users avatars */
@@ -310,11 +323,10 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
       var self = this,
           description = $('.outerWrap > textarea', self.el).val();
-      self.model.save({ description: description }, {error: self.triggerViewError, success: self.renderEdit });
-    },
 
-    triggerViewError: function(model, err) {
-      this.trigger('view:error', err);
+      $('textarea', this.el).data('AutoResizer').destroy();
+
+      self.model.save({ description: description }, {error: self.triggerViewError, success: self.renderEdit});
     },
 
     renderEdit: function(e) {
@@ -324,8 +336,6 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       }
 
       var self = this;
-
-      $('textarea', this.el).data('AutoResizer').destroy();
 
       $(this.el).fadeOut(200, function() {
         self.render();

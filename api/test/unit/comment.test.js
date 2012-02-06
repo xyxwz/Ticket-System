@@ -40,7 +40,7 @@ describe('comment', function(){
 
       before(function() {
         ticket = fixtures.tickets[0];
-        user = fixtures.users[0]
+        user = fixtures.users[0];
       });
 
       it("should enforce required fields", function(done){

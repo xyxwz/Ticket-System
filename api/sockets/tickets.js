@@ -61,12 +61,20 @@ module.exports = function(app) {
      * that ticket so they can see changes have occured.
      */
 
-    function updateTicket(ticket) {
-      var user = socket.get('user', function(err, user){
-        checkNotification(user, ticket, function(err, ticket) {
-          socket.emit('ticket:update', ticket);
-        });
-      });
+    function updateTicket(message) {
+      console.log(message);
+      if(message.socket) {
+        // This ticket originated from a browser
+        if(message.socket !== socket.id) {
+
+          // Only emit to other users
+          emitTicketUpdate(message);
+        }
+      }
+      else {
+        // Update originated from elsewhere so emit to everyone
+        emitTicketUpdate(message);
+      }
     }
 
     function checkNotification(user, ticket, cb) {
@@ -74,6 +82,14 @@ module.exports = function(app) {
         if(err) return cb(err);
         if(notify) ticket.notification = true;
         return cb(null, ticket);
+      });
+    }
+
+    function emitTicketUpdate(message) {
+      var user = socket.get('user', function(err, user){
+        checkNotification(user, message.body, function(err, ticket) {
+          socket.emit('ticket:update', ticket);
+        });
       });
     }
 

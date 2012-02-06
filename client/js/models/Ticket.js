@@ -17,6 +17,20 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
 
       this.validate = this._validate;
 
+      // Set an attribute for the socket.id
+      ticketer.sockets.sock.on('connect', function() {
+        self.set({socket: ticketer.sockets.id}, {silent: true});
+      });
+
+      this.set({socket: ticketer.sockets.id}, {silent: true});
+
+      // Update attributes on changed model
+      ticketer.EventEmitter.on('ticket:update', function(model) {
+        if(model.id === self.id) {
+          self.set(self.parse(model));
+        }
+      });
+
       this.comments = new Comments();
       this.comments.url = '/api/tickets/' + this.id + '/comments';
 
