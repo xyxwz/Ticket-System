@@ -6,7 +6,8 @@ var should = require("should"),
     mongoose = require("mongoose");
 
 var server = app(),
-    Comment = require('../../models/comment')(server);
+    Comment = require('../../models/comment')(server),
+    Notification = require('../../models/helpers/notifications');
 
 /* Comment Model Unit Tests */
 
@@ -266,7 +267,7 @@ describe('comment', function(){
       before(function(done){
         data = {
           comment: "create comment",
-          user: fixtures.users[0]._id
+          user: fixtures.users[1]._id
         };
 
         //bind function to new comment
@@ -274,19 +275,21 @@ describe('comment', function(){
           events.push(obj);
         });
 
-        user = fixtures.users[0];
+        user = fixtures.users[1];
 
-        schemas.Ticket.findOne({_id:fixtures.tickets[0].id})
-        .populate('comments.user')
-        .run(function(err, model){
-          if(err) return done(err);
-
-          ticket = model;
-          Comment.create(ticket, user, data, function(err, res) {
+        Notification.nowParticipating(server.redis, fixtures.users[0].id, fixtures.tickets[0].id, function(err) {
+          schemas.Ticket.findOne({_id:fixtures.tickets[0].id})
+          .populate('comments.user')
+          .run(function(err, model){
             if(err) return done(err);
 
-            result = res;
-            done();
+            ticket = model;
+            Comment.create(ticket, user, data, function(err, res) {
+              if(err) return done(err);
+
+              result = res;
+              done();
+            });
           });
         });
       });
@@ -323,6 +326,23 @@ describe('comment', function(){
 
       it('should trigger a comment:new event', function() {
         events.length.should.equal(1);
+      });
+
+      it('should add user to participating users', function(done) {
+        Notification.isParticipating(server.redis, user.id, ticket.id, function(err, res) {
+          res.should.be.true;
+          done();
+        });
+      });
+
+      it('should send participating users a notification', function(done) {
+        Notification.hasNotification(server.redis, fixtures.users[1].id, ticket.id, function(err, res) {
+          res.should.be.false; // make sure updating user doesn't get a notification
+          Notification.hasNotification(server.redis, fixtures.users[0].id, ticket.id, function(err, res) {
+            res.should.be.true; // make sure other participating users get a notification
+            done();
+          });
+        });
       });
     });
 
