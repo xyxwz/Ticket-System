@@ -212,16 +212,21 @@ describe('ticket', function(){
         });
 
         it('should set ticket assigned_to list', function(done){
-          client.SMEMBERS(klass.model.id, function(err, res){
+          var ticketNamespace = 'ticket:' + klass.model.id + ':assignees';
+
+          client.SMEMBERS(ticketNamespace, function(err, res){
             res.length.should.equal(2);
             done();
           });
         });
 
         it('should add a ticket to each users set', function(done){
-          client.SMEMBERS(user1, function(err, res){
+          var user1_namespace = 'user:' + user1 + ':assignedTo',
+              user2_namespace = 'user:' + user2 + ':assignedTo';
+
+          client.SMEMBERS(user1_namespace, function(err, res){
             res.length.should.equal(1);
-            client.SMEMBERS(user2, function(err, res){
+            client.SMEMBERS(user2_namespace, function(err, res){
               res.length.should.equal(1);
               done();
             });
@@ -239,16 +244,21 @@ describe('ticket', function(){
         });
 
         it('should set ticket assigned_to list', function(done){
-          client.SMEMBERS(klass.model.id, function(err, res){
+          var ticketNamespace = 'ticket:' + klass.model.id + ':assignees';
+
+          client.SMEMBERS(ticketNamespace, function(err, res){
             res.length.should.equal(1);
             done();
           });
         });
 
         it('should remove ticket from user2 set', function(done){
-          client.smembers(user1, function(err, res){
+          var user1_namespace = 'user:' + user1 + ':assignedTo',
+              user2_namespace = 'user:' + user2 + ':assignedTo';
+
+          client.smembers(user1_namespace, function(err, res){
             res.length.should.equal(1);
-            client.smembers(user2, function(err, res){
+            client.smembers(user2_namespace, function(err, res){
               res.length.should.equal(0);
               done();
             });
@@ -432,12 +442,11 @@ describe('ticket', function(){
       var data, result, events = [];
 
       before(function(done){
-        var obj = {
+        data = {
           title: "create ticket",
           description: "create description",
           user: fixtures.users[0]._id
         };
-        data = obj;
 
         var user = fixtures.users[1];
 

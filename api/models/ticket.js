@@ -24,7 +24,7 @@ module.exports = function(app) {
    */
 
   Ticket.prototype._toClient = function toClient(cb) {
-    var obj, user;
+    var obj, user, namespace;
 
     obj = this.model.toObject();
     obj.id = obj._id;
@@ -40,8 +40,9 @@ module.exports = function(app) {
     obj.user = user;
     delete obj.comments;
 
+    namespace = 'ticket:' + obj.id + ':assignees';
     // Get assigned_to from redis
-    this.redis.SMEMBERS(obj.id, function(err, members) {
+    this.redis.SMEMBERS(namespace, function(err, members) {
       if(err) return cb(err);
       obj.assigned_to = members;
       cb(null, obj);
@@ -119,18 +120,19 @@ module.exports = function(app) {
    */
 
   Ticket.prototype._manageSets = function manageSets(array, cb) {
-    var redis, _this, model, newArray, currentArray, exists, _add, _rem,
-        error = null;
+    var redis = this.redis,
+        _this = this,
+        model = this.model,
+        newArray = [],
+        currentArray = [],
+        _add = [],
+        _rem = [],
+        error = null,
+        exists, ticketNamespace, userNamespace;
 
-    _this = this;
-    model = this.model;
-    redis = this.redis;
-    newArray = [];
-    currentArray = [];
-    _add = [];
-    _rem = [];
+    ticketNamespace = 'ticket:' + model.id + ':assignees';
 
-    redis.SMEMBERS(model.id, function(err, members) {
+    redis.SMEMBERS(ticketNamespace, function(err, members) {
 
       // Ensure input is strings before comparing
       _.each(array, function(user){
@@ -145,19 +147,28 @@ module.exports = function(app) {
       _add = _.difference(_.uniq(newArray), _.uniq(currentArray));
       _rem = _.difference(_.uniq(currentArray), _.uniq(newArray));
 
+
+      // Loop through the _add array for users to assign
       _.each(_add, function(user) {
-        redis.SADD(user, model.id);
-        redis.SADD(model.id, user);
+        userNamespace = 'user:' + user + ':assignedTo';
+
+        redis.SADD(userNamespace, model.id);
+        redis.SADD(ticketNamespace, user);
+
+        // add user to ticket's now participating set
         Notifications.nowParticipating(redis, user, model.id, function(err) {
           if(err) error = err;
         });
       });
 
+      // Loop through the _rem array for users to unassign
       _.each(_rem, function(user) {
-        redis.SREM(user, model.id);
-        redis.SREM(model.id, user);
+        userNamespace = 'user:' + user + ':assignedTo';
 
-        //remove user from participating if they are removed from assigned
+        redis.SREM(userNamespace, model.id);
+        redis.SREM(ticketNamespace, user);
+
+        // remove user from participating if they are removed from assigned
         Notifications.removeParticipating(redis, user, model.id, function(err) {
           if(err) error = err;
         });
@@ -327,7 +338,9 @@ module.exports = function(app) {
     _this = this;
     redis = app.redis;
 
-    redis.SMEMBERS(user, function(err, res){
+    var userNamespace = 'user:' + user + ':assignedTo';
+
+    redis.SMEMBERS(userNamespace, function(err, res){
       query = TicketSchema
       .where('_id')
       .in(res)
@@ -470,7 +483,7 @@ module.exports = function(app) {
             if(err) return cb(err);
 
             //Build model to emit
-            obj = { body: model };
+            var obj = { body: model };
             // If data came from client include socket id
             if (data.socket) { obj.socket = data.socket; }
 

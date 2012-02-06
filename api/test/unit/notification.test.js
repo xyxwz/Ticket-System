@@ -33,7 +33,7 @@ describe('notification', function(){
     var user, ticket;
 
     before(function(done) {
-      user = fixtures.users[0];
+      user = fixtures.users[1];
       ticket = fixtures.tickets[0];
       done();
     });
@@ -52,10 +52,12 @@ describe('notification', function(){
         status.should.be.true;
         Notifications.isParticipating(server.redis, user.id, ticket.id, function(err, status) {
           should.not.exist(err);
+          status.should.be.true;
           done();
         });
       });
     });
+
     it('should remove participation', function(done) {
       Notifications.nowParticipating(server.redis, user.id, ticket.id, function(err, status) {
         should.not.exist(err);
