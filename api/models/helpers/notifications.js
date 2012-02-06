@@ -1,5 +1,5 @@
-var P_NAMESPACE = '_participating',
-    N_NAMESPACE = '_notifications';
+var P_NAMESPACE = ':participating',
+    N_NAMESPACE = ':notifications';
 
 
 /* ----- Participation functions ----- */
@@ -14,7 +14,7 @@ var P_NAMESPACE = '_participating',
  */
 exports.isParticipating = function(redis, user, ticket, cb) {
   var present = false,
-      ticketRef = ticket + P_NAMESPACE;
+      ticketRef = 'ticket:' + ticket + P_NAMESPACE;
 
   redis.SMEMBERS(ticketRef, function(err, users) {
     if(err) return cb('Error checking participating users');
@@ -33,7 +33,7 @@ exports.isParticipating = function(redis, user, ticket, cb) {
  * set.
  */
 exports.nowParticipating = function(redis, user, ticket, cb) {
-  var ticketRef = ticket + P_NAMESPACE;
+  var ticketRef = 'ticket:' + ticket + P_NAMESPACE;
 
   redis.SADD(ticketRef, user, function(err) {
     if(err) return cb('Error adding user to participating');
@@ -47,7 +47,7 @@ exports.nowParticipating = function(redis, user, ticket, cb) {
  * set.
  */
 exports.removeParticipating = function(redis, user, ticket, cb) {
-  var ticketRef = ticket + P_NAMESPACE;
+  var ticketRef = 'ticket:' + ticket + P_NAMESPACE;
 
   redis.SREM(ticketRef, user, function(err) {
     if(err) return cb('Error removing user from participating');
@@ -64,7 +64,7 @@ exports.removeParticipating = function(redis, user, ticket, cb) {
  */
 exports.hasNotification = function(redis, user, ticket, cb) {
   var notify = false,
-      userRef = user + N_NAMESPACE;
+      userRef = 'user:' + user + N_NAMESPACE;
 
   //check all tickets for the user
   redis.SMEMBERS(userRef, function(err, tickets) {
@@ -88,15 +88,15 @@ exports.hasNotification = function(redis, user, ticket, cb) {
 exports.pushNotification = function(redis, user, ticket, cb) {
   var tempUserRef,
       error = null,
-      userRef = user + N_NAMESPACE,
-      ticketRef = ticket + P_NAMESPACE;
+      userRef = 'user:' + user + N_NAMESPACE,
+      ticketRef = 'ticket:' + ticket + P_NAMESPACE;
 
   redis.SMEMBERS(ticketRef, function(err, users) {
     if(err) return cb('Error getting participating users');
 
     users.forEach(function(userID) {
       if(userID.toString() !== user.toString()) {
-        tempUserRef = userID + '_notifications';
+        tempUserRef = 'user:' + userID + ':notifications';
         redis.SADD(tempUserRef, ticket, function(err) {
           if(err) error = 'Error pushing to users';
         });
@@ -112,7 +112,7 @@ exports.pushNotification = function(redis, user, ticket, cb) {
  * set.
  */
 exports.removeNotification = function(redis, user, ticket, cb) {
-  var userRef = user + N_NAMESPACE;
+  var userRef = 'user:' + user + N_NAMESPACE;
 
   redis.SREM(userRef, ticket, function(err) {
     if(err) return cb('Error removing notification');

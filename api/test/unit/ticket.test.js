@@ -6,7 +6,8 @@ var should = require("should"),
     mongoose = require("mongoose");
 
 var server = app(),
-    Ticket = require('../../models/ticket')(server);
+    Ticket = require('../../models/ticket')(server),
+    Notification = require('../../models/helpers/notifications');
 
 /* Ticket Model Unit Tests */
 
@@ -106,7 +107,7 @@ describe('ticket', function(){
         data = {
           title: "title UPDATED",
           description: "description UPDATED",
-          status: "closed"
+          status: "closed",
         };
 
         var user = fixtures.users[0];
@@ -152,10 +153,10 @@ describe('ticket', function(){
         klass = new Ticket(fixtures.tickets[0]);
 
         data = {
-          assigned_to: [fixtures.users[0].id, fixtures.users[0].id]
+          assigned_to: [fixtures.users[0].id, fixtures.users[0].id, fixtures.users[1].id]
         };
 
-        var user = fixtures.users[0];
+        var user = fixtures.users[1];
 
         klass.update(data, user, function(err, model){
           if(err) return done(err);
@@ -170,11 +171,21 @@ describe('ticket', function(){
       });
 
       it('should strip out duplicate ids', function(){
-        testObject.assigned_to.length.should.equal(1);
+        testObject.assigned_to.length.should.equal(2);
       });
 
       it('should set read to true because we are assigning users', function(){
         testObject.read.should.be.true;
+      });
+
+      it('should send participating users a notification', function(done) {
+        Notification.hasNotification(server.redis, fixtures.users[1].id, testObject.id, function(err, res) {
+          res.should.be.false; // make sure updating user doesn't get a notification
+          Notification.hasNotification(server.redis, fixtures.users[0].id, testObject.id, function(err, res) {
+            res.should.be.true; // make sure other participating users get a notification
+            done();
+          });
+        });
       });
     });
 
@@ -439,7 +450,7 @@ describe('ticket', function(){
     /* create */
     /* Should add a ticket to the database */
     describe('create - non admin', function(){
-      var data, result, events = [];
+      var data, user, result, events = [];
 
       before(function(done){
         data = {
@@ -448,7 +459,7 @@ describe('ticket', function(){
           user: fixtures.users[0]._id
         };
 
-        var user = fixtures.users[1];
+        user = fixtures.users[1];
 
         // Bind an event listener
         server.eventEmitter.on('ticket:new', function(event) {
@@ -487,22 +498,28 @@ describe('ticket', function(){
       it('should emit a ticket:new event', function() {
         events.length.should.equal(1);
       });
+
+      it('should add user to participating users', function(done) {
+        Notification.isParticipating(server.redis, user.id, result.id, function(err, res) {
+          res.should.be.true;
+          done();
+        });
+      });
     });
 
     /* create */
     /* Should add a ticket to the database */
     describe('create - admin', function(){
-      var data, result, events = [];
+      var data, user, result, events = [];
 
       before(function(done){
-        var obj = {
+        data = {
           title: "create ticket",
           description: "create description",
           user: fixtures.users[0]._id
         };
-        data = obj;
 
-        var user = fixtures.users[0];
+        user = fixtures.users[0];
 
         Ticket.create(data, user, function(err, ticket){
           result = ticket;
@@ -517,6 +534,13 @@ describe('ticket', function(){
 
       it('should set read to true because we are assigning users', function(){
         result.read.should.be.true;
+      });
+
+      it('should add admin user to participating users', function(done) {
+        Notification.isParticipating(server.redis, user.id, result.id, function(err, res) {
+          res.should.be.true;
+          done();
+        });
       });
     });
 

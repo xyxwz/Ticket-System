@@ -457,19 +457,21 @@ module.exports = function(app) {
 
       klass = new Ticket(ticket);
 
-      klass._manageSets(assigned_to, function() {
+      klass._manageSets(assigned_to, function(err) {
+        if(err) return cb(err);
         createTicketObject(ticket, data, cb);
       });
     }
     else {
-      createTicketObject(ticket, data, cb);
+      Notifications.nowParticipating(app.redis, user.id, ticket.id, function(err) {
+        if(err) return cb(err);
+        createTicketObject(ticket, data, cb);
+      });
     }
   };
 
   // Perform the actual I/O in seperate function
   function createTicketObject(ticket, data, cb) {
-    var redis = app.redis;
-
     ticket.save(function(err, ticket) {
       if (err || !ticket) {
         return cb(err);
@@ -479,18 +481,14 @@ module.exports = function(app) {
         Ticket.find(ticket._id, function(err, model){
           if(err) return cb(err);
 
-          Notifications.nowParticipating(redis, model.user.id, ticket.id, function(err) {
-            if(err) return cb(err);
+          //Build model to emit
+          var obj = { body: model };
+          // If data came from client include socket id
+          if (data.socket) { obj.socket = data.socket; }
 
-            //Build model to emit
-            var obj = { body: model };
-            // If data came from client include socket id
-            if (data.socket) { obj.socket = data.socket; }
-
-            // Emit a 'ticket:new' event
-            app.eventEmitter.emit('ticket:new', obj);
-            return cb(null, model);
-          });
+          // Emit a 'ticket:new' event
+          app.eventEmitter.emit('ticket:new', obj);
+          return cb(null, model);
         });
       }
     });
