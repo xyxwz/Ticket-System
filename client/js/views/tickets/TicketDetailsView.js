@@ -13,6 +13,7 @@ function($, _, Backbone, BaseView, TicketView, CommentListView, CommentFormView)
     },
 
     render: function() {
+      this.model.removeNotification();
       this.renderTicket();
       this.renderComments();
       this.renderCommentForm();

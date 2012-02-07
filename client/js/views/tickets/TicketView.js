@@ -52,6 +52,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       data.user = this.model.get('user');
       data.user.shortname = data.user.name.split(' ')[0];
       data.tackClass = data.assigned_to.length > 0 ? 'read' : 'unread';
+      data.notify = this.model.notification() ? 'notify' : null;
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
       this.setTimestamp();
@@ -204,6 +205,11 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
         $('.ticketHeader ul', this.el).html('');
         this.setAssignedUsers();
       }
+
+      if(changedAttributes.notification) {
+        $('.ticketHeader', this.el).addClass('notify');
+      }
+
     },
 
     /* Renders the ticket's assigned users avatars */

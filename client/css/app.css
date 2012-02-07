@@ -1,5 +1,5 @@
 
-/* -------------------------------------------------- 
+/* --------------------------------------------------
    Table of Contents
 -----------------------------------------------------
 :: Shared Styles
@@ -24,14 +24,14 @@
    Shared Styles
 ----------------------------------------- */
 
-html, body { 
+html, body {
   background: #000 url('/img/assets/black_linen_v2.png');
   color: #222;
 }
 
 #border {
-  background: url('/img/assets/header.png') repeat-x; 
-  height: 29px; 
+  background: url('/img/assets/header.png') repeat-x;
+  height: 29px;
   position: relative;
   z-index: 101;
 }
@@ -159,7 +159,7 @@ p { line-height: 1.5em; }
   font-family: "museo-slab", "American Typewriter", "serif";
   font-weight: 300;
   font-size: 14px;
-  line-height: 1.5em; 
+  line-height: 1.5em;
   color: #222;
 }
 
@@ -256,6 +256,11 @@ p { line-height: 1.5em; }
    Ticket Structure
 ----------------------------------------- */
 
+/* TEMP Nasty looking notification class */
+.notify {
+  background-color: yellow;
+}
+
 .ticket {
   position: relative;
   margin-bottom: 50px;
@@ -302,7 +307,7 @@ p { line-height: 1.5em; }
         font-size: 14px;
         color: #626262;
       }
-      
+
       .ticketHeader ul { margin-bottom: 0; }
 
         .ticketHeader ul li {
@@ -448,8 +453,8 @@ span.tack {
    Ticket Admin
 ----------------------------------------- */
 
-#ticketOptions { 
-  z-index: 299; 
+#ticketOptions {
+  z-index: 299;
   margin-bottom: 0;
 }
 
@@ -493,7 +498,7 @@ span.tack {
 
       .commentInfo div p:last-child { margin-bottom: 0; }
       .commentInfo div p:first-child { margin-top: 0; }
-    
+
     .commentBody span.commentTime {
       display: block;
       position: absolute;
@@ -615,7 +620,7 @@ span.tack {
 
     .md ul li > :last-child, .md ol li > :last-child { margin-bottom: 0; }
 
-  
+
 /* -----------------------------------------
    Forms
 ----------------------------------------- */
@@ -861,7 +866,7 @@ form .outerWrap {
 }
 
 
-/* Following is to make error boxes look cleaner, 
+/* Following is to make error boxes look cleaner,
  * and is from twitter bootstrap.
  * http://twitter.github.com/bootstrap/
  */
