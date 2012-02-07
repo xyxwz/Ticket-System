@@ -3,7 +3,7 @@
 
 define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone, Comments) {
   var Ticket = Backbone.Model.extend({
-    
+
     defaults: {
       'status'  : 'Open'
     },
@@ -67,6 +67,30 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
 
     },
 
+    /*
+     * Returns if the user is participating in the ticket
+     */
+    participating: function() {
+      if(this.get('participating') && this.get('participating') === true) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    },
+
+    /*
+     * Returns if the user has a notification for the ticket
+     */
+    notification: function() {
+      if(this.get('notification') && this.get('notification') === true) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    },
+
     /* Validate the model to ensure that the title and body have content */
     _validate: function(attrs) {
       if(typeof(attrs.title) !== 'undefined' && !attrs.title.replace(/ /g, '').length) {
@@ -76,7 +100,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         return "You must enter a ticket description.";
       }
     },
-    
+
     /* Updates the Ticket with the matching attributes
      * of the ticket argument, also takes a save error
      * callback. */
@@ -133,6 +157,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     }
 
   });
-  
+
   return Ticket;
 });
