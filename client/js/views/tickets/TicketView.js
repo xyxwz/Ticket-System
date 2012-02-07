@@ -51,7 +51,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       data.showAdmin = this.renderAdminOptions(); // True or False
       data.user = this.model.get('user');
       data.user.shortname = data.user.name.split(' ')[0];
-      data.tackClass = data.read ? 'read' : 'unread';
+      data.tackClass = data.assigned_to.length > 0 ? 'read' : 'unread';
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
       this.setTimestamp();
@@ -208,9 +208,17 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
     /* Renders the ticket's assigned users avatars */
     setAssignedUsers: function() {
-      var self = this;
+      var self = this,
+          assigned_to = this.model.get('assigned_to');
 
-      _.each(this.model.get('assigned_to'), function(id) {
+      if(assigned_to.length > 0) {
+        $('.ticketHeader .tack', this.el).removeClass('unread').addClass('read');
+      }
+      else {
+        $('.ticketHeader .tack', this.el).removeClass('read').addClass('unread');
+      }
+
+      _.each(assigned_to, function(id) {
         var user = ticketer.collections.admins.get(id),
             html = Mustache.to_html(AssignedUserTmpl, user.toJSON());
 
@@ -261,9 +269,11 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
         $('.ticketHeader ul', self.el).prepend(html);
       });
+
+      $('.ticketHeader .tack', this.el).removeClass('unread').addClass('read');
     },
 
-    /* Removes a signle assignee from a ticket's assigned users avatars list.
+    /* Removes a single assignee from a ticket's assigned users avatars list.
      *    :id = an id from a tickets assigned_ussers array
      */
     removeAssignee: function(id) {
@@ -272,6 +282,10 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       });
       this.assigned_to = newArray;
       this.model.unassignUser(id);
+
+      if(newArray.length === 0) {
+        $('.ticketHeader .tack', this.el).removeClass('read').addClass('unread');
+      }
     },
 
     /* Drag Avatar */
