@@ -55,6 +55,14 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     });
 
 
+    /*
+     * Client side events -> socket events
+     */
+
+    ticketer.EventEmitter.on('ticket:notification:remove', function(ticket) {
+      ticketer.sockets.sock.emit('ticket:notification:remove', ticket);
+    });
+
 
   };
 

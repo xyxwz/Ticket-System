@@ -39,6 +39,10 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         if(message.ticket === self.id) {
           delete message.ticket;
           self.comments.add(message);
+
+          if(message.notification) {
+            self.set({ 'notification': message.notification });
+          }
         }
       });
 
@@ -89,6 +93,14 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       else {
         return false;
       }
+    },
+
+    /*
+     * Remove the notification from the ticket
+     */
+    removeNotification: function() {
+      this.unset('notification');
+      ticketer.EventEmitter.trigger('ticket:notification:remove', this.id);
     },
 
     /* Validate the model to ensure that the title and body have content */
