@@ -119,3 +119,16 @@ exports.removeNotification = function(redis, user, ticket, cb) {
     return cb(null, true);
   });
 };
+
+
+/*
+ * Clear all notifications for the user.
+ */
+exports.clearNotifications = function(redis, user, cb) {
+  var userRef = 'user:' + user + N_NAMESPACE;
+
+  redis.DEL(userRef, function(err) {
+    if(err) return cb('Error clearing notifications');
+    return cb(null, true);
+  });
+};

@@ -15,11 +15,18 @@ module.exports = function(app) {
       socket.set('user', user);
     });
 
-    /*
+    /**
      * Bind to the ticket:fetch client event
      * and send all tickets to the client
      */
     socket.on('tickets:fetch', getTickets);
+
+    /**
+     * Remove the notification for the user
+     */
+    socket.on('ticket:notification:remove', removeNotification);
+    socket.on('ticket:notifications:clear', clearNotifications);
+
 
     /**
      * Bind to the eventEmitter events
@@ -86,11 +93,17 @@ module.exports = function(app) {
     }
 
     function checkNotification(user, obj, ticket, cb) {
-      notifications.hasNotification(app.redis, user, ticket, function(err, notify) {
+      notifications.isParticipating(app.redis, user, ticket, function(err, status) {
         if(err) return cb(err);
-        if(notify) obj.notification = true;
-        return cb(null, obj);
+        if(status) obj.participating = true;
+
+        notifications.hasNotification(app.redis, user, ticket, function(err, notify) {
+          if(err) return cb(err);
+          if(notify) obj.notification = true;
+          return cb(null, obj);
+        });
       });
+
     }
 
     function emitTicketUpdate(message) {
@@ -150,6 +163,30 @@ module.exports = function(app) {
               }
             });
           }
+        });
+      });
+    }
+
+    /**
+     * Remove the notification for the user
+     */
+
+    function removeNotification(ticket) {
+      socket.get('user', function(err, user) {
+        notifications.removeNotification(app.redis, user, ticket, function(err, status) {
+          if(err) return socket.emit('ticket:notification:error', err);
+        });
+      });
+    }
+
+    /**
+     * Clear the user's notifications
+     */
+
+    function clearNotifications() {
+      socket.get('user', function(err, user) {
+        notifications.clearNotifications(app.redis, user, function(err, status) {
+          if(err) return socket.emit('ticket:notification:error', err);
         });
       });
     }
