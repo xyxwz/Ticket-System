@@ -22,8 +22,10 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       this.filter = this.options.filter;
 
       this.bindTo(this.collection, 'add', function(model) {
-        var html = self.renderTicket(model);
-        $(self.el).append(html);
+        if(!this.filter) {
+          var html = self.renderTicket(model);
+          $(self.el).append(html);
+        }
       });
 
       this.bindTo(this.collection, 'remove', function(model) {
