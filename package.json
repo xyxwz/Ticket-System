@@ -1,25 +1,27 @@
 {
-    "name": "TxSSC-Ticket-System"
-  , "version": "0.0.1"
-  , "dependencies": {
-      "express": ">= 2.4.7"
-    , "jade": ">= 0.0.1"
-    , "mongoose": ">= 2.3.3"
-    , "underscore": ">= 1.2.0"
-    , "passport": ">= 0.1.5"
-    , "passport-twitter": ">= 0.1.0"
-    , "ntwitter": ">= 0.1.0"
-    , "hiredis": ">= 0.1.13"
-    , "redis": ">= 0.0.1"
-    , "connect-redis": ">= 1.2.0"
-    , "socket.io": ">= 0.8.7"
-  }
-  , "devDependencies": {
-      "mocha": ">= 0.7.0"
-    , "should": ">= 0.4.2"
-    , "superagent": ">= 0.1.3"
-  }
-  , "scripts": {
-    "test": "mocha api/test"
-  }
+  "name": "TxSSC-Ticket-System",
+  "version": "0.0.1-2",
+  "dependencies": {
+    "express": ">= 2.4.7",
+    "jade": ">= 0.0.1",
+    "mongoose": ">= 2.3.3",
+    "underscore": ">= 1.2.0",
+    "passport": ">= 0.1.5",
+    "passport-twitter": ">= 0.1.0",
+    "ntwitter": ">= 0.1.0",
+    "hiredis": ">= 0.1.13",
+    "redis": ">= 0.0.1",
+    "connect-redis": ">= 1.2.0",
+    "socket.io": ">= 0.8.7"
+  },
+  "devDependencies": {
+    "mocha": ">= 0.7.0",
+    "should": ">= 0.4.2",
+    "superagent": ">= 0.1.3"
+  },
+  "scripts": {
+    "test": "mocha api/test",
+    "start": "api/app.js"
+  },
+  "subdomain": "txssc-tickets"
 }
