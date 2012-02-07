@@ -53,11 +53,13 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
     },
 
     renderTicket: function(model) {
-      var view, html;
+      var view, notify, html;
+
+      notify = typeof(this.filter) !== 'undefined' ? true : false;
 
       view = this.createView(
         TicketView,
-        {model: model}
+        {model: model, notify: notify}
       );
 
       html = view.render().el;
