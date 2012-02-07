@@ -78,6 +78,15 @@ function bootControllers(app) {
 // Include Socket.io Bindings
 function socketBindings(app) {
   app.socket = io.listen(app);
+  app.socket.enable('browser client minification');
+  app.socket.enable('browser client etag');
+  app.socket.enable('browser client gzip');
+  app.socket.set('log level', 1);
+  app.socket.set('transports', [
+    'websocket',
+    'xhr-polling'
+  ]);
+
   app.socketBindings = require('./sockets')(app);
 }
 
