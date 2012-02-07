@@ -256,11 +256,6 @@ p { line-height: 1.5em; }
    Ticket Structure
 ----------------------------------------- */
 
-/* TEMP Nasty looking notification class */
-.notify {
-  background-color: yellow;
-}
-
 .ticket {
   position: relative;
   margin-bottom: 50px;
@@ -294,7 +289,24 @@ p { line-height: 1.5em; }
 
     .ticketInfo.hover { cursor: pointer; }
 
-    .ticket .ticketHeader { padding: 10px 20px 8px 20px; }
+    .ticket .ticketHeader {
+      position: relative;
+      padding: 10px 20px 8px 20px;
+    }
+
+      /* Notification */
+      .ticketHeader.notify:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-width: 0 15px 15px 0;
+        border-style: solid;
+        border-color: #ddd #222;
+        -webkit-box-shadow:0 1px 1px rgba(0,0,0,0.3), -1px 1px 1px rgba(0,0,0,0.2);
+        -moz-box-shadow:0 1px 1px rgba(0,0,0,0.3), -1px 1px 1px rgba(0,0,0,0.2);
+        box-shadow:0 1px 1px rgba(0,0,0,0.3), -1px 1px 1px rgba(0,0,0,0.2);
+      }
 
       .ticketHeader .ticketName h2 {
         font-size: 18px;
