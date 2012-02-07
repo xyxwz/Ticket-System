@@ -25,8 +25,8 @@ function(
       "tickets/open?*params": "openTickets",
       "tickets/closed": "closedTickets",
       "tickets/closed?*params": "closedTickets",
-      "tickets/mine": "myTickets",
-      "tickets/mine?*params": "myTickets",
+      "tickets/activity": "myActivity",
+      "tickets/activity?*params": "myActivity",
       "tickets/new": "createTicket",
       "tickets/:id": "details"
     },
@@ -80,7 +80,7 @@ function(
       }
     },
 
-    myTickets: function() {
+    myActivity: function() {
       var Header = ticketer.views.headers.main,
           collection = ticketer.collections.openTickets,
           View = new TicketListView({ collection:collection, filter: 'participating' });
