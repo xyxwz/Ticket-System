@@ -135,11 +135,16 @@ function addOpenTicket(user, i, cb){
     title: "test ticket " + i,
     description: "a ticket to use with test",
     user: user.id,
-    status: 'open',
+    status: 'open'
   });
   ticket.save(function(err, model){
-    if(err) return cb(err);
-    cb(null, model);
+    schemas.Ticket
+    .find({_id:model._id})
+    .populate('user')
+    .run(function(err, model){
+      if(err) return cb(err);
+      cb(null, model[0]);
+    });
   });
 }
 
@@ -155,8 +160,13 @@ function addClosedTicket(user, i, cb){
   var dt = new Date();
   while ((new Date()) - dt <= 100) {}
   ticket.save(function(err, model){
-    if(err) return cb(err);
-    cb(null, model);
+    schemas.Ticket
+    .find({_id:model._id})
+    .populate('user')
+    .run(function(err, model){
+      if(err) return cb(err);
+      cb(null, model[0]);
+    });
   });
 }
 

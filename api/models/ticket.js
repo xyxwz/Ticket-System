@@ -165,16 +165,20 @@ module.exports = function(app) {
       });
 
       // Loop through the _rem array for users to unassign
+      // ** Don't unassign the ticket owner **
       _.each(_rem, function(user) {
         userNamespace = 'user:' + user + ':assignedTo';
 
         redis.SREM(userNamespace, model.id);
         redis.SREM(ticketNamespace, user);
 
-        // remove user from participating if they are removed from assigned
-        Notifications.removeParticipating(redis, user, model.id, function(err) {
-          if(err) error = err;
-        });
+        // don't remove ticket owner
+        if(user.toString() !== _this.model.user._id.toString()) {
+          // remove user from participating if they are removed from assigned
+          Notifications.removeParticipating(redis, user, model.id, function(err) {
+            if(err) error = err;
+          });
+        }
       });
 
       return cb(error);

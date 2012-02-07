@@ -201,7 +201,6 @@ describe('ticket', function(){
         /* clear out previous assigned_to's to
          * only test manageSets() */
         klass = new Ticket(fixtures.tickets[0]);
-
         data = {assigned_to: []};
 
         var user = fixtures.users[0];
@@ -273,6 +272,25 @@ describe('ticket', function(){
               res.length.should.equal(0);
               done();
             });
+          });
+        });
+
+      }); // close removeUsers
+
+      describe('Remove Ticket Owner', function(){
+
+        before(function(done){
+          klass._manageSets([user2], function(){
+            done();
+          });
+        });
+
+        it('should not remove ticket owner from participating', function(done){
+          var ticket_namespace = 'ticket:' + klass.model._id + ':participating';
+
+          client.smembers(ticket_namespace, function(err, res){
+            res.length.should.equal(2);
+            done();
           });
         });
 
