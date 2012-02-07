@@ -50,9 +50,21 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         self.comments.url = '/api/tickets/' + this.id + '/comments';
       });
 
+      /**
+       * Set participating status on `open` tickets when a `assignedUser` of
+       * `unassignedUser` event is triggered
+       */
+
       if (this.get('status') === 'open') {
-        this.on('assignedUser', this.collection.setMyTickets);
-        this.on('unassignedUser', this.collection.setMyTickets);
+        this.on('assignedUser', function() {
+          var assigned = _.include(self.get('assigned_to'), currentUser.id);
+          if(assigned) self.set('participating', true);
+        });
+
+        this.on('unassignedUser', function() {
+          var assigned = _.include(self.get('assigned_to'), currentUser.id);
+          if(!assigned) self.set('participating', false);
+        });
       }
 
       this.on('error', function(model, err) {
