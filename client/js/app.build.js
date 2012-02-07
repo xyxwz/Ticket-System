@@ -17,12 +17,13 @@
     'timeline':         'libs/timeline',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
+    'SocketEvents':     'support/SocketEvents'
   },
   optimize: "uglify",
   findNestedDependencies: true,
   modules: [
     {
-      name: "main",
+      name: "main"
     }
   ]
 })
