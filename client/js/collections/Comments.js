@@ -8,9 +8,15 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
 
     initialize: function() {
 
+      var self = this;
+
       this.comparator = function(model) {
         return model.get("created_at");
       };
+
+      this.on('add', function(model) {
+        self.trigger('comments:add', model);
+      });
 
     },
 

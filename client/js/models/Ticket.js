@@ -67,6 +67,10 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         });
       }
 
+      this.comments.on('comments:add', function(comment) {
+        if(comment.get('user').id === currentUser.id) self.set('participating', true);
+      });
+
       this.on('error', function(model, err) {
         ticketer.EventEmitter.trigger('error', err);
       });
