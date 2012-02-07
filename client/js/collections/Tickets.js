@@ -20,13 +20,6 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
       this.on('reset', this.loadAllComments);
       this.on('add', this.loadComment);
-
-      if (currentUser.role === 'admin') {
-        this.mine = [];
-        this.on('reset', this.setMyTickets);
-        this.on('add', this.setMyTickets);
-        this.on('remove', this.setMyTickets);
-      }
     },
 
     loadAllComments: function() {
@@ -39,17 +32,6 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
     loadComment: function(model) {
       model.comments.fetch();
-    },
-
-    setMyTickets: function(model) {
-      var mine, assigned;
-
-      mine = this.filter(function(ticket) {
-        assigned = _.include(ticket.get('assigned_to'), currentUser.id);
-        if (assigned) return ticket;
-      });
-
-      this.mine = mine;
     }
 
   });
