@@ -15,7 +15,7 @@ module.exports = function(app,express) {
   app.set('redisPass', redisAuth[1]);
 
   // MongoDB Connection
-  app.set('db-uri', process.env.MONGOLAB_URI);
+  app.set('db-uri', process.env.MONGO_URI);
 
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 };
