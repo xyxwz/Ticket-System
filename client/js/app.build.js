@@ -17,7 +17,8 @@
     'timeline':         'libs/timeline',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
-    'SocketEvents':     'support/SocketEvents'
+    'SocketEvents':     'support/SocketEvents',
+    'socket.io':        'empty:'
   },
   optimize: "uglify",
   findNestedDependencies: true,
