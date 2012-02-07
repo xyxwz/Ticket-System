@@ -67,6 +67,10 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         });
       }
 
+      this.on('sync', function() {
+        if(self.get('user').id === currentUser.id) self.set('participating', true);
+      });
+
       this.comments.on('comments:add', function(comment) {
         if(comment.get('user').id === currentUser.id) self.set('participating', true);
       });
@@ -77,7 +81,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
 
       // When a ticket is closed move it to the closed tickets collection
       this.on("change:status", function(model, status) {
-        console.log(status);
         if(status === 'closed') {
           ticketer.collections.openTickets.remove(this);
           ticketer.collections.closedTickets.add(this);
