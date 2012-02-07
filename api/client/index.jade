@@ -3,6 +3,11 @@ html
   head
     title TxSSC Ticket System
 
+    - if (process.env.TYPEKIT)
+      script(src="http://use.typekit.com/#{process.env.TYPEKIT}.js")
+      script(type='text/javascript')
+        try{Typekit.load();}catch(e){}
+
     - if (process.env.NODE_ENV === 'production')
       script(data-main="js/release/main", src="js/release/require-jquery.js")
     - else
@@ -28,8 +33,3 @@ html
         .container.clearfix
 
     #main.container(role='main')
-
-    - if (process.env.TYPEKIT)
-      script(src="http://use.typekit.com/#{process.env.TYPEKIT}.js")
-      script(type='text/javascript')
-        try{Typekit.load();}catch(e){}
