@@ -22,7 +22,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       this.filter = this.options.filter;
 
       this.bindTo(this.collection, 'add', function(model) {
-        if(!this.filter) {
+        if(!self.filter) {
           var html = self.renderTicket(model);
           $(self.el).append(html);
         }
