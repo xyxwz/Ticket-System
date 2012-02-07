@@ -83,8 +83,7 @@ function(
     myTickets: function() {
       var Header = ticketer.views.headers.main,
           collection = ticketer.collections.openTickets,
-          models = ticketer.collections.openTickets.mine,
-          View = new TicketListView({ collection:collection, models: models });
+          View = new TicketListView({ collection:collection, filter: 'participating' });
 
       // Transitions
       this.appView.showHeader(Header, { tab: 'myTickets' });

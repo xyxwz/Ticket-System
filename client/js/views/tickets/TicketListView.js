@@ -17,8 +17,9 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       self = this;
       _.bindAll(this);
 
-      this.models = this.options.models;
       this.status = this.options.status ? this.options.status : 'open';
+
+      this.filter = this.options.filter;
 
       this.bindTo(this.collection, 'add', function(model) {
         var html = self.renderTicket(model);
@@ -33,9 +34,13 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
     },
 
     render: function() {
-      var self = this, view;
+      var self = this,
+          view,
+          collection;
 
-      self.collection.each(function(ticket) {
+      collection = typeof(this.filter) != 'undefined' ? this.collection.filter(this.filter) : this.collection;
+
+      collection.each(function(ticket) {
         view = self.renderTicket(ticket);
         $(self.el).append(view);
       });

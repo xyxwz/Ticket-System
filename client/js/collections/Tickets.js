@@ -32,6 +32,12 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
     loadComment: function(model) {
       model.comments.fetch();
+    },
+
+    filter: function(name) {
+      return _(this.models.filter(function(ticket) {
+        return ticket.get(name) === true;
+      }));
     }
 
   });
