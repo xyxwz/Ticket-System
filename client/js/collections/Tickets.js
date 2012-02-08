@@ -58,11 +58,7 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
     /* Destroy a ticket on the ticket:remove event */
     removeTicket: function(ticket) {
-      var model = this.get(ticket);
-
-      if(model) {
-        model.destroy();
-      }
+      this.remove(ticket);
     },
 
     /* Add a comment to the correct ticket on `comment:new` */
@@ -103,9 +99,7 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       var model = this.get(obj.ticket);
 
       if(model) {
-        var comment = model.comments.get(obj.comment);
-
-        if(comment) comment.destroy();
+        model.comments.remove(obj.comment);
       }
     }
 
