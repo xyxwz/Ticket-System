@@ -29,8 +29,8 @@ module.exports = function(app) {
   function processEvent(fn, obj) {
     var _i, _len;
 
-    for(i = 0, _len = sockets.length; i < _len; i++) {
-      var res = sockets[i].module[fn](obj);
+    for(_i = 0, _len = sockets.length; _i < _len; _i++) {
+      var res = sockets[_i].module[fn](obj);
     }
   }
 
@@ -57,9 +57,10 @@ module.exports = function(app) {
     socket.on('disconnect', function() {
       var _i, _len;
 
-      for(i = 0, _len = sockets.length; i < _len; i++) {
-        if(sockets[i].id === socket.id) {
-          sockets.splice(i,1);
+      for(_i = 0, _len = sockets.length; _i < _len; _i++) {
+        if(sockets[_i].id === socket.id) {
+          sockets.splice(_i,1);
+          break;
         }
       }
     });
