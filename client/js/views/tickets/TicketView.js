@@ -54,7 +54,15 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       data.showAdmin = this.renderAdminOptions(); // True or False
       data.user = this.model.get('user');
       data.user.shortname = data.user.name.split(' ')[0];
-      data.tackClass = data.assigned_to.length > 0 ? 'read' : 'unread';
+
+      // Set Tack CSS class
+      if(data.status === 'closed') {
+        data.tackClass = 'closed';
+      }
+      else {
+        data.tackClass = data.assigned_to.length > 0 ? 'read' : 'unread';
+      }
+
       data.notify = this.model.notification() && this.notify ? 'notify' : null;
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
@@ -190,6 +198,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
 
       if(changedAttributes.status) {
         $('#ticketOptions', this.el).fadeOut(100);
+        $('.ticketHeader .tack', this.el).removeClass('unread read').addClass('closed');
       }
 
       if(changedAttributes.closed_at) {

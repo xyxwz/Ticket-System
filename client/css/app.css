@@ -398,6 +398,7 @@ span.tack {
 
   span.tack.read { background: url('/img/assets/tack-yellow.png') no-repeat; }
   span.tack.unread { background: url('/img/assets/tack-red.png') no-repeat; }
+  span.tack.closed { background: url('/img/assets/tack-green.png') no-repeat; }
 
 /* Ticket Meta */
 
