@@ -23,6 +23,7 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
       /* Global EventEmitter bindings */
       ticketer.EventEmitter.on('ticket:update', this.updateTicket);
+      ticketer.EventEmitter.on('ticket:remove', this.removeTicket);
     },
 
     loadAllComments: function() {
@@ -48,6 +49,13 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       var model = this.get(attrs.id);
       if(model) {
         model.set(model.parse(attrs));
+      }
+    },
+
+    removeTicket: function(id) {
+      var model = this.get(id);
+      if(model) {
+        model.destroy();
       }
     }
 
