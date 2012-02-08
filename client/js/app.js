@@ -129,5 +129,9 @@ define([
 
     // Start Backbone History
     Backbone.history.start();
+
+
+    /* Fetch the first page of closed tickets after the page is rendered */
+    ticketer.collections.closedTickets.fetch({ data: { page: 1, status: 'closed' } });
   });
 });

@@ -59,25 +59,11 @@ function(
 
       this.appView.showHeader(Header, { tab: 'closedTickets' });
 
-      if (collection.length < 1) {
-        collection.fetch({
-          data: { page: 1, status: 'closed' } ,
-          success: function(collection, response) {
-            View = new TicketListView({
-              collection: collection,
-              status: 'closed'
-            });
-            self.appView.showView(View);
-          }
-        });
-      }
-      else {
-        View = new TicketListView({
-          collection: collection,
-          status: 'closed'
-        });
-        self.appView.showView(View);
-      }
+      View = new TicketListView({
+        collection: collection,
+        status: 'closed'
+      });
+      self.appView.showView(View);
     },
 
     myActivity: function() {
