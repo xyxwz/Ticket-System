@@ -161,8 +161,8 @@ module.exports = function(app) {
 
       /* Emit a resource remove event */
 
-      removeComment: function (id) {
-        socket.emit('comment:remove', id);
+      removeComment: function (message) {
+        socket.emit('comment:remove', message);
       }
 
     }; // close return

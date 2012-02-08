@@ -94,7 +94,9 @@ module.exports = function(app) {
    */
 
   Comment.prototype.remove = function remove(cb) {
-    var ticket, model;
+    var ticket,
+        model,
+        obj = {};
 
     ticket = this.ticket;
     model = this.model;
@@ -103,7 +105,10 @@ module.exports = function(app) {
     ticket.save(function(err) {
       if (err) return cb('Error removing comment');
 
-      app.eventEmitter.emit('comment:remove', model.id);
+      obj.ticket = ticket.id;
+      obj.comment = model.id;
+
+      app.eventEmitter.emit('comment:remove', obj);
 
       return cb(null, "ok");
     });
