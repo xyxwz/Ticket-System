@@ -34,20 +34,22 @@ module.exports = function(app) {
 
     app.eventEmitter.on('ticket:new', newTicket);
     app.eventEmitter.on('ticket:update', updateTicket);
-    app.eventEmitter.on('comment:new', addComment);
+    app.eventEmitter.on('comment:new', newComment);
+    app.eventEmitter.on('comment:update', updateComment);
+
 
     socket.on('disconnect', function() {
       //app.eventEmitter.removeListener('newTicket', sendMessage);
     });
 
     /**
-     * Broadcast a new ticket to all connected sockets.
+     * Broadcast a new resource to all connected sockets.
      *
      * Checks to see if the message has a socket attribute
      * to determine if the event originated from a connected
      * client or not. If so the message needs to be broadcast
      * from that socket so that the user doesn't end up with
-     * multiple tickets.
+     * multiple items.
      *
      * If the message originated from another source through the api then
      * the message can just be emitted.
@@ -67,10 +69,25 @@ module.exports = function(app) {
       }
     }
 
+    function newComment(message) {
+      if(message.socket) {
+        // This comment originated from a browser
+        if(message.socket !== socket.id) {
+
+          // Only emit to other users
+          emitCommentAction(message, 'comment:new');
+        }
+      }
+      else {
+        // Update originated from elsewhere so emit to everyone
+        emitCommentAction(message, 'comment:new');
+      }
+    }
+
     /**
-     * Emit a ticket update event
+     * Emit a resource update event
      *
-     * If a ticket is updated we want to push down the changes to
+     * If a resource is updated we want to push down the changes to
      * all the connected sockets.
      *
      * We also want to notify a user if they are participating in
@@ -83,14 +100,54 @@ module.exports = function(app) {
         if(message.socket !== socket.id) {
 
           // Only emit to other users
-          emitTicketUpdate(message);
+          emitTicketAction(message, 'ticket:update');
         }
       }
       else {
         // Update originated from elsewhere so emit to everyone
-        emitTicketUpdate(message);
+        emitTicketAction(message, 'ticket:update');
       }
     }
+
+    function updateComment(message) {
+      if(message.socket) {
+        // This resource originated from a browser
+        if(message.socket !== socket.id) {
+
+          // Only emit to other users
+          emitCommentAction(message, 'comment:update');
+        }
+      }
+      else {
+        // Update originated from elsewhere so emit to everyone
+        emitCommentAction(message, 'comment:update');
+      }
+    }
+
+    /**
+     * Emit Action Helpers
+     *
+     * Appends a notification flag if the user is participating
+     * in the ticket.
+     */
+
+    function emitTicketAction(message, action) {
+      var user = socket.get('user', function(err, user){
+        checkNotification(user, message.body, message.body.id, function(err, ticket) {
+          socket.emit(action, ticket);
+        });
+      });
+    }
+
+    function emitCommentAction(message, action) {
+       var user = socket.get('user', function(err, user){
+        checkNotification(user, message.body, message.ticket, function(err, msg) {
+          msg.ticket = message.ticket;
+          socket.emit(action, msg);
+        });
+      });
+    }
+
 
     function checkNotification(user, obj, ticket, cb) {
       notifications.isParticipating(app.redis, user, ticket, function(err, status) {
@@ -101,39 +158,6 @@ module.exports = function(app) {
           if(err) return cb(err);
           if(notify) obj.notification = true;
           return cb(null, obj);
-        });
-      });
-
-    }
-
-    function emitTicketUpdate(message) {
-      var user = socket.get('user', function(err, user){
-        checkNotification(user, message.body, message.body.id, function(err, ticket) {
-          socket.emit('ticket:update', ticket);
-        });
-      });
-    }
-
-    function addComment(message) {
-      if(message.socket) {
-        // This comment originated from a browser
-        if(message.socket !== socket.id) {
-
-          // Only emit to other users
-          emitNewComment(message);
-        }
-      }
-      else {
-        // Update originated from elsewhere so emit to everyone
-        emitNewComment(message);
-      }
-    }
-
-    function emitNewComment(message) {
-       var user = socket.get('user', function(err, user){
-        checkNotification(user, message.body, message.ticket, function(err, msg) {
-          msg.ticket = message.ticket;
-          socket.emit('comment:new', msg);
         });
       });
     }

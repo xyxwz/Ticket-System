@@ -70,7 +70,15 @@ module.exports = function(app) {
 
     ticket.save(function(err, obj) {
       if(err || !obj) cb(err);
-      return cb(null, _this._toClient());
+
+      var clientObj = _this._toClient();
+
+      var emitObj = {body: clientObj};
+      emitObj.ticket = ticket.id;
+      if(data.socket) emitObj.socket = data.socket;
+      app.eventEmitter.emit('comment:update', emitObj);
+
+      return cb(null, clientObj);
     });
   };
 

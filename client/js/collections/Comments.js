@@ -18,6 +18,15 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
         self.trigger('comments:add', model);
       });
 
+      // Update attributes on changed model
+      ticketer.EventEmitter.on('comment:update', function(model) {
+        var comment = self.get(model.id);
+
+        if(comment) {
+          comment.set(comment.parse(model));
+        }
+      });
+
     },
 
     /* Drop all comments associated with the Ticket */

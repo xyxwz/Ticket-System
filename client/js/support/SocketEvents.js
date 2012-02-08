@@ -54,6 +54,17 @@ define(['underscore', 'backbone'], function(_, Backbone) {
 
     });
 
+    /**
+     * Binding for a `comment:update` event
+     */
+
+    ticketer.sockets.sock.on('comment:update', function(message) {
+
+      // trigger a `comment:update` event
+      ticketer.EventEmitter.trigger('comment:update', message);
+
+    });
+
 
     /*
      * Client side events -> socket events

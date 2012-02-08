@@ -98,9 +98,15 @@ describe('comment', function(){
     /* Update */
     /* Should test the update method follows the correct rules */
     describe('update', function(){
-      var klass, ticket, comment, data, obj;
+      var klass, ticket, comment, data, obj, events = [];
 
       before(function(done){
+
+        //bind function to new comment
+        server.eventEmitter.on('comment:update', function(obj) {
+          events.push(obj);
+        });
+
         schemas.Ticket.findOne({_id:fixtures.tickets[0].id})
         .populate('comments.user')
         .run(function(err, model){
@@ -126,6 +132,10 @@ describe('comment', function(){
       it('should set modified_at time', function(){
         should.exist(obj.modified_at);
         obj.modified_at.should.not.equal(obj.created_at);
+      });
+
+      it('should trigger a comment:update event', function() {
+        events.length.should.equal(1);
       });
     });
 

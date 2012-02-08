@@ -21,6 +21,8 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
 
     initialize: function() {
       _.bindAll(this);
+
+      this.bindTo(this.model, 'change', this.render);
     },
 
     render: function() {
@@ -92,7 +94,7 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
           comment = $('textarea', this.el).val();
 
       self.model.save(
-        { comment: comment }, { success: self.renderEdit });
+        { comment: comment }, { silent: true, success: self.renderEdit });
     },
 
     renderEdit: function(e) {
