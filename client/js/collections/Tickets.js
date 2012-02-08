@@ -6,7 +6,7 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
     model: Ticket,
     url: '/api/tickets',
-    
+
     initialize: function() {
       var self = this;
 
@@ -20,6 +20,9 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
       this.on('reset', this.loadAllComments);
       this.on('add', this.loadComment);
+
+      /* Global EventEmitter bindings */
+      ticketer.EventEmitter.on('ticket:update', this.updateTicket);
     },
 
     loadAllComments: function() {
@@ -38,6 +41,14 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       return _(this.models.filter(function(ticket) {
         return ticket.get(name) === true;
       }));
+    },
+
+    /* Update attributes on a changed model */
+    updateTicket: function(attrs) {
+      var model = this.get(attrs.id);
+      if(model) {
+        model.set(model.parse(attrs));
+      }
     }
 
   });

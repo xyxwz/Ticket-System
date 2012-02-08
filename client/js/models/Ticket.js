@@ -24,12 +24,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
 
       this.set({socket: ticketer.sockets.id}, {silent: true});
 
-      // Update attributes on changed model
-      ticketer.EventEmitter.on('ticket:update', function(model) {
-        if(model.id === self.id) {
-          self.set(self.parse(model));
-        }
-      });
 
       this.comments = new Comments();
       this.comments.url = '/api/tickets/' + this.id + '/comments';
