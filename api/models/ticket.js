@@ -251,6 +251,9 @@ module.exports = function(app) {
 
     ticket.remove(function(err) {
       if (err) return cb(err);
+
+      app.eventEmitter.emit('ticket:remove', ticket.id);
+
       return cb(null, "ok");
     });
   };

@@ -29,6 +29,17 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     });
 
     /**
+     * Binding for a `ticket:remove` event
+     */
+
+    ticketer.sockets.sock.on('ticket:remove', function(message) {
+
+      // trigger a `ticket:remove` event
+      ticketer.EventEmitter.trigger('ticket:remove', message);
+
+    });
+
+    /**
      * Binding for tickets:fetch, reset the collection
      * with the returned tickets.
      */

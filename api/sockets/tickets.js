@@ -34,6 +34,7 @@ module.exports = function(app) {
 
     app.eventEmitter.on('ticket:new', newTicket);
     app.eventEmitter.on('ticket:update', updateTicket);
+    app.eventEmitter.on('ticket:remove', removeTicket);
     app.eventEmitter.on('comment:new', newComment);
     app.eventEmitter.on('comment:update', updateComment);
     app.eventEmitter.on('comment:remove', removeComment);
@@ -128,6 +129,10 @@ module.exports = function(app) {
     /** Emit a resource remove event
      *
      */
+
+    function removeTicket(id) {
+      socket.emit('ticket:remove', id);
+    }
 
     function removeComment(id) {
       socket.emit('comment:remove', id);

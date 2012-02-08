@@ -302,9 +302,15 @@ describe('ticket', function(){
     /* Remove */
     /* Should test a ticket can be successfully removed */
     describe('removeTicket', function(){
-      var data, klass, result;
+      var data, klass, result, events = [];
 
       before(function(done){
+
+        //bind function to remove comment
+        server.eventEmitter.on('ticket:remove', function(id) {
+          events.push(id);
+        });
+
         klass = new Ticket(fixtures.tickets[0]);
 
         klass.remove(function(err, status){
@@ -323,6 +329,10 @@ describe('ticket', function(){
 
       it('should return a status of "ok"', function(){
         result.should.equal('ok');
+      });
+
+      it('should trigger a ticket:remove event', function() {
+        events.length.should.equal(1);
       });
     });
 
