@@ -54,6 +54,9 @@ Access.prototype.checkAccess = function(user) {
       // Only Check Access for the last model in the
       // path since this is the resource being requested.
       accessModel = self.keys[self.keys.length-1][1];
+
+      if(!accessModel) { status = false; break;}
+
       // check the accessModel's user.id
       if(accessModel.user) {
         status = user.id.toString() === accessModel.user._id.toString() ? true : false;
