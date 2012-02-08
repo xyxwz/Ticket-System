@@ -24,6 +24,9 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       /* Global EventEmitter bindings */
       ticketer.EventEmitter.on('ticket:update', this.updateTicket);
       ticketer.EventEmitter.on('ticket:remove', this.removeTicket);
+      ticketer.EventEmitter.on('comment:new', this.addComment);
+      ticketer.EventEmitter.on('comment:update', this.updateComment);
+      ticketer.EventEmitter.on('comment:remove', this.removeComment);
     },
 
     loadAllComments: function() {
@@ -47,15 +50,62 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
     /* Update attributes on a changed model */
     updateTicket: function(attrs) {
       var model = this.get(attrs.id);
+
       if(model) {
         model.set(model.parse(attrs));
       }
     },
 
-    removeTicket: function(id) {
-      var model = this.get(id);
+    /* Destroy a ticket on the ticket:remove event */
+    removeTicket: function(ticket) {
+      var model = this.get(ticket);
+
       if(model) {
         model.destroy();
+      }
+    },
+
+    /* Add a comment to the correct ticket on `comment:new` */
+    addComment: function(attrs) {
+      var model = this.get(attrs.ticket);
+
+      if(model) {
+        delete attrs.ticket;
+
+        if(attrs.notification) {
+          model.set({ 'notification': attrs.notification });
+          delete attrs.notification;
+        }
+
+        model.comments.add(attrs);
+      }
+    },
+
+    /* Update a comment on `comment:update` */
+    updateComment: function(attrs) {
+      var model = this.get(attrs.ticket);
+
+      if(model) {
+        delete attrs.ticket;
+
+        if(attrs.notification) {
+          model.set({ 'notification': attrs.notification });
+          delete attrs.notification;
+        }
+
+        var comment = model.comments.get(attrs.id);
+        comment.set(comment.parse(attrs));
+      }
+    },
+
+    /* Remove a comment on `comment:remove` */
+    removeComment: function(obj) {
+      var model = this.get(obj.ticket);
+
+      if(model) {
+        var comment = model.comments.get(obj.comment);
+
+        if(comment) comment.destroy();
       }
     }
 
