@@ -78,22 +78,18 @@ function(
     },
 
     details: function(id) {
-      var self = this,
-          View,
+      var View,
+          Header = ticketer.views.headers.back,
           ticket = ticketer.collections.openTickets.get(id) ||
                    ticketer.collections.closedTickets.get(id);
 
       if(typeof(ticket) === 'undefined') {
-        ticket = new Ticket({id: id});
-        ticket.fetch({
-          success: function(model, response){
-            model.comments.fetch();
-            self.displayView(ticket);
-          }
-        });
+        this.navigate('tickets/open', true);
       }
       else {
-        this.displayView(ticket);
+        View = new TicketDetailsView({ model: ticket });
+        this.appView.showHeader(Header, { status: ticket.get('status') });
+        this.appView.showView(View, function() { View.trigger('viewRendered'); });
       }
     },
 
@@ -104,15 +100,6 @@ function(
 
       // Transitions
       this.appView.showHeader(Header);
-      this.appView.showView(View, function() { View.trigger('viewRendered'); });
-    },
-
-    /* All helper functions */
-    displayView: function(model) {
-      var Header = ticketer.views.headers.back,
-          View = new TicketDetailsView({ model: model });
-
-      this.appView.showHeader(Header, { status: model.get('status') });
       this.appView.showView(View, function() { View.trigger('viewRendered'); });
     }
 
