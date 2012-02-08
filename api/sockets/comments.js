@@ -3,24 +3,22 @@ var io = require('socket.io'),
 
 module.exports = function(app) {
 
-  var Ticket = require('../models')(app).Ticket;
-
   var sockets = [];
 
   /**
    * Create Global Event Emitter Bindings
    */
 
-  app.eventEmitter.on('ticket:new', function(obj) {
-    processEvent('newTicket', obj);
+  app.eventEmitter.on('comment:new', function(obj) {
+    processEvent('newComment', obj);
   });
 
-  app.eventEmitter.on('ticket:update', function(obj) {
-    processEvent('updateTicket', obj);
+  app.eventEmitter.on('comment:update', function(obj) {
+    processEvent('updateComment', obj);
   });
 
-  app.eventEmitter.on('ticket:remove', function(obj) {
-    processEvent('removeTicket', obj);
+  app.eventEmitter.on('comment:remove', function(obj) {
+    processEvent('removeComment', obj);
   });
 
   /**
@@ -52,19 +50,6 @@ module.exports = function(app) {
     });
 
     /**
-     * Bind to the ticket:fetch client event
-     * and send all tickets to the client
-     */
-
-    socket.on('tickets:fetch', module.getTickets);
-
-    /**
-     * Remove the notification for the user
-     */
-    socket.on('ticket:notification:remove', module.removeNotification);
-    socket.on('ticket:notifications:clear', module.clearNotifications);
-
-    /**
      * Remove this socket from the array.
      * Similar to running an unbind
      */
@@ -93,10 +78,11 @@ module.exports = function(app) {
 
     // Private Funtions
 
-    var emitTicketAction = function(message, action) {
+    var emitCommentAction = function (message, action) {
       var user = socket.get('user', function(err, user){
-        checkNotification(user, message.body, message.body.id, function(err, ticket) {
-          socket.emit(action, ticket);
+        checkNotification(user, message.body, message.ticket, function(err, msg) {
+          msg.ticket = message.ticket;
+          socket.emit(action, msg);
         });
       });
     };
@@ -112,29 +98,6 @@ module.exports = function(app) {
           return cb(null, obj);
         });
       });
-    };
-
-    var getAllTickets = function (user) {
-      var _i, _len, _ret = [];
-
-      Ticket.all({ status: 'open' }, function(err, tickets) {
-        if(err) return ccb(err);
-
-        for(_i = 0, _len = tickets.length; _i < _len; _i++) {
-          setArray(tickets[_i]);
-        }
-      });
-
-      function setArray(ticket) {
-        checkNotification(user, ticket, ticket.id, function(err, model) {
-          if(err) return socket.emit('tickets:fetch', err);
-
-          _ret.push(model);
-          if(_ret.length === _len) {
-            return socket.emit('tickets:fetch', null, _ret);
-          }
-        });
-      }
     };
 
 
@@ -155,17 +118,18 @@ module.exports = function(app) {
       * the message can just be emitted.
       */
 
-      newTicket: function (message) {
+      newComment: function (message) {
         if(message.socket) {
-          // This ticket originated from a browser
-          if(message.socket === socket.id) {
-            // message originated from this client so broadcast to everyone else
-            socket.broadcast.emit('ticket:new', message.body);
+          // This comment originated from a browser
+          if(message.socket !== socket.id) {
+
+            // Only emit to other users
+            emitCommentAction(message, 'comment:new');
           }
         }
         else {
-          // message originated from other api source so emit
-          socket.emit('ticket:new', message.body);
+          // Update originated from elsewhere so emit to everyone
+          emitCommentAction(message, 'comment:new');
         }
       },
 
@@ -179,60 +143,25 @@ module.exports = function(app) {
        * that ticket so they can see changes have occured.
        */
 
-      updateTicket: function (message) {
+      updateComment: function (message) {
         if(message.socket) {
-          // This ticket originated from a browser
+          // This resource originated from a browser
           if(message.socket !== socket.id) {
 
             // Only emit to other users
-            emitTicketAction(message, 'ticket:update');
+            emitCommentAction(message, 'comment:update');
           }
         }
         else {
           // Update originated from elsewhere so emit to everyone
-          emitTicketAction(message, 'ticket:update');
+          emitCommentAction(message, 'comment:update');
         }
       },
 
       /* Emit a resource remove event */
 
-      removeTicket: function (id) {
-        socket.emit('ticket:remove', id);
-      },
-
-      /*
-       * Get all tickets and return them to the client
-       * :emits tickets:fetch event with an error, and or tickets
-       */
-
-      getTickets: function () {
-        socket.get('user', function(err, user) {
-          getAllTickets(user);
-        });
-      },
-
-      /**
-       * Remove the notification for the user
-       */
-
-      removeNotification: function (ticket) {
-        socket.get('user', function(err, user) {
-          notifications.removeNotification(app.redis, user, ticket, function(err, status) {
-            if(err) return socket.emit('ticket:notification:error', err);
-          });
-        });
-      },
-
-      /**
-       * Clear the user's notifications
-       */
-
-      clearNotifications: function () {
-        socket.get('user', function(err, user) {
-          notifications.clearNotifications(app.redis, user, function(err, status) {
-            if(err) return socket.emit('ticket:notification:error', err);
-          });
-        });
+      removeComment: function (id) {
+        socket.emit('comment:remove', id);
       }
 
     }; // close return
