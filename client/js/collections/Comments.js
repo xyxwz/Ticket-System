@@ -27,6 +27,15 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
         }
       });
 
+      // Remove model from collection
+      ticketer.EventEmitter.on('comment:remove', function(id) {
+        var comment = self.get(id);
+
+        if(comment) {
+          self.remove(comment);
+        }
+      });
+
     },
 
     /* Drop all comments associated with the Ticket */

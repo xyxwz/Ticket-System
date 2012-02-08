@@ -143,9 +143,15 @@ describe('comment', function(){
     /* Remove Comment */
     /* Should test a comment can be successfully removed */
     describe('removeComment', function(){
-      var klass, ticket, comment, result;
+      var klass, ticket, comment, result, events = [];
 
       before(function(done){
+
+        //bind function to remove comment
+        server.eventEmitter.on('comment:remove', function(id) {
+          events.push(id);
+        });
+
         schemas.Ticket.findOne({_id:fixtures.tickets[0].id})
         .populate('comments.user')
         .run(function(err, model){
@@ -174,6 +180,10 @@ describe('comment', function(){
 
       it('should return a status of "ok"', function(){
         result.should.equal('ok');
+      });
+
+      it('should trigger a comment:remove event', function() {
+        events.length.should.equal(1);
       });
     });
 

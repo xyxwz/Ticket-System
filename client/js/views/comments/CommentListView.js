@@ -12,6 +12,7 @@ function($, _, Backbone, BaseView, CommentView) {
       // Bindings using the garbage collectors bindTo()
       _.bindAll(this);
       this.bindTo(this.collection,'add', this.addComment);
+      this.bindTo(this.collection, 'remove', this.removeComment);
       this.bindTo(this.collection,'reset', this.addAll);
     },
 
@@ -42,6 +43,11 @@ function($, _, Backbone, BaseView, CommentView) {
       $(html).hide();
       $(this.el).append(html);
       $(html).fadeIn(200);
+    },
+
+    removeComment: function(comment) {
+      var id = comment.id;
+      $('#' + id, this.el).remove();
     }
 
   });

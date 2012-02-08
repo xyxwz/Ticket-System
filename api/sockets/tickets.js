@@ -36,6 +36,7 @@ module.exports = function(app) {
     app.eventEmitter.on('ticket:update', updateTicket);
     app.eventEmitter.on('comment:new', newComment);
     app.eventEmitter.on('comment:update', updateComment);
+    app.eventEmitter.on('comment:remove', removeComment);
 
 
     socket.on('disconnect', function() {
@@ -124,6 +125,14 @@ module.exports = function(app) {
       }
     }
 
+    /** Emit a resource remove event
+     *
+     */
+
+    function removeComment(id) {
+      socket.emit('comment:remove', id);
+    }
+
     /**
      * Emit Action Helpers
      *
@@ -147,7 +156,6 @@ module.exports = function(app) {
         });
       });
     }
-
 
     function checkNotification(user, obj, ticket, cb) {
       notifications.isParticipating(app.redis, user, ticket, function(err, status) {

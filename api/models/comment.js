@@ -102,6 +102,9 @@ module.exports = function(app) {
     model.remove();
     ticket.save(function(err) {
       if (err) return cb('Error removing comment');
+
+      app.eventEmitter.emit('comment:remove', model.id);
+
       return cb(null, "ok");
     });
   };

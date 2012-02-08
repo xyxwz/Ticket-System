@@ -65,6 +65,17 @@ define(['underscore', 'backbone'], function(_, Backbone) {
 
     });
 
+    /**
+     * Binding for a `comment:remove` event
+     */
+
+    ticketer.sockets.sock.on('comment:remove', function(message) {
+
+      // trigger a `comment:remove` event
+      ticketer.EventEmitter.trigger('comment:remove', message);
+
+    });
+
 
     /*
      * Client side events -> socket events
