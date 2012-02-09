@@ -247,14 +247,19 @@ module.exports = function(app) {
    */
 
   Ticket.prototype.remove = function remove(cb) {
-    var ticket = this.model;
+    var self = this,
+        ticket = this.model,
+        ticketID = ticket.id;
 
     ticket.remove(function(err) {
       if (err) return cb(err);
 
-      app.eventEmitter.emit('ticket:remove', ticket.id);
+      Notifications.cleanTicket(self.redis, ticketID, function(err) {
+        if(err) return cb(err);
 
-      return cb(null, "ok");
+        app.eventEmitter.emit('ticket:remove', ticket.id);
+        return cb(null, "ok");
+      });
     });
   };
 

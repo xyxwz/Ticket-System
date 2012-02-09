@@ -132,3 +132,30 @@ exports.clearNotifications = function(redis, user, cb) {
     return cb(null, true);
   });
 };
+
+
+/*
+ * Clean up all the sets associated with a ticket
+ * on deletion.
+ */
+exports.cleanTicket = function(redis, ticket, cb) {
+  var error,
+      tempUserRef,
+      ticketRef = 'ticket:' + ticket + P_NAMESPACE;
+
+  redis.SMEMBERS(ticketRef, function(err, users) {
+    if(err) return cb('Error looking up ticket');
+
+    users.forEach(function(user) {
+      tempUserRef = 'user:' + user + N_NAMESPACE;
+
+      redis.SREM(tempUserRef, ticket, function(err) {
+        if(err) error = 'Error removing ticket notifications';
+      });
+    });
+    redis.DEL(ticketRef, function(err) {
+      if(err) error = 'Error removing ticket set';
+      return cb(error, error ? false : true );
+    });
+  });
+};
