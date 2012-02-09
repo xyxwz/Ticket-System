@@ -10,6 +10,8 @@ function($, _, Backbone, BaseView, TicketView, CommentListView, CommentFormView)
 
     initialize: function() {
       _.bindAll(this);
+
+      this.bindTo(this.model, 'remove', this.goBack);
     },
 
     render: function() {
@@ -50,6 +52,10 @@ function($, _, Backbone, BaseView, TicketView, CommentListView, CommentFormView)
       this.bindTo(this, 'viewRendered', view.bindResize);
 
       $(this.el).append(view.render().el);
+    },
+
+    goBack: function() {
+      window.history.back();
     }
 
   });

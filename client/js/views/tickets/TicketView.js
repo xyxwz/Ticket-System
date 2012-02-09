@@ -149,7 +149,6 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       resp = confirm("Are you sure you want to delete this ticket? It can not be undone");
       if (resp === true) {
         this.model.destroy();
-        window.history.back();
       }
     },
 
