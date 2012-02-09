@@ -1,4 +1,5 @@
 var io = require('socket.io'),
+    _ = require('underscore'),
     notifications = require('../models/helpers/notifications');
 
 module.exports = function(app) {
@@ -89,14 +90,16 @@ module.exports = function(app) {
     };
 
     var checkNotification = function (user, obj, ticket, cb) {
+      var _obj = _.clone(obj);
+
       notifications.isParticipating(app.redis, user, ticket, function(err, status) {
         if(err) return cb(err);
-        if(status) obj.participating = true;
+        if(status) _obj.participating = true;
 
         notifications.hasNotification(app.redis, user, ticket, function(err, notify) {
           if(err) return cb(err);
-          if(notify) obj.notification = true;
-          return cb(null, obj);
+          if(notify) _obj.notification = true;
+          return cb(null, _obj);
         });
       });
     };

@@ -1,4 +1,5 @@
 var io = require('socket.io'),
+    _ = require('underscore'),
     notifications = require('../models/helpers/notifications');
 
 module.exports = function(app) {
@@ -103,14 +104,16 @@ module.exports = function(app) {
     };
 
     var checkNotification = function (user, obj, ticket, cb) {
+      var _obj = _.clone(obj);
+
       notifications.isParticipating(app.redis, user, ticket, function(err, status) {
         if(err) return cb(err);
-        if(status) obj.participating = true;
+        if(status) _obj.participating = true;
 
         notifications.hasNotification(app.redis, user, ticket, function(err, notify) {
           if(err) return cb(err);
-          if(notify) obj.notification = true;
-          return cb(null, obj);
+          if(notify) _obj.notification = true;
+          return cb(null, _obj);
         });
       });
     };
@@ -148,9 +151,8 @@ module.exports = function(app) {
       *
       * Checks to see if the message has a socket attribute
       * to determine if the event originated from a connected
-      * client or not. If so the message needs to be broadcast
-      * from that socket so that the user doesn't end up with
-      * multiple items.
+      * client or not. If a socket does exist, emit to everyone but
+      * the originating socket.
       *
       * If the message originated from another source through the api then
       * the message can just be emitted.
@@ -159,14 +161,15 @@ module.exports = function(app) {
       newTicket: function (message) {
         if(message.socket) {
           // This ticket originated from a browser
-          if(message.socket === socket.id) {
-            // message originated from this client so broadcast to everyone else
-            socket.broadcast.emit('ticket:new', message.body);
+          if(message.socket !== socket.id) {
+
+            // Only emit to other users
+            emitTicketAction(message, 'ticket:new');
           }
         }
         else {
           // message originated from other api source so emit
-          socket.emit('ticket:new', message.body);
+          emitTicketAction(message, 'ticket:new');
         }
       },
 
