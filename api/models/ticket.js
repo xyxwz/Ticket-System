@@ -186,6 +186,42 @@ module.exports = function(app) {
   };
 
 
+  /*
+   * Remove the tickets assignees and users assigned to
+   * sets from redis
+   */
+
+  Ticket.prototype._removeSets = function(cb) {
+    var error,
+        ticketNamespace,
+        userNamespace,
+        redis = this.redis,
+        model = this.model;
+
+    ticketNamespace = 'ticket:' + model.id + ':assignees';
+
+    //Get the users assigned to the ticket
+    redis.SMEMBERS(ticketNamespace, function(err, users) {
+      if(err) return cb('Error looking getting ticket');
+
+      //Iterate over them and remove the ticket from their set
+      users.forEach(function(user) {
+        userNamespace = 'user:' + user + ':assignedTo';
+
+        redis.SREM(userNamespace, model.id, function(err) {
+          if(err) error = 'Error deleting ticket from user';
+        });
+      });
+
+      //Delete the ticket key from redis
+      redis.DEL(ticketNamespace, function(err) {
+        if(err) error = 'Error deleting ticket';
+        return cb(error, error ? false : true );
+      });
+    });
+  };
+
+
   /**
    *  execUpdate
    *
@@ -254,11 +290,15 @@ module.exports = function(app) {
     ticket.remove(function(err) {
       if (err) return cb(err);
 
-      Notifications.cleanTicket(self.redis, ticketID, function(err) {
-        if(err) return cb(err);
+      self._removeSets(function(err, status) {
 
-        app.eventEmitter.emit('ticket:remove', ticket.id);
-        return cb(null, "ok");
+        Notifications.cleanTicket(self.redis, ticketID, function(err) {
+          if(err) return cb(err);
+
+          app.eventEmitter.emit('ticket:remove', ticket.id);
+          return cb(null, "ok");
+        });
+
       });
     });
   };
