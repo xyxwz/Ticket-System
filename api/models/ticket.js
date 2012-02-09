@@ -187,8 +187,8 @@ module.exports = function(app) {
 
 
   /*
-   * Remove the tickets assignees and users assigned to
-   * sets from redis
+   * Remove the ticket's assignees set and ticket reference from
+   * users assignedto set in redis
    */
 
   Ticket.prototype._removeSets = function(cb) {
@@ -202,7 +202,7 @@ module.exports = function(app) {
 
     //Get the users assigned to the ticket
     redis.SMEMBERS(ticketNamespace, function(err, users) {
-      if(err) return cb('Error looking getting ticket');
+      if(err) return cb('Error looking up ticket');
 
       //Iterate over them and remove the ticket from their set
       users.forEach(function(user) {
