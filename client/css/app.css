@@ -453,10 +453,16 @@ span.tack {
 
         ul.ticketMeta li.gears ul li {
           width: 100px;
-          margin: 0 4px;
+          margin: 0px;
           padding: 4px 8px;
           border-bottom: 1px solid rgba(120,120,120,0.4);
           border-top: 1px solid rgba(235,235,235,0.3);
+          -webkit-transition: background-color 0.4s ease;
+          -moz-transition: background-color 0.4s ease;
+        }
+
+        ul.ticketMeta li.gears ul li:hover {
+          background-color: #C8C8C8;
         }
 
           ul.ticketMeta li.gears ul li:first-child { border-top: none; }
