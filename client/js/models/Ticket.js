@@ -167,6 +167,27 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       this.set({assigned_to: _.uniq(newArray)}, {silent: true});
       this.trigger('unassignedUser', this);
       this.save(null, { error: callback });
+    },
+
+    /* If the ticket is closed take the difference of the created time,
+     * and the closed time, and return a formatted string.
+     */
+    responseTime: function() {
+      if(this.get('closed_at')) {
+        var daysDiff, hourDiff, minDiff, secDiff,
+            closed_at = new Date(this.get('closed_at')),
+            opened_at = new Date(this.get('opened_at')),
+            totalDiff = closed_at.getTime() - opened_at.getTime();
+        daysDiff = Math.floor(totalDiff/1000/60/60/24);
+        totalDiff -= daysDiff * 1000 * 60 * 60 * 24;
+        hourDiff = Math.floor(totalDiff/1000/60/60);
+        totalDiff -= hourDiff * 1000 * 60 * 60;
+        minDiff = Math.floor(totalDiff/1000/60);
+
+        return daysDiff.toString() + ' days, ' + hourDiff.toString() + ' hours, ' + minDiff.toString() + ' minutes';
+      }
+
+      return false;
     }
 
   });

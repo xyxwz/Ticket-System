@@ -155,17 +155,21 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
     /* Renders the timestamp with the jQuery timeago plugin
      * auto updates */
     setTimestamp: function() {
-      var timestamp;
+      var time = this.model.get('closed_at') || this.model.get('opened_at'),
+          timeStr = new Date(time).toDateString().substr(4),
+          timestamp = {
+            time: time,
+            formattedTime: timeStr,
+            responseTime: this.model.responseTime() || timeStr
+          };
 
       if (this.model.get('closed_at')) {
         $('.timestamp', this.el).remove();
-        timestamp = { time: this.model.get('closed_at') };
         $('.ticketName', this.el).append(Mustache.to_html(TimestampTmpl, timestamp));
         $('.timestamp', this.el).prepend('closed: ');
         $('time.timeago', this.el).timeago();
       }
       else {
-        timestamp = { time: this.model.get('opened_at') };
         $('.ticketName', this.el).append(Mustache.to_html(TimestampTmpl, timestamp));
         $('time.timeago', this.el).timeago();
       }
