@@ -1,6 +1,6 @@
 {
   "name": "TxSSC-Ticket-System",
-  "version": "0.0.1-3",
+  "version": "0.0.1-4",
   "dependencies": {
     "express": ">= 2.4.7",
     "jade": ">= 0.0.1",
@@ -23,5 +23,8 @@
     "test": "mocha api/test",
     "start": "api/app.js"
   },
-  "subdomain": "txssc-tickets"
+  "subdomain": "txssc-tickets",
+  "engines": {
+    "node": "v0.6.x"
+  }
 }
