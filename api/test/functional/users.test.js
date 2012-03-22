@@ -74,7 +74,8 @@ describe('user', function(){
         "name":"Example User",
         "role":"admin",
         "access_token":"abc123",
-      }
+        "refresh_token":"abc123"
+      };
 
       request
       .post('http://127.0.0.1:3000/api/users')

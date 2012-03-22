@@ -94,6 +94,7 @@ function addUser(i, cb){
     name: "John Doe",
     role: "member",
     access_token: "abc"+i,
+    refresh_token: "abc"+i,
   });
 
   // Set the first user to an admin role

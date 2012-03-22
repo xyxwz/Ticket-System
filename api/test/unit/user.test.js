@@ -154,8 +154,9 @@ describe('user', function(){
         username: "static_example",
         name: "John Doe",
         role: "admin",
-        access_token: "abc"
-      }
+        access_token: "abc",
+        refresh_token: "abc"
+      };
 
       User.create(data, function(err, model) {
         if(err) return done(err);
@@ -221,8 +222,9 @@ describe('user', function(){
         username: "create.example",
         name: "John Doe",
         role: "member",
-        access_token: "abc123"
-      }
+        access_token: "abc123",
+        refresh_token: "abc123"
+      };
 
       it('should successfully create a user', function(done){
         User.create(data, function(err, user){
