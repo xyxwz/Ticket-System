@@ -802,7 +802,7 @@ form .outerWrap {
     float: left;
     width: 22px;
     height: 22px;
-    background: url('/img/assets/auth-icons.png') no-repeat 99px 99px;
+    background: url('/img/assets/logo.png') no-repeat;
 }
 
 /*
@@ -829,59 +829,69 @@ form .outerWrap {
     padding: 0;
 }
 
-/* Twitter
+/* TxSSC
    ========================================================================== */
 
-.btn-twitter {
-    border-color: #a6cde6;
-    color: #327695;
-    background: #cfe4f0;
-    /* css3 */
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f1f5f7), to(rgba(255,255,255,0)));
-    background-image: -webkit-linear-gradient(#f1f5f7, rgba(255,255,255,0));
-    background-image: -moz-linear-gradient(#f1f5f7, rgba(255,255,255,0));
-    background-image: -ms-linear-gradient(#f1f5f7, rgba(255,255,255,0));
-    background-image: -o-linear-gradient(#f1f5f7, rgba(255,255,255,0));
-    background-image: linear-gradient(#f1f5f7, rgba(255,255,255,0));
-    text-shadow: 1px 0 0 #bcd3df;
-    -webkit-box-shadow: inset 0 1px 0 #fff;
-    box-shadow: inset 0 1px 0 #fff;
+.btn-txssc {
+    border-color: #d4d4d4;
+    background: #ececec;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f4f4f4), to(#ececec));
+    background-image: -webkit-linear-gradient(#f4f4f4, #ececec);
+    background-image: -moz-linear-gradient(#f4f4f4, #ececec);
+    background-image: -ms-linear-gradient(#f4f4f4, #ececec);
+    background-image: -o-linear-gradient(#f4f4f4, #ececec);
+    background-image: linear-gradient(#f4f4f4, #ececec);
 }
 
-.btn-twitter:hover,
-.btn-twitter:focus {
-    border-color: #8dc2e4;
-    background-color: #cadde9;
+.btn-txssc:hover,
+.btn-txssc:focus {
+    border-color: #d4d4d4;
+    background: #dbdbdb;
+    color: #222;
+    background-color: #e3e3e3;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#e3e3e3), to(#dbdbdb));
+    background-image: -webkit-linear-gradient(#e3e3e3, #dbdbdb);
+    background-image: -moz-linear-gradient(#e3e3e3, #dbdbdb);
+    background-image: -ms-linear-gradient(#e3e3e3, #dbdbdb);
+    background-image: -o-linear-gradient(#e3e3e3, #dbdbdb);
+    background-image: linear-gradient(#e3e3e3, #dbdbdb);
 }
 
-.btn-twitter:active {
-    background: #cadde9;
-    -webkit-box-shadow: inset 0 1px 0 #bbd6e7;
-    box-shadow: inset 0 1px 0 #bbd6e7;
+.btn-txssc:active {
+    border-color: #d4d4d4;
+    background: #dbdbdb;
+    color: #222;
+    background-color: #e3e3e3;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#e3e3e3), to(#dbdbdb));
+    background-image: -webkit-linear-gradient(#e3e3e3, #dbdbdb);
+    background-image: -moz-linear-gradient(#e3e3e3, #dbdbdb);
+    background-image: -ms-linear-gradient(#e3e3e3, #dbdbdb);
+    background-image: -o-linear-gradient(#e3e3e3, #dbdbdb);
+    background-image: linear-gradient(#e3e3e3, #dbdbdb);
 }
 
 /*
  * Icon
  */
 
-.btn-twitter:before {
-    margin: 0 0.6em 0 -0.6em;
-    background-position: -22px 0;
+.btn-txssc:before {
+    margin: 5px 0.6em 0 -0.6em;
+    background-position: 0 0;
 }
 
-.btn-twitter.large:before {
-    background-position: -36px -22px;
+.btn-txssc.large:before {
+    background-position: 0 0;
 }
 
 
 .btn-github.large:before {
-    background-position: -72px -22px;
+    background-position: 0 0;
 }
 
 .btn-github.large:hover:before,
 .btn-github.large:focus:before,
 .btn-github.large:active:before {
-    background-position: -108px -22px;
+    background-position: 0 0;
 }
 
 
