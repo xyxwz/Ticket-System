@@ -1,5 +1,5 @@
 var passport = require('passport'),
-    TwitterStrategy = require('passport-twitter').Strategy,
+    txsscStrategy = require('passport-txssc').Strategy,
     User;
 
 
@@ -22,18 +22,18 @@ module.exports = function(app) {
   });
 
   // Use the GitHubStrategy within Passport.
-  passport.use(new TwitterStrategy({
-    consumerKey: process.env.CONSUMER_KEY,
-    consumerSecret: process.env.CONSUMER_SECRET,
+  passport.use(new txsscStrategy({
+    clientID: process.env.CONSUMER_KEY,
+    clientSecret: process.env.CONSUMER_SECRET,
     callbackURL: "http://"+process.env.CALLBACK_HOST+"/login/oauth/callback"
     },
-    function(token, tokenSecret, profile, done) {
+    function(accessToken, refreshToken, profile, done) {
       var sessionData;
 
-      User._authorize(token, tokenSecret, profile, function(err, user) {
+      User._authorize(accessToken, refreshToken, profile, function(err, user) {
         sessionData = {
           id: user.id,
-          token: token,
+          token: accessToken,
           name: user.name,
           role: user.role
         };

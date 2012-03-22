@@ -1,7 +1,6 @@
 var mongoose = require('mongoose'),
     UserSchema = require('./schemas/user').User,
-    _ = require('underscore'),
-    twitter = require('ntwitter');
+    _ = require('underscore');
 
 module.exports = function(app) {
 
@@ -151,6 +150,7 @@ module.exports = function(app) {
       name: data.name,
       role: data.role,
       access_token: data.access_token,
+      refresh_token: data.refresh_token,
       avatar: data.avatar
     });
 
@@ -170,52 +170,41 @@ module.exports = function(app) {
    *
    *  oAuth should manage access control to the application
    *
-   *  :token        - access_token returned from oAuth response
-   *  :tokenSecret  - access_secrect returned from oAuth response
-   *  :profile      - profile information returned from oAuth response
+   *  :access_token        - access_token returned from oAuth response
+   *  :request_token       - request_token returned from oAuth response
+   *  :profile             - profile information returned from oAuth response
    *
    *  Returns an authorized user profile to store in session
    *
    *  @api private
    */
 
-  User._authorize = function authorize(token, tokenSecret, profile, cb) {
-    var twit, data, user;
+  User._authorize = function authorize(access_token, refresh_token, profile, cb) {
+    var data;
 
-    // Setup a connection to get Twitter user's profile
-    twit = new twitter({
-      consumer_key: process.env.CONSUMER_KEY,
-      consumer_secret: process.env.CONSUMER_SECRET,
-      access_token_key: token,
-      access_token_secret: tokenSecret
-    });
+    UserSchema
+    .findOne({ 'refresh_token': refresh_token })
+    .run(function(err, model) {
+      if(err) return cb(err);
+      if(!model) {
+        // create a new user with base permissions
+        data = {
+          username: profile.username,
+          name: profile.name,
+          role: profile.role,
+          access_token: access_token,
+          refresh_token: refresh_token,
+          avatar: profile.avatar
+        };
 
-    twit.get('/users/show.json', { id: profile.id }, function(err, res) {
-      if (err) return cb(err);
-
-      UserSchema
-      .findOne({ 'access_token': token })
-      .run(function(err, model) {
-        if(err) return cb(err);
-        if(!model) {
-          // create a new user with base permissions
-          data = {
-            username: profile.username,
-            name: res.name,
-            role: 'member',
-            access_token: token,
-            avatar: res.profile_image_url
-          };
-
-          User.create(data, function(err, model) {
-            if(err) return cb(err);
-            return cb(null, model);
-          });
-        }
-        else {
+        User.create(data, function(err, model) {
+          if(err) return cb(err);
           return cb(null, model);
-        }
-      });
+        });
+      }
+      else {
+        return cb(null, model);
+      }
     });
   };
 
