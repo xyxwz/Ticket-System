@@ -92,6 +92,6 @@ function socketBindings(app) {
 
 // allow normal node loading if appropriate
 if (!module.parent) {
-  port = process.env.PORT || 3000;
+  port = process.env.TIX_PORT || 3000;
   exports.boot().listen(port);
 }
