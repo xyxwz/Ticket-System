@@ -203,7 +203,11 @@ module.exports = function(app) {
         });
       }
       else {
-        return cb(null, model);
+        model.access_token = access_token;
+        model.save(function(err, user) {
+          if(err) return cb(err);
+          return cb(null, user);
+        });
       }
     });
   };
