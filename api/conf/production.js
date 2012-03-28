@@ -7,12 +7,13 @@ module.exports = function(app,express) {
   var redisUrl, redisAuth;
 
   // Redis Connection
-  /*redisUrl = url.parse(process.env.REDISTOGO_URL);
+  // ex: redis://0:@127.0.0.1:6379
+  redisUrl = url.parse(process.env.REDIS_URI);
   redisAuth = redisUrl.auth.split(':');
   app.set('redisHost', redisUrl.hostname);
   app.set('redisPort', redisUrl.port);
   app.set('redisDb', redisAuth[0]);
-  app.set('redisPass', redisAuth[1]);*/
+  app.set('redisPass', redisAuth[1]);
 
   // Redis Connection
   app.set('redisHost', '127.0.0.1');
