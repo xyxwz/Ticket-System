@@ -40,6 +40,9 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
           view,
           collection;
 
+      //Clear the element for clean render
+      this.$el.empty();
+
       collection = typeof(this.filter) != 'undefined' ? this.collection.filter(this.filter) : this.collection;
 
       collection.each(function(ticket) {
