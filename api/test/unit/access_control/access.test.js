@@ -37,53 +37,101 @@ describe('Access', function(){
 
   describe('.checkAccess(user)', function(){
 
-    describe('roles', function() {
+    describe('for user group roles', function() {
 
-      beforeEach(function(done){
-        accessLevels = ["member"];
-        access = new Access(route, accessLevels);
-        access.resolveKeys(function(err){
-          if(err) done(err);
-          done();
+      describe('when member', function() {
+
+        beforeEach(function(done){
+          accessLevels = ["member"];
+          access = new Access(route, accessLevels);
+          access.resolveKeys(function(err){
+            if(err) done(err);
+            done();
+          });
+        });
+
+        it('should allow a member access', function(){
+          user.role = "member";
+          var status = access.checkAccess(user);
+          status.should.be.true;
+        });
+
+        it('should deny any other role access', function(){
+          user.role = "foo";
+          var status = access.checkAccess(user);
+          status.should.be.false;
         });
       });
 
-      it('should allow a member access', function(){
-        user.role = "member";
-        var status = access.checkAccess(user);
-        status.should.be.true;
-      });
+      describe('when admin', function() {
 
-      it('should deny any other role access', function(){
-        user.role = "foo";
-        var status = access.checkAccess(user);
-        status.should.be.false;
-      });
+        beforeEach(function(done){
+          accessLevels = ["admin"];
+          access = new Access(route, accessLevels);
+          access.resolveKeys(function(err){
+            if(err) done(err);
+            done();
+          });
+        });
 
-    });
+        it('should allow an admin access', function(){
+          user.role = "admin";
+          var status = access.checkAccess(user);
+          status.should.be.true;
+        });
 
-    describe('owner', function() {
-
-      before(function(done){
-        accessLevels = ["owner"];
-        access = new Access(route, accessLevels);
-        access.resolveKeys(function(err){
-          if(err) done(err);
-          done();
+        it('should deny any other role access', function(){
+          user.role = "member";
+          var status = access.checkAccess(user);
+          status.should.be.false;
         });
       });
 
-      it('should allow owner access', function(){
-        var status = access.checkAccess(user);
-        status.should.be.true;
+      describe('when read', function() {
+
+        beforeEach(function(done){
+          accessLevels = ["read"];
+          access = new Access(route, accessLevels);
+          access.resolveKeys(function(err){
+            if(err) done(err);
+            done();
+          });
+        });
+
+        it('should allow read access', function(){
+          user.role = "read";
+          var status = access.checkAccess(user);
+          status.should.be.true;
+        });
+
+        it('should deny any other role access', function(){
+          user.role = "member";
+          var status = access.checkAccess(user);
+          status.should.be.false;
+        });
       });
 
-      it('should deny non-owners access', function(){
-        var status = access.checkAccess(fixtures.users[1]);
-        status.should.be.false;
-      });
+      describe('when owner', function() {
 
+        before(function(done){
+          accessLevels = ["owner"];
+          access = new Access(route, accessLevels);
+          access.resolveKeys(function(err){
+            if(err) done(err);
+            done();
+          });
+        });
+
+        it('should allow owner access', function(){
+          var status = access.checkAccess(user);
+          status.should.be.true;
+        });
+
+        it('should deny non-owners access', function(){
+          var status = access.checkAccess(fixtures.users[1]);
+          status.should.be.false;
+        });
+      });
     });
   });
-
 });

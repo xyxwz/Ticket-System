@@ -14,13 +14,13 @@ module.exports = {
   // Members and Admins can access all paths
   // except /users and /tickets/mine
   "get": {
-    "/users": ["admin"],
-    "/users/:userID": ["admin"],
-    "/tickets": ["member", "admin"],
+    "/users": ["admin", "read"],
+    "/users/:userID": ["admin", "read"],
+    "/tickets": ["member", "admin", "read"],
     "/tickets/mine": ["admin"],
-    "/tickets/:ticketID": ["member", "admin"],
-    "/tickets/:ticketID/comments": ["member", "admin"],
-    "/tickets/:ticketID/comments/:commentID": ["member", "admin"]
+    "/tickets/:ticketID": ["member", "admin", "read"],
+    "/tickets/:ticketID/comments": ["member", "admin", "read"],
+    "/tickets/:ticketID/comments/:commentID": ["member", "admin", "read"]
   },
 
   // Only admins may create users
