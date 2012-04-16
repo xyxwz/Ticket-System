@@ -5,7 +5,7 @@ var User = new mongoose.Schema({
                    lowercase: true, index: { unique: true }},
   name          : {type : String, default : '', required: true, trim: true},
   role          : {type : String, default : '', required: true, trim: true,
-                   enum: ['admin', 'member']},
+                   enum: ['admin', 'member', 'read']},
   created_at    : {type : Date,   default : Date.now, required: true},
   access_token  : {type : String, required: true, trim: true},
   refresh_token  : {type : String, required: true, trim: true, index: true},

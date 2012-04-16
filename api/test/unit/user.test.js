@@ -189,6 +189,40 @@ describe('user', function(){
         should.not.exist(users[0]._id);
         should.exist(users[0].id);
       });
+
+      describe('with a read-only user', function() {
+        var users;
+
+        // Run all and assign to users
+        before(function(done){
+          var data = {
+            username: "api example",
+            name: "api",
+            role: "read",
+            access_token: "abc123",
+            refresh_token: "abc124"
+          };
+
+          User.create(data, function(err, model) {
+            if(err) return done(err);
+            User.all(function(err, results) {
+              if(err) return done(err);
+              users = results;
+              done();
+            });
+          });
+        });
+
+        it('should return an array', function(){
+          users.should.be.an.instanceof(Array);
+          users.length.should.equal(2);
+        });
+
+        it('should not contain a read-only user', function() {
+          users[0].role.should.not.equal('read');
+          users[1].role.should.not.equal('read');
+        });
+      });
     });
 
 

@@ -89,6 +89,7 @@ module.exports = function(app) {
       else {
         array = [];
         _.each(models, function(user) {
+          if(user.role === 'read') return;
           obj = user.toClient();
           array.push(obj);
         });
