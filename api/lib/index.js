@@ -6,7 +6,8 @@ module.exports = function (app) {
     middleware: {
       Auth: require('./middleware/authentication').Authenticate,
       Error: require('./middleware/error-handler').Error,
-      AccessControl: require('./middleware/access_control').AccessControl
+      AccessControl: require('./middleware/access_control').AccessControl,
+      CORS: require('./middleware/cors').Cors
     }
   };
 

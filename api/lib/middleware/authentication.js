@@ -10,6 +10,9 @@ var schemas = require("../../models/schemas"),
  * Checks the value of the given X-Auth-Token header
  * compared to the value in the database for a user */
 exports.Authenticate = function(req, res, next) {
+  // Don't Authenticate on OPTIONS requests
+  if(req.method === 'OPTIONS') return next();
+
   if(typeof(req.header('X-Auth-Token')) != 'undefined') {
     var token = req.header('X-Auth-Token');
     User

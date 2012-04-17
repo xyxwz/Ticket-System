@@ -43,6 +43,7 @@ function bootApplication(app) {
 
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use('/api', lib.middleware.CORS); // Allow CORS
   app.use('/api', lib.middleware.Auth);
   app.use('/api', lib.middleware.Error);
   app.use('/api', lib.middleware.AccessControl);

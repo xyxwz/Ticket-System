@@ -25,6 +25,9 @@ exports.AccessControl = function(req, res, next) {
       accessControl,
       routes = Paths;
 
+  // Allow OPTIONS requests for CORS
+  if(method === 'options') return next();
+
   // routes for the method
   routes = Object.getOwnPropertyDescriptor(routes, method).value;
   
