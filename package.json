@@ -11,7 +11,8 @@
     "redis": ">= 0.0.1",
     "connect-redis": ">= 1.2.0",
     "socket.io": ">= 0.8.7",
-    "passport-txssc": "git://github.com/TxSSC/passport-txssc.git"
+    "passport-txssc": "git://github.com/TxSSC/passport-txssc.git",
+    "node-redis-events": "git://github.com/vanetix/node-redis-events.git"
   },
   "devDependencies": {
     "mocha": ">= 0.7.0",

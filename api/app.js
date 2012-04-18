@@ -5,7 +5,8 @@ var express = require('express'),
     redis = require('redis'),
     io = require('socket.io'),
     passport = require('passport'),
-    events = require('events').EventEmitter;
+    events = require('events').EventEmitter,
+    pubEvents = require('node-redis-events').Publisher;
 
 var path = __dirname, lib, app, port;
 
@@ -17,6 +18,7 @@ exports.boot = function(params){
   // Bootstrap application
   bootApplication(app);
   bootModels(app);
+  bootEventPublisher(app);
   bootControllers(app);
   socketBindings(app);
   return app;
@@ -69,6 +71,28 @@ function bootModels(app) {
   }
 
   app.models = require('./models')(app);
+}
+
+// Bootstrap event publisher
+function bootEventPublisher(app) {
+  var model_events, config, eventPublisher;
+
+  model_events = [
+    'ticket:new',
+    'ticket:update',
+    'ticket:remove',
+    'comment:new',
+    'comment:update',
+    'comment:remove'
+  ];
+
+  config = {
+    redis: app.redis,
+    emitter: app.eventEmitter,
+    namespace: 'tickets'
+  };
+
+  eventPublisher = new pubEvents(config, model_events);
 }
 
 // Bootstrap controllers
