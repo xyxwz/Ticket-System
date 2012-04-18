@@ -37,7 +37,7 @@ function(
     },
 
     index: function() {
-      this.navigate("tickets/open", true);
+      this.navigate("tickets/activity", true);
     },
 
     openTickets: function() {
