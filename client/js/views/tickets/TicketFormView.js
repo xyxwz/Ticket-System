@@ -16,7 +16,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
 
       // Bindings using the garbage collectors bindTo()
       _.bindAll(this);
-      this.bindTo(this.collection, 'add', this.redirect);
+      this.bindTo(this.collection, 'sync', this.redirect);
     },
 
     render: function() {
@@ -55,6 +55,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
     },
 
     redirect: function(model) {
+      this.dispose();
       window.history.replaceState({}, document.title, "#tickets/open");
       ticketer.routers.ticketer.navigate("tickets/"+model.id, true);
     }
