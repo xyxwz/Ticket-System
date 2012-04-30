@@ -146,8 +146,7 @@ define([
       } else if(status === 2) {
         ticketer.notifications = false;
       } else {
-        var view = new NotificationView();
-        view.render();
+        ticketer.views.alerts.notifications.render();
       }
     }
 
