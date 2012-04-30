@@ -14,6 +14,7 @@ function($, _, Backbone, BaseAlertView, mustache, AlertTmpl) {
     },
 
     render: function() {
+      if(ticketer.currentUser.role != 'admin') { return false; }
       this.ticketCount++;
 
       if($(this.el).is(':visible')) {
