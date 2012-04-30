@@ -1003,3 +1003,68 @@ form .outerWrap {
     font-weight: bold;
     color: #D0D0D0;
   }
+
+/* Notification Styles */
+
+#notification {
+  padding: 0.5em 2em 0.5em 0;
+  color: #404040;
+  background-color: #eedc94;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#fceec1), to(#eedc94));
+  background-image: -moz-linear-gradient(top, #fceec1, #eedc94);
+  background-image: -ms-linear-gradient(top, #fceec1, #eedc94);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fceec1), color-stop(100%, #eedc94));
+  background-image: -webkit-linear-gradient(top, #fceec1, #eedc94);
+  background-image: -o-linear-gradient(top, #fceec1, #eedc94);
+  background-image: linear-gradient(top, #fceec1, #eedc94);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fceec1', endColorstr='#eedc94', GradientType=0);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  border-color: #eedc94 #eedc94 #e4c652;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  border-width: 1px;
+  border-style: solid;
+  border-top: none;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+  #notification .notificationText {
+    width: 45%;
+    margin: 0 auto;
+    float: right;
+  }
+
+  #notification p {
+    margin: 0 2em 0 0;
+    padding: 6px 0 0 0;
+    text-align: right;
+    font-size: 12px;
+  }
+
+  #notification button {
+    font-family: "Helvetica Neue","HelveticaNeue",Helvetica,Arial,"Lucida Grande",sans-serif;
+    display: inline-block;
+    float: right;
+    background: -webkit-gradient(linear,0% 40%,0% 70%,from(#F9F9F9),to(#E3E3E3));
+    background: -webkit-linear-gradient(#F9F9F9 40%,#E3E3E3 70%);
+    background: -moz-linear-gradient(#F9F9F9 40%,#E3E3E3 70%);
+    background: -ms-linear-gradient(#F9F9F9 40%,#E3E3E3 70%);
+    background: -o-linear-gradient(#F9F9F9 40%,#E3E3E3 70%);
+    background: linear-gradient(#F9F9F9 40%,#E3E3E3 70%);
+    border: 1px solid #999;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    padding: 5px 8px;
+    outline: 0;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    text-shadow: 1px 1px white;
+    font-weight: 700;
+    font-size: 12px;
+  }

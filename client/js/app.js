@@ -13,6 +13,7 @@ define([
   'views/headers/BackHeaderView',
   'views/alerts/ErrorView',
   'views/alerts/AlertView',
+  'views/alerts/NotificationView',
   'SocketEvents',
   'socket.io'
 ], function(
@@ -26,6 +27,7 @@ define([
   BackHeaderView,
   ErrorView,
   AlertView,
+  NotificationView,
   SocketEvents
 ) {
 
@@ -96,7 +98,8 @@ define([
     // Create new instances of alert views and start event bindings
     ticketer.views.alerts = {
       error: new ErrorView(),
-      alert: new AlertView()
+      alert: new AlertView(),
+      notifications: new NotificationView()
     };
 
     // On Connect set the socket id if not already set
@@ -130,6 +133,23 @@ define([
     // Start Backbone History
     Backbone.history.start();
 
+    /* Check for Desktop Notification Support
+     * and permissions. If supported and no permissions
+     * request them.
+     *
+     * Set ticketer.notifications to true if they are enabled
+     */
+    if (webkitNotifications) {
+      var status = webkitNotifications.checkPermission();
+      if (status === 0) {
+        ticketer.notifications = true;
+      } else if(status === 2) {
+        ticketer.notifications = false;
+      } else {
+        var view = new NotificationView();
+        view.render();
+      }
+    }
 
     /* Fetch the first page of closed tickets after the page is rendered */
     ticketer.collections.closedTickets.fetch({ data: { page: 1, status: 'closed' } });
