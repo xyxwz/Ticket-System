@@ -13,7 +13,8 @@ function($, _, Backbone, mustache, NotificationTmpl) {
 
     initialize: function() {
       _.bindAll(this);
-      ticketer.EventEmitter.on('comment:new', this.fireNotification);
+      ticketer.EventEmitter.on('comment:new', this.commentNotification);
+      ticketer.EventEmitter.on('ticket:update', this.closedNotification);
     },
 
     render: function() {
@@ -37,10 +38,32 @@ function($, _, Backbone, mustache, NotificationTmpl) {
       }
     },
 
-    fireNotification: function(message) {
+    /* When a comment is added to a ticket the user is participating
+     * in, send a desktop notification if enabled.
+     */
+    commentNotification: function(message) {
       if(ticketer.notifications && message.participating) {
         var title = "New Comment From " + message.user.name;
         webkitNotifications.createNotification('', title, message.comment).show();
+      }
+    },
+
+    /* When a ticket is closed, send the creator and the people assigned
+     * to the ticket a desktop notification if enabled.
+     */
+    closedNotification: function(message) {
+      if(!ticketer.notifications) { return false; }
+
+      if(message.status === 'closed') {
+        var title = "Ticket Closed";
+        // Check if currentUser is assigned or the creator
+        // if so, send a desktop notification
+        if(message.user.id === currentUser.id) {
+          webkitNotifications.createNotification('', title, message.title).show();
+        } else if(message.assigned_to.length > 0) {
+          var assignedTo = _.include(message.assigned_to, currentUser.id);
+          if(assignedTo) { webkitNotifications.createNotification('', title, message.title).show(); }
+        }
       }
     }
 
