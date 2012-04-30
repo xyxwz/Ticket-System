@@ -17,7 +17,8 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       "click .popupChoices li.remove": "deleteTicket",
       "click .popupChoices li.edit": "editTicket",
       "click #saveTicket": "saveTicket",
-      "click #cancelEdit": "renderEdit"
+      "click #cancelEdit": "renderEdit",
+      "click .md a": "openLink"
     },
 
     initialize: function() {
@@ -376,6 +377,13 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
         self.render();
         $(self.el).fadeIn(200);
       });
+    },
+
+    // Open links within a ticket body in a new window
+    openLink: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.open(e.currentTarget.href);
     }
 
   });
