@@ -16,7 +16,8 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       "click .saveComment": "saveComment",
       "click .cancelEdit": "renderEdit",
       "mouseenter": "toggleOptions",
-      "mouseleave": "toggleOptions"
+      "mouseleave": "toggleOptions",
+      "click .md a": "openLink"
     },
 
     initialize: function() {
@@ -125,6 +126,13 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
           self.remove();
         });
       }
+    },
+
+    // Open links within a comment body in a new window
+    openLink: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.open(e.currentTarget.href);
     }
 
   });
