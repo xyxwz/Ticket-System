@@ -42,9 +42,18 @@ function($, _, Backbone, mustache, NotificationTmpl) {
      * in, send a desktop notification if enabled.
      */
     commentNotification: function(message) {
-      if(ticketer.notifications && message.participating) {
-        var title = "New Comment From " + message.user.name;
-        webkitNotifications.createNotification('', title, message.comment).show();
+      // Look up the ticket in the various collections
+      var ticket = ticketer.collections.openTickets.get(message.ticket) ||
+                   ticketer.collections.closedTickets.get(message.ticket);
+
+      // ticket exists
+      if(ticket) {
+        // Fire a notification if the user is participating
+        // and has notifications enabled
+        if(ticketer.notifications && message.participating) {
+          var title = message.user.name + ' made a comment on "' + ticket.get('title') + '":';
+          webkitNotifications.createNotification('', title, message.comment).show();
+        }
       }
     },
 
