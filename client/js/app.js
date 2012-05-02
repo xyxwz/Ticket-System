@@ -15,6 +15,7 @@ define([
   'views/alerts/AlertView',
   'views/alerts/NotificationView',
   'SocketEvents',
+  'AppCache',
   'socket.io'
 ], function(
   _,
@@ -28,10 +29,14 @@ define([
   ErrorView,
   AlertView,
   NotificationView,
-  SocketEvents
+  SocketEvents,
+  AppCache
 ) {
 
   $(function() {
+
+    /* Begin AppCache Monitoring */
+    new AppCache();
 
     /* Override Backbone Sync Method
      * includes an X-Auth-Token and Accept Header

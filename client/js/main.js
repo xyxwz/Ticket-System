@@ -15,6 +15,7 @@ require.config( {
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
     'SocketEvents':     'support/SocketEvents',
+    'AppCache':         'support/AppCache',
     'socket.io':        '/socket.io/socket.io'
   }
 });
