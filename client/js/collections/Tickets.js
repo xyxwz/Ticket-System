@@ -49,10 +49,11 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
     /* Update attributes on a changed model */
     updateTicket: function(attrs) {
-      var model = this.get(attrs.id);
+      var obj = _.clone(attrs),
+          model = this.get(obj.id);
 
       if(model) {
-        model.set(model.parse(attrs));
+        model.set(model.parse(obj));
       }
     },
 
@@ -63,40 +64,43 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
     /* Add a comment to the correct ticket on `comment:new` */
     addComment: function(attrs) {
-      var model = this.get(attrs.ticket);
+      var obj = _.clone(attrs),
+          model = this.get(obj.ticket);
 
       if(model) {
-        delete attrs.ticket;
+        delete obj.ticket;
 
-        if(attrs.notification) {
-          model.set({ 'notification': attrs.notification });
-          delete attrs.notification;
+        if(obj.notification) {
+          model.set({ 'notification': obj.notification });
+          delete obj.notification;
         }
 
-        model.comments.add(attrs);
+        model.comments.add(obj);
       }
     },
 
     /* Update a comment on `comment:update` */
     updateComment: function(attrs) {
-      var model = this.get(attrs.ticket);
+      var obj = _.clone(attrs),
+          model = this.get(obj.ticket);
 
       if(model) {
-        delete attrs.ticket;
+        delete obj.ticket;
 
         if(attrs.notification) {
-          model.set({ 'notification': attrs.notification });
-          delete attrs.notification;
+          model.set({ 'notification': obj.notification });
+          delete obj.notification;
         }
 
-        var comment = model.comments.get(attrs.id);
-        comment.set(comment.parse(attrs));
+        var comment = model.comments.get(obj.id);
+        comment.set(comment.parse(obj));
       }
     },
 
     /* Remove a comment on `comment:remove` */
-    removeComment: function(obj) {
-      var model = this.get(obj.ticket);
+    removeComment: function(attrs) {
+      var obj = _.clone(attrs),
+          model = this.get(obj.ticket);
 
       if(model) {
         model.comments.remove(obj.comment);

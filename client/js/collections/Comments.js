@@ -19,20 +19,21 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
       });
 
       // Update attributes on changed model
-      ticketer.EventEmitter.on('comment:update', function(model) {
-        var comment = self.get(model.id);
+      ticketer.EventEmitter.on('comment:update', function(attrs) {
+        var obj = _.clone(attrs),
+            model = self.get(obj.id);
 
-        if(comment) {
-          comment.set(comment.parse(model));
+        if(model) {
+          model.set(comment.parse(obj));
         }
       });
 
       // Remove model from collection
       ticketer.EventEmitter.on('comment:remove', function(id) {
-        var comment = self.get(id);
+        var model = self.get(id);
 
-        if(comment) {
-          self.remove(comment);
+        if(model) {
+          self.remove(model);
         }
       });
 
