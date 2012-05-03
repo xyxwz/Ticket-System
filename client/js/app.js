@@ -16,6 +16,7 @@ define([
   'views/alerts/NotificationView',
   'SocketEvents',
   'AppCache',
+  'Sync',
   'socket.io'
 ], function(
   _,
@@ -31,6 +32,7 @@ define([
   NotificationView,
   SocketEvents,
   AppCache
+  Sync
 ) {
 
   $(function() {
@@ -38,27 +40,6 @@ define([
     /* Begin AppCache Monitoring */
     new AppCache();
 
-    /* Override Backbone Sync Method
-     * includes an X-Auth-Token and Accept Header
-     */
-    Backbone.sync_model = Backbone.sync;
-    Backbone.sync = function(method, model, options) {
-
-      var new_options = _.extend({
-
-        beforeSend: function(xhr) {
-          // Get the authentication token from the page
-          var auth_token = $('meta[name="X-Auth-Token"]').attr('content');
-          if (auth_token) {
-            xhr.setRequestHeader('X-Auth-Token', auth_token);
-          }
-          // Add Accept Header for API
-          xhr.setRequestHeader('Accept', 'application/json');
-        }
-      }, options);
-
-      Backbone.sync_model(method, model, new_options);
-    };
 
     /*
      * ticketer - our namespace object, create
