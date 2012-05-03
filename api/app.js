@@ -27,6 +27,13 @@ exports.boot = function(params){
 function bootApplication(app) {
   lib = require('./lib')(app);
 
+  app.sessionStore = new RedisStore({
+    host: app.set('redisHost'),
+    port: app.set('redisPort'),
+    db: app.set('redisDb'),
+    pass: app.set('redisPass')
+  });
+
   app.set('view engine', 'jade');
   app.set('views', path + '/client');
   app.set('view options', { layout: false });
@@ -35,12 +42,8 @@ function bootApplication(app) {
   app.use(express.cookieParser());
   app.use(express.session({
     secret: process.env.SESSION_SECRET,
-    store: new RedisStore({
-      host: app.set('redisHost'),
-      port: app.set('redisPort'),
-      db: app.set('redisDb'),
-      pass: app.set('redisPass')
-    })
+    key: 'express.sid',
+    store: app.sessionStore
   }));
 
   app.use(passport.initialize());
