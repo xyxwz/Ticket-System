@@ -114,13 +114,13 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
      * :data - the current model in JSON form
      */
     checkAbilities: function(data) {
-      if(this.admin && (data.user.id === currentUser.id || currentUser.role === 'admin')) {
+      if(this.admin && (data.user.id === ticketer.currentUser.id || ticketer.currentUser.role === 'admin')) {
         var html = "<li class='gears'></li>";
         $('ul.ticketMeta', this.el).append(html);
 
         // If currentUser is owner but not an admin go directly to
         // edit mode on click
-        if(data.user.id === currentUser.id && currentUser.role != 'admin') {
+        if(data.user.id === ticketer.currentUser.id && ticketer.currentUser.role != 'admin') {
           this.bindTo($('ul.ticketMeta li.gears', this.el), 'click', this.editTicket);
         }
         else {

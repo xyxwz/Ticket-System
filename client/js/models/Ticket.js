@@ -11,7 +11,8 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     urlRoot: '/api/tickets',
 
     initialize: function() {
-      var self = this;
+      var self = this,
+          currentUser = ticketer.currentUser;
 
       _.bindAll(this);
 

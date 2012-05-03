@@ -9,7 +9,6 @@ define(['underscore', 'backbone'], function(_, Backbone) {
      */
 
     ticketer.sockets.sock.on('ticket:new', function(model) {
-
       // Trigger a `ticket` event
       ticketer.EventEmitter.trigger('ticket:new', model);
 

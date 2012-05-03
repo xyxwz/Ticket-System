@@ -48,12 +48,12 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
      * :data - the current model in JSON form
      */
     checkAbilities: function(data) {
-      if(data.user.id === currentUser.id || currentUser.role === 'admin') {
+      if(data.user.id === ticketer.currentUser.id || ticketer.currentUser.role === 'admin') {
         var html = "<ul class='commentOptions hide'></ul>";
         $('.commentBody', this.el).append(html);
 
         // If currentUser is owner allow to both edit and delete
-        if(data.user.id === currentUser.id) {
+        if(data.user.id === ticketer.currentUser.id) {
           $('ul.commentOptions', this.el).append('<li class="edit"></li>');
           $('ul.commentOptions', this.el).append('<li class="delete">x</li>');
         }

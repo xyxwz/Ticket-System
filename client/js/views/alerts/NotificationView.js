@@ -67,10 +67,10 @@ function($, _, Backbone, mustache, NotificationTmpl) {
         var title = "Ticket Closed";
         // Check if currentUser is assigned or the creator
         // if so, send a desktop notification
-        if(message.user.id === currentUser.id) {
+        if(message.user.id === ticketer.currentUser.id) {
           webkitNotifications.createNotification('', title, message.title).show();
         } else if(message.assigned_to.length > 0) {
-          var assignedTo = _.include(message.assigned_to, currentUser.id);
+          var assignedTo = _.include(message.assigned_to, ticketer.currentUser.id);
           if(assignedTo) { webkitNotifications.createNotification('', title, message.title).show(); }
         }
       }

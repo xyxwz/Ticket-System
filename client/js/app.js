@@ -46,7 +46,6 @@ define([
      * the object and attach functions and models to it
      */
     window.ticketer = window.ticketer || {
-      currentUser: currentUser, // set current user
       routers: {
         ticketer: new Ticketer()
       },
@@ -68,7 +67,6 @@ define([
      * Events bound to this should always live and not need to be
      * unbound. It's useful for things like error messages and alerts.
      */
-
     ticketer.EventEmitter = {};
     _.extend(ticketer.EventEmitter, Backbone.Events);
 
@@ -81,29 +79,21 @@ define([
       admins: new Users()
     };
 
-    // Create new instances of alert views and start event bindings
+    /**
+     * Create new instances of alert views and start event bindings
+     */
     ticketer.views.alerts = {
       error: new ErrorView(),
       alert: new AlertView(),
       notifications: new NotificationView()
     };
 
-    // On Connect set the socket id if not already set
-    ticketer.sockets.sock.on('connect', function() {
-      ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;
-      ticketer.sockets.sock.emit('set:user', currentUser.id);
-
-      //Bootstrap models over socket
-      ticketer.sockets.sock.emit('tickets:fetch');
-    });
-
     // Initialize Socket Event Handlers
     new SocketEvents();
 
-    /* Set Default User Avatar */
-    if (!ticketer.currentUser.avatar) ticketer.currentUser.avatar = "/img/avatars/65x65.gif";
-
-    /* Override the closedTicket collection's comparator */
+    /**
+     * Override the closedTicket collection's comparator
+     */
     ticketer.collections.closedTickets.comparator = function(collection) {
       var datum = new Date(collection.get('closed_at'));
       var closed_at = datum.getTime();
@@ -116,8 +106,31 @@ define([
      * available immediately to views. */
     ticketer.collections.admins.reset(admins);
 
-    // Start Backbone History
-    Backbone.history.start();
+    /**
+     * Using Socket Authentication get the server-side
+     * session info from the socket and set the currentUser
+     * attribute. Bootstrap models over the socket by sending
+     * a 'tickets:fetch' event.
+     */
+    ticketer.sockets.sock.on('session:info', function(message) {
+      ticketer.currentUser = message;
+      ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;
+
+      ticketer.sockets.sock.emit('tickets:fetch');
+
+      /* Set Default User Avatar */
+      if (!ticketer.currentUser.avatar) ticketer.currentUser.avatar = "/img/avatars/65x65.gif";
+
+      /* Override Backbone Sync */
+      new Sync();
+
+      // Start Backbone History
+      Backbone.history.start();
+
+      /* Fetch the first page of closed tickets after the page is rendered */
+      ticketer.collections.closedTickets.fetch({ data: { page: 1, status: 'closed' } });
+    });
+
 
     /* Check for Desktop Notification Support
      * and permissions. If supported and no permissions
@@ -136,7 +149,5 @@ define([
       }
     }
 
-    /* Fetch the first page of closed tickets after the page is rendered */
-    ticketer.collections.closedTickets.fetch({ data: { page: 1, status: 'closed' } });
   });
 });

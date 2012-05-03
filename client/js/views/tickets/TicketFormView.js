@@ -22,10 +22,10 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
     render: function() {
       var data;
 
-      data = currentUser;
+      data = ticketer.currentUser;
       data.shortname = data.name.split(' ')[0];
 
-      $(this.el).html(Mustache.to_html(TicketForm, currentUser));
+      $(this.el).html(Mustache.to_html(TicketForm, ticketer.currentUser));
 
       this.bindTo(this, 'viewRendered', this.bindResize);
 
