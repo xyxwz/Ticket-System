@@ -15,6 +15,7 @@
     'autoresize':       'libs/plugins/jquery.autoresize',
     'jqueryui':         'libs/jqueryui-1.8.16',
     'timeline':         'libs/timeline',
+    'Sync':             'support/Sync',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
     'SocketEvents':     'support/SocketEvents',

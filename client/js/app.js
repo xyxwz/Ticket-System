@@ -88,7 +88,9 @@ define([
       notifications: new NotificationView()
     };
 
-    // Initialize Socket Event Handlers
+    /**
+     * Initialize Socket Event Handlers
+     */
     new SocketEvents();
 
     /**
@@ -100,12 +102,6 @@ define([
       return -closed_at;
     };
 
-    /* Reset collections with bootstrapped data.
-     * Reads in JSON variables written to page by server
-     * side code to prevent fetch at boot and make collections
-     * available immediately to views. */
-    ticketer.collections.admins.reset(admins);
-
     /**
      * Using Socket Authentication get the server-side
      * session info from the socket and set the currentUser
@@ -113,21 +109,25 @@ define([
      * a 'tickets:fetch' event.
      */
     ticketer.sockets.sock.on('session:info', function(message) {
-      ticketer.currentUser = message;
+      ticketer.currentUser = message.user;
       ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;
 
+      // Reset the admins collection
+      ticketer.collections.admins.reset(message.admins);
+
+      // Emit a `tickets:fetch` event to load ticket data
       ticketer.sockets.sock.emit('tickets:fetch');
 
-      /* Set Default User Avatar */
+      // Set Default User Avatar
       if (!ticketer.currentUser.avatar) ticketer.currentUser.avatar = "/img/avatars/65x65.gif";
 
-      /* Override Backbone Sync */
+      // Override Backbone Sync
       new Sync();
 
       // Start Backbone History
       Backbone.history.start();
 
-      /* Fetch the first page of closed tickets after the page is rendered */
+      // Fetch the first page of closed tickets after the page history starts
       ticketer.collections.closedTickets.fetch({ data: { page: 1, status: 'closed' } });
     });
 

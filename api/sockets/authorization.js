@@ -5,6 +5,8 @@ var io = require('socket.io'),
 
 module.exports = function(app) {
 
+  var User = app.models.User;
+
   app.socket.set('authorization', function(data, accept) {
     if (data.headers.cookie) {
       data.cookie = parseCookie(data.headers.cookie);
@@ -27,10 +29,27 @@ module.exports = function(app) {
     }
   });
 
-  // Emit the session user object through the socket
+  /* Emit the session user object and admins on the
+   * `connection` event so that the client can bootstrap the
+   * data and the index page can be cached properly;
+   */
   app.socket.sockets.on('connection', function(socket) {
-    var hs = socket.handshake;
-    socket.emit('session:info', hs.session.passport.user);
+    getAdmins(function(err, models) {
+      var data = {
+        user: socket.handshake.session.passport.user,
+        admins: models
+      };
+
+      socket.emit('session:info', data);
+    });
+
   });
+
+  function getAdmins(cb) {
+    User.admins(function(err, models) {
+      if(err) return cb('error getting admins');
+      return cb(null, models);
+    });
+  }
 
 };
