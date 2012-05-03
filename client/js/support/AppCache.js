@@ -3,11 +3,10 @@
 define([], function() {
 
   var AppCache = function() {
-    // Check for manifest update every 10 seconds
+    // Check for manifest update every 10 minutes
     setInterval(function() {
-      console.log('checking for update');
       applicationCache.update();
-    }, 10000);
+    }, 600000);
 
     // Request Page Reload if manifest has changed
     if (window.applicationCache) {

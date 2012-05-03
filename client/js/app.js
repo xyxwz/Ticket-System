@@ -31,7 +31,7 @@ define([
   AlertView,
   NotificationView,
   SocketEvents,
-  AppCache
+  AppCache,
   Sync
 ) {
 
@@ -39,7 +39,6 @@ define([
 
     /* Begin AppCache Monitoring */
     new AppCache();
-
 
     /*
      * ticketer - our namespace object, create

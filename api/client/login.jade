@@ -1,5 +1,5 @@
 !!! html
-html(manifest="manifest.appcache")
+html(manifest=(process.env.NODE_ENV === 'production' ? 'manifest.appcache': ''))
   head
     title TxSSC Ticket System
 
