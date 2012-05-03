@@ -1,6 +1,6 @@
 {
   "name": "TxSSC-Ticket-System",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "dependencies": {
     "express": ">= 2.4.7",
     "connect": ">= 2.2.1",
