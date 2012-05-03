@@ -45,11 +45,6 @@ module.exports = function(app) {
     var module = new socketModule(socket);
     sockets.push({ id: socket.id, module: module });
 
-    // Set the socket user id
-    socket.on('set:user', function(user) {
-      socket.set('user', user);
-    });
-
     /**
      * Remove this socket from the array.
      * Similar to running an unbind
@@ -81,22 +76,21 @@ module.exports = function(app) {
     // Private Funtions
 
     var emitCommentAction = function (message, action) {
-      var user = socket.get('user', function(err, user){
-        checkNotification(user, message.body, message.ticket, function(err, msg) {
-          msg.ticket = message.ticket;
-          socket.emit(action, msg);
-        });
+      var user = socket.handshake.session.passport.user;
+      checkNotification(user, message.body, message.ticket, function(err, msg) {
+        msg.ticket = message.ticket;
+        socket.emit(action, msg);
       });
     };
 
     var checkNotification = function (user, obj, ticket, cb) {
       var _obj = _.clone(obj);
 
-      notifications.isParticipating(app.redis, user, ticket, function(err, status) {
+      notifications.isParticipating(app.redis, user.id, ticket, function(err, status) {
         if(err) return cb(err);
         if(status) _obj.participating = true;
 
-        notifications.hasNotification(app.redis, user, ticket, function(err, notify) {
+        notifications.hasNotification(app.redis, user.id, ticket, function(err, notify) {
           if(err) return cb(err);
           if(notify) _obj.notification = true;
           return cb(null, _obj);

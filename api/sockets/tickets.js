@@ -47,11 +47,6 @@ module.exports = function(app) {
     var module = new socketModule(socket);
     sockets.push({ id: socket.id, module: module });
 
-    // Set the socket user id
-    socket.on('set:user', function(user) {
-      socket.set('user', user);
-    });
-
     /**
      * Bind to the ticket:fetch client event
      * and send all tickets to the client
@@ -96,21 +91,20 @@ module.exports = function(app) {
     // Private Funtions
 
     var emitTicketAction = function(message, action) {
-      var user = socket.get('user', function(err, user){
-        checkNotification(user, message.body, message.body.id, function(err, ticket) {
-          socket.emit(action, ticket);
-        });
+      var user = socket.handshake.session.passport.user;
+      checkNotification(user, message.body, message.body.id, function(err, ticket) {
+         socket.emit(action, ticket);
       });
     };
 
     var checkNotification = function (user, obj, ticket, cb) {
       var _obj = _.clone(obj);
 
-      notifications.isParticipating(app.redis, user, ticket, function(err, status) {
+      notifications.isParticipating(app.redis, user.id, ticket, function(err, status) {
         if(err) return cb(err);
         if(status) _obj.participating = true;
 
-        notifications.hasNotification(app.redis, user, ticket, function(err, notify) {
+        notifications.hasNotification(app.redis, user.id, ticket, function(err, notify) {
           if(err) return cb(err);
           if(notify) _obj.notification = true;
           return cb(null, _obj);
@@ -210,9 +204,8 @@ module.exports = function(app) {
        */
 
       getTickets: function () {
-        socket.get('user', function(err, user) {
-          getAllTickets(user);
-        });
+        var user = socket.handshake.session.passport.user;
+        getAllTickets(user);
       },
 
       /**
@@ -220,10 +213,9 @@ module.exports = function(app) {
        */
 
       removeNotification: function (ticket) {
-        socket.get('user', function(err, user) {
-          notifications.removeNotification(app.redis, user, ticket, function(err, status) {
-            if(err) return socket.emit('ticket:notification:error', err);
-          });
+        var user = socket.handshake.session.passport.user;
+        notifications.removeNotification(app.redis, user.id, ticket, function(err, status) {
+          if(err) return socket.emit('ticket:notification:error', err);
         });
       },
 
@@ -232,10 +224,9 @@ module.exports = function(app) {
        */
 
       clearNotifications: function () {
-        socket.get('user', function(err, user) {
-          notifications.clearNotifications(app.redis, user, function(err, status) {
-            if(err) return socket.emit('ticket:notification:error', err);
-          });
+        var user = socket.handshake.session.passport.user;
+        notifications.clearNotifications(app.redis, user.id, function(err, status) {
+          if(err) return socket.emit('ticket:notification:error', err);
         });
       }
 

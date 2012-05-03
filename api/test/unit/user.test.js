@@ -88,8 +88,8 @@ describe('user', function(){
           email: "updated@test.com",
           name: "John Doe UPDATED",
           role: "member",
-          access_token: null,
-        }
+          access_token: ''
+        };
 
         klass = new User(fixtures.users[0]);
 
@@ -106,7 +106,8 @@ describe('user', function(){
       });
 
       it('should not update access token', function(){
-        fixtures.users[0].access_token.should.not.equal(null);
+        fixtures.users[0].access_token.should.not.equal('');
+        should.exist(fixtures.users[0].access_token);
       });
     });
 

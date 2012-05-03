@@ -165,17 +165,17 @@ describe('ticket', function(){
         });
       });
 
-      it('should assign user to ticket', function(){
-        var assignedTo = testObject.assigned_to[0].toString();
-        assignedTo.should.equal(fixtures.users[0].id);
-      });
-
       it('should strip out duplicate ids', function(){
         testObject.assigned_to.length.should.equal(2);
       });
 
       it('should set read to true because we are assigning users', function(){
         testObject.read.should.be.true;
+      });
+
+      it('should assign user to ticket', function(){
+        var assignedTo = testObject.assigned_to[0].toString();
+        assignedTo.should.equal(fixtures.users[0].id);
       });
 
       it('should send participating users a notification', function(done) {
