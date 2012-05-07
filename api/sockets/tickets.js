@@ -205,7 +205,9 @@ module.exports = function(app) {
 
       getTickets: function () {
         var user = socket.handshake.session.passport.user;
-        getAllTickets(user);
+        if(user) {
+          getAllTickets(user);
+        }
       },
 
       /**

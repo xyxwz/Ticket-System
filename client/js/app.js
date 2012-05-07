@@ -108,6 +108,10 @@ define([
      * a 'tickets:fetch' event.
      */
     ticketer.sockets.sock.on('session:info', function(message) {
+      if(!message.user) {
+        self.location.href = '/login';
+      }
+
       ticketer.currentUser = message.user;
       ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;
 
@@ -130,6 +134,10 @@ define([
 
       // Fetch the first page of closed tickets after the page history starts
       ticketer.collections.closedTickets.fetch({ data: { page: 1, status: 'closed' } });
+    });
+
+    ticketer.sockets.sock.on('error', function() {
+      self.location.href = '/login';
     });
 
 

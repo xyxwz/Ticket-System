@@ -41,6 +41,7 @@ function bootApplication(app) {
   app.use(express.methodOverride());
   app.use(express.cookieParser());
   app.use(express.session({
+    cookie: { path: '/', httpOnly: true, maxAge: null},
     secret: process.env.SESSION_SECRET,
     key: 'express.sid',
     store: app.sessionStore
