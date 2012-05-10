@@ -1,15 +1,18 @@
 /* New Ticket Form */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/tickets/TicketForm.html', 'autoresize'],
-function($, _, Backbone, BaseView, mustache, TicketForm) {
+'text!templates/tickets/TicketForm.html',
+'text!templates/tickets/MarkdownGuide.html',
+'autoresize'],
+function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
 
   var TicketFormView = BaseView.extend({
     tagName: 'div',
     className: 'row ticket',
 
     events: {
-      "click button":  "createTicket"
+      "click button": "createTicket",
+      "click .guide": "displayHelp"
     },
 
     initialize: function() {
@@ -38,7 +41,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
       var self = this;
       var title = $('[name=title]', this.el).val();
       var description = $('[name=description]', this.el).val();
-      
+
       this.collection.create({
         title: title,
         description: description,
@@ -58,6 +61,23 @@ function($, _, Backbone, BaseView, mustache, TicketForm) {
       this.dispose();
       window.history.replaceState({}, document.title, "#tickets/open");
       ticketer.routers.ticketer.navigate("tickets/"+model.id, true);
+    },
+
+    displayHelp: function(e) {
+      e.preventDefault();
+
+      //Render help frame
+      this.$el.append(Mustache.to_html(GuideTmpl));
+      $('.dialog').animate({ 'top': '12%' });
+
+      this.bindTo($('.dialog .close', this.el), 'click', this.removeHelp);
+      this.bindTo($(this.el), 'clickoutside', this.removeHelp);
+    },
+
+    removeHelp: function(e) {
+      e.preventDefault();
+
+      $('.dialog', this.el).remove();
     }
 
   });
