@@ -587,6 +587,18 @@ span.tack {
   border-bottom: 1px solid #DDD;
 }
 
+.md h4, .md h5, .md h6 {
+  margin: 20px 0 10px 0;
+  padding-bottom: 2px;
+  font-size: 14px;
+  font-weight: normal;
+  border-bottom: 1px solid #DDD;
+}
+
+.md blockquote p {
+  margin: 0;
+}
+
 .md p { margin: 1em 0; }
 
   .md p strong { font-weight: 700; }
@@ -626,6 +638,10 @@ span.tack {
   margin-top: 21px;
   margin-left: 36px;
   list-style: disc;
+}
+
+.md > ol, .md > .document > ol {
+  list-style: decimal;
 }
 
   .md ul, .md ol { margin: 15px 0 15px 25px; }
@@ -730,6 +746,85 @@ form .outerWrap {
     margin-bottom: 12px;
     border-bottom: 1px solid #cfd0d0;
     border-bottom: 1px solid rgba(207,208,208,0.7);
+  }
+
+
+/* -----------------------------------------
+    Dialog Boxes
+----------------------------------------- */
+.dialog {
+  position: fixed;
+  top: -50%;
+  left: 30%;
+  z-index: 400;
+  background: #FFF url('/img/assets/handmadepaper.png');
+  padding: 8px 10px;
+  border: 3px solid transparent;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  box-shadow: 0 0 18px #444;
+  color: #666;
+  font-family: "meseo-slab", "American Typewriter", "serif";
+  font-weight: 300;
+  overflow: hidden;
+}
+
+  .dialog:after {
+    content: " ";
+    display: block;
+    clear:both;
+    visibility: hidden;
+    font-size: 0;
+    height: 0;
+  }
+
+  .dialog h1 {
+    font-size: 24px;
+    border-bottom: 1px solid #AAA;
+    margin: 0 0 6px 0;
+    color: #222;
+  }
+
+  .dialog h2 {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 4px;
+  }
+
+  .dialog p {
+    font-size: 12px;
+    margin: 0;
+  }
+
+  .dialog pre {
+    line-height: 14px;
+    background-color: #EEE;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+    padding: 4px;
+    margin: 0 0 10px 0;
+  }
+
+  .dialog .column {
+    width: 220px;
+    float: left;
+    margin: 0 auto;
+    margin-right: 10px;
+  }
+
+    .dialog .column pre:last-child {
+      margin: 0;
+    }
+
+    .dialog .column:last-child {
+      margin: 0;
+    }
+
+  .dialog .close {
+    position: absolute;
+    top: 7px;
+    right: 6px;
   }
 
 
