@@ -77,7 +77,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
     removeHelp: function(e) {
       e.preventDefault();
 
-      $('.dialog', this.el).remove();
+      $('.dialog', this.el).fadeOut(200);
     }
 
   });
