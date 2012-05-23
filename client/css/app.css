@@ -508,7 +508,7 @@ span.tack {
       width: 72%;
     }
 
-      .commentInfo h5 {
+      .commentInfo > h5 {
         font-size: 14px;
         font-weight: 600;
       }
@@ -580,19 +580,14 @@ span.tack {
   font-size: 18px;
 }
 
-.md h3 {
+.md h3, .md h4, .md h5, .md h6 {
   margin: 20px 0 10px 0;
   padding-bottom: 2px;
   font-size: 14px;
-  border-bottom: 1px solid #DDD;
 }
 
 .md h4, .md h5, .md h6 {
-  margin: 20px 0 10px 0;
-  padding-bottom: 2px;
-  font-size: 14px;
   font-weight: normal;
-  border-bottom: 1px solid #DDD;
 }
 
 .md blockquote p {
