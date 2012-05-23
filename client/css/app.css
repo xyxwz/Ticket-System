@@ -572,7 +572,7 @@ span.tack {
   margin: 15px 0;
   padding-bottom: 2px;
   font-size: 24px;
-  border-bottom: 1px solid #BBB;
+  border-bottom: 1px solid #EEE;
 }
 
 .md h2 {
@@ -585,6 +585,18 @@ span.tack {
   padding-bottom: 2px;
   font-size: 14px;
   border-bottom: 1px solid #DDD;
+}
+
+.md h4, .md h5, .md h6 {
+  margin: 20px 0 10px 0;
+  padding-bottom: 2px;
+  font-size: 14px;
+  font-weight: normal;
+  border-bottom: 1px solid #DDD;
+}
+
+.md blockquote p {
+  margin: 0;
 }
 
 .md p { margin: 1em 0; }
@@ -622,17 +634,17 @@ span.tack {
 
   .md code, .md pre { font: 12px 'Bitstream Vera Sans Mono','Courier', monospace; }
 
-.md ul {
+.md > ul, .md > .document > ul, .md > ol, .md > .document > ol {
+  margin-top: 21px;
+  margin-left: 36px;
   list-style: disc;
 }
 
-.md ol {
-  list-style: decimal outside none;
+.md > ol, .md > .document > ol {
+  list-style: decimal;
 }
 
-  .md ul, .md ol {
-    margin: 15px 0 15px 25px;
-  }
+  .md ul, .md ol { margin: 15px 0 15px 25px; }
 
     .md ul li, .md ol li {
       margin-top: 7px;
