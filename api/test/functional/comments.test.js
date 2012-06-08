@@ -100,7 +100,7 @@ describe('comments', function(){
     it('should return an embedded user object', function(){
       var comment = res.body;
       should.exist(comment.user.id);
-      should.not.exist(comment.user.access_token); 
+      should.not.exist(comment.user.access_token);
     });
   });
 
@@ -136,7 +136,7 @@ describe('comments', function(){
     it('should return an embedded user object', function(){
       var comment = res.body;
       should.exist(comment.user.id);
-      should.not.exist(comment.user.access_token); 
+      should.not.exist(comment.user.access_token);
     });
   });
 
@@ -156,7 +156,7 @@ describe('comments', function(){
       .end(function(data){
         res = data;
         done();
-      });  
+      });
     });
 
     it('should return a 200 status code', function(){
@@ -166,7 +166,7 @@ describe('comments', function(){
     it('should update ticker title', function(){
       res.body.comment.should.equal('UPDATED');
     });
-    
+
     it('should return ticket object', function(){
      var comment = res.body;
       should.exist(comment.id);
@@ -177,7 +177,7 @@ describe('comments', function(){
     it('should return an embedded user object', function(){
       var comment = res.body;
       should.exist(comment.user.id);
-      should.not.exist(comment.user.access_token); 
+      should.not.exist(comment.user.access_token);
     });
   });
 
@@ -196,13 +196,13 @@ describe('comments', function(){
       .end(function(data){
         res = data;
         done();
-      });  
+      });
     });
 
     it('should return a 200 status code', function(){
       res.status.should.equal(200);
     });
-    
+
     it('should return success', function(){
       should.exist(res.body.success);
     });

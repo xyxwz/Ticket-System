@@ -6,7 +6,7 @@ var should = require("should"),
     request = require('superagent');
 
 var server = app(),
-    Ticket = require('../../models/ticket')(server);
+    Ticket = server.models.Ticket;
 
 /* Tickets Controller Unit Tests */
 
