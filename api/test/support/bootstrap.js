@@ -1,8 +1,8 @@
-var express = require('express'),
+var globalApp,
+    express = require('express'),
     mongoose = require('mongoose'),
     redis = require('redis'),
     events = require('events').EventEmitter;
-
 
 process.env.NODE_ENV = "test";
 
@@ -37,4 +37,10 @@ function createServer(){
   return app.listen(3000);
 }
 
-exports.app = createServer;
+function getApp() {
+  globalApp = globalApp || createServer();
+
+  return globalApp;
+}
+
+exports.app = getApp;
