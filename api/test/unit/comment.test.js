@@ -6,7 +6,7 @@ var should = require("should"),
     mongoose = require("mongoose");
 
 var server = app(),
-    Comment = require('../../models/comment')(server),
+    Comment = server.models.Comment,
     Notification = require('../../models/helpers/notifications');
 
 /* Comment Model Unit Tests */
@@ -16,21 +16,20 @@ describe('comment', function(){
   // Hold values used in async hooks
   var fixtures;
 
-  before(function(done){
-    helper.Setup(server, function(err, data){
-      if(err) return done(err);
+  // Get our fixtures from the helper module
+  before(function(done) {
+    helper.Setup(server, function(err, data) {
       fixtures = data;
-      done();
+      return done(err);
     });
   });
 
-  after(function(done){
-    helper.Teardown(server, function(err){
-      if(err) return done(err);
-      fixtures = {};
-      done();
+  after(function(done) {
+    helper.Teardown(server, function(err) {
+      return done(err);
     });
   });
+
 
   /* Validations */
   describe('validations', function(){

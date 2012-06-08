@@ -1,12 +1,8 @@
 var should = require("should"),
     _ = require('underscore'),
+    server = require('../support/bootstrap').app(),
     helper = require('../support/helper'),
-    redis = ('redis'),
-    app = require('../support/bootstrap').app,
-    mongoose = require("mongoose");
-
-var server = app(),
-    Ticket = require('../../models/ticket')(server),
+    Ticket = server.models.Ticket,
     Notification = require('../../models/helpers/notifications');
 
 /* Ticket Model Unit Tests */
@@ -16,21 +12,20 @@ describe('ticket', function(){
   // Hold values used in async hooks
   var fixtures;
 
-  before(function(done){
-    helper.Setup(server, function(err, data){
-      if(err) return done(err);
+    // Get our fixtures from the helper module
+  before(function(done) {
+    fixtures = helper.Setup(server, function(err, data) {
       fixtures = data;
-      done();
+      return done(err);
     });
   });
 
-  after(function(done){
-    helper.Teardown(server, function(err){
-      if(err) return done(err);
-      fixtures = {};
-      done();
+  after(function(done) {
+    helper.Teardown(server, function(err) {
+      return done(err);
     });
   });
+
 
   /* Validations */
   describe('validations', function(){
@@ -174,8 +169,8 @@ describe('ticket', function(){
       });
 
       it('should assign user to ticket', function(){
-        var assignedTo = testObject.assigned_to[0].toString();
-        assignedTo.should.equal(fixtures.users[0].id);
+        testObject.assigned_to.should.include(fixtures.users[0].id);
+        testObject.assigned_to.should.include(fixtures.users[1].id);
       });
 
       it('should send participating users a notification', function(done) {

@@ -1,5 +1,7 @@
-exports.User = require('./user.test');
-exports.Ticket = require('./ticket.test');
-exports.Comment = require('./comment.test');
-exports.AccessContol = require('./access_control');
-exports.Notification = require('./notification.test');
+module.exports = {
+  User: require('./user.test'),
+  Ticket: require('./ticket.test'),
+  Comment: require('./comment.test'),
+  AccessContol: require('./access_control'),
+  Notification: require('./notification.test')
+};
