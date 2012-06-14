@@ -3,5 +3,6 @@ module.exports = {
   Ticket: require('./ticket.test'),
   Comment: require('./comment.test'),
   AccessContol: require('./access_control'),
-  Notification: require('./notification.test')
+  Notification: require('./notification.test'),
+  Project: require('./project.test')
 };
