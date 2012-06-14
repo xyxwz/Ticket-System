@@ -30,4 +30,4 @@ exports.Authenticate = function(req, res, next) {
   else {
     next(new Error("Not Authenticated"));
   }
-}
+};

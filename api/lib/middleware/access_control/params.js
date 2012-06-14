@@ -19,6 +19,17 @@ module.exports = function(route) {
     });
   });
 
+  /* Find a project */
+  route.param('projectID', function(id, key, models, cb) {
+    schemas
+    .Project
+    .findOne({ '_id': id })
+    .populate('user')
+    .run(function(err, model) {
+      if(err || !model) return cb(err);
+      return cb(null, key, model);
+    });
+  });
 
   /* Find A Ticket */
   route.param('ticketID', function(id, key, models, cb){

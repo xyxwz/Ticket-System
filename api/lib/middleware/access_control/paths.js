@@ -16,6 +16,8 @@ module.exports = {
   "get": {
     "/users": ["admin", "read"],
     "/users/:userID": ["admin", "read"],
+    "/projects": ["member", "admin", "read"],
+    "/projects/:projectID": ["member", "admin", "read"],
     "/tickets": ["member", "admin", "read"],
     "/tickets/mine": ["admin"],
     "/tickets/:ticketID": ["member", "admin", "read"],
@@ -26,6 +28,7 @@ module.exports = {
   // Only admins may create users
   "post": {
     "/users": ["admin"],
+    "/projects": ["admin", "member"],
     "/tickets": ["member", "admin"],
     "/tickets/:ticketID/comments": ["member", "admin"]
   },
@@ -34,6 +37,7 @@ module.exports = {
   // Users where an admin may need to make a change
   "put": {
     "/users/:userID": ["owner", "admin"],
+    "/projects/:projectID": ["admin", "owner"],
     "/tickets/:ticketID": ["owner", "admin"],
     "/tickets/:ticketID/comments/:commentID": ["owner"]
   },
@@ -41,6 +45,7 @@ module.exports = {
   // Only Admins or the resource owner may delete a resource
   "delete": {
     "/users/:userID": ["admin"],
+    "/projects/:projectID": ["owner", "admin"],
     "/tickets/:ticketID": ["owner", "admin"],
     "/tickets/:ticketID/comments/:commentID": ["owner", "admin"]
   }
