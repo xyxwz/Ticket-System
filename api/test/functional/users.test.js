@@ -146,7 +146,7 @@ describe('user', function(){
       .end(function(data){
         res = data;
         done();
-      });  
+      });
     });
 
     it('should return a 200 status code', function(){
@@ -156,7 +156,7 @@ describe('user', function(){
     it('should update user name', function(){
       res.body.name.should.equal('UPDATED');
     });
-    
+
     it('should return a user object', function(){
       var user = res.body;
       should.exist(user.id);
@@ -179,13 +179,13 @@ describe('user', function(){
       .end(function(data){
         res = data;
         done();
-      });  
+      });
     });
 
     it('should return a 200 status code', function(){
       res.status.should.equal(200);
     });
-    
+
     it('should return success', function(){
       should.exist(res.body.success);
     });
