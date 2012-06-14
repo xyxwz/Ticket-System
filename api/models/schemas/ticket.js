@@ -14,4 +14,6 @@ var Ticket = new mongoose.Schema({
   read                  : {type: Boolean, default: false}
 });
 
+
+exports.TicketSchema = Ticket;
 exports.Ticket = mongoose.model('Ticket', Ticket);

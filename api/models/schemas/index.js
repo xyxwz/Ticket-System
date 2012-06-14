@@ -1,3 +1,6 @@
-exports.User = require('./user.js').User;
-exports.Comment = require('./comment.js').Comment;
-exports.Ticket = require('./ticket.js').Ticket;
+module.exports = {
+  User: require('./user').User,
+  Comment: require('./comment').Comment,
+  Ticket: require('./ticket').Ticket,
+  Project: require('./project').Project
+};
