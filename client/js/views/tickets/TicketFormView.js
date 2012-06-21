@@ -60,7 +60,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
     redirect: function(model) {
       this.dispose();
       window.history.replaceState({}, document.title, "#tickets/open");
-      ticketer.routers.ticketer.navigate("tickets/"+model.id, true);
+      ticketer.routers.ticketer.navigate("tickets/" + model.id, true);
     },
 
     displayHelp: function(e) {
@@ -77,7 +77,9 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
     removeHelp: function(e) {
       e.preventDefault();
 
-      $('.dialog', this.el).fadeOut(200);
+      $('.dialog', this.el).fadeOut(200, function() {
+        $(this).remove();
+      });
     }
 
   });
