@@ -5,7 +5,8 @@ module.exports = function requireControllers(app) {
       users: require('./api/users')(app),
       tickets: require('./api/tickets')(app),
       comments: require('./api/comments')(app),
-      projects: require('./api/projects')(app)
+      projects: require('./api/projects')(app),
+      lists: require('./api/lists')(app)
     },
 
     authentication: require('./authentication')(app),

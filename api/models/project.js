@@ -112,6 +112,11 @@ module.exports = function(app) {
   Project.mine = function(userID, callback) {
     ProjectSchema.find({ user: userID }, function(err, models) {
       if(err) return callback(err);
+
+      models = models.map(function(model) {
+        return model.toClient();
+      });
+
       return callback(null, models);
     });
   };

@@ -15,5 +15,4 @@ var Ticket = new mongoose.Schema({
 });
 
 
-exports.TicketSchema = Ticket;
 exports.Ticket = mongoose.model('Ticket', Ticket);

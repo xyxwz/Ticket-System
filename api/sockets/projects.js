@@ -3,7 +3,8 @@ var io = require('socket.io'),
 
 module.exports = function(app) {
 
-  var sockets = [];
+  var sockets = [],
+  Project = app.models.Project;
 
   /**
    * Create Global Event Emitter Bindings
@@ -44,11 +45,12 @@ module.exports = function(app) {
     var module = new socketModule(socket);
     sockets.push({ id: socket.id, module: module });
 
+    socket.on('projects:fetch', module.emitProjects);
+
     /**
      * Remove this socket from the array.
      * Similar to running an unbind
      */
-
     socket.on('disconnect', function() {
       var _i, _len;
 
@@ -74,6 +76,12 @@ module.exports = function(app) {
      /**
       * Broadcast a new resource to all connected sockets.
       */
+      emitProjects: function() {
+        Project.all(function(err, projects) {
+          if(err) return socket.emit('error', err);
+          return socket.emit('projects:fetch', projects);
+        });
+      },
 
       newProject: function (obj) {
         socket.emit('project:new', obj);
@@ -85,13 +93,13 @@ module.exports = function(app) {
        * If a resource is updated we want to push down the changes to
        * all the connected sockets.
        */
-
       updateProject: function (obj) {
         socket.emit('project:update', obj);
       },
 
-      /* Emit a resource remove event */
-
+      /**
+       * Emit a resource remove event
+       */
       removeProject: function (obj) {
         socket.emit('project:remove', obj);
       }

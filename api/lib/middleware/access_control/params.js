@@ -31,6 +31,18 @@ module.exports = function(route) {
     });
   });
 
+  /* Find a list */
+  route.param('listID', function(id, key, models, cb) {
+    schemas
+    .List
+    .findOne({ '_id': id })
+    .populate('user')
+    .run(function(err, model) {
+      if(err || !model) return cb(err);
+      return cb(null, key, model);
+    });
+  });
+
   /* Find A Ticket */
   route.param('ticketID', function(id, key, models, cb){
     schemas.Ticket

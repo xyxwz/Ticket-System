@@ -18,6 +18,8 @@ module.exports = {
     "/users/:userID": ["admin", "read"],
     "/projects": ["member", "admin", "read"],
     "/projects/:projectID": ["member", "admin", "read"],
+    "/lists": ["admin", "member"],
+    "/lists/:listID": ["owner"],
     "/tickets": ["member", "admin", "read"],
     "/tickets/mine": ["admin"],
     "/tickets/:ticketID": ["member", "admin", "read"],
@@ -29,6 +31,7 @@ module.exports = {
   "post": {
     "/users": ["admin"],
     "/projects": ["admin", "member"],
+    "/lists": ["admin", "member"],
     "/tickets": ["member", "admin"],
     "/tickets/:ticketID/comments": ["member", "admin"]
   },
@@ -38,6 +41,7 @@ module.exports = {
   "put": {
     "/users/:userID": ["owner", "admin"],
     "/projects/:projectID": ["admin", "owner"],
+    "/lists/:listID": ["owner"],
     "/tickets/:ticketID": ["owner", "admin"],
     "/tickets/:ticketID/comments/:commentID": ["owner"]
   },
@@ -46,6 +50,7 @@ module.exports = {
   "delete": {
     "/users/:userID": ["admin"],
     "/projects/:projectID": ["owner", "admin"],
+    "/lists/:listID": ["owner"],
     "/tickets/:ticketID": ["owner", "admin"],
     "/tickets/:ticketID/comments/:commentID": ["owner", "admin"]
   }

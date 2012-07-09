@@ -5,13 +5,13 @@ var should = require("should"),
     request = require('superagent');
 
 var server = app(),
-    Project = server.models.Project;
+    List = server.models.List;
 
 /**
- * Projects controller functional tests
+ * Lists controller functional tests
  */
 
-describe('projects controller', function() {
+describe('lists controller', function() {
   var fixtures;
 
   before(function(done) {
@@ -31,14 +31,14 @@ describe('projects controller', function() {
 
 
   /**
-   * Get all projects
-   * GET /api/projects
+   * Get all lists
+   * GET /api/lists
    */
-  describe('GET /api/projects', function() {
+  describe('GET /api/lists', function() {
     var res;
 
     before(function(done) {
-      request.get('http://127.0.0.1:3000/api/projects')
+      request.get('http://127.0.0.1:3000/api/lists')
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -52,16 +52,14 @@ describe('projects controller', function() {
       res.status.should.equal(200);
     });
 
-    it('should return an array of projects', function() {
+    it('should return an array of lists', function() {
       res.body.should.be.an.instanceof(Array);
     });
 
-    it('should return 2 projects', function() {
-      res.body.should.be.length(2);
-
-      res.body.forEach(function(project) {
-        project.should.have.keys('user', 'id',
-          'description', 'created', 'tickets', 'name');
+    it('should return my lists', function() {
+      res.body.forEach(function(list) {
+        list.should.have.keys('user', 'id', 'created', 'tickets', 'name');
+        list.user.should.equal(fixtures.users[0].id);
       });
     });
 
@@ -69,14 +67,14 @@ describe('projects controller', function() {
 
 
   /**
-   * Get a single project
-   * GET /api/projects/:projectID
+   * Get a single list
+   * GET /api/lists/:listID
    */
-  describe('GET /api/projects/:projectID', function() {
+  describe('GET /api/lists/:listID', function() {
     var res;
 
     before(function(done) {
-      request.get('http://127.0.0.1:3000/api/projects/' + fixtures.projects[0].id)
+      request.get('http://127.0.0.1:3000/api/lists/' + fixtures.lists[0].id)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -90,37 +88,35 @@ describe('projects controller', function() {
       res.status.should.equal(200);
     });
 
-    it('should return the correct project', function() {
-      var project = res.body,
-          fixture = fixtures.projects[0];
+    it('should return the correct list', function() {
+      var list = res.body,
+          fixture = fixtures.lists[0];
 
-      project.should.have.property('id', fixture._id.toString());
-      project.should.have.property('user', fixture.user.toString());
-      project.should.have.property('name', fixture.name);
-      project.should.have.property('description', fixture.description);
-      project.should.have.property('created', fixture.created.toJSON());
-      project.should.have.property('tickets');
-      project.tickets.should.be.length(0);
+      list.should.have.property('id', fixture._id.toString());
+      list.should.have.property('user', fixture.user.toString());
+      list.should.have.property('name', fixture.name);
+      list.should.have.property('created', fixture.created.toJSON());
+      list.should.have.property('tickets');
+      list.tickets.should.be.length(0);
     });
 
   });
 
 
   /**
-   * Create a project
-   * POST /api/projects
+   * Create a list
+   * POST /api/lists
    */
-  describe('POST /api/projects', function() {
+  describe('POST /api/lists', function() {
     var res, attrs;
 
     before(function(done) {
       attrs = {
-        'name': 'New project',
-        'description': 'API created project',
+        'name': 'New list',
         'user': fixtures.users[0].id
       };
 
-      request.post('http://127.0.0.1:3000/api/projects')
+      request.post('http://127.0.0.1:3000/api/lists')
       .send(attrs)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
@@ -135,36 +131,33 @@ describe('projects controller', function() {
       res.status.should.equal(201);
     });
 
-    it('should return valid project', function() {
-      res.body.should.have.keys('user', 'id', 'description',
-        'name', 'created', 'tickets');
+    it('should return valid list', function() {
+      res.body.should.have.keys('user', 'id', 'name', 'created', 'tickets');
     });
 
     it('should have the same attributes', function() {
-      var project = res.body;
-      project.should.have.property('user', attrs.user);
-      project.should.have.property('name', attrs.name);
-      project.should.have.property('description', attrs.description);
+      var list = res.body;
+      list.should.have.property('user', attrs.user);
+      list.should.have.property('name', attrs.name);
     });
 
   });
 
 
   /**
-   * Update a project
-   * PUT /api/projects/:projectID
+   * Update a list
+   * PUT /api/lists/:listID
    */
-  describe('PUT /api/projects/:projectID', function() {
+  describe('PUT /api/lists/:listID', function() {
     var res, attrs;
 
     before(function(done) {
       attrs = {
-        name: 'Updated test project',
-        description: 'Updated with the api',
+        name: 'Updated test list',
         tickets: [ fixtures.tickets[0].id ]
       };
 
-      request.put('http://127.0.0.1:3000/api/projects/' + fixtures.projects[0].id)
+      request.put('http://127.0.0.1:3000/api/lists/' + fixtures.lists[0].id)
       .send(attrs)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
@@ -175,40 +168,36 @@ describe('projects controller', function() {
       });
     });
 
-    it('should return a project object', function() {
-      res.body.should.have.keys('name', 'id', 'description', 'user', 'tickets', 'created');
+    it('should return a list object', function() {
+      res.body.should.have.keys('name', 'id', 'user', 'tickets', 'created');
     });
 
     it('should return a 200 status code', function() {
       res.status.should.equal(200);
     });
 
-    it('should update project name', function() {
+    it('should update list name', function() {
       res.body.name.should.equal(attrs.name);
     });
 
-    it('should update project description', function() {
-      res.body.description.should.equal(attrs.description);
-    });
-
-    it('should update project tickets', function() {
+    it('should update list tickets', function() {
       res.body.tickets.should.include(attrs.tickets[0]);
     });
 
   });
 
   /**
-   * Delete a project
-   * DELETE /api/projects/:projectID
+   * Delete a list
+   * DELETE /api/lists/:listID
    */
-  describe('DELETE /api/projects/:projectID', function() {
+  describe('DELETE /api/lists/:listID', function() {
     var res;
 
     before(function(done) {
-      request.del('http://127.0.0.1:3000/api/projects/' + fixtures.projects[0].id)
+      request.del('http://127.0.0.1:3000/api/lists/' + fixtures.lists[0].id)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
-      .set('X-Auth-Token', fixtures.users[1].access_token)
+      .set('X-Auth-Token', fixtures.users[0].access_token)
       .end(function(reply){
         res = reply;
         return done();

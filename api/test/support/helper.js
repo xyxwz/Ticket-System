@@ -35,7 +35,8 @@ function flushFixtures(callback) {
     users: [],
     projects: [],
     tickets: [],
-    comments: []
+    comments: [],
+    lists: []
   };
 
   async.parallel([
@@ -47,6 +48,9 @@ function flushFixtures(callback) {
     },
     function(callback) {
       schemas.User.collection.drop(function() { callback(null); });
+    },
+    function(callback) {
+      schemas.List.collection.drop(function() { callback(null); });
     }
   ],
   function(err) {
@@ -61,7 +65,8 @@ function seedDatabase(cb){
     addUsers,
     addTickets,
     addProjects,
-    addComment
+    addComment,
+    addLists
   ],
   function(err) {
     if(err) return cb(err);
@@ -232,6 +237,42 @@ function addProject(user, i, callback) {
   });
 
   project.save(function(err, model) {
+    if(err) return callback(err);
+    return callback(null, model);
+  });
+}
+
+// Add Lists
+function addLists(cb) {
+  var i = 0,
+      user = fixtures.users[0];
+
+  async.whilst(
+    function() { return i < 2; },
+    function(callback) {
+      addList(user, i, function(err, model) {
+        if(err) return callback(err);
+        fixtures.lists.push(model);
+        return callback(null);
+      });
+
+      i++;
+    },
+    function(err) {
+      if(err) return cb(err);
+      return cb(null);
+    }
+  );
+}
+
+// Add Project
+function addList(user, i, callback) {
+  var list = new schemas.List({
+    name: 'Test List ' + i,
+    user: user.id
+  });
+
+  list.save(function(err, model) {
     if(err) return callback(err);
     return callback(null, model);
   });
