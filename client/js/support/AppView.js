@@ -3,8 +3,34 @@
  * Manages Garbage Collection on view renders
  */
 define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
-  
+
   function AppView() {
+
+    this.showToolbar = function(view) {
+      var self = this;
+
+      if(this.currentToolbar && this.currentToolbarView) {
+        if(this.currentToolbarView !== view) {
+          this.currentToolbar.dispose();
+          this.currentToolbar = new view();
+          this.currentToolbarView = view;
+          this.currentToolbar.render();
+          $('body').append(this.currentToolbar.el);
+        }
+      }
+      else {
+        try {
+        this.currentToolbarView = view;
+        this.currentToolbar = new view();
+        this.currentToolbar.render();
+        }
+        catch (e) {
+          console.log(e);
+        }
+
+        $('body').append(this.currentToolbar.el);
+      }
+    };
 
     this.showView = function(view, cb) {
       var self = this;

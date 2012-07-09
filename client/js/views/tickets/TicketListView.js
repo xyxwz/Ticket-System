@@ -33,6 +33,19 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       });
 
       this.bindTo(this.collection, 'reset', this.render);
+      this.bindTo(this.collection, 'change:filters', this.changeFilter);
+    },
+
+    changeFilter: function() {
+      var self = this;
+
+      this.filter = function(thing) {
+        // is the ticket's id in the filters? -> include it
+        return ~self.collection.filters.indexOf(thing.id);
+      };
+
+      // Re-render with the new filter
+      this.render();
     },
 
     render: function() {
@@ -43,7 +56,8 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       //Clear the element for clean render
       this.$el.empty();
 
-      collection = typeof(this.filter) != 'undefined' ? this.collection.filter(this.filter) : this.collection;
+      collection = typeof(this.filter) !== 'undefined' ? _(this.collection.filter(this.filter)) : this.collection;
+
 
       collection.each(function(ticket) {
         view = self.renderTicket(ticket);

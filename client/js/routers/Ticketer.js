@@ -6,7 +6,9 @@ define([
   'models/Ticket',
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView',
-  'views/tickets/TicketFormView'
+  'views/tickets/TicketFormView',
+  'views/toolbars/AdminToolbarView',
+  'views/toolbars/ToolbarView'
 ],
 function(
   Backbone,
@@ -14,7 +16,9 @@ function(
   Ticket,
   TicketListView,
   TicketDetailsView,
-  TicketFormView
+  TicketFormView,
+  AdminToolbarView,
+  ToolbarView
 ) {
 
   var Ticketer = Backbone.Router.extend({
@@ -41,45 +45,43 @@ function(
     },
 
     openTickets: function() {
-      var Header = ticketer.views.headers.main,
-          collection = ticketer.collections.openTickets,
+      var collection = ticketer.collections.openTickets,
           View = new TicketListView({ collection: collection });
 
       // Transitions
-      this.appView.showHeader(Header, { tab: 'openTickets' });
       this.appView.showView(View);
+
+      //Initialize toolbar
+      this.initializeToolbar();
     },
 
     closedTickets: function() {
-      var self, Header, collection, models, View;
-
-      self = this;
-      Header = ticketer.views.headers.main;
-      collection = ticketer.collections.closedTickets;
-
-      this.appView.showHeader(Header, { tab: 'closedTickets' });
+      var models, View,
+          collection = ticketer.collections.closedTickets;
 
       View = new TicketListView({
         collection: collection,
         status: 'closed'
       });
-      self.appView.showView(View);
+      this.appView.showView(View);
+
+      //Initialize toolbar
+      this.initializeToolbar();
     },
 
     myActivity: function() {
-      var Header = ticketer.views.headers.main,
-          collection = ticketer.collections.openTickets,
+      var collection = ticketer.collections.openTickets,
           View = new TicketListView({ collection:collection, filter: 'participating' });
 
       // Transitions
-      this.appView.showHeader(Header, { tab: 'myTickets' });
       this.appView.showView(View);
 
+      //Initialize toolbar
+      this.initializeToolbar();
     },
 
     details: function(id) {
       var View,
-          Header = ticketer.views.headers.back,
           ticket = ticketer.collections.openTickets.get(id) ||
                    ticketer.collections.closedTickets.get(id);
 
@@ -88,19 +90,31 @@ function(
       }
       else {
         View = new TicketDetailsView({ model: ticket });
-        this.appView.showHeader(Header, { status: ticket.get('status') });
         this.appView.showView(View, function() { View.trigger('viewRendered'); });
+
+        //Initialize toolbar
+        this.initializeToolbar();
       }
     },
 
     createTicket: function() {
-      var Header = ticketer.views.headers.back,
-          collection = ticketer.collections.openTickets,
+      var collection = ticketer.collections.openTickets,
           View = new TicketFormView({ collection: collection });
 
       // Transitions
-      this.appView.showHeader(Header);
       this.appView.showView(View, function() { View.trigger('viewRendered'); });
+
+      //Initialize toolbar
+      this.initializeToolbar();
+    },
+
+    initializeToolbar: function() {
+      if(ticketer.currentUser.role === 'admin') {
+        this.appView.showToolbar(AdminToolbarView);
+      }
+      else {
+        this.appView.showToolbar(ToolbarView);
+      }
     }
 
   });

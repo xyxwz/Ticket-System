@@ -76,17 +76,37 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
        * User to assign users to a ticket's assigned_users param.
        */
       $(this.el).droppable({
-        accept: '.assign',
-        scope: 'assigned_to',
-        drop: function(e, ui) {
-          self.model.assignUser(ui.draggable.attr('id'));
-        }
+        accept: '.assign, .list, .project',
+        scope: 'ticket_property',
+        drop: self.handleDrop
       });
 
       // Check Abilities to add edit/delete functionality
       this.checkAbilities(data);
 
       return this;
+    },
+
+    /**
+     * Handle the drop of a draggable onto the ticket
+     */
+    handleDrop: function(e, ui) {
+      var element = ui.draggable;
+
+      // Add user to ticket
+      if(element.hasClass('assign')) {
+        this.model.assignUser(element.data('id'));
+      }
+
+      // Add ticket to list
+      if(element.hasClass('list')) {
+        ticketer.collections.lists.get(element.data('id')).addTicket(this.model.id);
+      }
+
+      // Add ticket to project
+      if(element.hasClass('project')) {
+        ticketer.collections.projects.get(element.data('id')).addTicket(this.model.id);
+      }
     },
 
     /* Set this.admin to true when instantiating a view

@@ -8,6 +8,8 @@ define([
   'collections/Tickets',
   'collections/Comments',
   'collections/Users',
+  'collections/Projects',
+  'collections/Lists',
   'routers/Ticketer',
   'views/headers/MainHeaderView',
   'views/headers/BackHeaderView',
@@ -24,6 +26,8 @@ define([
   Tickets,
   Comments,
   Users,
+  Projects,
+  Lists,
   Ticketer,
   MainHeaderView,
   BackHeaderView,
@@ -48,12 +52,6 @@ define([
       routers: {
         ticketer: new Ticketer()
       },
-      views: {
-        headers: {
-          main: MainHeaderView,
-          back: BackHeaderView
-        }
-      },
       sockets: {
         sock: io.connect()
       }
@@ -75,22 +73,30 @@ define([
     ticketer.collections = {
       openTickets: new Tickets(),
       closedTickets: new Tickets(),
-      admins: new Users()
+      admins: new Users(),
+      projects: new Projects(),
+      lists: new Lists()
     };
 
     /**
      * Create new instances of alert views and start event bindings
      */
-    ticketer.views.alerts = {
-      error: new ErrorView(),
-      alert: new AlertView(),
-      notifications: new NotificationView()
+    ticketer.views = {
+      alerts: {
+        error: new ErrorView(),
+        alert: new AlertView(),
+        notifications: new NotificationView()
+      }
     };
 
     /**
      * Initialize Socket Event Handlers
      */
     new SocketEvents();
+
+
+    // Override Backbone Sync
+    new Sync();
 
     /**
      * Override the closedTicket collection's comparator
@@ -118,14 +124,15 @@ define([
       // Reset the admins collection
       ticketer.collections.admins.reset(message.admins);
 
+      // Fetch projects and lists
+      ticketer.sockets.sock.emit('projects:fetch');
+      ticketer.collections.lists.fetch();
+
       // Emit a `tickets:fetch` event to load ticket data
       ticketer.sockets.sock.emit('tickets:fetch');
 
       // Set Default User Avatar
       if (!ticketer.currentUser.avatar) ticketer.currentUser.avatar = "/img/avatars/65x65.gif";
-
-      // Override Backbone Sync
-      new Sync();
 
       // Start Backbone History
       try {

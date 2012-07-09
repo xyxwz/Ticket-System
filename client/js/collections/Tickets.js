@@ -27,6 +27,16 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       ticketer.EventEmitter.on('comment:new', this.addComment);
       ticketer.EventEmitter.on('comment:update', this.updateComment);
       ticketer.EventEmitter.on('comment:remove', this.removeComment);
+
+
+      // Setup the possibility of filters
+      this.filters = [];
+      ticketer.EventEmitter.on('tickets:setFilters', this.setFilters);
+    },
+
+    setFilters: function(filters) {
+      this.filters = filters;
+      this.trigger('change:filters');
     },
 
     loadAllComments: function() {
@@ -41,10 +51,18 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       model.comments.fetch();
     },
 
-    filter: function(name) {
-      return _(this.models.filter(function(ticket) {
-        return ticket.get(name) === true;
-      }));
+    // Override the default filter
+    filter: function(arg) {
+      var _filter = Backbone.Collection.prototype.filter;
+
+      if(typeof arg !== 'function') {
+        return _filter.call(this, function(ticket) {
+          return ticket.get(arg) === true;
+        });
+      }
+      else {
+        return _filter.call(this, arg);
+      }
     },
 
     /* Update attributes on a changed model */

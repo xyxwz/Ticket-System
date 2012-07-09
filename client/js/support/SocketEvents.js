@@ -95,8 +95,28 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       ticketer.sockets.sock.emit('ticket:notification:remove', ticket);
     });
 
+    /**
+     * Client side bindings for Admin Projects
+     */
+    ticketer.sockets.sock.on('projects:fetch', function(projects) {
+      ticketer.collections.projects.reset(projects);
+    });
+
+    ticketer.sockets.sock.on('project:new', function(project) {
+      ticketer.EventEmitter.trigger('project:new', project);
+    });
+
+    ticketer.sockets.sock.on('project:update', function(project) {
+      ticketer.EventEmitter.trigger('project:update', project);
+    });
+
+    ticketer.sockets.sock.on('project:remove', function(project) {
+      ticketer.EventEmitter.trigger('project:remove', project);
+    });
+
 
   };
+
 
   return SocketEvents;
 });
