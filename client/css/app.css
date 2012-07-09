@@ -58,7 +58,7 @@ html, body {
 
 #main {
   position: relative;
-  margin: 100px 0 50px 0;
+  margin: 40px 0 50px 0;
   z-index: 100;
 }
 
@@ -751,7 +751,7 @@ form .outerWrap {
   position: fixed;
   top: -50%;
   left: 30%;
-  z-index: 400;
+  z-index: 4000;
   background: #FFF url('/img/assets/handmadepaper.png');
   padding: 8px 10px;
   border: 3px solid transparent;
@@ -820,6 +820,140 @@ form .outerWrap {
     position: absolute;
     top: 7px;
     right: 6px;
+  }
+
+
+
+/* -----------------------------------------
+   Toolbars
+----------------------------------------- */
+
+#toolbar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 199;
+  width: 196px;
+  padding: 21px 8px 0 0;
+}
+
+  #toolbar form {
+    min-width: 400px;
+    margin: 8px 14px 0 14px;
+  }
+    #toolbar form:after {
+      content: ' ';
+      visibility: hidden;
+      font-size: 0;
+      clear: both;
+      display: block;
+    }
+
+    #toolbar form textarea {
+      padding: 0;
+      margin: 0;
+      border: 1px solid #C0C0C0;
+      width: 100%;
+    }
+
+    #toolbar form input {
+      padding: 4px;
+      border: 1px solid #C0C0C0;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+  #toolbar .options > li {
+    z-index: 198;
+    margin: 0 0 6px 0;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  #toolbar .options .create {
+    padding: 4px 0 6px 8px;
+    width: 54%;
+    font-size: 20px;
+  }
+
+    #toolbar .toolbar-element h1 {
+      display: block;
+      font-size: 26px;
+      padding: 4px 0 6px 8px;
+      margin: 0;
+    }
+
+    #toolbar .toolbar-element .showProjects,
+    #toolbar .toolbar-element .showLists {
+      display: block;
+      font-size: 26px;
+      padding: 4px 0 6px 8px;
+      margin: 0;
+      float: left;
+      width:  46%;
+    }
+
+      #toolbar .toolbar-element .lists:before,
+      #toolbar .toolbar-element .projects:before {
+        content: ' ';
+        clear: both;
+        visibility: hidden;
+        font-size: 0;
+        height: 0;
+        display: block;
+      }
+
+
+      #toolbar .toolbar-element:after {
+        content: ' ';
+        clear: both;
+        visibility: hidden;
+        font-size: 0;
+        height: 0;
+        display: block;
+      }
+
+      #toolbar .toolbar-element .group {
+        margin: 0;
+      }
+
+        #toolbar .toolbar-element .group li {
+          background-color: white;
+          padding: 2px;
+          border-top: 1px solid #666;
+          border-bottom: 1px solid #888;
+          margin: 0;
+          min-width: 136px;
+          line-height: 32px;
+        }
+
+        #toolbar .toolbar-element .assign {
+          cursor: move;
+        }
+
+        #toolbar .toolbar-element .assign .miniAvatar {
+          float: left;
+        }
+
+        #toolbar .toolbar-element .assign .name {
+          margin-left: 8px;
+          line-height: 41px;
+        }
+
+  #toolbar .toggle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: pointer;
+    background: -moz-linear-gradient(left, rgba(209,209,209,1) 0%, rgba(220,220,220,1) 24%, rgba(255,255,255,0.2) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(209,209,209,1)), color-stop(24%,rgba(220,220,220,1)), color-stop(100%,rgba(255,255,255,0.2))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left, rgba(209,209,209,1) 0%,rgba(220,220,220,1) 24%,rgba(255,255,255,0.2) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left, rgba(209,209,209,1) 0%,rgba(220,220,220,1) 24%,rgba(255,255,255,0.2) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left, rgba(209,209,209,1) 0%,rgba(220,220,220,1) 24%,rgba(255,255,255,0.2) 100%); /* IE10+ */
+    background: linear-gradient(left, rgba(209,209,209,1) 0%,rgba(220,220,220,1) 24%,rgba(255,255,255,0.2) 100%); /* W3C */
   }
 
 
