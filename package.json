@@ -2,8 +2,8 @@
   "name": "TxSSC-Ticket-System",
   "version": "0.2.1",
   "dependencies": {
-    "express": ">= 2.4.7",
-    "connect": ">= 2.2.1",
+    "express": "2.5.11",
+    "connect": "2.3.0",
     "jade": ">= 0.0.1",
     "mongoose": ">= 2.3.3",
     "underscore": ">= 1.2.0",
@@ -26,6 +26,6 @@
   },
   "subdomain": "txssc-tickets",
   "engines": {
-    "node": "v0.6.x"
+    "node": ">=v0.6.x"
   }
 }
