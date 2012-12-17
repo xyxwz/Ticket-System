@@ -2,27 +2,28 @@
   "name": "TxSSC-Ticket-System",
   "version": "0.2.1",
   "dependencies": {
-    "express": "2.5.11",
+    "express": "2.5.x",
     "connect": "2.3.0",
-    "jade": ">= 0.0.1",
-    "mongoose": ">= 2.3.3",
-    "underscore": ">= 1.2.0",
-    "passport": ">= 0.1.5",
-    "hiredis": ">= 0.1.13",
-    "redis": ">= 0.0.1",
-    "connect-redis": ">= 1.2.0",
-    "socket.io": ">= 0.8.7",
+    "jade": "0.27.x",
+    "mongoose": "2.6.x",
+    "underscore": "1.3.x",
+    "passport": "0.1.x",
+    "hiredis": "0.1.x",
+    "redis": "0.7.x",
+    "connect-redis": "1.4.x",
+    "socket.io": "0.9.x",
     "passport-txssc": "git://github.com/TxSSC/passport-txssc.git",
     "node-redis-events": "git://github.com/vanetix/node-redis-events.git"
   },
   "devDependencies": {
-    "mocha": ">= 0.7.0",
-    "should": ">= 0.4.2",
-    "superagent": ">= 0.1.3"
+    "mocha": "1.1.x",
+    "should": "0.6.x",
+    "superagent": "0.5.x",
+    "async": "0.1.x"
   },
   "scripts": {
     "test": "mocha api/test",
-    "start": "api/app.js"
+    "start": "node api/app.js"
   },
   "subdomain": "txssc-tickets",
   "engines": {
