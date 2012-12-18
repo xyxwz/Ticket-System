@@ -67,7 +67,10 @@ module.exports = function(app) {
     project.save(function(err, model) {
       if(err || !model) return callback(err);
 
-      app.eventEmitter.emit('project:new', model.toClient());
+      var obj = model.toClient();
+      if(data.socket) obj.socket = data.socket;
+
+      app.eventEmitter.emit('project:new', obj);
       return callback(null, model.toClient());
     });
   };

@@ -84,7 +84,8 @@ module.exports = function(app) {
       },
 
       newProject: function (obj) {
-        socket.emit('project:new', obj);
+        if(!obj.socket) return socket.emit('project:new', obj);
+        if(obj.socket !== socket.id) socket.emit('project:new', obj);
       },
 
       /**
