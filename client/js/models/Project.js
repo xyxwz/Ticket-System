@@ -2,6 +2,19 @@ define(['underscore', 'backbone'], function(_, Backbone) {
   var Project;
 
   Project = Backbone.Model.extend({
+
+    initialize: function() {
+      _.bindAll(this);
+
+      this.validate = this._validate;
+
+      this.set({socket: ticketer.sockets.id}, {silent: true});
+
+      this.on('error', function(model, err) {
+        ticketer.EventEmitter.trigger('error', err);
+      });
+    },
+
     /**
      * Push a ticket onto the project's tickets array
      *
@@ -54,6 +67,12 @@ define(['underscore', 'backbone'], function(_, Backbone) {
 
       this.save(null, { error: callback });
       return this;
+    },
+
+    _validate: function(attrs) {
+      if(typeof(attrs.name) !== 'undefined' && !attrs.name.replace(/\s/g, '').length) {
+        return "You must enter a project name.";
+      }
     }
 
   });

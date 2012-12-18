@@ -2,6 +2,17 @@ define(['underscore', 'backbone'], function(_, Backbone) {
   var List;
 
   List = Backbone.Model.extend({
+
+    initialize: function() {
+      _.bindAll(this);
+
+      this.validate = this._validate;
+
+      this.on('error', function(model, err) {
+        ticketer.EventEmitter.trigger('error', err);
+      });
+    },
+
     /**
      * Push a ticket onto the project's tickets array
      *
@@ -56,6 +67,12 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       this.save(null, { error: callback });
 
       return this;
+    },
+
+    _validate: function(attrs) {
+      if(typeof(attrs.name) !== 'undefined' && !attrs.name.replace(/\s/g, '').length) {
+        return "You must enter a task name.";
+      }
     }
 
   });
