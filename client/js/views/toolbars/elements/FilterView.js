@@ -16,7 +16,8 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
       'click .showProjects': 'showProjects',
       'click .showLists': 'showLists',
       'click .list': 'filterTickets',
-      'click .project': 'filterTickets'
+      'click .project': 'filterTickets',
+      'click .delete': 'deleteItem'
     },
 
     initialize: function() {
@@ -139,13 +140,30 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
       e.preventDefault();
 
       var id = $(e.target).data('id'),
+          selected = $(e.target),
           lists = ticketer.collections.lists,
           projects = ticketer.collections.projects,
           filter = projects.get(id) || lists.get(id);
 
       ticketer.EventEmitter.trigger('tickets:setFilters', filter.get('tickets'));
 
-      console.log('filter tickets');
+      if(!selected.hasClass('selected')) selected.addClass('selected');
+      selected.siblings().removeClass('selected');
+    },
+
+    deleteItem: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var element = $(e.target).parent(),
+          projects = ticketer.collections.projects,
+          lists = ticketer.collections.lists,
+          item = projects.get(element.data('id')) || lists.get(element.data('id'));
+
+      item.destroy();
+      element.slideUp(200, function() {
+        element.remove();
+      });
     }
 
   });
