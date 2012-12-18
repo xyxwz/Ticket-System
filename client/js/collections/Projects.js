@@ -40,6 +40,12 @@ function(_, Backbone, Project) {
         if(model.name) project.set({ title: model.name });
         if(model.tickets) project.set({ tickets: model.tickets });
       }
+    },
+
+    removeProject: function(obj) {
+      var model = this.get(obj.id);
+
+      if(model) model.destroy();
     }
 
   });
