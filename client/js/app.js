@@ -147,6 +147,16 @@ define([
       self.location.href = '/login';
     });
 
+    /**
+     * Bind `ESCAPE` to remove all dialogs
+     */
+
+    $('body').keyup(function(e) {
+      if(e.keyCode === 27) {
+        $('body .dialog').remove();
+      }
+    });
+
 
     /* Check for Desktop Notification Support
      * and permissions. If supported and no permissions
