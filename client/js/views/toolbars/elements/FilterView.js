@@ -104,10 +104,10 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
     },
 
     showProjects: function(e) {
-      e.preventDefault();
+      if(e) e.preventDefault();
 
-      var siblings = $(e.target).siblings('h1'),
-          element = $(e.target);
+      var siblings = this.$el.children('.showLists');
+          element = this.$el.children('.showProjects');
 
       this.$el.children('.lists').hide();
 
@@ -120,10 +120,10 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
     },
 
     showLists: function(e) {
-      e.preventDefault();
+      if(e) e.preventDefault();
 
-      var siblings = $(e.target).siblings('h1'),
-          element = $(e.target);
+      var siblings = this.$el.children('.showProjects'),
+          element = this.$el.children('.showLists');
 
       this.$el.children('.projects').hide();
 
