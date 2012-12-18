@@ -76,7 +76,7 @@ function($, _, Backbone, ToolbarView, FilterView,
         name: element.children('[name="name"]').val(),
         description: element.children('[name="description"]').val(),
         user: ticketer.currentUser.id
-      }, { wait: true });
+      },{wait: true});
 
       this.removeCreationDialog(e);
     }

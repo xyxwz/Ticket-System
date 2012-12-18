@@ -90,7 +90,7 @@ function($, _, Backbone, BaseView, FilterView,
       ticketer.collections.lists.create({
         name: element.children('[name="name"]').val(),
         user: ticketer.currentUser.id
-      }, { wait: false });
+      },{wait: true});
 
       this.removeListForm(e);
     },
