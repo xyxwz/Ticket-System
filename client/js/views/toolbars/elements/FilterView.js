@@ -4,8 +4,9 @@
 define([
   'jquery', 'underscore', 'backbone', 'BaseView',
   'text!templates/toolbars/elements/FilterElement.html',
+  'text!templates/toolbars/elements/ItemTemplate.html',
   'mustache', 'jqueryui/draggable' ],
-function($, _, Backbone, BaseView, ElementTmpl, mustache) {
+function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
   var FilterView;
 
   FilterView = BaseView.extend({
@@ -38,13 +39,13 @@ function($, _, Backbone, BaseView, ElementTmpl, mustache) {
 
       this.renderProjects();
       this.renderLists();
+      this.showProjects();
 
       return this;
     },
 
     renderProjects: function() {
-      var self = this,
-          Tmpl = '<li data-id="{{id}}" title="{{description}}" class="project">{{name}}</li>';
+      var self = this;
 
       self.$el.children('.projects').empty();
 
@@ -55,7 +56,7 @@ function($, _, Backbone, BaseView, ElementTmpl, mustache) {
           description: project.get('description')
         };
 
-        self.$el.children('.projects').append(Mustache.to_html(Tmpl, data));
+        self.$el.children('.projects').append(Mustache.to_html(ItemTmpl, data));
       });
 
       if(this.role === 'admin') {
@@ -75,11 +76,9 @@ function($, _, Backbone, BaseView, ElementTmpl, mustache) {
     },
 
     renderLists: function() {
-      var self = this,
-          Tmpl = '<li data-id="{{id}}" class="list">{{name}}</li>';
+      var self = this;
 
       self.$el.children('.lists').empty();
-      self.$el.children('.lists').hide();
 
       this.lists.each(function(list) {
         var data = {
@@ -87,7 +86,7 @@ function($, _, Backbone, BaseView, ElementTmpl, mustache) {
           name: list.get('name')
         };
 
-        self.$el.children('.lists').append(Mustache.to_html(Tmpl, data));
+        self.$el.children('.lists').append(Mustache.to_html(ItemTmpl, data));
       });
 
       this.$el.find('.lists li').draggable({
