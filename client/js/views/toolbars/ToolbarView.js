@@ -35,7 +35,7 @@ function($, _, Backbone, BaseView, FilterView,
       var viewToggle = this.createView(ViewToggle);
 
       this.$el.children('.options').append(filters.render().el);
-      this.$el.children('.options').append(viewToggle.render().el);
+      this.$el.children('.options').append(viewToggle.render(this.options.PrimaryView).el);
 
       return this;
     },
@@ -93,6 +93,12 @@ function($, _, Backbone, BaseView, FilterView,
       }, { wait: false });
 
       this.removeListForm(e);
+    },
+
+    reset: function() {
+      var elements = this.$el.find('.selected');
+
+      elements.removeClass('selected');
     }
 
   });

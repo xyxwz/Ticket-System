@@ -52,7 +52,7 @@ function(
       this.appView.showView(View);
 
       //Initialize toolbar
-      this.initializeToolbar();
+      this.initializeToolbar('open');
     },
 
     closedTickets: function() {
@@ -66,7 +66,7 @@ function(
       this.appView.showView(View);
 
       //Initialize toolbar
-      this.initializeToolbar();
+      this.initializeToolbar('closed');
     },
 
     myActivity: function() {
@@ -77,7 +77,7 @@ function(
       this.appView.showView(View);
 
       //Initialize toolbar
-      this.initializeToolbar();
+      this.initializeToolbar('activity');
     },
 
     details: function(id) {
@@ -108,9 +108,9 @@ function(
       this.initializeToolbar();
     },
 
-    initializeToolbar: function() {
+    initializeToolbar: function(view) {
       if(ticketer.currentUser.role === 'admin') {
-        this.appView.showToolbar(AdminToolbarView);
+        this.appView.showToolbar(AdminToolbarView, {PrimaryView: view});
       }
       else {
         this.appView.showToolbar(ToolbarView);

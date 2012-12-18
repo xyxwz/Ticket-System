@@ -40,7 +40,7 @@ function($, _, Backbone, ToolbarView, FilterView,
 
       this.$el.children('.options').append(filters.render().el);
       this.$el.children('.options').append(assign.render().el);
-      this.$el.children('.options').append(viewToggle.render().el);
+      this.$el.children('.options').append(viewToggle.render(this.options.PrimaryView).el);
 
       return this;
     },

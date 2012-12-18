@@ -22,12 +22,16 @@ function($, _, Backbone, BaseView, ElementTmpl, AdminTmpl, mustache) {
       _.bindAll(this);
     },
 
-    render: function() {
+    render: function(view) {
       var self = this;
 
       this.$el.html(Mustache.to_html(ElementTmpl, {
         title: 'View'
       }));
+
+      if(view) {
+        this.$el.find('.' + view).addClass('yellow');
+      }
 
       return this;
     },

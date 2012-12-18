@@ -6,27 +6,25 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 
   function AppView() {
 
-    this.showToolbar = function(view) {
+    this.showToolbar = function(view, args) {
       var self = this;
 
       if(this.currentToolbar && this.currentToolbarView) {
         if(this.currentToolbarView !== view) {
           this.currentToolbar.dispose();
-          this.currentToolbar = new view();
+          this.currentToolbar = new view(args);
           this.currentToolbarView = view;
           this.currentToolbar.render();
           $('body').append(this.currentToolbar.el);
         }
+        else {
+          this.currentToolbar.reset();
+        }
       }
       else {
-        try {
         this.currentToolbarView = view;
-        this.currentToolbar = new view();
+        this.currentToolbar = new view(args);
         this.currentToolbar.render();
-        }
-        catch (e) {
-          console.log(e);
-        }
 
         $('body').append(this.currentToolbar.el);
       }
