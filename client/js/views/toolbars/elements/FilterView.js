@@ -32,13 +32,10 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
     },
 
     render: function() {
-      var self = this;
-
       this.$el.html(Mustache.to_html(ElementTmpl));
 
-      this.renderProjects();
-      this.renderLists();
-      this.showProjects();
+      this.renderProjects().renderLists();
+      this.$el.find('.lists').hide();
 
       return this;
     },
@@ -115,35 +112,49 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
     showProjects: function(e) {
       if(e) e.preventDefault();
 
-      var siblings = this.$el.children('.showLists'),
-          element = this.$el.children('.showProjects'),
+      var siblings = this.$el.find('.options .showLists'),
+          element = this.$el.find('.options .showProjects'),
           items = this.$el.children('.projects');
 
       if(element.hasClass('yellow') && items.is(':visible')) return this.toggle();
+      if(element.hasClass('yellow') && items.is(':not(:visible)')) return items.slideDown();
 
       if(siblings.hasClass('yellow')) siblings.removeClass('yellow');
       if(!siblings.hasClass('green')) siblings.addClass('green');
 
+      if(items.siblings('.lists').is(':visible')) {
+        items.siblings('.lists').hide();
+        items.show();
+      }
+      else {
+        items.slideDown();
+      }
+
       element.addClass('yellow').removeClass('green');
-      items.siblings('.lists').hide();
-      items.show();
     },
 
     showLists: function(e) {
       if(e) e.preventDefault();
 
-      var siblings = this.$el.children('.showProjects'),
-          element = this.$el.children('.showLists'),
+      var siblings = this.$el.find('.options .showProjects'),
+          element = this.$el.find('.options .showLists'),
           items = this.$el.children('.lists');
 
       if(element.hasClass('yellow') && items.is(':visible')) return this.toggle();
+      if(element.hasClass('yellow') && items.is(':not(:visible)')) return items.slideDown();
 
       if(siblings.hasClass('yellow')) siblings.removeClass('yellow');
       if(!siblings.hasClass('green')) siblings.addClass('green');
 
+      if(items.siblings('.projects').is(':visible')) {
+        items.siblings('.projects').hide();
+        items.show();
+      }
+      else {
+        items.slideDown();
+      }
+
       element.addClass('yellow').removeClass('green');
-      items.siblings('.projects').hide();
-      items.show();
     },
 
     filterTickets: function(e) {
@@ -156,7 +167,7 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
           filter = projects.get(id) || lists.get(id);
 
       ticketer.EventEmitter.trigger('tickets:setFilters', filter.get('tickets'));
-      selected.parent().siblings('.group').children().removeClass('selected');
+      this.$el.find('.group li').removeClass('selected');
       selected.addClass('selected');
     },
 
@@ -174,7 +185,9 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
     },
 
     toggle: function() {
-      this.$el.children('.group').hide();
+      this.$el.children('.group').slideUp();
+
+      return this;
     }
 
   });
