@@ -53,12 +53,12 @@ function($, _, Backbone, BaseView, FilterView,
 
       if(this.$el.css('width') !== '0px') {
         this.$el.animate({ width: '0px' }, 400, function() {
-          self.$el.children().not('.toggle').hide();
+          self.$el.children('.options').hide();
         });
       }
       else {
         this.$el.animate({ width: '196px' }, 400);
-        this.$el.children().not('.toggle').show();
+        this.$el.children('.options').show();
       }
     },
 
