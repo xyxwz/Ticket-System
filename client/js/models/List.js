@@ -14,6 +14,15 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     },
 
     /**
+     * Does this project contain `ticketId`?
+     *
+     * @param {String} ticketId
+     */
+    hasTicket: function(ticketId) {
+      return !!~this.get('tickets').indexOf(ticketId);
+    },
+
+    /**
      * Push a ticket onto the project's tickets array
      *
      * @param{TicketObject} ticket the ticket object/array to add to the project
