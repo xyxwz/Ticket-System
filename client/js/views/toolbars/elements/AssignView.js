@@ -38,9 +38,10 @@ function($, _, Backbone, BaseView, ElementTmpl, AdminTmpl, mustache) {
         };
 
         self.$el.children('.group').append(Mustache.to_html(AdminTmpl, data));
-        self.draggatize();
       });
 
+      this.draggatize();
+      this.$el.children('.group').hide();
       return this;
     },
 

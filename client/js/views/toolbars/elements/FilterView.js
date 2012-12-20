@@ -32,10 +32,10 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
     },
 
     render: function() {
-      this.$el.html(Mustache.to_html(ElementTmpl));
+      this.$el.html(ElementTmpl);
 
       this.renderProjects().renderLists();
-      this.$el.find('.lists').hide();
+      this.$el.children('.group').hide();
 
       return this;
     },
@@ -54,7 +54,8 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
         var data = {
           id: project.id,
           name: project.get('name'),
-          description: project.get('description')
+          description: project.get('description'),
+          type: 'project'
         };
 
         self.$el.children('.projects').append(Mustache.to_html(ItemTmpl, data));
@@ -89,7 +90,8 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
       this.lists.each(function(list) {
         var data = {
           id: list.id,
-          name: list.get('name')
+          name: list.get('name'),
+          type: 'list'
         };
 
         self.$el.children('.lists').append(Mustache.to_html(ItemTmpl, data));

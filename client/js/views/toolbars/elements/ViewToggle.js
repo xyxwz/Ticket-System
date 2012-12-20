@@ -25,9 +25,8 @@ function($, _, Backbone, BaseView, ElementTmpl, AdminTmpl, mustache) {
     render: function(view) {
       var self = this;
 
-      this.$el.html(Mustache.to_html(ElementTmpl, {
-        title: 'View'
-      }));
+      this.$el.html(Mustache.to_html(ElementTmpl));
+      this.$el.children('.group').hide();
 
       if(view) {
         this.$el.find('.' + view).addClass('yellow');
