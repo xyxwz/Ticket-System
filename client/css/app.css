@@ -36,7 +36,10 @@ html, body {
   z-index: 101;
 }
 
-.container { position: relative; z-index: 100; }
+.container {
+  position: relative;
+  z-index: 100;
+}
 
 .left { float: left; }
 .right { float: right; }
@@ -57,9 +60,13 @@ html, body {
 :-moz-placeholder { color: #b2b2b2; }
 
 #main {
-  position: relative;
-  margin: 40px 0 50px 0;
-  z-index: 100;
+  position: fixed;
+  left: 185px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: scroll;
+  padding: 50px 0;
 }
 
 input[type="text"] {
