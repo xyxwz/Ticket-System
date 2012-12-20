@@ -899,35 +899,16 @@ form .outerWrap {
    Toolbars
 ----------------------------------------- */
 
-#toolbar {
+.admin-bar {
   position: fixed;
   left: 0;
   top: 0;
   bottom: 0;
-  padding: 0 6px 0 0;
   z-index: 199;
   width: 184px;
   background: #222;
+  border-right: 1px solid rgba(85, 85, 85, 0.2);
 }
-
-  #toolbar ul {
-    margin: 0;
-  }
-
-  #toolbar .toggle {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 6px;
-    cursor: pointer;
-  }
-
-  #toolbar .divider {
-    width: 100%;
-    height: 4px;
-    margin: 8px 0 10px 0;
-  }
 
   #toolbar form {
     min-width: 400px;
@@ -956,60 +937,95 @@ form .outerWrap {
       width: 100%;
     }
 
-  #toolbar .create-options li,
-  #toolbar .options > li {
-    z-index: 198;
-    margin: 6px 0 0 0;
-    cursor: pointer;
-    white-space: nowrap;
+  .admin-bar ul.create-options {
+    padding: 0;
+    margin: 0;
   }
 
-  #toolbar .create-options li {
-    padding: 4px 0;
-    font-size: 24px;
-    text-align: center;
-    -webkit-border-radius: 14px;
-    -moz-border-radius: 14px;
-    border-radius: 14px;
-    margin: 4px 4px 0 4px;
+    .admin-bar ul.create-options li {
+      font-size: 16px;
+      padding: 4px 0;
+      text-align: center;
+      -webkit-border-radius: 8px;
+      -moz-border-radius: 8px;
+      border-radius: 8px;
+      margin: 8px 6px;
+    }
+
+  .admin-bar ul.options {
+    margin: 15px 0;
   }
 
-    #toolbar .toolbar-element h1 {
-      display: block;
-      font-size: 26px;
-      padding: 4px 0 6px 8px;
+    .admin-bar .toolbar-element {
       margin: 0;
+      padding: 0;
     }
 
-    #toolbar .toolbar-element .options {
-      position: relative;
-      width: 100%;
-    }
-
-      #toolbar .toolbar-element .options:after {
-        content: ' ';
-        clear: both;
-        visibility: hidden;
-        font-size: 0;
-        height: 0;
+      .admin-bar .toolbar-element .options {
         display: block;
+        font-size: 14px;
+        margin: 0;
+        color: #f6f6f6;
+        border-top: 1px solid #111;
       }
 
-    #toolbar .toolbar-element .close {
-      margin: 0 4px 0 0;
+        .admin-bar .toolbar-element .options:after {
+          content: ' ';
+          clear: both;
+          visibility: hidden;
+          font-size: 0;
+          height: 0;
+          display: block;
+        }
+
+          .admin-bar .toolbar-element .options .title {
+            padding: 4px 6px;
+            margin: 0;
+            border-top: 1px solid rgba(85, 85, 85, 0.2);
+            color: #ddd;
+            text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
+            font-size: 16px;
+            font-weight: 400;
+          }
+
+        .admin-bar .toolbar-element .group {
+          margin: 0;
+          padding: 0;
+        }
+
+          .admin-bar .toolbar-element .group li {
+            position: relative;
+            padding: 4px 6px 4px 20px;
+            margin: 0;
+            border-top: 1px solid rgba(85, 85, 85, 0.2);
+            border-bottom: 1px solid #111;
+            color: #ddd;
+            text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
+            font-size: 13px;
+          }
+
+            .admin-bar .toolbar-element .group .active {
+              background: #333;
+            }
+
+            .admin-bar .toolbar-element .group li:first-child {
+              border-top: none;
+            }
+
+            .admin-bar .toolbar-element .group li:last-child {
+              border-bottom: none;
+            }
+
+    .admin-bar .toolbar-element .close {
+      position: absolute;
+      top: 0;
+      right: 4px;
+      margin: 0;
       line-height: inherit;
       font-size: 24px;
     }
 
-    #toolbar .toolbar-element .showProjects,
-    #toolbar .toolbar-element .showLists {
-      padding: 4px 0 6px 0;
-      text-align: center;
-      float: left;
-      width:  50%;
-    }
-
-      #toolbar .toolbar-element:after {
+      .admin-bar .toolbar-element:after {
         content: ' ';
         clear: both;
         visibility: hidden;
@@ -1018,29 +1034,17 @@ form .outerWrap {
         display: block;
       }
 
-        #toolbar .toolbar-element .group .selected {
-          background-color: #CCC;
-        }
-
-        #toolbar .toolbar-element .group li {
-          background-color: white;
-          padding: 2px;
-          border-top: 1px solid #666;
-          border-bottom: 1px solid #888;
-          margin: 0;
-          min-width: 136px;
-          line-height: 32px;
-        }
-
-        #toolbar .toolbar-element .assign {
+        .admin-bar .toolbar-element .group .assign {
           cursor: move;
+          padding-left: 6px;
+          font-size: 24px;
         }
 
-        #toolbar .toolbar-element .assign .miniAvatar {
+        .admin-bar .toolbar-element .assign .miniAvatar {
           float: left;
         }
 
-        #toolbar .toolbar-element .assign .name {
+        .admin-bar .toolbar-element .assign .name {
           margin-left: 8px;
           line-height: 41px;
         }
