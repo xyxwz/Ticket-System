@@ -11,7 +11,8 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
     className: 'row ticket',
 
     events: {
-      "click button": "createTicket",
+      "click .create": "createTicket",
+      "click .back": "back",
       "click .guide": "displayHelp"
     },
 
@@ -80,6 +81,12 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
       $('.dialog', this.el).fadeOut(200, function() {
         $(this).remove();
       });
+    },
+
+    back: function(e) {
+      e.preventDefault();
+      this.dispose();
+      window.history.back();
     }
 
   });
