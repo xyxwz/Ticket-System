@@ -12,7 +12,7 @@ function($, _, Backbone, BaseView, ElementTmpl, AdminTmpl, mustache) {
     tagName: 'li',
     className: 'toolbar-element',
     events: {
-      'click h1': 'toggleVisible',
+      'click .title': 'toggleVisible',
       'click .open': 'showOpenTickets',
       'click .activity': 'showActivity',
       'click .closed': 'showClosedTickets'
@@ -29,7 +29,7 @@ function($, _, Backbone, BaseView, ElementTmpl, AdminTmpl, mustache) {
       this.$el.children('.group').hide();
 
       if(view) {
-        this.$el.find('.' + view).addClass('yellow');
+        this.$el.find('.' + view).addClass('active');
       }
 
       return this;
@@ -70,8 +70,8 @@ function($, _, Backbone, BaseView, ElementTmpl, AdminTmpl, mustache) {
     },
 
     colorTab: function(e) {
-      $(e.target).siblings('li').removeClass('yellow');
-      $(e.target).addClass('yellow');
+      $(e.target).siblings('li').removeClass('active');
+      $(e.target).addClass('active');
     }
   });
 

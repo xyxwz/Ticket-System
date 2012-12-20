@@ -46,7 +46,7 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
       self.$el.children('.projects').empty();
 
       if(!this.projects.length) {
-        this.$el.children('.projects').append('<li>There are no projects</li>');
+        this.$el.children('.projects').append('<li class="written">There are no projects</li>');
         return this;
       }
 
@@ -120,12 +120,6 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
           element = this.$el.find('.options .showProjects'),
           items = this.$el.children('.projects');
 
-      if(element.hasClass('yellow') && items.is(':visible')) return this.toggle();
-      if(element.hasClass('yellow') && items.is(':not(:visible)')) return items.slideDown();
-
-      if(siblings.hasClass('yellow')) siblings.removeClass('yellow');
-      if(!siblings.hasClass('green')) siblings.addClass('green');
-
       if(items.siblings('.lists').is(':visible')) {
         items.siblings('.lists').hide();
         items.show();
@@ -133,8 +127,6 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
       else {
         items.slideDown();
       }
-
-      element.addClass('yellow').removeClass('green');
     },
 
     showLists: function(e) {
@@ -144,12 +136,6 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
           element = this.$el.find('.options .showLists'),
           items = this.$el.children('.lists');
 
-      if(element.hasClass('yellow') && items.is(':visible')) return this.toggle();
-      if(element.hasClass('yellow') && items.is(':not(:visible)')) return items.slideDown();
-
-      if(siblings.hasClass('yellow')) siblings.removeClass('yellow');
-      if(!siblings.hasClass('green')) siblings.addClass('green');
-
       if(items.siblings('.projects').is(':visible')) {
         items.siblings('.projects').hide();
         items.show();
@@ -157,8 +143,6 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
       else {
         items.slideDown();
       }
-
-      element.addClass('yellow').removeClass('green');
     },
 
     filterTickets: function(e) {
@@ -171,8 +155,8 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
           filter = projects.get(id) || lists.get(id);
 
       ticketer.EventEmitter.trigger('tickets:setFilters', filter.get('tickets'));
-      this.$el.find('.group li').removeClass('selected');
-      selected.addClass('selected');
+      this.$el.find('.group li').removeClass('active');
+      selected.addClass('active');
     },
 
     deleteItem: function(e) {

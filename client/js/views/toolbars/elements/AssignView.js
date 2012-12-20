@@ -13,7 +13,7 @@ function($, _, Backbone, BaseView, ElementTmpl, AdminTmpl, mustache) {
     tagName: 'li',
     className: 'toolbar-element',
     events: {
-      'click h1': 'toggleVisible'
+      'click .title': 'toggleVisible'
     },
 
     initialize: function() {

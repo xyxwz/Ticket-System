@@ -29,7 +29,7 @@ function($, _, Backbone, ToolbarView, FilterView,
 
       //Append the create project button
       this.$el.children('.create-options')
-              .append('<li class="green createProject">Create Project</li>');
+              .append('<li class="written green createProject">Create Project</li>');
 
       var filters = this.createView(FilterView, {
         projects: ticketer.collections.projects,
