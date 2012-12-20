@@ -51,13 +51,13 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     /**
      * Remove the ticket from the project's tickets array
      *
-     * @param{TicketObject} ticket the ticket object/array to remove from the project
+     * @param{String|Array} thing
      */
     removeTicket: function(thing, callback) {
       var tickets = this.get('tickets');
 
-      function slice(model) {
-        var pos = tickets.indexOf(model.id);
+      function slice(id) {
+        var pos = tickets.indexOf(id);
 
         if(pos !== -1) {
           tickets.splice(pos, 1);
@@ -65,8 +65,8 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       }
 
       if(_.isArray(thing)) {
-        _(thing).each(function(model) {
-          slice(model);
+        _(thing).each(function(id) {
+          slice(id);
         });
       }
       else {
@@ -74,7 +74,6 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       }
 
       this.save(null, { error: callback });
-
       return this;
     },
 
