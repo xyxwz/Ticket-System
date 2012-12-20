@@ -72,6 +72,9 @@ function($, _, Backbone, BaseView, ElementTmpl, AdminTmpl, mustache) {
     colorTab: function(e) {
       $(e.target).siblings('li').removeClass('active');
       $(e.target).addClass('active');
+
+      // Remove active class on other toolbar-elements lists that have an active item
+      this.$el.siblings('.toolbar-element').find('li.active').removeClass('active');
     }
   });
 
