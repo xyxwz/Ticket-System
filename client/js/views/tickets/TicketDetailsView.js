@@ -30,6 +30,9 @@ function($, _, Backbone, BaseView, TicketView, CommentListView, CommentFormView)
           );
 
       $(this.el).html(view.render().el);
+
+      //Render projects and tasks
+      view.renderFooter();
     },
 
     renderComments: function() {
