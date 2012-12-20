@@ -34,9 +34,8 @@ function($, _, Backbone, BaseView, FilterView,
       });
       var viewToggle = this.createView(ViewToggle);
 
-      this.$el.children('.options').append(filters.render().el);
       this.$el.children('.options').append(viewToggle.render(this.options.PrimaryView).el);
-
+      this.$el.children('.options').append(filters.render().el);
       return this;
     },
 
@@ -53,12 +52,12 @@ function($, _, Backbone, BaseView, FilterView,
 
       if(this.$el.css('width') !== '0px') {
         this.$el.animate({ width: '0px' }, 400, function() {
-          self.$el.children('.options').hide();
+          self.$el.children('ul').hide();
         });
       }
       else {
-        this.$el.animate({ width: '196px' }, 400);
-        this.$el.children('.options').show();
+        this.$el.animate({ width: '184px' }, 400);
+        this.$el.children('ul').show();
       }
     },
 

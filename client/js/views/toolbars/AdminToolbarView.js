@@ -28,7 +28,8 @@ function($, _, Backbone, ToolbarView, FilterView,
       this.$el.html(Mustache.to_html(BarTmpl));
 
       //Append the create project button
-      this.$el.children('.options').append('<li class="green shadow create createProject">Create Project</li>');
+      this.$el.children('.create-options')
+              .append('<li class="green createProject">Create Project</li>');
 
       var filters = this.createView(FilterView, {
         projects: ticketer.collections.projects,
@@ -38,10 +39,9 @@ function($, _, Backbone, ToolbarView, FilterView,
       var assign = this.createView(AssignView, { collection: ticketer.collections.admins });
       var viewToggle = this.createView(ViewToggle);
 
+      this.$el.children('.options').append(viewToggle.render(this.options.PrimaryView).el);
       this.$el.children('.options').append(filters.render().el);
       this.$el.children('.options').append(assign.render().el);
-      this.$el.children('.options').append(viewToggle.render(this.options.PrimaryView).el);
-
       return this;
     },
 
