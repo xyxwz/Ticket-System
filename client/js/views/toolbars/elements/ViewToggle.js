@@ -26,7 +26,6 @@ function($, _, Backbone, BaseView, ElementTmpl, AdminTmpl, mustache) {
       var self = this;
 
       this.$el.html(Mustache.to_html(ElementTmpl));
-      this.$el.children('.group').hide();
 
       if(view) {
         this.$el.find('.' + view).addClass('active');
@@ -41,10 +40,10 @@ function($, _, Backbone, BaseView, ElementTmpl, AdminTmpl, mustache) {
       var element = this.$el.children('.group');
 
       if(element.is(':visible')) {
-        element.slideUp(400);
+        element.slideUp(200);
       }
       else {
-        element.slideDown(400);
+        element.slideDown(200);
       }
     },
 
