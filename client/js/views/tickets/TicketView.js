@@ -104,33 +104,65 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl,
       lists = ticketer.collections.lists;
       projects = ticketer.collections.projects;
 
+      // Only bind on the first call to render the footer
+      if(!this.footerRendered()) {
+        this.bindTo(projects, 'remove', this.renderFooter);
+        this.bindTo(lists, 'remove', this.renderFooter);
+      }
+
+      $('.ticketFooter', this.$el).remove();
+
       // Render the main footer container
       $('.ticketInfo', this.$el).append(Mustache.to_html(FooterTmpl, {
-        hasProjects: !!projects.length,
-        hasLists: !!lists.length
+        hasProjects: projects.some(function(model) {
+          return model.hasTicket(self.model.id);
+        }),
+        hasLists: lists.some(function(model) {
+          return model.hasTicket(self.model.id);
+        })
       }));
 
       projects.each(function(project) {
-        if(project.hasTicket(self.model.get('id'))) {
+        if(project.hasTicket(self.model.id)) {
           $('.ticketFooter .projects', self.$el)
                 .append(Mustache.to_html(ItemTmpl, project.toJSON()));
         }
       });
 
       lists.each(function(list) {
-        if(list.hasTicket(self.model.get('id'))) {
+        if(list.hasTicket(self.model.id)) {
           $('.ticketFooter .lists', self.$el)
                 .append(Mustache.to_html(ItemTmpl, list.toJSON()));
         }
       });
 
       if(isAdmin) {
-        // The projects are draggable
+        $('.ticketFooter .projects li', this.$el).draggable({
+          distance: 30,
+          revert: true,
+          zIndex: 200,
+          cursorAt: {
+            top: 21,
+            left: 21
+          }
+        });
+
+        $('.ticketFooter .projects li', this.$el).bind("drag", this.dragFooterItem);
+        $('.ticketFooter .projects li', this.$el).bind("dragstop", this.dragFooterItemStop);
       }
 
-      // TODO: BIND LISTENERS
+      $('.ticketFooter .lists li', this.$el).draggable({
+        distance: 30,
+        revert: true,
+        zIndex: 200,
+        cursorAt: {
+          top: 21,
+          left: 21
+        }
+      });
 
-      //$('.ticketFooter .lists', this.$el).draggable({});
+      $('.ticketFooter .lists li', this.$el).bind("drag", this.dragFooterItem);
+      $('.ticketFooter .lists li', this.$el).bind("dragstop", this.dragFooterItemStop);
 
       return this;
     },
@@ -150,14 +182,15 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl,
         this.model.assignUser(element.data('id'));
       }
 
-      // Add ticket to list
-      if(element.hasClass('list')) {
-        ticketer.collections.lists.get(element.data('id')).addTicket(this.model.id);
-      }
+      if(element.hasClass('list') || element.hasClass('project')) {
+        if(element.hasClass('list')) {
+          ticketer.collections.lists.get(element.data('id')).addTicket(this.model.id);
+        }
+        else {
+          ticketer.collections.projects.get(element.data('id')).addTicket(this.model.id);
+        }
 
-      // Add ticket to project
-      if(element.hasClass('project')) {
-        ticketer.collections.projects.get(element.data('id')).addTicket(this.model.id);
+        if(this.footerRendered()) this.renderFooter();
       }
     },
 
@@ -456,6 +489,37 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl,
       e.preventDefault();
       e.stopPropagation();
       window.open(e.currentTarget.href);
+    },
+
+    dragFooterItem: function(e, ui) {
+      var element = ui.helper;
+
+      if(ui.position.top > 45) {
+        if($('figure', element).length === 0) {
+          $(element).append("<figure class='poof'></figure>");
+        }
+        $(element).data('draggable').options.revert = false;
+      }
+      else {
+        $(element).data('draggable').options.revert = true;
+        $('figure', element).remove();
+      }
+    },
+
+    dragFooterItemStop: function(e, ui) {
+      var item,
+          element = ui.helper;
+
+      if(ui.position.top > 45) {
+        item = ticketer.collections.projects.get(element.data('id'));
+        if(!item) item = ticketer.collections.lists.get(element.data('id'));
+
+        item.removeTicket(this.model.id);
+        this.renderFooter();
+      }
+      else {
+        $('figure', element).remove();
+      }
     }
 
   });
