@@ -429,7 +429,7 @@ span.miniAvatar {
   border-radius: 2px;
 }
 
-  span.miniAvatar figure.poof {
+  figure.poof {
     display:block;
     position: absolute;
     bottom: -15px;
