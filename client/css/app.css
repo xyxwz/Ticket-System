@@ -1002,6 +1002,8 @@ form .outerWrap {
             color: #ddd;
             text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
             font-size: 13px;
+            min-width: 148px;
+            background: #222;
           }
 
             .admin-bar .toolbar-element .group .active {
