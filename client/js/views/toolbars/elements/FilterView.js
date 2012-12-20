@@ -67,6 +67,7 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
           helper: 'clone',
           scope: 'ticket_property',
           zIndex: 302,
+          distance: 30,
           cursorAt: {
             top: 28,
             left: 69
@@ -102,6 +103,7 @@ function($, _, Backbone, BaseView, ElementTmpl, ItemTmpl, mustache) {
         helper: 'clone',
         scope: 'ticket_property',
         zIndex: 302,
+        distance: 30,
         cursorAt: {
           top: 28,
           left: 69
