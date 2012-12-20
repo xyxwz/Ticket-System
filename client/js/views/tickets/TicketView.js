@@ -5,8 +5,11 @@
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
 'text!templates/tickets/Ticket.html', 'text!templates/tickets/Timestamp.html',
 'text!templates/tickets/AssignedUser.html', "text!templates/tickets/AdminPopupOptions.html",
-'text!templates/tickets/EditTicket.html', 'timeago', 'jqueryui/droppable', 'marked'],
-function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, AssignedUserTmpl, AdminPopupTmpl, EditTmpl) {
+'text!templates/tickets/EditTicket.html', 'text!templates/tickets/TicketFooter.html',
+'timeago', 'jqueryui/droppable', 'marked'],
+function($, _, Backbone, BaseView, mustache, TicketTmpl,
+          TimestampTmpl, AssignedUserTmpl, AdminPopupTmpl,
+          EditTmpl, FooterTmpl) {
 
   var TicketView = BaseView.extend({
     tagName: 'div',
@@ -85,6 +88,55 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl, TimestampTmpl, Assigned
       this.checkAbilities(data);
 
       return this;
+    },
+
+    /**
+     * Render the footer element on the ticket
+     */
+    renderFooter: function() {
+      var lists,
+          projects,
+          self = this,
+          isAdmin = this.renderAdminOptions(),
+          ItemTmpl = '<li data-id="{{id}}">{{name}}</li>';
+
+      //TODO: Eliminate needing the ticketer object?
+      lists = ticketer.collections.lists;
+      projects = ticketer.collections.projects;
+
+      // Render the main footer container
+      $('.ticketInfo', this.$el).append(Mustache.to_html(FooterTmpl, {
+        hasProjects: !!projects.length,
+        hasLists: !!lists.length
+      }));
+
+      projects.each(function(project) {
+        if(project.hasTicket(self.model.get('id'))) {
+          $('.ticketFooter .projects', self.$el)
+                .append(Mustache.to_html(ItemTmpl, project.toJSON()));
+        }
+      });
+
+      lists.each(function(list) {
+        if(list.hasTicket(self.model.get('id'))) {
+          $('.ticketFooter .lists', self.$el)
+                .append(Mustache.to_html(ItemTmpl, list.toJSON()));
+        }
+      });
+
+      if(isAdmin) {
+        // The projects are draggable
+      }
+
+      // TODO: BIND LISTENERS
+
+      //$('.ticketFooter .lists', this.$el).draggable({});
+
+      return this;
+    },
+
+    footerRendered: function() {
+      return !!$('.ticketFooter', this.$el).length;
     },
 
     /**
