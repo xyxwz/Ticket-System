@@ -49,28 +49,6 @@ function($, _, Backbone, BaseView, FilterView,
       e.preventDefault();
 
       ticketer.routers.ticketer.navigate("lists/new", true);
-    },
-
-    toggleVisible: function(e) {
-      e.preventDefault();
-
-      var self = this;
-
-      if(this.$el.css('width') !== '0px') {
-        this.$el.animate({ width: '0px' }, 400, function() {
-          self.$el.children('ul').hide();
-        });
-      }
-      else {
-        this.$el.animate({ width: '184px' }, 400);
-        this.$el.children('ul').show();
-      }
-    },
-
-    reset: function() {
-      var elements = this.$el.find('.selected');
-
-      elements.removeClass('selected');
     }
 
   });
