@@ -7,7 +7,6 @@ define([
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView',
   'views/tickets/TicketFormView',
-  'views/toolbars/AdminToolbarView',
   'views/toolbars/ToolbarView'
 ],
 function(
@@ -17,7 +16,6 @@ function(
   TicketListView,
   TicketDetailsView,
   TicketFormView,
-  AdminToolbarView,
   ToolbarView
 ) {
 
@@ -32,7 +30,10 @@ function(
       "tickets/activity": "myActivity",
       "tickets/activity?*params": "myActivity",
       "tickets/new": "createTicket",
-      "tickets/:id": "details"
+      "tickets/:id": "showTicket",
+      "lists/new": "createList",
+      "lists/": "showLists",
+      "lists/:id": "showList"
     },
 
     /* Routing */
@@ -50,38 +51,35 @@ function(
 
       // Transitions
       this.appView.showView(View);
-
-      //Initialize toolbar
-      this.initializeToolbar('open');
+      this.appView.showToolbar(ToolbarView, {selected: 'open'});
     },
 
     closedTickets: function() {
-      var models, View,
+      var view,
+          models,
           collection = ticketer.collections.closedTickets;
 
-      View = new TicketListView({
+      view = new TicketListView({
         collection: collection,
         status: 'closed'
       });
-      this.appView.showView(View);
 
-      //Initialize toolbar
-      this.initializeToolbar('closed');
+      // Transitions
+      this.appView.showView(view);
+      this.appView.showToolbar(ToolbarView, {selected: 'closed'});
     },
 
     myActivity: function() {
       var collection = ticketer.collections.openTickets,
-          View = new TicketListView({ collection:collection, filter: 'participating' });
+          view = new TicketListView({collection:collection, filter: 'participating' });
 
       // Transitions
-      this.appView.showView(View);
-
-      //Initialize toolbar
-      this.initializeToolbar('activity');
+      this.appView.showView(view);
+      this.appView.showToolbar(ToolbarView, {selected: 'activity'});
     },
 
-    details: function(id) {
-      var View,
+    showTicket: function(id) {
+      var view,
           ticket = ticketer.collections.openTickets.get(id) ||
                    ticketer.collections.closedTickets.get(id);
 
@@ -89,32 +87,37 @@ function(
         this.navigate('tickets/open', true);
       }
       else {
-        View = new TicketDetailsView({ model: ticket });
-        this.appView.showView(View, function() { View.trigger('viewRendered'); });
+        view = new TicketDetailsView({model: ticket});
 
-        //Initialize toolbar
-        this.initializeToolbar();
+        // Transitions
+        this.appView.showView(View, function() { View.trigger('viewRendered'); });
+        this.appView.showView(ToolbarView);
       }
     },
 
     createTicket: function() {
       var collection = ticketer.collections.openTickets,
-          View = new TicketFormView({ collection: collection });
+          View = new TicketFormView({collection: collection});
 
       // Transitions
       this.appView.showView(View, function() { View.trigger('viewRendered'); });
-
-      //Initialize toolbar
-      this.initializeToolbar();
+      this.appView.showView(ToolbarView);
     },
 
-    initializeToolbar: function(view) {
-      if(ticketer.currentUser.role === 'admin') {
-        this.appView.showToolbar(AdminToolbarView, {PrimaryView: view});
+    showList: function(id) {
+      var list = ticketer.collections.lists.get(id);
+
+      if(list) {
+        this.appView.showView(new ListView({model: list}));
+        this.appView.showToolbar(ToolbarView, {selected: true});
       }
       else {
-        this.appView.showToolbar(ToolbarView);
+        this.navigate('tickets/open', true);
       }
+    },
+
+    showLists: function() {
+
     }
 
   });
