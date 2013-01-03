@@ -899,7 +899,7 @@ form .outerWrap {
    Toolbars
 ----------------------------------------- */
 
-.admin-bar {
+.sidebar {
   position: fixed;
   left: 0;
   top: 0;
@@ -910,145 +910,57 @@ form .outerWrap {
   border-right: 1px solid rgba(85, 85, 85, 0.2);
 }
 
-  #toolbar form {
-    min-width: 400px;
-    margin: 8px 14px 0 14px;
-  }
-
-    #toolbar form:after {
-      content: ' ';
-      visibility: hidden;
-      font-size: 0;
-      clear: both;
-      display: block;
-    }
-
-    #toolbar form textarea {
-      border: 1px solid #C0C0C0;
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box;
-    }
-
-    #toolbar form input {
-      padding: 4px;
-      border: 1px solid #C0C0C0;
-      margin-bottom: 8px;
-      width: 100%;
-    }
-
-  .admin-bar ul.create-options {
-    padding: 0;
-    margin: 0;
-  }
-
-    .admin-bar ul.create-options li {
-      font-size: 16px;
-      padding: 4px 0;
-      text-align: center;
-      -webkit-border-radius: 8px;
-      -moz-border-radius: 8px;
-      border-radius: 8px;
-      margin: 8px 6px;
-    }
-
-  .admin-bar ul.options {
+  .sidebar .options {
     margin: 15px 0;
   }
 
-    .admin-bar .toolbar-element {
+    .sidebar .option-set {
+      display: block;
+      font-size: 14px;
       margin: 0;
-      padding: 0;
+      color: #f6f6f6;
+      border-top: 1px solid #111;
     }
 
-      .admin-bar .toolbar-element .options {
-        display: block;
-        font-size: 14px;
+      .sidebar .option-set .title {
+        padding: 4px 6px;
         margin: 0;
-        color: #f6f6f6;
-        border-top: 1px solid #111;
+        border-top: 1px solid rgba(85, 85, 85, 0.2);
+        color: #ddd;
+        text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
+        font-size: 16px;
+        font-weight: 400;
       }
 
-        .admin-bar .toolbar-element .options:after {
-          content: ' ';
-          clear: both;
-          visibility: hidden;
-          font-size: 0;
-          height: 0;
-          display: block;
-        }
+      .sidebar .option-set .group {
+        margin: 0;
+        padding: 0;
+      }
 
-          .admin-bar .toolbar-element .options .title {
-            padding: 4px 6px;
-            margin: 0;
-            border-top: 1px solid rgba(85, 85, 85, 0.2);
-            color: #ddd;
-            text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
-            font-size: 16px;
-            font-weight: 400;
-          }
-
-        .admin-bar .toolbar-element .group {
+        .sidebar .option-set .group li {
+          position: relative;
+          padding: 4px 6px 4px 20px;
           margin: 0;
-          padding: 0;
+          border-top: 1px solid rgba(85, 85, 85, 0.2);
+          border-bottom: 1px solid #111;
+          color: #ddd;
+          text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
+          font-size: 13px;
+          min-width: 148px;
+          background: #222;
+          cursor: pointer;
         }
 
-          .admin-bar .toolbar-element .group li {
-            position: relative;
-            padding: 4px 6px 4px 20px;
-            margin: 0;
-            border-top: 1px solid rgba(85, 85, 85, 0.2);
-            border-bottom: 1px solid #111;
-            color: #ddd;
-            text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
-            font-size: 13px;
-            min-width: 148px;
-            background: #222;
+          .sidebar .option-set .group li:first-child {
+            border-top: none;
           }
 
-            .admin-bar .toolbar-element .group .active {
-              background: #333;
-            }
+          .sidebar .option-set .group li:last-child {
+            border-bottom: none;
+          }
 
-            .admin-bar .toolbar-element .group li:first-child {
-              border-top: none;
-            }
-
-            .admin-bar .toolbar-element .group li:last-child {
-              border-bottom: none;
-            }
-
-    .admin-bar .toolbar-element .close {
-      position: absolute;
-      top: 0;
-      right: 4px;
-      margin: 0;
-      line-height: inherit;
-      font-size: 24px;
-    }
-
-      .admin-bar .toolbar-element:after {
-        content: ' ';
-        clear: both;
-        visibility: hidden;
-        font-size: 0;
-        height: 0;
-        display: block;
-      }
-
-        .admin-bar .toolbar-element .group .assign {
-          cursor: move;
-          padding-left: 6px;
-          font-size: 24px;
-        }
-
-        .admin-bar .toolbar-element .assign .miniAvatar {
-          float: left;
-        }
-
-        .admin-bar .toolbar-element .assign .name {
-          margin-left: 8px;
-          line-height: 41px;
+        .sidebar .option-set .group .active {
+          background: #333;
         }
 
 /* -----------------------------------------
