@@ -27,8 +27,7 @@ function(
       "tickets/open?*params": "openTickets",
       "tickets/closed": "closedTickets",
       "tickets/closed?*params": "closedTickets",
-      "tickets/activity": "myActivity",
-      "tickets/activity?*params": "myActivity",
+      "tickets/mine": "myTickets",
       "tickets/new": "createTicket",
       "tickets/:id": "showTicket",
       "lists/new": "createList",
@@ -39,19 +38,19 @@ function(
     /* Routing */
     initialize: function(){
       this.appView = new AppView();
+      this.appView.showToolbar(ToolbarView);
     },
 
     index: function() {
-      this.navigate("tickets/activity", true);
+      this.navigate("tickets/mine", true);
     },
 
     openTickets: function() {
       var collection = ticketer.collections.openTickets,
-          View = new TicketListView({ collection: collection });
+          view = new TicketListView({ collection: collection });
 
-      // Transitions
-      this.appView.showView(View);
-      this.appView.showToolbar(ToolbarView, {selected: 'open'});
+      this.appView.showView(view);
+      this.appView.showToolbarTab('tickets/open');
     },
 
     closedTickets: function() {
@@ -64,18 +63,16 @@ function(
         status: 'closed'
       });
 
-      // Transitions
       this.appView.showView(view);
-      this.appView.showToolbar(ToolbarView, {selected: 'closed'});
+      this.appView.showToolbarTab('tickets/closed');
     },
 
-    myActivity: function() {
+    myTickets: function() {
       var collection = ticketer.collections.openTickets,
           view = new TicketListView({collection:collection, filter: 'participating' });
 
-      // Transitions
       this.appView.showView(view);
-      this.appView.showToolbar(ToolbarView, {selected: 'activity'});
+      this.appView.showToolbarTab('tickets/mine');
     },
 
     showTicket: function(id) {
@@ -89,19 +86,17 @@ function(
       else {
         view = new TicketDetailsView({model: ticket});
 
-        // Transitions
-        this.appView.showView(View, function() { View.trigger('viewRendered'); });
-        this.appView.showView(ToolbarView);
+        this.appView.showView(view, function() { view.trigger('viewRendered'); });
+        this.appView.showToolbarTab();
       }
     },
 
     createTicket: function() {
       var collection = ticketer.collections.openTickets,
-          View = new TicketFormView({collection: collection});
+          view = new TicketFormView({collection: collection});
 
-      // Transitions
-      this.appView.showView(View, function() { View.trigger('viewRendered'); });
-      this.appView.showView(ToolbarView);
+      this.appView.showView(view, function() { view.trigger('viewRendered'); });
+      this.appView.showToolbarTab();
     },
 
     showList: function(id) {
@@ -109,7 +104,7 @@ function(
 
       if(list) {
         this.appView.showView(new ListView({model: list}));
-        this.appView.showToolbar(ToolbarView, {selected: true});
+        this.appView.showToolbarTab();
       }
       else {
         this.navigate('tickets/open', true);
@@ -117,7 +112,10 @@ function(
     },
 
     showLists: function() {
+      var collection = ticketer.collections.lists;
 
+      this.appView.showView(new ListsView({collection: collection}));
+      this.appView.showToolbarTab('lists/');
     }
 
   });
