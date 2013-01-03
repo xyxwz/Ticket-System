@@ -1,23 +1,14 @@
 define([
-  'jquery', 'underscore', 'backbone', 'BaseView',
-  'views/toolbars/elements/FilterView',
-  'views/toolbars/elements/ViewToggle',
-  'text!templates/toolbars/Toolbar.html',
-  'text!templates/toolbars/elements/ListCreationForm.html',
-  'mustache' ],
-function($, _, Backbone, BaseView, FilterView,
-  ViewToggle, BarTmpl, ListFormTmpl, mustache) {
+  'jquery', 'underscore', 'backbone',
+  'BaseView', 'mustache',
+  'text!templates/toolbars/Toolbar.html' ],
+  function($, _, Backbone, BaseView, mustache, ToolbarTmpl) {
 
-  var ToolbarView;
-
-  ToolbarView = BaseView.extend({
-    id: 'toolbar',
+  var ToolbarView = BaseView.extend({
     tagName: 'div',
-    className: 'admin-bar',
+    className: 'sidebar',
     events: {
-      'click .toggle': 'toggleVisible',
-      'click .createTicket': 'createTicket',
-      'click .createTask': 'createList'
+      'click .group li': 'navigateTo'
     },
 
     initialize: function() {
@@ -25,34 +16,35 @@ function($, _, Backbone, BaseView, FilterView,
     },
 
     render: function() {
-      this.$el.html(Mustache.to_html(BarTmpl));
-
-      var filters = this.createView(FilterView, {
-        projects: ticketer.collections.projects,
-        lists: ticketer.collections.lists,
-        role: ticketer.currentUser.role
-      });
-      var viewToggle = this.createView(ViewToggle);
-
-      this.$el.children('.options').append(viewToggle.render(this.options.PrimaryView).el);
-      this.$el.children('.options').append(filters.render().el);
+      this.$el.html(Mustache.to_html(ToolbarTmpl));
       return this;
     },
 
-    createTicket: function(e) {
+    /**
+     * Navigate to the clicked element's
+     * data-route attribute
+     */
+
+    navigateTo: function(e) {
       e.preventDefault();
 
-      ticketer.routers.ticketer.navigate("tickets/new", true);
+      var target = $(e.target).data('route');
+
+      this.selectTab(target);
+      ticketer.routers.ticketer.navigate(target, true);
     },
 
-    createList: function(e) {
-      e.preventDefault();
+    selectTab: function(tab) {
+      this.$el.find('.group > .active').removeClass('active');
 
-      ticketer.routers.ticketer.navigate("lists/new", true);
+      if(tab) {
+        this.$el.find('li[data-route="' + tab + '"]').addClass('active');
+      }
+
+      return this;
     }
 
   });
-
 
   return ToolbarView;
 });
