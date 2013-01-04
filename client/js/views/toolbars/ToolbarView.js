@@ -5,10 +5,9 @@ define([
   function($, _, Backbone, BaseView, mustache, ToolbarTmpl) {
 
   var ToolbarView = BaseView.extend({
-    tagName: 'div',
     className: 'sidebar',
     events: {
-      'click .group li': 'navigateTo'
+      'click .group li[data-route]': 'navigateTo'
     },
 
     initialize: function() {
