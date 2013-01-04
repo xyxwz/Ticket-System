@@ -28,7 +28,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl,
       _.bindAll(this);
       this.admin = this.options.admin;
 
-      $(this.el).attr('id', 'id_'+ this.model.id);
+      $(this.el).attr('data-id', this.model.id);
 
       // Determines wheter or not to show notifications
       this.notify = this.options.notify;

@@ -29,7 +29,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       });
 
       this.bindTo(this.collection, 'remove', function(model) {
-        $('#id_'+model.id, self.el).remove();
+        $('[data-id="' + model.id + '"]', self.el).remove();
       });
 
       this.bindTo(this.collection, 'reset', this.render);
@@ -97,7 +97,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
     },
 
     showDetails: function(e) {
-      var id = $(e.currentTarget).closest('.ticket').attr('id').split('id_')[1];
+      var id = $(e.currentTarget).closest('.ticket').data('id');
       ticketer.routers.ticketer.navigate("tickets/"+id, true);
     }
 
