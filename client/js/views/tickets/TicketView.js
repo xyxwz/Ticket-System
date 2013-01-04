@@ -30,9 +30,6 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl,
 
       $(this.el).attr('data-id', this.model.id);
 
-      // Determines wheter or not to show notifications
-      this.notify = this.options.notify;
-
       /* Keep track of who is assigned to this ticket.
        * Because the id's are stored as an array when the 'change'
        * event fires it returns the entire new array. By managing it
@@ -67,7 +64,6 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl,
         data.tackClass = data.assigned_to.length > 0 ? 'read' : 'unread';
       }
 
-      data.notify = this.model.notification() && this.notify ? 'notify' : null;
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
       this.setTimestamp();
@@ -327,7 +323,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl,
         this.setAssignedUsers();
       }
 
-      if(changedAttributes.notification && this.notify) {
+      if(changedAttributes.notification) {
         $('.ticketHeader', this.el).addClass('notify');
       }
 

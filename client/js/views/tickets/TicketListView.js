@@ -12,14 +12,12 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
     },
 
     initialize: function() {
-      var self;
+      var self = this;
 
-      self = this;
       _.bindAll(this);
 
       this.status = this.options.status ? this.options.status : 'open';
-
-      this.filter = this.options.filter;
+      this.filter = this.options.filter || this.defaultFilter;
 
       this.bindTo(this.collection, 'add', function(model) {
         if(!self.filter) {
@@ -36,48 +34,30 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       this.bindTo(this.collection, 'change:filters', this.changeFilter);
     },
 
-    changeFilter: function() {
-      var self = this;
-
-      this.filter = function(thing) {
-        // is the ticket's id in the filters? -> include it
-        return ~self.collection.filters.indexOf(thing.id);
-      };
-
-      // Re-render with the new filter
-      this.render();
-    },
-
     render: function() {
-      var self = this,
-          view,
-          collection;
+      var html,
+          self = this;
 
       //Clear the element for clean render
       this.$el.empty();
 
-      collection = typeof(this.filter) !== 'undefined' ? _(this.collection.filter(this.filter)) : this.collection;
+      this.collection.each(function(ticket) {
+        if(!self.filter(ticket)) return;
 
-
-      collection.each(function(ticket) {
-        view = self.renderTicket(ticket);
-        $(self.el).append(view);
+        html = self.renderTicket(ticket);
+        $(self.el).append(html);
       });
 
-      if (this.status === 'closed') this.initTimeline();
+      if(this.status === 'closed') this.initTimeline();
 
       return this;
     },
 
     renderTicket: function(model) {
-      var view, notify, html;
+      var view,
+          html;
 
-      notify = typeof(this.filter) !== 'undefined' ? true : false;
-
-      view = this.createView(
-        TicketView,
-        {model: model, notify: notify}
-      );
+      view = this.createView(TicketView, {model: model});
 
       html = view.render().el;
       $('.ticketInfo .ticketBody', html).truncate({max_length: 500});
@@ -94,6 +74,14 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       this.timeline = new Timeline(this.collection, this.renderTicket, $(this.el), '.ticket', { status: this.status });
       this.bindTo($(window), 'scroll', function() { self.timeline.shouldCheckScroll = true ;});
       this.createInterval(250, function() { self.timeline.didScroll(); });
+    },
+
+    /**
+     * Render all models in collection by default
+     */
+
+    defaultFilter: function() {
+      return true;
     },
 
     showDetails: function(e) {
