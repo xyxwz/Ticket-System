@@ -1,43 +1,35 @@
-<div class="ten columns ticketInfo shadow paper">
-  <!-- Ticket Header -->
-  <div class="ticketHeader written clearfix">
-    <span class="tack {{tackClass}}"></span>
+<!-- Ticket Header -->
+<div class="header written clearfix">
+  <span class="tack {{tackClass}}"></span>
 
-    <!-- Ticket Title -->
-    <div class="ticketName left">
-      <h2>{{title}}</h2>
-    </div>
+  <!-- Ticket creator avatar -->
+  <div class="avatar left">
+    <img title="{{user.name}}" alt="{{user.name}}" src="{{user.avatar}}">
+  </div>
+  <!-- Ticket Title -->
+  <div class="title left">
+    <h2>{{title}}</h2>
+  </div>
 
-    <!-- Ticket Timestamp -->
-    <div class="ticketTimestamp left">
-      {{#isClosed}}
-        <span class="closed">closed:</span>
-      {{/isClosed}}
-      <time title="{{hoverTime}}" datetime="{{datetime}}">{{cleanTime}}</time>
-    </div>
+  <!-- Ticket Timestamp -->
+  <div class="timestamp left">
+    {{#isClosed}}
+      <span class="closed">closed:</span>
+    {{/isClosed}}
+    <time title="{{hoverTime}}" datetime="{{datetime}}">{{cleanTime}}</time>
+  </div>
 
-    <!-- Ticket Assigned To -->
-    <ul class="right clearfix">
-    </ul>
-  </div> <!-- end of ticketHeader -->
-
-  <!-- Ticket Body -->
-  <div class="ticketBody written md">
-    {{{description}}}
-  </div> <!-- end of ticketBody -->
-
-  <!-- Ticket Comment Count -->
-  <ul class="ticketMeta">
-    <li class="chat written commentCount">{{comments}}</li>
+  <!-- Ticket Assigned To -->
+  <ul class="right clearfix">
   </ul>
+</div> <!-- end of ticketHeader -->
 
-  <!-- Ticket footer appended here -->
+<!-- Ticket Body -->
+<div class="body written md">
+  {{{description}}}
+</div> <!-- end of ticketBody -->
 
-</div> <!-- end of ticketInfo -->
-
-{{#showAdmin}}
-<!-- Admin Ticket Options -->
-<ul id="ticketOptions" class="ten columns written">
-  <li id="closeTicket" class="red shadow">Close Ticket</li>
+<!-- Ticket Comment Count -->
+<ul class="meta">
+  <li class="written comment-count">{{comments}}</li>
 </ul>
-{{/showAdmin}}

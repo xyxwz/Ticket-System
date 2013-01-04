@@ -7,18 +7,15 @@ define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
 function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
 
   var TicketFormView = BaseView.extend({
-    tagName: 'div',
-    className: 'row ticket',
+    className: 'ticket-form',
 
     events: {
-      "click .create": "createTicket",
-      "click .back": "back",
-      "click .guide": "displayHelp"
+      "click [data-action='create']": "createTicket",
+      "click [data-action='cancel']": "back",
+      "click [data-action='display-guide']": "displayHelp"
     },
 
     initialize: function() {
-
-      // Bindings using the garbage collectors bindTo()
       _.bindAll(this);
       this.bindTo(this.collection, 'sync', this.redirect);
     },

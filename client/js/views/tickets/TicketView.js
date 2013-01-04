@@ -18,8 +18,6 @@ function($, _, mustache, BaseView, TicketTmpl, EditTmpl) {
 
     initialize: function() {
       _.bindAll(this);
-      this.admin = this.options.admin;
-
       $(this.el).attr('data-id', this.model.id);
 
       this.bindTo(this.model.comments, 'add remove reset', this.updateCommentCount);
@@ -59,15 +57,19 @@ function($, _, mustache, BaseView, TicketTmpl, EditTmpl) {
      */
 
     updateCommentCount: function() {
-      $('.commentCount', this.el).html(this.model.comments.length);
+      $('.comment-count', this.el).html(this.model.comments.length);
     },
 
-    /* open the ticket for editing */
-    editTicket: function() {
-      var self = this;
+    /**
+     * open the ticket for editing
+     */
 
-      if($('.ticket > .ticket-form', self.el).length === 0) {
-        $('.ticketBody').html(Mustache.to_html(EditTmpl, {
+    editTicket: function() {
+      var self = this,
+          editing = $('.ticket .ticket-form', self.el).length === 0;
+
+      if(!editing) {
+        $('.body').html(Mustache.to_html(EditTmpl, {
           description: self.model.get('description')
         }));
 
@@ -86,7 +88,10 @@ function($, _, mustache, BaseView, TicketTmpl, EditTmpl) {
 
       $('textarea', this.el).data('AutoResizer').destroy();
 
-      self.model.save({ description: description }, {error: self.triggerViewError, success: self.renderEdit});
+      self.model.save({description: description}, {
+        error: self.triggerViewError,
+        success: self.renderEdit
+      });
     },
 
     renderEdit: function(e) {

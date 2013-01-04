@@ -6,9 +6,9 @@ define(['jquery', 'underscore', 'backbone', 'BaseView', 'timeline', 'views/ticke
 function($, _, Backbone, BaseView, Timeline, TicketView) {
 
   var TicketListView = BaseView.extend({
-
+    className: 'ticket-list',
     events: {
-      "click .ticketInfo": "showDetails"
+      "click .ticket": "showDetails"
     },
 
     initialize: function() {
@@ -17,7 +17,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       _.bindAll(this);
 
       this.status = this.options.status ? this.options.status : 'open';
-      this.filter = this.options.filter || this.defaultFilter;
+      this.filter = this.options.filter || function() { return true; };
 
       this.bindTo(this.collection, 'add', function(model) {
         if(!self.filter) {
@@ -76,17 +76,9 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       this.createInterval(250, function() { self.timeline.didScroll(); });
     },
 
-    /**
-     * Render all models in collection by default
-     */
-
-    defaultFilter: function() {
-      return true;
-    },
-
     showDetails: function(e) {
-      var id = $(e.currentTarget).closest('.ticket').data('id');
-      ticketer.routers.ticketer.navigate("tickets/"+id, true);
+      var id = $(e.currentTarget).data('id');
+      ticketer.routers.ticketer.navigate("tickets/" + id, true);
     }
 
   });
