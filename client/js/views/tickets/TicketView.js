@@ -1,14 +1,17 @@
-/* TicketView
- * Renders a single Ticket
+/**
+ * TicketView
+ * render a single Ticket
  */
 
-define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/tickets/Ticket.html', 'text!templates/tickets/Timestamp.html',
-'text!templates/tickets/AssignedUser.html', "text!templates/tickets/AdminPopupOptions.html",
-'text!templates/tickets/EditTicket.html', 'text!templates/tickets/TicketFooter.html',
-'timeago', 'jqueryui/droppable', 'marked'],
-function($, _, Backbone, BaseView, mustache, TicketTmpl,
-          TimestampTmpl, AssignedUserTmpl, AdminPopupTmpl,
+define(['jquery', 'underscore', 'mustache', 'BaseView',
+  'text!templates/tickets/Ticket.html',
+  'text!templates/tickets/AssignedUser.html',
+  'text!templates/tickets/AdminPopupOptions.html',
+  'text!templates/tickets/EditTicket.html',
+  'text!templates/tickets/TicketFooter.html',
+  'timeago', 'jqueryui/droppable', 'marked'],
+function($, _, mustache, BaseView, TicketTmpl,
+          AssignedUserTmpl, AdminPopupTmpl,
           EditTmpl, FooterTmpl) {
 
   var TicketView = BaseView.extend({
@@ -38,9 +41,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl,
       this.assigned_to = this.model.get('assigned_to');
 
       // Bindings using the garbage collectors bindTo()
-      this.bindTo(this.model.comments, 'add', this.updateCommentCount);
-      this.bindTo(this.model.comments, 'remove', this.updateCommentCount);
-      this.bindTo(this.model.comments, 'reset', this.updateCommentCount);
+      this.bindTo(this.model.comments, 'add remove reset', this.updateCommentCount);
       this.bindTo(this.model, 'change', this.updateTicket);
       this.bindTo(this.model, 'assignedUser', this.addAssignee);
     },
@@ -55,10 +56,14 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl,
       data.showAdmin = this.renderAdminOptions(); // True or False
       data.user = this.model.get('user');
       data.user.shortname = data.user.name.split(' ')[0];
+      data.datetime = this.model.get('closed_at') || this.model.get('opened_at');
+      data.cleanTime = new Date(data.datetime).toDateString().slice(4);
+      data.hoverTime = this.model.responseTime() || data.cleanTime;
 
-      // Set Tack CSS class
+      // Closed specific attributes
       if(data.status === 'closed') {
         data.tackClass = 'closed';
+        data.isClosed = true;
       }
       else {
         data.tackClass = data.assigned_to.length > 0 ? 'read' : 'unread';
@@ -66,7 +71,7 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl,
 
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
-      this.setTimestamp();
+      $('time', this.el).timeago();
       this.setAssignedUsers();
 
       /* Make the entire ticket a droppable element that accepts
@@ -254,32 +259,11 @@ function($, _, Backbone, BaseView, mustache, TicketTmpl,
       }
     },
 
-    /* Renders the timestamp with the jQuery timeago plugin
-     * auto updates */
-    setTimestamp: function() {
-      var time = this.model.get('closed_at') || this.model.get('opened_at'),
-          timeStr = new Date(time).toDateString().substr(4),
-          timestamp = {
-            time: time,
-            formattedTime: timeStr,
-            responseTime: this.model.responseTime() || timeStr
-          };
-
-      if (this.model.get('closed_at')) {
-        $('.timestamp', this.el).remove();
-        $('.ticketName', this.el).append(Mustache.to_html(TimestampTmpl, timestamp));
-        $('.timestamp', this.el).prepend('closed: ');
-        $('time.timeago', this.el).timeago();
-      }
-      else {
-        $('.ticketName', this.el).append(Mustache.to_html(TimestampTmpl, timestamp));
-        $('time.timeago', this.el).timeago();
-      }
-    },
-
-    /* Updates the view's comment count
+    /**
+     * Updates the view's comment count
      * Binded to the model.comments add & remove events
      */
+
     updateCommentCount: function() {
       $('.commentCount', this.el).html(this.model.comments.length);
     },

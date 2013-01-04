@@ -1,21 +1,19 @@
-<!-- Ticket Creator's Avatar -->
-<div class="two columns avatar clearfix">
-  <a class="right shadow paper" href="#">
-    <span class="tape"></span>
-    <img src="{{user.avatar}}" alt="{{user.name}}">
-    <span class="written">{{user.shortname}}</span>
-  </a>
-</div>
-
-<!-- Ticket Body -->
 <div class="ten columns ticketInfo shadow paper">
   <!-- Ticket Header -->
-  <div class="ticketHeader written clearfix {{notify}}">
+  <div class="ticketHeader written clearfix">
     <span class="tack {{tackClass}}"></span>
 
     <!-- Ticket Title -->
     <div class="ticketName left">
       <h2>{{title}}</h2>
+    </div>
+
+    <!-- Ticket Timestamp -->
+    <div class="ticketTimestamp left">
+      {{#isClosed}}
+        <span class="closed">closed:</span>
+      {{/isClosed}}
+      <time title="{{hoverTime}}" datetime="{{datetime}}">{{cleanTime}}</time>
     </div>
 
     <!-- Ticket Assigned To -->
@@ -39,7 +37,7 @@
 
 {{#showAdmin}}
 <!-- Admin Ticket Options -->
-<ul id="ticketOptions" class="ten columns offset-by-two written">
+<ul id="ticketOptions" class="ten columns written">
   <li id="closeTicket" class="red shadow">Close Ticket</li>
 </ul>
 {{/showAdmin}}
