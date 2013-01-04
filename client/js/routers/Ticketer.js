@@ -68,8 +68,13 @@ function(
     },
 
     myTickets: function() {
-      var collection = ticketer.collections.openTickets,
-          view = new TicketListView({collection:collection, filter: 'participating' });
+      var collection = ticketer.collections.openTickets;
+      var view = new TicketListView({
+        collection: collection,
+        filter: function(ticket) {
+          return ticket.participating();
+        }
+      });
 
       this.appView.showView(view);
       this.appView.showToolbarTab('tickets/mine');
