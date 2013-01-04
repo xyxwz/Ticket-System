@@ -6,6 +6,7 @@ define(['jquery', 'underscore', 'backbone', 'BaseView', 'views/comments/CommentV
 function($, _, Backbone, BaseView, CommentView) {
 
   var CommentListView = BaseView.extend({
+    className: 'comment-list',
 
     initialize: function() {
 

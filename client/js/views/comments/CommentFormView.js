@@ -7,6 +7,7 @@ define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
 function($, _, Backbone, BaseView, mustache, form) {
 
   var CommentFormView = BaseView.extend({
+    className: 'comment-form',
 
     events: {
       "keypress textarea":  "createOnEnter"
@@ -17,18 +18,20 @@ function($, _, Backbone, BaseView, mustache, form) {
     },
 
     render: function() {
-
       $(this.el).html(Mustache.to_html(form, ticketer.currentUser));
-
-      // Set input to get form values from
-      this.input = this.$('form textarea');
-
       return this;
     },
 
-    // If you hit return submit form to create a
-    // a new **Comment** model
+    /**
+     * When enter is pressed create a new comment model
+     * and resize the textarea to 23px with no content
+     *
+     * @param {jQuery Event} e
+     */
+
     createOnEnter: function(e) {
+      var element = $('textarea', this.$el);
+
       if (e.keyCode != 13) { return; }
       if (e.keyCode === 13 && !e.ctrlKey) {
         e.preventDefault();
@@ -36,14 +39,14 @@ function($, _, Backbone, BaseView, mustache, form) {
         var self = this;
 
         this.collection.create({
-          comment: this.input.val(),
+          comment: element.val(),
           socket: ticketer.sockets.id
         },{
           wait: true
         });
 
-        this.input.val('').blur();
-        this.input.css('height', '23px');
+        element.val('').blur();
+        element.css('height', '23px');
       }
     },
 

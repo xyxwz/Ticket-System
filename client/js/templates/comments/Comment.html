@@ -1,20 +1,27 @@
-<div class="ten columns offset-by-two commentBody shadow paper clearfix">
-  <span class="tape"></span>
+<!-- Comment Avatar -->
+<div class="avatar">
+  <img src="{{user.avatar}}" alt="{{user.name}}">
+</div>
 
-  <!-- Comment Avatar -->
-  <div class="commentAvatar">
-    <span class="miniAvatar"><img src="{{user.avatar}}" alt="{{user.name}}"></span>
+<!-- Comment Body -->
+<div class="body">
+  <h5>{{user.name}}:</h5>
+  <div class="md">
+    {{{comment}}}
   </div>
+</div>
 
-  <!-- Comment Body -->
-  <div class="commentInfo">
-    <h5>{{user.name}}:</h5>
-    <div class="md">
-      {{{comment}}}
-    </div>
-  </div>
+<!-- Timestamp -->
+<div class="timestamp">
+  <time class="timeago" datetime="{{created_at}}">{{created_at}}</time>
+</div>
 
-  <!-- Timestamp -->
-  <span class="commentTime"><time class="timeago" datetime="{{created_at}}">{{created_at}}</time></span>
-
-</div> <!-- end of commentBody -->
+{{#isDeletable}}
+<!-- Comment options -->
+<ul class="options">
+  {{#isEditable}}
+  <li data-action="edit">Edit</li>
+  <li data-action="delete">Delete</li>
+  {{/isEditable}}
+</ul>
+{{/isDeletable}}

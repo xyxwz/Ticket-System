@@ -7,14 +7,13 @@ define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
 function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
 
   var CommentView = BaseView.extend({
-    tagName: 'div',
-    className: 'row comment written',
+    className: 'comment',
 
     events: {
-      "click li.delete": "removeComment",
-      "click li.edit": "editComment",
-      "click .saveComment": "saveComment",
-      "click .cancelEdit": "renderEdit",
+      "click [data-action='delete']": "removeComment",
+      "click [data-action='edit']": "editComment",
+      "click [data-action='save']": "saveComment",
+      "click [data-action='cancel']": "renderEdit",
       "mouseenter": "toggleOptions",
       "mouseleave": "toggleOptions",
       "click .md a": "openLink"
@@ -24,53 +23,52 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       _.bindAll(this);
 
       this.bindTo(this.model, 'change', this.render);
-      this.$el.attr('id', this.model.id);
+      this.$el.attr('data-id', this.model.id);
     },
 
     render: function() {
       var data;
 
       data = this.model.toJSON();
+      data.isDeletable = this.isDeletable(data);
+      data.isEditable = this.isEditable(data);
       data.comment = marked(data.comment);
-      $(this.el).html(Mustache.to_html(CommentTmpl, data));
-      $('.commentTime time', this.el).timeago();
 
-      this.checkAbilities(data);
+      $(this.el).html(Mustache.to_html(CommentTmpl, data));
+      $('time', this.el).timeago();
 
       return this;
     },
 
-    /* Check whether or not to display edit/remove options.
-     * The comment must belong to the current user or the
-     * current user must have the role admin. If so append the
-     * edit button and setup click bindings.
+    /**
+     * Should this comment be editable?
      *
-     * :data - the current model in JSON form
+     * @return {Boolean}
      */
-    checkAbilities: function(data) {
-      if(data.user.id === ticketer.currentUser.id || ticketer.currentUser.role === 'admin') {
-        var html = "<ul class='commentOptions hide'></ul>";
-        $('.commentBody', this.el).append(html);
 
-        // If currentUser is owner allow to both edit and delete
-        if(data.user.id === ticketer.currentUser.id) {
-          $('ul.commentOptions', this.el).append('<li class="edit"></li>');
-          $('ul.commentOptions', this.el).append('<li class="delete">x</li>');
-        }
-        else {
-          $('ul.commentOptions', this.el).append('<li class="delete">x</li>');
-        }
-      }
+    isEditable: function(data) {
+      return data.user.id === ticketer.currentUser.id;
+    },
+
+    /**
+     * Should this comment be deletable?
+     *
+     * @return {Boolean}
+     */
+
+    isDeletable: function(data) {
+      return data.user.id === ticketer.currentUser.id ||
+              ticketer.currentUser === 'admin';
     },
 
     toggleOptions: function() {
-      if ($('ul.commentOptions', this.el).length > 0) {
+      if ($('.options', this.el).length > 0) {
         // element exists so check if it's showing
-        if($('ul.commentOptions', this.el).is(":visible")) {
-          $('ul.commentOptions', this.el).fadeOut('100').addClass('hide');
+        if($('.options', this.el).is(":visible")) {
+          $('.options', this.el).fadeOut('100').addClass('hide');
         }
         else {
-          $('ul.commentOptions', this.el).hide().removeClass('hide').fadeIn('100');
+          $('.options', this.el).hide().removeClass('hide').fadeIn('100');
         }
       }
     },
@@ -78,9 +76,9 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
     editComment: function() {
       var self = this;
 
-      if($('.commentBody > .commentEdit', this.el).length === 0) {
+      if($('.body > form', this.el).length === 0) {
 
-        $('.commentInfo', this.el).html(Mustache.to_html(EditTmpl, { comment: self.model.get('comment') }));
+        $('.body', this.el).html(Mustache.to_html(EditTmpl, { comment: self.model.get('comment') }));
 
         $('textarea', this.el).autoResize({
           minHeight: 23,
@@ -95,8 +93,10 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       var self = this,
           comment = $('textarea', this.el).val();
 
-      self.model.save(
-        { comment: comment }, { silent: true, success: self.renderEdit });
+      self.model.save({comment: comment}, {
+        silent: true,
+        success: self.renderEdit
+      });
     },
 
     renderEdit: function(e) {
@@ -119,7 +119,7 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       var resp,
           self = this;
 
-      resp = confirm("Are you sure you want to delete this comment? It can not be undone");
+      resp = confirm("Are you sure you want to delete this comment? It cannot be undone");
       if (resp === true) {
         this.model.destroy();
         $(this.el).fadeOut(200, function() {
@@ -128,7 +128,10 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       }
     },
 
-    // Open links within a comment body in a new window
+    /**
+     * Open a link clicked in the comment body in a new window
+     */
+
     openLink: function(e) {
       e.preventDefault();
       e.stopPropagation();
