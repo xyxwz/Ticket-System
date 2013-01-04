@@ -2,11 +2,8 @@ define(['jquery', 'underscore', 'backbone', 'mustache', 'text!templates/alerts/N
 function($, _, Backbone, mustache, NotificationTmpl) {
 
   var NotificationView = Backbone.View.extend({
-
     id: "notification",
     className: "clearfix",
-    tagName: "div",
-
     events: {
       "click button": "requestPermissions"
     },
