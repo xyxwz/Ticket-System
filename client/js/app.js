@@ -11,8 +11,6 @@ define([
   'collections/Projects',
   'collections/Lists',
   'routers/Ticketer',
-  'views/headers/MainHeaderView',
-  'views/headers/BackHeaderView',
   'views/alerts/ErrorView',
   'views/alerts/AlertView',
   'views/alerts/NotificationView',
@@ -29,8 +27,6 @@ define([
   Projects,
   Lists,
   Ticketer,
-  MainHeaderView,
-  BackHeaderView,
   ErrorView,
   AlertView,
   NotificationView,
@@ -94,7 +90,6 @@ define([
      */
     new SocketEvents();
 
-
     // Override Backbone Sync
     new Sync();
 
@@ -156,7 +151,6 @@ define([
         $('body .dialog').remove();
       }
     });
-
 
     /* Check for Desktop Notification Support
      * and permissions. If supported and no permissions
