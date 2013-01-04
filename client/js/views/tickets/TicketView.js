@@ -5,25 +5,14 @@
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'text!templates/tickets/Ticket.html',
-  'text!templates/tickets/AssignedUser.html',
-  'text!templates/tickets/AdminPopupOptions.html',
   'text!templates/tickets/EditTicket.html',
-  'text!templates/tickets/TicketFooter.html',
-  'timeago', 'jqueryui/droppable', 'marked'],
-function($, _, mustache, BaseView, TicketTmpl,
-          AssignedUserTmpl, AdminPopupTmpl,
-          EditTmpl, FooterTmpl) {
+  'timeago', 'marked'],
+function($, _, mustache, BaseView, TicketTmpl, EditTmpl) {
 
   var TicketView = BaseView.extend({
-    tagName: 'div',
-    className: 'row ticket',
+    className: 'ticket',
 
     events: {
-      "click #closeTicket": "closeTicket",
-      "click .popupChoices li.remove": "deleteTicket",
-      "click .popupChoices li.edit": "editTicket",
-      "click #saveTicket": "saveTicket",
-      "click #cancelEdit": "renderEdit",
       "click .md a": "openLink"
     },
 
@@ -33,17 +22,8 @@ function($, _, mustache, BaseView, TicketTmpl,
 
       $(this.el).attr('data-id', this.model.id);
 
-      /* Keep track of who is assigned to this ticket.
-       * Because the id's are stored as an array when the 'change'
-       * event fires it returns the entire new array. By managing it
-       * in an instance variable the UI can update with only the
-       * added/removed user and not refresh all assigned users */
-      this.assigned_to = this.model.get('assigned_to');
-
-      // Bindings using the garbage collectors bindTo()
       this.bindTo(this.model.comments, 'add remove reset', this.updateCommentCount);
-      this.bindTo(this.model, 'change', this.updateTicket);
-      this.bindTo(this.model, 'assignedUser', this.addAssignee);
+      this.bindTo(this.model, 'change', this.render);
     },
 
     render: function() {
@@ -53,9 +33,7 @@ function($, _, mustache, BaseView, TicketTmpl,
 
       data.description = marked(data.description);
       data.comments = this.model.comments.length;
-      data.showAdmin = this.renderAdminOptions(); // True or False
       data.user = this.model.get('user');
-      data.user.shortname = data.user.name.split(' ')[0];
       data.datetime = this.model.get('closed_at') || this.model.get('opened_at');
       data.cleanTime = new Date(data.datetime).toDateString().slice(4);
       data.hoverTime = this.model.responseTime() || data.cleanTime;
@@ -70,193 +48,9 @@ function($, _, mustache, BaseView, TicketTmpl,
       }
 
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
-
       $('time', this.el).timeago();
-      this.setAssignedUsers();
-
-      /* Make the entire ticket a droppable element that accepts
-       * .assign classes within the assigned_to scope.
-       *
-       * User to assign users to a ticket's assigned_users param.
-       */
-      $(this.el).droppable({
-        accept: '.assign, .list, .project',
-        scope: 'ticket_property',
-        drop: self.handleDrop
-      });
-
-      // Check Abilities to add edit/delete functionality
-      this.checkAbilities(data);
 
       return this;
-    },
-
-    /**
-     * Render the footer element on the ticket
-     */
-    renderFooter: function() {
-      var lists,
-          projects,
-          self = this,
-          isAdmin = this.renderAdminOptions(),
-          ItemTmpl = '<li data-id="{{id}}">{{name}}</li>';
-
-      //TODO: Eliminate needing the ticketer object?
-      lists = ticketer.collections.lists;
-      projects = ticketer.collections.projects;
-
-      // Only bind on the first call to render the footer
-      if(!this.footerRendered()) {
-        this.bindTo(projects, 'remove', this.renderFooter);
-        this.bindTo(lists, 'remove', this.renderFooter);
-      }
-
-      $('.ticketFooter', this.$el).remove();
-
-      // Render the main footer container
-      $('.ticketInfo', this.$el).append(Mustache.to_html(FooterTmpl, {
-        hasProjects: projects.some(function(model) {
-          return model.hasTicket(self.model.id);
-        }),
-        hasLists: lists.some(function(model) {
-          return model.hasTicket(self.model.id);
-        })
-      }));
-
-      projects.each(function(project) {
-        if(project.hasTicket(self.model.id)) {
-          $('.ticketFooter .projects', self.$el)
-                .append(Mustache.to_html(ItemTmpl, project.toJSON()));
-        }
-      });
-
-      lists.each(function(list) {
-        if(list.hasTicket(self.model.id)) {
-          $('.ticketFooter .lists', self.$el)
-                .append(Mustache.to_html(ItemTmpl, list.toJSON()));
-        }
-      });
-
-      if(isAdmin) {
-        $('.ticketFooter .projects li', this.$el).draggable({
-          distance: 30,
-          revert: true,
-          zIndex: 200,
-          cursorAt: {
-            top: 21,
-            left: 21
-          }
-        });
-
-        $('.ticketFooter .projects li', this.$el).bind("drag", this.dragFooterItem);
-        $('.ticketFooter .projects li', this.$el).bind("dragstop", this.dragFooterItemStop);
-      }
-
-      $('.ticketFooter .lists li', this.$el).draggable({
-        distance: 30,
-        revert: true,
-        zIndex: 200,
-        cursorAt: {
-          top: 21,
-          left: 21
-        }
-      });
-
-      $('.ticketFooter .lists li', this.$el).bind("drag", this.dragFooterItem);
-      $('.ticketFooter .lists li', this.$el).bind("dragstop", this.dragFooterItemStop);
-
-      return this;
-    },
-
-    footerRendered: function() {
-      return !!$('.ticketFooter', this.$el).length;
-    },
-
-    /**
-     * Handle the drop of a draggable onto the ticket
-     */
-    handleDrop: function(e, ui) {
-      var element = ui.draggable;
-
-      // Add user to ticket
-      if(element.hasClass('assign')) {
-        this.model.assignUser(element.data('id'));
-      }
-
-      if(element.hasClass('list') || element.hasClass('project')) {
-        if(element.hasClass('list')) {
-          ticketer.collections.lists.get(element.data('id')).addTicket(this.model.id);
-        }
-        else {
-          ticketer.collections.projects.get(element.data('id')).addTicket(this.model.id);
-        }
-
-        if(this.footerRendered()) this.renderFooter();
-      }
-    },
-
-    /* Set this.admin to true when instantiating a view
-     * if admin options are needed. Access control is done on
-     * a per view basis by checking currentUser.role
-     */
-    renderAdminOptions: function() {
-      var self = this;
-
-      if(this.admin && this.admin === true) {
-        if(ticketer.currentUser.role === 'admin' && self.model.get('status') != 'closed') {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }
-    },
-
-    /* Check whether or not to display edit/remove options.
-     * The ticket must belong to the current user or the
-     * current user must have the role admin. If so append the
-     * edit button and setup click bindings.
-     *
-     * :data - the current model in JSON form
-     */
-    checkAbilities: function(data) {
-      if(this.admin && (data.user.id === ticketer.currentUser.id || ticketer.currentUser.role === 'admin')) {
-        var html = "<li class='gears'></li>";
-        $('ul.ticketMeta', this.el).append(html);
-
-        // If currentUser is owner but not an admin go directly to
-        // edit mode on click
-        if(data.user.id === ticketer.currentUser.id && ticketer.currentUser.role != 'admin') {
-          this.bindTo($('ul.ticketMeta li.gears', this.el), 'click', this.editTicket);
-        }
-        else {
-          $('ul.ticketMeta li.gears', this.el).append(AdminPopupTmpl);
-          this.bindTo($('ul.ticketMeta li.gears', this.el), 'click', this.showEditOptions);
-        }
-      }
-    },
-
-    // Display a pop-up with multiple actions to choose from
-    showEditOptions: function() {
-      $('ul.ticketMeta li.gears ul', this.el).show();
-      this.bindTo($('ul.ticketMeta li.gears', this.el), 'clickoutside', this.hideEditOptions);
-    },
-
-    // Hide the popup
-    hideEditOptions: function() {
-       $('ul.ticketMeta li.gears ul', this.el).fadeOut(200);
-    },
-
-    /* Edit/Delete functionality
-     */
-
-    deleteTicket: function() {
-      var resp;
-
-      resp = confirm("Are you sure you want to delete this ticket? It can not be undone");
-      if (resp === true) {
-        this.model.destroy();
-      }
     },
 
     /**
@@ -268,169 +62,14 @@ function($, _, mustache, BaseView, TicketTmpl,
       $('.commentCount', this.el).html(this.model.comments.length);
     },
 
-    /* Close the ticket using the model's close function */
-    closeTicket: function() {
-      this.model.close();
-
-      // Unbind drag and drop
-      $(this.el).droppable('destroy');
-      $('.ticketHeader ul', this.el).off();
-      $('.ticketHeader ul li', this.el).each(function(){
-        $(this).draggable('destroy');
-      });
-
-    },
-
-    /* Runs on model 'change' event and updates view elements */
-    updateTicket: function(model) {
-      var changedAttributes = this.model.changedAttributes();
-
-      if(changedAttributes.status) {
-        $('#ticketOptions', this.el).fadeOut(100);
-        $('.ticketHeader .tack', this.el).removeClass('unread read').addClass('closed');
-      }
-
-      if(changedAttributes.closed_at) {
-        this.setTimestamp();
-      }
-
-      if(changedAttributes.title) {
-        $('.ticketName h2', this.el).html(changedAttributes.title);
-      }
-
-      if(changedAttributes.description) {
-        $('.ticketBody', this.el).html(marked(changedAttributes.description));
-      }
-
-      if(changedAttributes.assigned_to) {
-        $('.ticketHeader ul', this.el).html('');
-        this.setAssignedUsers();
-      }
-
-      if(changedAttributes.notification) {
-        $('.ticketHeader', this.el).addClass('notify');
-      }
-
-    },
-
-    /* Renders the ticket's assigned users avatars */
-    setAssignedUsers: function() {
-      var self = this,
-          assigned_to = this.model.get('assigned_to');
-
-      if(assigned_to.length > 0) {
-        $('.ticketHeader .tack', this.el).removeClass('unread').addClass('read');
-      }
-      else {
-        $('.ticketHeader .tack', this.el).removeClass('read').addClass('unread');
-      }
-
-      _.each(assigned_to, function(id) {
-        var user = ticketer.collections.admins.get(id),
-            html = Mustache.to_html(AssignedUserTmpl, user.toJSON());
-
-        $('.ticketHeader ul', self.el).prepend(html);
-      });
-
-      /* Bind assigned users to .draggable using the mouseover
-       * event. Check if element is already a draggable first.
-       *
-       * Used to make avatars draggable for use in removeAssignedTo.
-       */
-      if(ticketer.currentUser.role === "admin") {
-
-        $('.ticketHeader ul', this.el).on('mouseenter', 'li', function() {
-          if(!$(this).is(':data(draggable)')) {
-            $(this).draggable({
-              distance: 30,
-              cursorAt: {
-                top: 21,
-                left: 21
-              }
-            });
-
-            $('.ticketHeader ul li', self.el).bind("drag", self.dragAvatar);
-            $('.ticketHeader ul li', self.el).bind("dragstop", self.dragAvatarStop);
-          }
-        });
-      }
-
-    },
-
-    /* Adds a single assignee to ticket's assigned users avatars list
-     *    :id - an id from a tickets assigned_users array
-     */
-    addAssignee: function(id) {
-      var self = this,
-          newAssignees = _.difference(
-            this.model.changedAttributes().assigned_to,
-            this.assigned_to
-          );
-
-      // Add newly assigned user to this.assigned_to
-      _.each(newAssignees, function(user) {
-        self.assigned_to.push(user);
-
-        var userObj = ticketer.collections.admins.get(user),
-            html = Mustache.to_html(AssignedUserTmpl, userObj.toJSON());
-
-        $('.ticketHeader ul', self.el).prepend(html);
-      });
-
-      $('.ticketHeader .tack', this.el).removeClass('unread').addClass('read');
-    },
-
-    /* Removes a single assignee from a ticket's assigned users avatars list.
-     *    :id = an id from a tickets assigned_ussers array
-     */
-    removeAssignee: function(id) {
-      var newArray = _.reject(this.assigned_to, function(user) {
-        return user === id;
-      });
-      this.assigned_to = newArray;
-      this.model.unassignUser(id);
-
-      if(newArray.length === 0) {
-        $('.ticketHeader .tack', this.el).removeClass('read').addClass('unread');
-      }
-    },
-
-    /* Drag Avatar */
-    dragAvatar: function(e, ui) {
-      var html = ui.helper;
-      if(ui.position.top < -45) {
-        $(html).data('draggable').options.revert = false;
-        if($('span figure', html).length === 0) {
-          $('span', html).append("<figure class='poof'></figure>");
-        }
-      }
-      else {
-        $(html).data('draggable').options.revert = true;
-        $('figure', html).remove();
-      }
-    },
-
-    /* Stop Dragging Avatar */
-    dragAvatarStop: function(e, ui) {
-      var html = ui.helper;
-      if(ui.position.top < -45) {
-        var id = $('span', html).data('user');
-        $(html).remove();
-        this.removeAssignee(id);
-      }
-      else {
-        $('figure', html).remove();
-      }
-    },
-
     /* open the ticket for editing */
     editTicket: function() {
       var self = this;
 
-      if($('.ticketBody > .ticketEdit', self.el).length === 0) {
-        $('ul.ticketMeta li.gears ul', this.el).hide();
-
-        $('.ticketBody').html(Mustache.to_html(EditTmpl, { description: self.model.get('description') }));
+      if($('.ticket > .ticket-form', self.el).length === 0) {
+        $('.ticketBody').html(Mustache.to_html(EditTmpl, {
+          description: self.model.get('description')
+        }));
 
         $('textarea', this.el).autoResize({
           minHeight: 150,
@@ -443,7 +82,7 @@ function($, _, mustache, BaseView, TicketTmpl,
       e.preventDefault();
 
       var self = this,
-          description = $('.outerWrap > textarea', self.el).val();
+          description = $('.wrap > textarea', self.el).val();
 
       $('textarea', this.el).data('AutoResizer').destroy();
 
@@ -451,12 +90,11 @@ function($, _, mustache, BaseView, TicketTmpl,
     },
 
     renderEdit: function(e) {
-      /* just so we don't have to create another function */
+      var self = this;
+
       if(e instanceof jQuery.Event) {
         e.preventDefault();
       }
-
-      var self = this;
 
       $(this.el).fadeOut(200, function() {
         self.render();
@@ -469,37 +107,6 @@ function($, _, mustache, BaseView, TicketTmpl,
       e.preventDefault();
       e.stopPropagation();
       window.open(e.currentTarget.href);
-    },
-
-    dragFooterItem: function(e, ui) {
-      var element = ui.helper;
-
-      if(ui.position.top > 45) {
-        if($('figure', element).length === 0) {
-          $(element).append("<figure class='poof'></figure>");
-        }
-        $(element).data('draggable').options.revert = false;
-      }
-      else {
-        $(element).data('draggable').options.revert = true;
-        $('figure', element).remove();
-      }
-    },
-
-    dragFooterItemStop: function(e, ui) {
-      var item,
-          element = ui.helper;
-
-      if(ui.position.top > 45) {
-        item = ticketer.collections.projects.get(element.data('id'));
-        if(!item) item = ticketer.collections.lists.get(element.data('id'));
-
-        item.removeTicket(this.model.id);
-        this.renderFooter();
-      }
-      else {
-        $('figure', element).remove();
-      }
     }
 
   });
