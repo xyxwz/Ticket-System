@@ -20,13 +20,11 @@ function($, _, Backbone, BaseView, mustache, ListForm) {
     className: 'row',
 
     events: {
-      "click .create": "create",
-      "click .back": "back"
+      "click [data-action='create']": "create",
+      "click [data-action='cancel']": "back"
     },
 
     initialize: function() {
-
-      // Bindings using the garbage collectors bindTo()
       _.bindAll(this);
       this.bindTo(this.collection, 'sync', this.redirect);
     },
