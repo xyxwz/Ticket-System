@@ -1,0 +1,65 @@
+// Sidebar
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 199;
+  width: 184px;
+  background: #222;
+  border-right: 1px solid rgba(85, 85, 85, 0.2);
+}
+
+  .sidebar .options {
+    margin: 15px 0;
+  }
+
+    .sidebar .option-set {
+      display: block;
+      font-size: 14px;
+      margin: 0;
+      color: #f6f6f6;
+      border-top: 1px solid #111;
+    }
+
+      .sidebar .option-set .title {
+        padding: 4px 6px;
+        margin: 0;
+        border-top: 1px solid rgba(85, 85, 85, 0.2);
+        color: #ddd;
+        text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
+        font-size: 16px;
+        font-weight: 400;
+      }
+
+      .sidebar .option-set .group {
+        margin: 0;
+        padding: 0;
+      }
+
+        .sidebar .option-set .group li {
+          position: relative;
+          padding: 4px 6px 4px 20px;
+          margin: 0;
+          border-top: 1px solid rgba(85, 85, 85, 0.2);
+          border-bottom: 1px solid #111;
+          color: #ddd;
+          text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
+          font-size: 13px;
+          min-width: 148px;
+          background: #222;
+          cursor: pointer;
+        }
+
+          .sidebar .option-set .group li:first-child {
+            border-top: none;
+          }
+
+          .sidebar .option-set .group li:last-child {
+            border-bottom: none;
+          }
+
+        .sidebar .option-set .group .active {
+          background: #333;
+        }
