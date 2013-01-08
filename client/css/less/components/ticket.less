@@ -1,0 +1,61 @@
+.ticket {
+  position: relative;
+  width: 100%;
+  padding: 8px;
+
+  .clearfix();
+
+  .ticket-content {
+    float: left;
+    width: 80%;
+
+    .header {
+      .title {
+        margin: 0;
+        .written(24px, 400);
+      }
+
+        &.read .title {
+          .horizontal-gradient(#bbb, #efefef);
+        }
+
+        &.unread .title {
+          .horizontal-gradient(#efefef, #bbb);
+        }
+
+      .timestamp {
+        margin: 0;
+        .written(14px, 200);
+      }
+    }
+
+    .content {
+      margin: 8px 0 0 0;
+    }
+  }
+
+  .ticket-meta {
+    float: left;
+    width: 20%;
+
+    .assigned-users {
+      list-style: none;
+      padding: 0;
+      margin: 0 14px 0 0;
+      .clearfix();
+
+      li {
+        display: block;
+        float: right;
+
+        img {
+          display: block;
+          padding: 1px;
+          border: 1px solid #888;
+          border-radius: 2px;
+          .size(24px, 24px);
+        }
+      }
+    }
+  }
+}
