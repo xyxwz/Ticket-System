@@ -24,7 +24,7 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
             model = self.get(obj.id);
 
         if(model) {
-          model.set(comment.parse(obj));
+          model.set(model.parse(obj));
         }
       });
 
