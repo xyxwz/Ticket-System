@@ -5,9 +5,10 @@
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'text!templates/tickets/Ticket.html',
+  'text!templates/tickets/AssignedUser.html',
   'text!templates/tickets/EditTicket.html',
   'timeago', 'marked'],
-function($, _, mustache, BaseView, TicketTmpl, EditTmpl) {
+function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
 
   var TicketView = BaseView.extend({
     className: 'ticket',
@@ -18,46 +19,68 @@ function($, _, mustache, BaseView, TicketTmpl, EditTmpl) {
 
     initialize: function() {
       _.bindAll(this);
+
+      // Render all data for the ticket
+      this.renderAll = this.options.renderAll || false;
+
+      // Set the data-id attribute on this.el
       $(this.el).attr('data-id', this.model.id);
 
-      this.bindTo(this.model.comments, 'add remove reset', this.updateCommentCount);
+      // Bindings
       this.bindTo(this.model, 'change', this.render);
     },
 
     render: function() {
       // Build up data object for use with view
       var self = this,
-          data = this.model.toJSON();
-
-      data.description = marked(data.description);
-      data.comments = this.model.comments.length;
-      data.user = this.model.get('user');
-      data.datetime = this.model.get('closed_at') || this.model.get('opened_at');
-      data.cleanTime = new Date(data.datetime).toDateString().slice(4);
-      data.hoverTime = this.model.responseTime() || data.cleanTime;
-
-      // Closed specific attributes
-      if(data.status === 'closed') {
-        data.tackClass = 'closed';
-        data.isClosed = true;
-      }
-      else {
-        data.tackClass = data.assigned_to.length > 0 ? 'read' : 'unread';
-      }
+          data = this.packageModel();
 
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
       $('time', this.el).timeago();
+
+      this.renderMeta();
+
+      return this;
+    },
+
+    renderMeta: function() {
+      var i, len, users, cap = 8,
+          assigned = this.model.get('assigned_to'),
+          element = $("ul[data-role='assigned-users']", this.$el);
+
+      users = ticketer.collections.admins.filter(function(user) {
+        return ~assigned.indexOf(user.id);
+      });
+
+      for(i = 0, len = users.length; i < len && cap; i++, cap--) {
+        element.append(Mustache.to_html(UserTmpl, users[i].toJSON()));
+      }
 
       return this;
     },
 
     /**
-     * Updates the view's comment count
-     * Binded to the model.comments add & remove events
+     * Return the views current model ready to be
+     * rendered to the template
+     *
+     * @return {Object} data
      */
 
-    updateCommentCount: function() {
-      $('.comment-count', this.el).html(this.model.comments.length);
+    packageModel: function() {
+      var data = {};
+
+      data.title = this.model.get('title');
+      data.datetime = this.model.get('closed_at') || this.model.get('opened_at');
+      data.cleanTime = new Date(data.datetime).toDateString().slice(4);
+      data.hoverTime = this.model.responseTime() || data.cleanTime;
+      data.statusClass = this.model.get('assigned_to').length ? 'read' : 'unread';
+      data.isClosed = this.model.get('status') === 'closed';
+
+      if(this.renderAll) {
+        data.description = marked(this.model.get('description'));
+      }
+
+      return data;
     },
 
     /**
