@@ -1,35 +1,21 @@
-<!-- Ticket Header -->
-<div class="header written clearfix">
-  <span class="tack {{tackClass}}"></span>
-
-  <!-- Ticket creator avatar -->
-  <div class="avatar left">
-    <img title="{{user.name}}" alt="{{user.name}}" src="{{user.avatar}}">
-  </div>
-  <!-- Ticket Title -->
-  <div class="title left">
-    <h2>{{title}}</h2>
-  </div>
-
-  <!-- Ticket Timestamp -->
-  <div class="timestamp left">
+<div class="ticket-content">
+  <div class="header {{statusClass}}">
+    <h2 class="title">{{title}}</h2>
+    <h4 class="timestamp">
     {{#isClosed}}
       <span class="closed">closed:</span>
     {{/isClosed}}
-    <time title="{{hoverTime}}" datetime="{{datetime}}">{{cleanTime}}</time>
+      <time title="{{hoverTime}}" datetime="{{datetime}}">{{cleanTime}}</time>
+    </h4>
   </div>
 
-  <!-- Ticket Assigned To -->
-  <ul class="right clearfix">
-  </ul>
-</div> <!-- end of ticketHeader -->
+  {{#description}}
+    <div class="content md">
+      {{{description}}}
+    </div>
+  {{/description}}
+</div>
 
-<!-- Ticket Body -->
-<div class="body written md">
-  {{{description}}}
-</div> <!-- end of ticketBody -->
-
-<!-- Ticket Comment Count -->
-<ul class="meta">
-  <li class="written comment-count">{{comments}}</li>
-</ul>
+<div class="ticket-meta">
+  <ul data-role="assigned-users" class="assigned-users"></ul>
+</div>
