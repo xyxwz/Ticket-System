@@ -33,10 +33,9 @@ function($, _, Backbone, BaseView, CommentView) {
     },
 
     addComment: function(comment) {
-      var view = this.createView(
-        CommentView,
-        {model: comment}
-      );
+      var view = this.createView(CommentView, {
+        model: comment
+      });
 
       // Build html and set style to hidden for
       // a nice fadeIn transition

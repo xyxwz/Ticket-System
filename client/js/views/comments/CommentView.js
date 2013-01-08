@@ -62,14 +62,12 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
     },
 
     toggleOptions: function() {
-      if ($('.options', this.el).length > 0) {
-        // element exists so check if it's showing
-        if($('.options', this.el).is(":visible")) {
-          $('.options', this.el).fadeOut('100').addClass('hide');
-        }
-        else {
-          $('.options', this.el).hide().removeClass('hide').fadeIn('100');
-        }
+      // element exists so check if it's showing
+      if($('.options', this.el).is(":visible")) {
+        $('.options', this.el).fadeOut('100');
+      }
+      else {
+        $('.options', this.el).fadeIn('100');
       }
     },
 

@@ -7,7 +7,7 @@ define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
 function($, _, Backbone, BaseView, mustache, form) {
 
   var CommentFormView = BaseView.extend({
-    className: 'comment-form',
+    className: 'comment-form comment',
 
     events: {
       "keypress textarea":  "createOnEnter"
