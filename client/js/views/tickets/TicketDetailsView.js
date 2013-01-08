@@ -25,10 +25,11 @@ function($, _, Backbone, BaseView, TicketView, CommentListView, CommentFormView)
 
     renderTicket: function() {
       var self = this,
-          view = this.createView(
-            TicketView,
-            { model: this.model, admin: true }
-          );
+          view = this.createView(TicketView, {
+            model: this.model,
+            admin: true,
+            renderAll: true
+          });
 
       $(this.el).html(view.render().el);
     },
