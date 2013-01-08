@@ -43,8 +43,16 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
       return this;
     },
 
+    /**
+     * Fills the ticket-meta container class with meta-data.
+     *
+     *
+     * Appends all users if renderAll === true,
+     * otherwise just renders users up until cap === 0
+     */
+
     renderMeta: function() {
-      var i, len, users, cap = 8,
+      var len, users, i = 0, cap = 5,
           assigned = this.model.get('assigned_to'),
           element = $("ul[data-role='assigned-users']", this.$el);
 
@@ -52,8 +60,17 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
         return ~assigned.indexOf(user.id);
       });
 
-      for(i = 0, len = users.length; i < len && cap; i++, cap--) {
+      len = users.length;
+
+      while((i < len && cap && !this.renderAll) || (i < len && this.renderAll)) {
         element.append(Mustache.to_html(UserTmpl, users[i].toJSON()));
+        i = i + 1;
+        cap = cap - 1;
+      }
+
+      // There are remaining users to render
+      if(i !== len) {
+        element.append($('<li>...</li>'));
       }
 
       return this;
@@ -103,6 +120,13 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
       }
     },
 
+    /**
+     * Take the data from the current edit form and save
+     * it to the current model
+     *
+     * @param {jQuery.Event} e
+     */
+
     saveTicket: function(e) {
       e.preventDefault();
 
@@ -117,6 +141,13 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
       });
     },
 
+    /**
+     * Re-render the current model after the edit
+     * has taken place
+     *
+     * @param {jQuery.Event} e
+     */
+
     renderEdit: function(e) {
       var self = this;
 
@@ -130,7 +161,12 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
       });
     },
 
-    // Open links within a ticket body in a new window
+    /**
+     * Open the link in a new window
+     *
+     * @param {jQuery.Event} e
+     */
+
     openLink: function(e) {
       e.preventDefault();
       e.stopPropagation();
