@@ -14,6 +14,7 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
     className: 'ticket',
 
     events: {
+      "submit form": "saveTicket",
       "click .md a": "openLink"
     },
 
@@ -28,6 +29,7 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
 
       // Bindings
       this.bindTo(this.model, 'change', this.render);
+      this.bindTo(this.model, 'edit', this.renderEditForm);
     },
 
     render: function() {
@@ -104,16 +106,15 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
      * open the ticket for editing
      */
 
-    editTicket: function() {
-      var self = this,
-          editing = $('.ticket .ticket-form', self.el).length === 0;
+    renderEditForm: function() {
+      var editing = $('.ticket .ticket-form', this.$el).length;
 
       if(!editing) {
-        $('.body').html(Mustache.to_html(EditTmpl, {
-          description: self.model.get('description')
+        $('.content', this.$el).html(Mustache.to_html(EditTmpl, {
+          description: this.model.get('description')
         }));
 
-        $('textarea', this.el).autoResize({
+        $('textarea', this.$el).autoResize({
           minHeight: 150,
           extraSpace: 14
         });
