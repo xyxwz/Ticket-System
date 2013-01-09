@@ -1,9 +1,19 @@
-/* TicketListView
- * Renders a collection of Tickets
+/**
+ * View Dependencies
  */
 
-define(['jquery', 'underscore', 'backbone', 'BaseView', 'timeline', 'views/tickets/TicketView', 'truncate'],
+define(['jquery', 'underscore', 'backbone', 'BaseView', 'timeline',
+  'views/tickets/TicketView'],
 function($, _, Backbone, BaseView, Timeline, TicketView) {
+
+  /**
+   * TicketListView
+   * Renders a collection of Tickets
+   *
+   * @param {Backbone.Collection} collection
+   * @param {Function} filter
+   * @param {String} status
+   */
 
   var TicketListView = BaseView.extend({
     className: 'ticket-list',

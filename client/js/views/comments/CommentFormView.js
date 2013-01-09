@@ -1,10 +1,17 @@
-/* CommentForm
- * Renders the comment form
+/**
+ * View Dependencies
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/comments/CommentForm.html'],
-function($, _, Backbone, BaseView, mustache, form) {
+  'text!templates/comments/CommentForm.html'],
+function($, _, Backbone, BaseView, mustache, FormTmpl) {
+
+  /**
+   * CommentForm
+   * Renders the comment form
+   *
+   * @param {Backbone.Collection} collection
+   */
 
   var CommentFormView = BaseView.extend({
     className: 'comment-form comment',

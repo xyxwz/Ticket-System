@@ -1,10 +1,18 @@
-/* New Ticket Form */
+/**
+ * View Dependencies
+ */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/tickets/TicketForm.html',
-'text!templates/tickets/MarkdownGuide.html',
-'autoresize'],
+  'text!templates/tickets/TicketForm.html',
+  'text!templates/tickets/MarkdownGuide.html',
+  'autoresize'],
 function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
+
+  /**
+   * New Ticket Form
+   *
+   * @param {Backbone.Collection} collection
+   */
 
   var TicketFormView = BaseView.extend({
     className: 'ticket-form',

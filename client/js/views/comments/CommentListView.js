@@ -1,17 +1,25 @@
-/* CommentListView
- * Renders a collection of ticket comments
+/**
+ * View Dependencies
  */
 
-define(['jquery', 'underscore', 'backbone', 'BaseView', 'views/comments/CommentView'],
-function($, _, Backbone, BaseView, CommentView) {
+define(['jquery', 'underscore', 'backbone', 'BaseView',
+  'views/comments/CommentView',
+  'views/comments/CommentFormView'],
+function($, _, Backbone, BaseView, CommentView, FormView) {
+
+  /**
+   * CommentListView
+   * Renders a collection of ticket comments
+   *
+   * @param {Backbone.Collection} collection
+   */
 
   var CommentListView = BaseView.extend({
     className: 'comment-list',
 
     initialize: function() {
-
-      // Bindings using the garbage collectors bindTo()
       _.bindAll(this);
+
       this.bindTo(this.collection,'add', this.addComment);
       this.bindTo(this.collection, 'remove', this.removeComment);
       this.bindTo(this.collection,'reset', this.addAll);

@@ -1,6 +1,5 @@
 /**
- * TicketView
- * render a single Ticket
+ * View Dependencies
  */
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
@@ -9,6 +8,14 @@ define(['jquery', 'underscore', 'mustache', 'BaseView',
   'text!templates/tickets/EditTicket.html',
   'timeago', 'marked'],
 function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
+
+  /**
+   * TicketView
+   * render a single Ticket
+   *
+   * @param {Backbone.Model} model
+   * @param {Boolean} renderAll
+   */
 
   var TicketView = BaseView.extend({
     className: 'ticket',

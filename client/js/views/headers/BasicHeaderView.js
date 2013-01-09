@@ -1,10 +1,17 @@
 /**
- * A basic header view
+ * View Dependencies
  */
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'text!templates/headers/BasicHeader.html'],
 function($, _, mustache, BaseView, HeaderTmpl) {
+
+  /**
+   * A basic header view
+   *
+   * @param {String} route
+   * @param {String} title
+   */
 
   var BasicHeader = BaseView.extend({
     className: 'view-header',

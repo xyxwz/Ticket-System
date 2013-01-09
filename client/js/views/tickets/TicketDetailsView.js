@@ -1,10 +1,20 @@
-/* TicketDetailsView
- * Renders a ticket's details and comments
+/**
+ * View Dependencies
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView',
-'views/tickets/TicketView', 'views/comments/CommentListView', 'views/comments/CommentFormView'],
-function($, _, Backbone, BaseView, TicketView, CommentListView, CommentFormView) {
+  'views/tickets/TicketView',
+  'views/comments/CommentListView',
+  'views/comments/CommentFormView'],
+function($, _, Backbone, BaseView, TicketView,
+  CommentListView, CommentFormView) {
+
+  /**
+   * TicketDetailsView
+   * Renders a ticket's details and comments
+   *
+   * @param {Backbone.Model} model
+   */
 
   var TicketDetailsView = BaseView.extend({
     className: "ticket-details",

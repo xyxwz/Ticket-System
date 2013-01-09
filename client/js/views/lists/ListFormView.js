@@ -1,14 +1,5 @@
-      var element = $(e.target);
-
-      ticketer.collections.lists.create({
-        name: element.children('[name="name"]').val(),
-        user: ticketer.currentUser.id
-      },{wait: true});
-
-      this.removeListForm(e);
-
 /**
- * List form view
+ * View Dependencies
  */
 
 define(['jquery', 'underscore', 'backbone',

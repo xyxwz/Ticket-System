@@ -1,10 +1,17 @@
-/* CommentView
- * Renders a single comment
+/**
+ * View Dependencies
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
 'text!templates/comments/Comment.html', 'text!templates/comments/EditComment.html', 'timeago', 'marked'],
 function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
+
+  /**
+   * CommentView
+   * Renders a single comment
+   *
+   * @param {Backbone.Model} model
+   */
 
   var CommentView = BaseView.extend({
     className: 'comment',
