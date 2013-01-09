@@ -1,8 +1,17 @@
+/**
+ * View Dependencies
+ */
+
 define([
   'jquery', 'underscore', 'backbone',
   'BaseView', 'mustache',
   'text!templates/toolbars/Toolbar.html' ],
   function($, _, Backbone, BaseView, mustache, ToolbarTmpl) {
+
+  /**
+   * Toolbar view
+   * assists in changing main views
+   */
 
   var ToolbarView = BaseView.extend({
     className: 'sidebar',
