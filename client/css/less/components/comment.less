@@ -1,26 +1,51 @@
 .comment {
   position: relative;
   width: 100%;
+  padding: 8px;
+  border: 1px solid black; // Remove me
+  background: #F6F6F6;
   .clearfix();
+  .box-sizing(border-box);
 
   .avatar {
     float: left;
 
     img {
       display: block;
-      padding: 1px;
+      padding: 2px;
       border: 1px solid #888;
       border-radius: 2px;
-      .size(54px, 54px);
+      .size(36px, 36px);
     }
   }
 
   .body {
-    float: left;
-    margin-left: 18px;
+    margin-left: 54px;
+    margin-right: 0;
+    .box-sizing(border-box);
+
+    h5 {
+      margin: 0 0 8px 0;
+    }
   }
 
   .timestamp {
     float: right;
+  }
+
+  .options {
+    display: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    list-style: none;
+
+    li {
+      float: left;
+      margin-left: 8px;
+      /* text-indent: -9999px; */
+    }
   }
 }
