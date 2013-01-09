@@ -1,30 +1,19 @@
-// Main Router
+/**
+ * Application Router
+ */
 
-define([
-  'backbone',
-  'AppView',
-  'models/Ticket',
-  'views/tickets/TicketListView',
-  'views/tickets/TicketDetailsView',
-  'views/tickets/TicketFormView',
-  'views/toolbars/ToolbarView'
-],
-function(
-  Backbone,
-  AppView,
-  Ticket,
-  TicketListView,
-  TicketDetailsView,
-  TicketFormView,
-  ToolbarView
-) {
+define(['backbone', 'AppView',
+  'views/main/TicketListView',
+  'views/main/TicketDetailsView',
+  'views/main/TicketFormView',
+  'views/toolbars/MainToolbarView'],
+function(Backbone, AppView, TicketListView,
+  TicketDetailsView, TicketFormView, ToolbarView) {
 
   var Ticketer = Backbone.Router.extend({
-
     routes: {
       "": "index",
       "tickets/open": "openTickets",
-      "tickets/open?*params": "openTickets",
       "tickets/closed": "closedTickets",
       "tickets/closed?*params": "closedTickets",
       "tickets/mine": "myTickets",
@@ -35,19 +24,32 @@ function(
       "lists/:id": "showList"
     },
 
-    /* Routing */
+    /**
+     * Initialize our AppView function that manages main views
+     * and toolbar swapping
+     */
+
     initialize: function(){
       this.appView = new AppView();
       this.appView.showToolbar(ToolbarView);
     },
+
+    /**
+     * Default view
+     */
 
     index: function() {
       this.navigate("tickets/mine", true);
     },
 
     openTickets: function() {
-      var collection = ticketer.collections.openTickets,
-          view = new TicketListView({ collection: collection });
+      var view,
+          collection = ticketer.collections.openTickets;
+
+      view = new TicketListView({
+        title: 'Open Tickets',
+        collection: collection
+      });
 
       this.appView.showView(view);
       this.appView.showToolbarTab('tickets/open');
@@ -55,10 +57,10 @@ function(
 
     closedTickets: function() {
       var view,
-          models,
           collection = ticketer.collections.closedTickets;
 
       view = new TicketListView({
+        title: 'Closed Tickets',
         collection: collection,
         status: 'closed'
       });
@@ -70,6 +72,7 @@ function(
     myTickets: function() {
       var collection = ticketer.collections.openTickets;
       var view = new TicketListView({
+        title: 'My Tickets',
         collection: collection,
         filter: function(ticket) {
           return ticket.participating();
@@ -91,16 +94,20 @@ function(
       else {
         view = new TicketDetailsView({model: ticket});
 
-        this.appView.showView(view, function() { view.trigger('viewRendered'); });
+        this.appView.showView(view);
         this.appView.showToolbarTab();
       }
     },
 
     createTicket: function() {
-      var collection = ticketer.collections.openTickets,
-          view = new TicketFormView({collection: collection});
+      var view,
+          collection = ticketer.collections.openTickets;
 
-      this.appView.showView(view, function() { view.trigger('viewRendered'); });
+      view = new TicketFormView({
+        collection: collection
+      });
+
+      this.appView.showView(view);
       this.appView.showToolbarTab();
     },
 
