@@ -4,13 +4,11 @@
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/headers/BasicHeaderView',
-  'views/tickets/TicketListView'],
-function($, _, mustache, BaseView, HeaderView, ListView) {
+  'views/tickets/TicketFormView'],
+function($, _, mustache, BaseView, HeaderView, FormView) {
 
   /**
-   * The main view for ticket lists
-   *
-   * @param {String} title
+   * The main view for ticket creation
    */
 
   var TicketListView = BaseView.extend({
@@ -24,11 +22,11 @@ function($, _, mustache, BaseView, HeaderView, ListView) {
       var header, primary;
 
       header = this.createView(HeaderView, {
-        title: this.options.title,
+        title: 'Create Ticket',
         route: 'tickets/new'
       });
 
-      primary = this.createView(ListView, this.options);
+      primary = this.createView(FormView, this.options);
 
       this.$el.empty();
       this.$el.append(header.render().el);
