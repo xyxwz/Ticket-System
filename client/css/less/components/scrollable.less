@@ -1,0 +1,24 @@
+.scrollable {
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    border: 0 solid transparent;
+    border-left-width: 4px;
+    border-right-width: 4px;
+    -webkit-box-shadow: inset 0 0 0 1px #A1A1A1, inset 0 0 0 6px #A1A1A1;
+
+    &:hover {
+      -webkit-box-shadow: inset 0 0 0 1px #767676, inset 0 0 0 6px #767676;
+    }
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background: transparent;
+  }
+}
