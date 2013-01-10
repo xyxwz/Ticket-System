@@ -6,9 +6,12 @@ define(['backbone', 'AppView',
   'views/main/TicketListView',
   'views/main/TicketDetailsView',
   'views/main/TicketFormView',
+  'views/main/TaskListView',
+  'views/main/TaskFormView',
   'views/toolbars/MainToolbarView'],
 function(Backbone, AppView, TicketListView,
-  TicketDetailsView, TicketFormView, ToolbarView) {
+  TicketDetailsView, TicketFormView,
+  TaskListView, TaskFormView, ToolbarView) {
 
   var Ticketer = Backbone.Router.extend({
     routes: {
@@ -19,9 +22,9 @@ function(Backbone, AppView, TicketListView,
       "tickets/mine": "myTickets",
       "tickets/new": "createTicket",
       "tickets/:id": "showTicket",
-      "lists/new": "createList",
-      "lists/": "showLists",
-      "lists/:id": "showList"
+      "tasks/new": "createTask",
+      "tasks/": "showTasks",
+      "tasks/:id": "showTask"
     },
 
     /**
@@ -111,23 +114,30 @@ function(Backbone, AppView, TicketListView,
       this.appView.showToolbarTab();
     },
 
-    showList: function(id) {
-      var list = ticketer.collections.lists.get(id);
+    createTask: function() {
+      var view,
+          collection = ticketer.collections.lists;
 
-      if(list) {
-        this.appView.showView(new ListView({model: list}));
-        this.appView.showToolbarTab();
-      }
-      else {
-        this.navigate('tickets/open', true);
-      }
+      view = new TaskFormView({
+        collection: collection
+      });
+
+      this.appView.showView(view);
+      this.appView.showToolbarTab();
     },
 
-    showLists: function() {
+    showTask: function(id) {
+      var model = ticketer.collections.lists.get(id);
+
+      this.appView.showView(new TaskView({model: model}));
+      this.appView.showToolbarTab();
+    },
+
+    showTasks: function() {
       var collection = ticketer.collections.lists;
 
-      this.appView.showView(new ListsView({collection: collection}));
-      this.appView.showToolbarTab('lists/');
+      this.appView.showView(new TaskListView({collection: collection}));
+      this.appView.showToolbarTab('tasks/');
     }
 
   });

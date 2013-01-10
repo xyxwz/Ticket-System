@@ -3,12 +3,17 @@
  */
 
 define(['jquery', 'underscore', 'backbone',
-  'BaseView', 'mustache', 'text!templates/lists/ListForm.html'],
-function($, _, Backbone, BaseView, mustache, ListForm) {
+  'BaseView', 'mustache', 'text!templates/tasks/TaskForm.html'],
+function($, _, Backbone, BaseView, mustache, TaskForm) {
 
-  var ListFormView = BaseView.extend({
-    tagName: 'div',
-    className: 'row',
+  /**
+   * Render the task creation form
+   *
+   * @param {Backbone.Collection} collection
+   */
+
+  var TaskFormView = BaseView.extend({
+    className: 'task task-form',
 
     events: {
       "click [data-action='create']": "create",
@@ -21,32 +26,22 @@ function($, _, Backbone, BaseView, mustache, ListForm) {
     },
 
     render: function() {
-      var data;
 
-      data = ticketer.currentUser;
-      data.shortname = data.name.split(' ')[0];
-
-      $(this.el).html(Mustache.to_html(TicketForm, ticketer.currentUser));
-
+      $(this.el).html(Mustache.to_html(TaskForm));
       return this;
     },
 
     create: function(e) {
       e.preventDefault();
 
-      var self = this;
       var title = $('[name=title]', this.el).val();
-
-      this.collection.create({
-        title: title
-      },
-      { wait: true });
+      this.collection.create({title: title}, {wait: true});
     },
 
     redirect: function(model) {
       this.dispose();
-      window.history.replaceState({}, document.title, "#tickets/open");
-      ticketer.routers.ticketer.navigate("tickets/" + model.id, true);
+      window.history.replaceState({}, document.title, "#tasks/");
+      ticketer.routers.ticketer.navigate("tasks/" + model.id, true);
     },
 
     back: function(e) {
@@ -57,6 +52,6 @@ function($, _, Backbone, BaseView, mustache, ListForm) {
 
   });
 
-  return ListFormView;
+  return TaskFormView;
 
 });
