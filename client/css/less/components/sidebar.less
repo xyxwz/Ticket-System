@@ -24,17 +24,23 @@
       padding: 0;
 
       li {
+        margin: 0;
+        display: block;
         position: relative;
         padding: 4px 6px 4px 20px;
-        margin: 0;
         border-top: 1px solid rgba(85, 85, 85, 0.2);
         border-bottom: 1px solid #111;
-        color: #ddd;
         text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
-        min-width: 148px;
         background: @lightBlack;
         cursor: pointer;
         .written(13px);
+
+        a,
+        a:hover,
+        a:visited {
+          color: #ddd;
+          text-decoration: none;
+        }
 
         &:first-child {
           border-top: none;

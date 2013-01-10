@@ -16,7 +16,7 @@ define([
   var ToolbarView = BaseView.extend({
     className: 'sidebar',
     events: {
-      'click .group li[data-route]': 'navigateTo'
+      'click a[data-route]': 'navigateTo'
     },
 
     initialize: function() {
@@ -46,7 +46,7 @@ define([
       this.$el.find('.group > .active').removeClass('active');
 
       if(tab) {
-        this.$el.find('li[data-route="' + tab + '"]').addClass('active');
+        this.$el.find('a[data-route="' + tab + '"]').parent().addClass('active');
       }
 
       return this;
