@@ -81,7 +81,7 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
     editComment: function() {
       var self = this;
 
-      if($('.body > form', this.el).length === 0) {
+      if($('.body > .comment-form', this.el).length === 0) {
 
         $('.body', this.el).html(Mustache.to_html(EditTmpl, { comment: self.model.get('comment') }));
 
