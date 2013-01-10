@@ -18,7 +18,7 @@ define([
   var TicketToolbarView = BaseView.extend({
     className: 'ticket-sidebar',
     events: {
-
+      "click [data-action]": "ticketAction"
     },
 
     initialize: function() {
@@ -26,18 +26,28 @@ define([
     },
 
     render: function() {
-      this.$el.html(Mustache.to_html(ToolbarTmpl));
+      this.$el.html(Mustache.to_html(ToolbarTmpl, {
+        isOpen: this.model.get('status') === 'open'
+      }));
       return this;
     },
 
-    show: function(e) {
-      e.preventDefault();
-      this.$el.show();
-    },
+    ticketAction: function(e) {
+      var action = $(e.currentTarget).data('action'),
+          request = "Delete this ticket? This cannot be undone";
 
-    hide: function(e) {
-      e.preventDefault();
-      this.$el.hide();
+      switch(action) {
+        case 'close':
+          this.model.close();
+          break;
+        case 'edit':
+          this.model.trigger('edit');
+          break;
+        case 'delete':
+          var resp = confirm(request);
+          if(resp) this.model.destroy();
+          break;
+      }
     }
   });
 
