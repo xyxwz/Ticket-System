@@ -1,8 +1,10 @@
 <div class="header">
-  <ul class="left-options">
+  {{#isOpen}}
+  <ul class="options left">
     <li data-action="close">Close</li>
   </ul>
-  <ul class="right-options">
+  {{/isOpen}}
+  <ul class="options right">
     <li data-action="edit">Edit</li>
     <li data-action="delete">Delete</li>
   </ul>
