@@ -15,7 +15,6 @@ function($, _, mustache, BaseView, TaskTmpl) {
 
   var TaskView = BaseView.extend({
     className: 'task',
-
     events: {
     },
 

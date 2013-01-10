@@ -13,7 +13,7 @@ function($, _, Backbone, BaseView, mustache, TaskForm) {
    */
 
   var TaskFormView = BaseView.extend({
-    className: 'task task-form',
+    className: 'task-form',
 
     events: {
       "click [data-action='create']": "create",
