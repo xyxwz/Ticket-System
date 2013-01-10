@@ -20,7 +20,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
     events: {
       "click [data-action='create']": "createTicket",
       "click [data-action='cancel']": "back",
-      "click [data-action='display-guide']": "displayHelp"
+      "click [data-role='display-guide']": "displayHelp"
     },
 
     initialize: function() {

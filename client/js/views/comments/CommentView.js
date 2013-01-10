@@ -70,15 +70,15 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
 
     toggleOptions: function() {
       // element exists so check if it's showing
-      if($('.options', this.el).is(":visible")) {
-        $('.options', this.el).fadeOut('100');
+      if($('.actions', this.el).is(":visible")) {
+        $('.actions', this.el).fadeOut('100');
       }
       else {
-        $('.options', this.el).fadeIn('100');
+        $('.actions', this.el).fadeIn('100');
       }
     },
 
-    editComment: function() {
+    editComment: function(e) {
       var self = this;
 
       if($('.body > .comment-form', this.el).length === 0) {
@@ -90,6 +90,8 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
           extraSpace: 14
         });
       }
+
+      e.preventDefault();
     },
 
     saveComment: function(e) {
@@ -120,7 +122,7 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       });
     },
 
-    removeComment: function() {
+    removeComment: function(e) {
       var resp,
           self = this;
 
@@ -131,6 +133,8 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
           self.remove();
         });
       }
+
+      e.preventDefault();
     },
 
     /**

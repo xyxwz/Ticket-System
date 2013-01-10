@@ -1,6 +1,6 @@
-.options {
+.actions {
   // Edit
-  li[data-action] {
+  a[data-action] {
     display: inline-block;
     width: 14px;
     height: 14px;
@@ -11,16 +11,15 @@
     background-repeat: no-repeat;
   }
 
-  li[data-action="close"] {
-
+  a[data-action="close"] {
+    background-position: -144px -72px;
   }
 
-  li[data-action="edit"] {
+  a[data-action="edit"] {
     background-position: 0 -72px;
   }
 
-    // Delete
-  li[data-action="delete"] {
+  a[data-action="delete"] {
     background-position: -456px 0;
   }
 }
