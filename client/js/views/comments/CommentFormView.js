@@ -25,7 +25,8 @@ function($, _, Backbone, BaseView, mustache, FormTmpl) {
     },
 
     render: function() {
-      $(this.el).html(Mustache.to_html(form, ticketer.currentUser));
+      $(this.el).html(Mustache.to_html(FormTmpl, ticketer.currentUser));
+      this.bindResize();
       return this;
     },
 

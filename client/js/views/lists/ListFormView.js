@@ -28,8 +28,6 @@ function($, _, Backbone, BaseView, mustache, ListForm) {
 
       $(this.el).html(Mustache.to_html(TicketForm, ticketer.currentUser));
 
-      this.bindTo(this, 'viewRendered', this.bindResize);
-
       return this;
     },
 
