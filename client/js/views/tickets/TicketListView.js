@@ -41,7 +41,6 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       });
 
       this.bindTo(this.collection, 'reset', this.render);
-      this.bindTo(this.collection, 'change:filters', this.changeFilter);
     },
 
     render: function() {
