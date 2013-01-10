@@ -25,22 +25,10 @@
 
       li {
         margin: 0;
-        display: block;
-        position: relative;
-        padding: 4px 6px 4px 20px;
+        padding: 0;
+        background: @lightBlack;
         border-top: 1px solid rgba(85, 85, 85, 0.2);
         border-bottom: 1px solid #111;
-        text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
-        background: @lightBlack;
-        cursor: pointer;
-        .written(13px);
-
-        a,
-        a:hover,
-        a:visited {
-          color: #ddd;
-          text-decoration: none;
-        }
 
         &:first-child {
           border-top: none;
@@ -49,10 +37,26 @@
         &:last-child {
           border-bottom: none;
         }
-      }
 
-      .active {
-        background: (@lightBlack + #111);
+        a {
+          margin: 0;
+          display: block;
+          padding: 4px 6px 4px 20px;
+          text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
+          cursor: pointer;
+          .written(13px);
+
+          &,
+          &:hover,
+          &:visited {
+            color: #ddd;
+            text-decoration: none;
+          }
+        }
+
+        &.active {
+          background: (@lightBlack + #111);
+        }
       }
     }
   }
