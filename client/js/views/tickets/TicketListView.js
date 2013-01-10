@@ -64,16 +64,8 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
     },
 
     renderTicket: function(model) {
-      var view,
-          html;
-
-      view = this.createView(TicketView, {model: model});
-
-      html = view.render().el;
-      $('.ticketInfo .ticketBody', html).truncate({max_length: 500});
-      $('.ticketInfo', html).addClass('hover');
-
-      return html;
+      var view = this.createView(TicketView, {model: model});
+      return view.render().el;
     },
 
     initTimeline: function() {
