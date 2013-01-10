@@ -24,9 +24,21 @@ function($, _, mustache, BaseView, HeaderTmpl) {
     },
 
     render: function() {
+      var text;
+
+      switch(this.options.route) {
+        case 'lists/new':
+          text = 'Create Task';
+          break;
+        case 'tickets/new':
+          text = 'Create Ticket';
+          break;
+      }
+
       this.$el.html(Mustache.to_html(HeaderTmpl, {
         title: this.options.title,
-        route: this.options.route
+        route: this.options.route,
+        button: text
       }));
 
       return this;
