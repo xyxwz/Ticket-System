@@ -4,7 +4,7 @@
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/headers/BasicHeaderView',
-  'views/tasks/TaskView'],
+  'views/tasks/TaskDetailsView'],
 function($, _, mustache, BaseView, HeaderView, View) {
 
   /**
@@ -28,8 +28,7 @@ function($, _, mustache, BaseView, HeaderView, View) {
 
       primary = this.createView(View, this.options);
 
-      this.$el.empty();
-      this.$el.append(header.render().el);
+      this.$el.html(header.render().el);
       this.$el.append(primary.render().el);
 
       return this;

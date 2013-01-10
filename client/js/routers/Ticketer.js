@@ -8,10 +8,11 @@ define(['backbone', 'AppView',
   'views/main/TicketFormView',
   'views/main/TaskListView',
   'views/main/TaskFormView',
+  'views/main/TaskDetailsView',
   'views/toolbars/MainToolbarView'],
 function(Backbone, AppView, TicketListView,
-  TicketDetailsView, TicketFormView,
-  TaskListView, TaskFormView, ToolbarView) {
+  TicketDetailsView, TicketFormView, TaskListView,
+  TaskFormView, TaskDetailsView, ToolbarView) {
 
   var Ticketer = Backbone.Router.extend({
     routes: {
@@ -129,7 +130,12 @@ function(Backbone, AppView, TicketListView,
     showTask: function(id) {
       var model = ticketer.collections.lists.get(id);
 
-      this.appView.showView(new TaskView({model: model}));
+      if(!model) {
+        this.navigate('tasks/', true);
+        return;
+      }
+
+      this.appView.showView(new TaskDetailsView({model: model}));
       this.appView.showToolbarTab();
     },
 
