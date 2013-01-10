@@ -31,13 +31,12 @@ function($, _, Backbone, BaseView, CommentView, FormView) {
     },
 
     addAll: function() {
-      var self = this;
-
-      $(this.el).html('');
-
-      _.each(this.collection.models, function(comment) {
-        self.addComment(comment);
+      var form = this.createView(FormView, {
+        collection: this.collection
       });
+
+      $(this.el).html(form.render().el);
+      this.collection.each(this.addComment);
     },
 
     addComment: function(comment) {
@@ -49,7 +48,7 @@ function($, _, Backbone, BaseView, CommentView, FormView) {
       // a nice fadeIn transition
       var html = view.render().el;
       $(html).hide();
-      $(this.el).append(html);
+      $('.comment-form', this.el).before(html);
       $(html).fadeIn(200);
     },
 

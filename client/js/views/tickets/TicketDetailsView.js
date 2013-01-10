@@ -29,39 +29,23 @@ function($, _, Backbone, BaseView, TicketView,
       this.model.removeNotification();
       this.renderTicket();
       this.renderComments();
-      this.renderCommentForm();
       return this;
     },
 
     renderTicket: function() {
-      var self = this,
-          view = this.createView(TicketView, {
-            model: this.model,
-            admin: true,
-            renderAll: true
-          });
+      var view = this.createView(TicketView, {
+        model: this.model,
+        admin: true,
+        renderAll: true
+      });
 
       $(this.el).html(view.render().el);
     },
 
     renderComments: function() {
-      var view = this.createView(
-        CommentListView,
-        {collection: this.model.comments}
-      );
-
-      $(this.el).append(view.render().el);
-    },
-
-    renderCommentForm: function() {
-      var self = this;
-
-      var view = this.createView(
-        CommentFormView,
-        {collection: self.model.comments}
-      );
-
-      this.bindTo(this, 'viewRendered', view.bindResize);
+      var view = this.createView(CommentListView, {
+        collection: this.model.comments
+      });
 
       $(this.el).append(view.render().el);
     },
