@@ -27,7 +27,7 @@ function($, _, mustache, BaseView, HeaderTmpl) {
       var text;
 
       switch(this.options.route) {
-        case 'lists/new':
+        case 'tasks/new':
           text = 'Create Task';
           break;
         case 'tickets/new':
