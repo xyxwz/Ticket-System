@@ -36,7 +36,7 @@ function($, _, mustache, BaseView, TaskView, TicketListView) {
       tickets = this.createView(TicketListView, {
         collection: ticketer.collections.openTickets,
         filter: function(ticket) {
-          return self.model.get('tickets').indexOf(ticket.id);
+          return ~self.model.get('tickets').indexOf(ticket.id);
         }
       });
 
