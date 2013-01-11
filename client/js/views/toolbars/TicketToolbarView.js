@@ -2,11 +2,13 @@
  * View Dependencies
  */
 
-define([
-  'jquery', 'underscore', 'backbone',
+define(['jquery', 'underscore', 'backbone',
   'BaseView', 'mustache',
-  'text!templates/toolbars/TicketToolbar.html'],
-  function($, _, Backbone, BaseView, mustache, ToolbarTmpl) {
+  'text!templates/toolbars/TicketToolbar.html',
+  'views/toolbars/widgets/UserWidgetView',
+  'views/toolbars/widgets/TaskWidgetView'],
+function($, _, Backbone, BaseView, mustache,
+  ToolbarTmpl, UserWidget, TaskWidget) {
 
   /**
    * Ticket details toolbar
@@ -16,9 +18,9 @@ define([
    */
 
   var TicketToolbarView = BaseView.extend({
-    className: 'ticket-sidebar',
+    className: 'ticket-sidebar scrollable',
     events: {
-      "click [data-action]": "ticketAction"
+      "click a[data-action]": "ticketAction"
     },
 
     initialize: function() {
@@ -30,7 +32,26 @@ define([
         isOpen: this.model.get('status') === 'open'
       }));
 
+      this.renderWidgets();
       return this;
+    },
+
+    renderWidgets: function() {
+      var userWidget, taskWidget,
+          element = $('[data-role="widget-container"]', this.$el);
+
+      userWidget = this.createView(UserWidget, {
+        collection: ticketer.collections.admins,
+        model: this.model
+      });
+
+      taskWidget = this.createView(TaskWidget, {
+        collection: ticketer.collections.lists,
+        model: this.model
+      });
+
+      element.append(taskWidget.render().el);
+      element.append(userWidget.render().el);
     },
 
     ticketAction: function(e) {
@@ -49,6 +70,8 @@ define([
           if(resp) this.model.destroy();
           break;
       }
+
+      e.preventDefault();
     }
   });
 
