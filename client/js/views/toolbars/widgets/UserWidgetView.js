@@ -50,7 +50,9 @@ function($, _, Backbone, BaseView, mustache, WidgetTmpl, UserTmpl) {
           element = $('[data-role="assigned-objects"]', this.$el),
           assigned = this.model.get('assigned_to');
 
-      if(element.length) element.empty();
+      if(element.length) {
+        element.empty();
+      }
 
       for(i = 0, len = assigned.length; i < len; i++) {
         user = this.collection.get(assigned[i]);
@@ -83,7 +85,13 @@ function($, _, Backbone, BaseView, mustache, WidgetTmpl, UserTmpl) {
       var val = $(e.currentTarget).val(),
           element = $('[data-role="results-list"]', this.$el);
 
-      element.html(this.filterUsers(val)).fadeIn(400);
+      // There must be something to worth searching for...
+      if(val.replace(/\s+/g, '').length) {
+        element.html(this.filterUsers(val)).fadeIn(400);
+      }
+      else {
+        element.empty();
+      }
     },
 
     /**
@@ -101,7 +109,7 @@ function($, _, Backbone, BaseView, mustache, WidgetTmpl, UserTmpl) {
         var name = user.get('name').toLowerCase();
 
         // user.name contains input and is not already added
-        if(input.length && ~name.indexOf(input) &&
+        if(~name.indexOf(input) &&
             !~self.model.get('assigned_to').indexOf(user.id)) {
           results.push(self.renderUser(user.toJSON()));
         }
