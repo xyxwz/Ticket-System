@@ -29,6 +29,7 @@ define([
       this.$el.html(Mustache.to_html(ToolbarTmpl, {
         isOpen: this.model.get('status') === 'open'
       }));
+
       return this;
     },
 

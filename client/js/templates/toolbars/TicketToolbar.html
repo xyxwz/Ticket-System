@@ -1,21 +1,17 @@
 <div class="header">
   {{#isOpen}}
   <ul class="actions left">
-    <li><a href="#" data-action="close">Close</a></li>
+    <li><a title="Close" href="#" data-action="close">Close</a></li>
   </ul>
   {{/isOpen}}
   <ul class="actions right">
-    <li><a href="#" data-action="edit">Edit</a></li>
-    <li><a href="#" data-action="delete">Delete</a></li>
+    <li><a title="Edit" href="#" data-action="edit">Edit</a></li>
+    <li><a title="Delete" href="#" data-action="delete">Delete</a></li>
   </ul>
 </div>
 <div class="additional">
   <ul class="meta-options">
-    <li data-action="assign">
-      <input type="text" name="assign" placeholder="Assign user...">
-    </li>
-    <li data-action="list">
-      <input type="text" name="list-id" placeholder="Assign task...">
-    </li>
+    <li><input data-action="assign-user" type="text" placeholder="Assign user..."></li>
+    <li><input data-action="assign-task" type="text" placeholder="Assign task..."></li>
   </ul>
 </div>
