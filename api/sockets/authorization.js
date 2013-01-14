@@ -34,16 +34,23 @@ module.exports = function(app) {
    * data and the index page can be cached properly;
    */
   app.socket.sockets.on('connection', function(socket) {
-    getAdmins(function(err, models) {
+    getUsers(function(err, models) {
       var data = {
         user: socket.handshake.session.passport.user,
-        admins: models
+        users: models
       };
 
       socket.emit('session:info', data);
     });
 
   });
+
+  function getUsers(cb) {
+    User.all(function(err, models) {
+      if(err) return cb('error getting users');
+      return cb(null, models);
+    });
+  }
 
   function getAdmins(cb) {
     User.admins(function(err, models) {
