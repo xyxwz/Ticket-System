@@ -6,7 +6,8 @@ require.config( {
     'text':             'libs/require/text',
     'mustache':         'libs/mustache',
     'marked':           'libs/marked',
-    'timeago':          'libs/plugins/jquery.timeago',
+    'moment':           'libs/moment',
+    'dropdowns':        'libs/plugins/bootstrap.dropdowns',
     'truncate':         'libs/plugins/jquery.truncator',
     'outsideEvents':    'libs/plugins/jquery.ba-outside-events.min',
     'autoresize':       'libs/plugins/jquery.autoresize',
@@ -31,16 +32,16 @@ function($, _, Backbone, BaseView) {
 
       // Set the sidebar height to the size of the viewport
       function setSidebarHeight() {
-	var pageHeight = $(window).height(),
-	    headerHeight = $('header').height(),
-	    paneHeight;
+        var pageHeight = $(window).height(),
+            headerHeight = $('header').height(),
+            paneHeight;
 
-	paneHeight = pageHeight - headerHeight;
-	$('[role=sidebar]').css('height', paneHeight);
+        paneHeight = pageHeight - headerHeight;
+        $('[role=sidebar]').css('height', paneHeight);
       }
 
       $(window).resize(function() {
-	setSidebarHeight();
+        setSidebarHeight();
       });
 
       // Set on page render
