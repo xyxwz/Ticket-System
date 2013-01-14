@@ -1,15 +1,42 @@
+// --------------------------------------
+// Ticket List
+// --------------------------------------
+
 .ticket-list {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 44px;
-  bottom: 0;
-
   .ticket {
-    margin-bottom: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
 
-    &:hover {
-      cursor: pointer;
+    .header {
+      hgroup {
+        width: 80%;
+      }
+
+      time {
+        width: 20%;
+        float: right;
+        margin: 0;
+        font-weight: 400;
+        font-size: 16px;
+        text-align: right;
+      }
+    }
+  }
+
+  .active {
+    background: @activeBright;
+
+    .title, h4, time {
+      color: @white !important;
+      text-shadow: 0 1px 1px rgba(41, 29, 36, 0.3);
+    }
+
+    .header {
+      &.unread .title {
+        &:before {
+          background-color: @white !important;
+        }
+      }
     }
   }
 }

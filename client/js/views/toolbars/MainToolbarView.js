@@ -4,8 +4,9 @@
 
 define(['jquery', 'underscore', 'backbone',
   'BaseView', 'mustache',
-  'text!templates/toolbars/Toolbar.html' ],
-function($, _, Backbone, BaseView, mustache, ToolbarTmpl) {
+  'views/tasks/TaskListView',
+  'text!templates/toolbars/Toolbar.html'],
+function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
 
   /**
    * Toolbar view
@@ -23,8 +24,17 @@ function($, _, Backbone, BaseView, mustache, ToolbarTmpl) {
     },
 
     render: function() {
-      this.$el.html(Mustache.to_html(ToolbarTmpl));
+      this.$el.html(Mustache.to_html(tmpl_Toolbar));
+      this.renderLists();
       return this;
+    },
+
+    renderLists: function() {
+      var view = this.createView(TaskList, {
+        collection: ticketer.collections.lists
+      });
+
+      $("[data-role='task-list']", this.el).append(view.render().el);
     },
 
     /**

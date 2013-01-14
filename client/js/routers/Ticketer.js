@@ -2,17 +2,17 @@
  * Application Router
  */
 
-define(['backbone', 'AppView',
-  'views/main/TicketListView',
-  'views/main/TicketDetailsView',
-  'views/main/TicketFormView',
-  'views/main/TaskListView',
-  'views/main/TaskFormView',
-  'views/main/TaskDetailsView',
+define([
+  'backbone',
+  'AppView',
+  'views/headers/MainHeaderView',
+  'views/main/PanelView',
+  'views/tickets/TicketListView',
+  'views/tickets/TicketDetailsView',
+  'views/tickets/TicketFormView',
   'views/toolbars/MainToolbarView'],
-function(Backbone, AppView, TicketListView,
-  TicketDetailsView, TicketFormView, TaskListView,
-  TaskFormView, TaskDetailsView, ToolbarView) {
+function(Backbone, AppView, HeaderView, PanelView, TicketListView,
+  TicketDetailsView, TicketFormView, ToolbarView) {
 
   var Ticketer = Backbone.Router.extend({
     routes: {
@@ -21,11 +21,7 @@ function(Backbone, AppView, TicketListView,
       "tickets/closed": "closedTickets",
       "tickets/closed?*params": "closedTickets",
       "tickets/mine": "myTickets",
-      "tickets/new": "createTicket",
-      "tickets/:id": "showTicket",
-      "tasks/new": "createTask",
-      "tasks/": "showTasks",
-      "tasks/:id": "showTask"
+      "tickets/new": "createTicket"
     },
 
     /**
@@ -36,6 +32,10 @@ function(Backbone, AppView, TicketListView,
     initialize: function(){
       this.appView = new AppView();
       this.appView.showToolbar(ToolbarView);
+
+      // Create the Page Header
+      var view = new HeaderView();
+      $('header').append(view.render().el);
     },
 
     /**
@@ -48,11 +48,13 @@ function(Backbone, AppView, TicketListView,
 
     openTickets: function() {
       var view,
+          self = this;
           collection = ticketer.collections.openTickets;
 
-      view = new TicketListView({
-        title: 'Open Tickets',
-        collection: collection
+      view = new PanelView({
+        collection: collection,
+        list: TicketListView,
+        details: TicketDetailsView
       });
 
       this.appView.showView(view);
@@ -63,10 +65,10 @@ function(Backbone, AppView, TicketListView,
       var view,
           collection = ticketer.collections.closedTickets;
 
-      view = new TicketListView({
-        title: 'Closed Tickets',
+      view = new PanelView({
         collection: collection,
-        status: 'closed'
+        list: TicketListView,
+        details: TicketDetailsView
       });
 
       this.appView.showView(view);
@@ -74,10 +76,13 @@ function(Backbone, AppView, TicketListView,
     },
 
     myTickets: function() {
-      var collection = ticketer.collections.openTickets;
-      var view = new TicketListView({
-        title: 'My Tickets',
+      var view,
+          collection = ticketer.collections.openTickets;
+
+      view = new PanelView({
         collection: collection,
+        list: TicketListView,
+        details: TicketDetailsView,
         filter: function(ticket) {
           return ticket.participating();
         }
@@ -85,22 +90,6 @@ function(Backbone, AppView, TicketListView,
 
       this.appView.showView(view);
       this.appView.showToolbarTab('tickets/mine');
-    },
-
-    showTicket: function(id) {
-      var view,
-          ticket = ticketer.collections.openTickets.get(id) ||
-                   ticketer.collections.closedTickets.get(id);
-
-      if(typeof(ticket) === 'undefined') {
-        this.navigate('tickets/open', true);
-      }
-      else {
-        view = new TicketDetailsView({model: ticket});
-
-        this.appView.showView(view);
-        this.appView.showToolbarTab();
-      }
     },
 
     createTicket: function() {
@@ -111,39 +100,8 @@ function(Backbone, AppView, TicketListView,
         collection: collection
       });
 
-      this.appView.showView(view);
+      this.appView.showView(view, function() { view.trigger('viewRendered'); });
       this.appView.showToolbarTab();
-    },
-
-    createTask: function() {
-      var view,
-          collection = ticketer.collections.lists;
-
-      view = new TaskFormView({
-        collection: collection
-      });
-
-      this.appView.showView(view);
-      this.appView.showToolbarTab();
-    },
-
-    showTask: function(id) {
-      var model = ticketer.collections.lists.get(id);
-
-      if(!model) {
-        this.navigate('tasks/', true);
-        return;
-      }
-
-      this.appView.showView(new TaskDetailsView({model: model}));
-      this.appView.showToolbarTab();
-    },
-
-    showTasks: function() {
-      var collection = ticketer.collections.lists;
-
-      this.appView.showView(new TaskListView({collection: collection}));
-      this.appView.showToolbarTab('tasks/');
     }
 
   });

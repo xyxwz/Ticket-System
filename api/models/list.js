@@ -50,7 +50,6 @@ module.exports = function(app) {
     });
   };
 
-
   /**
    * Static function create
    *
@@ -59,7 +58,8 @@ module.exports = function(app) {
   List.create = function(data, callback) {
     var list = new ListSchema({
       name: data.name,
-      user: data.user
+      user: data.user,
+      color: data.color
     });
 
     list.save(function(err, model) {

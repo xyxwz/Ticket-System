@@ -1,3 +1,7 @@
+// --------------------------------------
+// Forms
+// --------------------------------------
+
 // Login form
 .login-form {
   position: relative;
@@ -12,7 +16,6 @@
   h2 {
     margin: 0 0 0.4em 0;
     text-align: center;
-    .marker(38px, 400);
   }
 
   ul {
@@ -30,23 +33,34 @@
 
 .task-form,
 .ticket-form {
-  padding: 20px;
-  .vertical-gradient(#F4F4F4, #DBDBDB);
+
+  form {
+    padding: 20px;
+
+    .wrap {
+      position: relative;
+      margin-bottom: 20px;
+      .box-sizing(border-box);
+
+      input[type="text"] {
+        font-size: 18px;
+        line-height: 1.3;
+        font-weight: 600;
+        padding: 6px;
+      }
+
+      textarea {
+        border-radius: 2px;
+      }
+    }
+  }
+
 }
+
 
 .task-form,
 .ticket-form,
 .comment-form {
-  position: relative;
-
-  .wrap {
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #cfd0d0;
-    border: 1px solid rgba(207,208,208,0.7);
-    border-radius: 2px;
-    .box-sizing(border-box);
-  }
 
   .actions {
     margin-top: 20px;
@@ -60,18 +74,12 @@
       float: right;
     }
 
-    a, {
-      color: #4183C4;
+    a {
+      color: @lightGray;
       text-decoration: none;
-      .written(14px, 600);
 
       &:hover {
-        text-shadow: -1px -1px rgba(65, 134,196, 0.48);
-      }
-
-      &:visited {
-        color: #4186C4;
-        text-decoration: none;
+        color: @active;
       }
     }
 
@@ -82,28 +90,30 @@
 
       li {
         float: right;
-        margin: 0 0 0 12px;
+        margin: 0;
+      }
+
+      li button[data-action] {
+        margin-left: 12px;
       }
     }
   }
 
   input[type="text"] {
+    font-family: "proxima-nova";
     width: 100%;
     padding: 4px;
-    border: 1px solid #cfd0d0;
-    border: 1px solid rgba(207,208,208,0.7);
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
+    border: 1px solid @border;
     border-radius: 2px;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
+    .box-sizing(border-box);
   }
 
   textarea {
-    padding: 4px;
+    padding: 8px;
+    font-family: "proxima-nova";
+    line-height: 1.5;
     margin: 0;
-    border: none;
+    border: 1px solid @border;
     width: 100%;
     resize: none;
     .box-sizing(border-box);

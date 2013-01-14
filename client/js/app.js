@@ -44,14 +44,22 @@ define([
      * ticketer - our namespace object, create
      * the object and attach functions and models to it
      */
-    window.ticketer = window.ticketer || {
-      routers: {
-        ticketer: new Ticketer()
-      },
-      sockets: {
-        sock: io.connect()
-      }
-    };
+    window.ticketer = window.ticketer || {};
+
+    /**
+     * Set Color Array on Ticketer Object
+     */
+
+    ticketer.colors = [
+      { value: 0, name: 'lightOrange' },
+      { value: 1, name: 'blue' },
+      { value: 2, name: 'red' },
+      { value: 3, name: 'green' },
+      { value: 4, name: 'teal' },
+      { value: 5, name: 'pink' },
+      { value: 6, name: 'brightGreen' },
+      { value: 7, name: 'tan' }
+    ];
 
     /**
      * Create a global namespaced event emitter to deal with
@@ -69,9 +77,17 @@ define([
     ticketer.collections = {
       openTickets: new Tickets(),
       closedTickets: new Tickets(),
-      admins: new Users(),
+      users: new Users(),
       projects: new Projects(),
       lists: new Lists()
+    };
+
+    ticketer.routers = {
+      ticketer: new Ticketer()
+    };
+
+    ticketer.sockets = {
+      sock: io.connect()
     };
 
     /**
@@ -116,8 +132,10 @@ define([
       ticketer.currentUser = message.user;
       ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;
 
-      // Reset the admins collection
-      ticketer.collections.admins.reset(message.admins);
+      ticketer.EventEmitter.trigger('session:set');
+
+      // Reset the users collection
+      ticketer.collections.users.reset(message.users);
 
       // Fetch projects and lists
       ticketer.sockets.sock.emit('projects:fetch');

@@ -1,61 +1,64 @@
+// --------------------------------------
+// Sidebar
+// --------------------------------------
+
+[role=sidebar] {
+  .box-shadow(~"inset 0 0 8px 2px rgba(0, 0, 0, .22)");
+}
+
 .sidebar {
   .options {
     margin: 15px 0;
   }
 
   .option-set {
-    display: block;
-    font-size: 14px;
     margin: 0;
-    color: #f6f6f6;
-    border-top: 1px solid #111;
+    padding: 0 0 25px 0;
+    color: @sidebarText;
+    border-bottom: 1px solid @sidebarSeperator;
+
+    &.last {
+      border-bottom: none;
+    }
+
 
     .title {
-      padding: 4px 6px;
+      padding: 8px 20px;
       margin: 0;
-      border-top: 1px solid rgba(85, 85, 85, 0.2);
-      color: #ddd;
-      text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
-      .written(16px, 400);
+      font-weight: 400;
+      text-transform: uppercase;
+      border-bottom: 1px solid @sidebarSeperator;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .group {
       margin: 0;
       padding: 0;
+      list-style: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
 
       li {
         margin: 0;
         padding: 0;
-        background: @lightBlack;
-        border-top: 1px solid rgba(85, 85, 85, 0.2);
-        border-bottom: 1px solid #111;
-
-        &:first-child {
-          border-top: none;
-        }
-
-        &:last-child {
-          border-bottom: none;
-        }
 
         a {
-          margin: 0;
           display: block;
-          padding: 4px 6px 4px 20px;
-          text-shadow: 0 -1px -1px rgba(85, 85, 85, 0.8);
+          margin: 0;
+          padding: 8px 20px;
+          font-weight: 600;
+          color: @sidebarText;
+          text-decoration: none;
+          text-shadow: 0 1px 1px rgba(41, 29, 36, 0.8);
           cursor: pointer;
-          .written(13px);
-
-          &,
-          &:hover,
-          &:visited {
-            color: #ddd;
-            text-decoration: none;
-          }
         }
 
         &.active {
-          background: (@lightBlack + #111);
+          background: @active;
+          .box-shadow(~"inset 0 0 0 1px rgba(255, 255, 255, .15)");
+
+          a {
+            color: @white;
+          }
         }
       }
     }

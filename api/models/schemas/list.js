@@ -9,6 +9,7 @@ var List = new mongoose.Schema({
   created    : { type: Date, default: Date.now, required: true },
   user       : { type: mongoose.Schema.Types.ObjectId, ref: 'User',
                  index: true, required: true },
+  color      : { type: Number, required: true },
   tickets    : { type: [mongoose.Schema.Types.ObjectId], ref: 'Ticket', required: false }
 });
 
@@ -22,6 +23,7 @@ List.methods.toClient = function(){
     id: this._id,
     name: this.name,
     user: this.user,
+    color: this.color,
     tickets: this.tickets,
     created: this.created
   };

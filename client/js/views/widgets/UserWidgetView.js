@@ -4,9 +4,9 @@
 
 define(['jquery', 'underscore', 'backbone',
   'BaseView', 'mustache',
-  'text!templates/toolbars/widgets/Widget.html',
-  'text!templates/toolbars/widgets/User.html'],
-function($, _, Backbone, BaseView, mustache, WidgetTmpl, UserTmpl) {
+  'text!templates/widgets/UserList.html',
+  'text!templates/widgets/User.html'],
+function($, _, Backbone, BaseView, mustache, tmpl_UserList, tmpl_User) {
 
   /**
    * Widget to help with user assignment
@@ -27,41 +27,14 @@ function($, _, Backbone, BaseView, mustache, WidgetTmpl, UserTmpl) {
 
     initialize: function() {
       _.bindAll(this);
-      this.$el.attr('data-role', 'user-widget');
-
-      this.bindTo(this.model, 'change:assigned_to', this.renderAssignedUsers);
     },
 
     render: function() {
-      this.$el.html(Mustache.to_html(WidgetTmpl, {
-        placeholder: "Assign user..."
+      this.$el.html(Mustache.to_html(tmpl_UserList, {
+        placeholder: "Find a User"
       }));
 
-      this.renderAssignedUsers();
       return this;
-    },
-
-    /**
-     * Render all users assigned to `this.model`
-     */
-
-    renderAssignedUsers: function() {
-      var i, len, user,
-          element = $('[data-role="assigned-objects"]', this.$el),
-          assigned = this.model.get('assigned_to');
-
-      if(element.length) {
-        element.empty();
-      }
-
-      for(i = 0, len = assigned.length; i < len; i++) {
-        user = this.collection.get(assigned[i]);
-        if(user) {
-          user = user.toJSON();
-          user.isRemovable = true;
-          element.append(this.renderUser(user));
-        }
-      }
     },
 
     /**
@@ -72,7 +45,7 @@ function($, _, Backbone, BaseView, mustache, WidgetTmpl, UserTmpl) {
      */
 
     renderUser: function(user) {
-      return Mustache.to_html(UserTmpl, user);
+      return Mustache.to_html(tmpl_User, user);
     },
 
     /**
@@ -87,7 +60,7 @@ function($, _, Backbone, BaseView, mustache, WidgetTmpl, UserTmpl) {
 
       // There must be something to worth searching for...
       if(val.replace(/\s+/g, '').length) {
-        element.html(this.filterUsers(val)).fadeIn(400);
+        element.html(this.filterUsers(val.toLowerCase())).fadeIn(400);
       }
       else {
         element.empty();
@@ -111,6 +84,7 @@ function($, _, Backbone, BaseView, mustache, WidgetTmpl, UserTmpl) {
         // user.name contains input and is not already added
         if(~name.indexOf(input) &&
             !~self.model.get('assigned_to').indexOf(user.id)) {
+
           results.push(self.renderUser(user.toJSON()));
         }
       });

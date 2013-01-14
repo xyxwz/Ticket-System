@@ -14,7 +14,9 @@ function($, _, Backbone, BaseView, TaskView) {
    */
 
   var TaskListView = BaseView.extend({
-    className: 'task-list scrollable',
+    tagName: 'ul',
+    className: 'group',
+
     events: {
       "click .task": "showDetails"
     },
@@ -23,6 +25,7 @@ function($, _, Backbone, BaseView, TaskView) {
       _.bindAll(this);
 
       this.bindTo(this.collection, 'reset', this.render);
+      this.bindTo(this.collection, 'add', this.render);
     },
 
     render: function() {
@@ -45,7 +48,6 @@ function($, _, Backbone, BaseView, TaskView) {
 
     showDetails: function(e) {
       var id = $(e.currentTarget).data('id');
-      ticketer.routers.ticketer.navigate("tasks/" + id, true);
     }
   });
 

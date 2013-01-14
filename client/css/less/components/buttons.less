@@ -1,3 +1,7 @@
+// --------------------------------------
+// Buttons
+// --------------------------------------
+
 // Login Button
 .btn-auth {
   position: relative;
@@ -85,22 +89,14 @@
 
 button {
   margin: 0;
-  color: #FFF;
+  padding: 5px 14px;
+  color: @white;
   border-radius: 3px;
-  padding: 4px 8px 5px 8px;
-  border: 1px solid #00489A;
-  text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.33);
-  .written(14px, 600);
-  .box-shadow(inset 0 1px 0 #5AA7E5);
-  .vertical-gradient(#3694DF, #0268D8);
-
-  &:hover {
-    .box-shadow(inset 1px 2px 2px #5AA7F5);
-  }
-
-  &:active {
-    .vertical-gradient(#0268D8, #3694DF);
-  }
+  border: 1px solid darken(@active, 5%);
+  background: @active;
+  font-family: "proxima-nova";
+  font-weight: 400;
+  font-size: 16px;
 
   &.cancel {
     color: #555;

@@ -1,12 +1,27 @@
 <div class="ticket-content">
   <div class="header {{statusClass}}">
-    <h2 class="title">{{title}}</h2>
-    <h4 class="timestamp">
-    {{#isClosed}}
-      <span class="closed">closed:</span>
-    {{/isClosed}}
+    <hgroup>
+      <h2 class="title">{{title}}</h2>
+      <h4>{{user.name}}</h4>
+    </hgroup>
+
+    {{#fullDate}}
+      <time title="{{hoverTime}}" datetime="{{datetime}}">{{fullDate}}</time>
+    {{/fullDate}}
+
+    {{^fullDate}}
       <time title="{{hoverTime}}" datetime="{{datetime}}">{{cleanTime}}</time>
-    </h4>
+    {{/fullDate}}
+
+    {{#isEditable}}
+      <ul class="edit-options">
+        {{#isAdmin}}
+          <li><a data-action="close" href="#"><i class="icon-ok"></i></a></li>
+        {{/isAdmin}}
+        <li><a data-action="edit" href="#"><i class="icon-edit"></i></a></li>
+        <li><a data-action="delete" href="#"><i class="icon-trash"></i></a></li>
+      </ul>
+    {{/isEditable}}
   </div>
 
   {{#description}}
@@ -14,8 +29,4 @@
       {{{description}}}
     </div>
   {{/description}}
-</div>
-
-<div class="ticket-meta">
-  <ul data-role="assigned-users" class="assigned-users"></ul>
 </div>

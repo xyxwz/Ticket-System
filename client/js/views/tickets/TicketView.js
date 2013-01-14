@@ -3,11 +3,12 @@
  */
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
+  'views/tickets/TicketMetaView',
   'text!templates/tickets/Ticket.html',
   'text!templates/tickets/AssignedUser.html',
   'text!templates/tickets/EditTicket.html',
-  'timeago', 'marked'],
-function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
+  'moment', 'marked'],
+function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl) {
 
   /**
    * TicketView
@@ -18,9 +19,10 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
    */
 
   var TicketView = BaseView.extend({
-    className: 'ticket',
+    className: 'item ticket',
 
     events: {
+      "click a[data-action]": "ticketAction",
       "submit form": "saveTicket",
       "click .md a": "openLink"
     },
@@ -45,9 +47,10 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
           data = this.packageModel();
 
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
-      $('time', this.el).timeago();
 
-      this.renderMeta();
+      if(this.renderAll) {
+        this.renderMeta();
+      }
 
       return this;
     },
@@ -61,28 +64,13 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
      */
 
     renderMeta: function() {
-      var len, users, i = 0, cap = 5,
-          assigned = this.model.get('assigned_to'),
-          element = $("ul[data-role='assigned-users']", this.$el);
+      var view;
 
-      users = ticketer.collections.admins.filter(function(user) {
-        return ~assigned.indexOf(user.id);
+      view = this.createView(TicketMeta, {
+        model: this.model
       });
 
-      len = users.length;
-
-      while((i < len && cap && !this.renderAll) || (i < len && this.renderAll)) {
-        element.append(Mustache.to_html(UserTmpl, users[i].toJSON()));
-        i = i + 1;
-        cap = cap - 1;
-      }
-
-      // There are remaining users to render
-      if(i !== len) {
-        element.append($('<li>...</li>'));
-      }
-
-      return this;
+      this.$el.append(view.render().el);
     },
 
     /**
@@ -96,17 +84,63 @@ function($, _, mustache, BaseView, TicketTmpl, UserTmpl, EditTmpl) {
       var data = {};
 
       data.title = this.model.get('title');
+      data.user = this.model.get('user');
       data.datetime = this.model.get('closed_at') || this.model.get('opened_at');
-      data.cleanTime = new Date(data.datetime).toDateString().slice(4);
+
+      var momentObj = moment(new Date(data.datetime));
+      data.cleanTime = momentObj.format('h:mm A');
+
       data.hoverTime = this.model.responseTime() || data.cleanTime;
       data.statusClass = this.model.get('assigned_to').length ? 'read' : 'unread';
       data.isClosed = this.model.get('status') === 'closed';
 
       if(this.renderAll) {
         data.description = marked(this.model.get('description'));
+        data.fullDate = momentObj.format('MMMM Do, YYYY h:mm A');
+        data.isEditable = this.isEditable(data);
+        data.isAdmin = ticketer.currentUser.role === 'admin' ? true : false;
       }
 
       return data;
+    },
+
+    /**
+     * Should this Ticket be editable?
+     *
+     * @return {Boolean}
+     */
+
+    isEditable: function(data) {
+      if(data.user.id === ticketer.currentUser.id) {
+        return true;
+      }
+
+      if(ticketer.currentUser.role === 'admin') {
+        return true;
+      }
+
+      return false;
+    },
+
+    // Handle Actions
+    ticketAction: function(e) {
+      var action = $(e.currentTarget).data('action'),
+          request = "Delete this ticket? This cannot be undone";
+
+      switch(action) {
+        case 'close':
+          this.model.close();
+          break;
+        case 'edit':
+          this.model.trigger('edit');
+          break;
+        case 'delete':
+          var resp = confirm(request);
+          if(resp) this.model.destroy();
+          break;
+      }
+
+      e.preventDefault();
     },
 
     /**

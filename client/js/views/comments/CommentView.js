@@ -3,7 +3,7 @@
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/comments/Comment.html', 'text!templates/comments/EditComment.html', 'timeago', 'marked'],
+'text!templates/comments/Comment.html', 'text!templates/comments/EditComment.html', 'moment', 'marked'],
 function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
 
   /**
@@ -21,8 +21,8 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       "click [data-action='edit']": "editComment",
       "click [data-action='save']": "saveComment",
       "click [data-action='cancel']": "renderEdit",
-      "mouseenter": "toggleOptions",
-      "mouseleave": "toggleOptions",
+      //"mouseenter": "toggleOptions",
+      //"mouseleave": "toggleOptions",
       "click .md a": "openLink"
     },
 
@@ -37,12 +37,16 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       var data;
 
       data = this.model.toJSON();
+
+      var momentObj = moment(new Date(data.created_at));
+      data.cleanTime = momentObj.fromNow();
+
       data.isDeletable = this.isDeletable(data);
       data.isEditable = this.isEditable(data);
       data.comment = marked(data.comment);
 
       $(this.el).html(Mustache.to_html(CommentTmpl, data));
-      $('time', this.el).timeago();
+      //$('time', this.el).timeago();
 
       return this;
     },
@@ -70,11 +74,11 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
 
     toggleOptions: function() {
       // element exists so check if it's showing
-      if($('.actions', this.el).is(":visible")) {
-        $('.actions', this.el).fadeOut('100');
+      if($('.edit-actions', this.el).is(":visible")) {
+        $('.edit-actions', this.el).fadeOut('100');
       }
       else {
-        $('.actions', this.el).fadeIn('100');
+        $('.edit-actions', this.el).fadeIn('100');
       }
     },
 

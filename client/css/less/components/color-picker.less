@@ -1,0 +1,39 @@
+// --------------------------------------
+// Color Picker
+// --------------------------------------
+
+.color-picker {
+  padding: 8px;
+
+  ul {
+    .clearfix;
+    margin: 0;
+    padding: 0;
+
+    li {
+      float: left;
+      width: 20px;
+      height: 20px;
+      margin: 0 5px 5px 0;
+      border: 1px solid darken(@border, 10%);
+      cursor: pointer;
+
+      &:nth-child(6n) {
+        margin-right: 0;
+      }
+    }
+
+    li.active {
+      border: 1px solid @white;
+    }
+
+    .color-lightOrange { background-color: @lightOrange; }
+    .color-blue        { background-color: @blue; }
+    .color-red         { background-color: @red; }
+    .color-green       { background-color: @green; }
+    .color-brightGreen { background-color: @brightGreen; }
+    .color-teal        { background-color: @teal; }
+    .color-pink        { background-color: @pink; }
+    .color-tan         { background-color: @tan; }
+  }
+}

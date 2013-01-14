@@ -1,31 +1,46 @@
+// --------------------------------------
+// Comments
+// --------------------------------------
+
 .comment {
+  .clearfix;
   position: relative;
-  width: 100%;
-  padding: 8px;
-  border: 1px solid black; // Remove me
-  background: #F6F6F6;
-  .clearfix();
-  .box-sizing(border-box);
+  padding: 10px 20px;
+  border-bottom: 1px solid @border;
+
+  &:last-child {
+    border-bottom: none;
+  }
 
   .avatar {
     float: left;
 
     img {
       display: block;
-      padding: 2px;
-      border: 1px solid #888;
-      border-radius: 2px;
-      .size(36px, 36px);
+      border-radius: 1000px;
+      .size(35px, 35px);
     }
   }
 
   .body {
-    margin-left: 54px;
-    margin-right: 0;
-    .box-sizing(border-box);
+    margin-left: 55px;
 
-    h5 {
-      margin: 0 0 8px 0;
+    .commentHeader {
+      position: relative;
+      padding-bottom: 8px;
+
+      h5 {
+        display: inline-block;
+        margin: 0;
+        color: @darkGray;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      time {
+        float: right;
+        font-size: 14px;
+      }
     }
   }
 
@@ -33,12 +48,11 @@
     float: right;
   }
 
-  .actions {
-    display: none;
+  .edit-actions {
     margin: 0;
     padding: 0;
     position: absolute;
-    top: 4px;
+    bottom: 4px;
     right: 4px;
     list-style: none;
 

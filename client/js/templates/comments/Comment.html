@@ -5,20 +5,19 @@
 
 <!-- Comment Body -->
 <div class="body">
-  <h5>{{user.name}}:</h5>
+  <div class="commentHeader">
+    <h5>{{user.name}}</h5>
+    <time datetime="{{created_at}}">{{cleanTime}}</time>
+  </div>
+
   <div class="md">
     {{{comment}}}
   </div>
 </div>
 
-<!-- Timestamp -->
-<div class="timestamp">
-  <time datetime="{{created_at}}">{{created_at}}</time>
-</div>
-
 {{#isDeletable}}
 <!-- Comment options -->
-<ul class="actions">
+<ul class="edit-actions">
   {{#isEditable}}
   <li><a href="#" data-action="edit">Edit</a></li>
   <li><a href="#" data-action="delete">Delete</a></li>

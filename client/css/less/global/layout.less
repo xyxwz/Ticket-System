@@ -1,32 +1,57 @@
+// --------------------------------------
+// Layout
+// --------------------------------------
+
 // Base font color
 html, body {
-  color: @lightBlack;
-  background: @lightBlack url('/img/assets/black_linen_v2.png');
-}
-
-#main {
-  position: absolute;
-  left: 185px;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-}
-
-#sidebar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 184px;
-  z-index: 200;
-  background: @lightBlack;
-  border-right: 1px solid rgba(85, 85, 85, 0.2);
-}
-
-.container {
-  width: 100%;
+  color: @lightGray;
+  background: @white;
+  margin: 0;
   height: 100%;
-  margin: 0 auto;
+  font-family: "proxima-nova";
+}
+
+#content {
   position: relative;
+  .clearfix;
+
+  #sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: @panel_1_width;
+    background: @sidebarBg;
+    color: @sidebarText;
+    border-right: 1px solid rgba(85, 85, 85, 0.2);
+  }
+
+  #main {
+    position: relative;
+    margin-left: @panel_1_width + 1;
+
+    .container {
+      margin: 0;
+      position: relative;
+      width: 100%;
+      border-top: 1px solid @headerBorder;
+    }
+
+    // Main Content Panes
+    #panelWrapper {
+      .clearfix;
+      position: relative;
+      min-width: 850px;
+
+      [role=panelTwo] {
+        width: @panel_2_width;
+        float: left;
+        .box-sizing(border-box);
+      }
+
+      [role=panelThree] {
+        margin-left: @panel_2_width;
+        .box-sizing(border-box);
+      }
+    }
+  }
 }

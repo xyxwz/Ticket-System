@@ -40,7 +40,6 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
       this.currentView = view;
       this.currentView.render();
 
-
       $('#main').fadeOut(200, function() {
         $(this).html(self.currentView.el);
       }).fadeIn(200, cb);

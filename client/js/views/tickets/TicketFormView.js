@@ -19,7 +19,6 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
 
     events: {
       "click [data-action='create']": "createTicket",
-      "click [data-action='cancel']": "back",
       "click [data-role='display-guide']": "displayHelp"
     },
 
@@ -65,8 +64,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
 
     redirect: function(model) {
       this.dispose();
-      window.history.replaceState({}, document.title, "#tickets/open");
-      ticketer.routers.ticketer.navigate("tickets/" + model.id, true);
+      ticketer.routers.ticketer.navigate("tickets/mine", true);
     },
 
     displayHelp: function(e) {
@@ -86,12 +84,6 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
       $('.dialog', this.el).fadeOut(200, function() {
         $(this).remove();
       });
-    },
-
-    back: function(e) {
-      e.preventDefault();
-      this.dispose();
-      window.history.back();
     }
 
   });

@@ -51,7 +51,7 @@ function($, _, Backbone, BaseView, TicketView,
     },
 
     goBack: function() {
-      window.history.back();
+      ticketer.routers.ticketer.navigate("tickets/mine", true);
     }
 
   });

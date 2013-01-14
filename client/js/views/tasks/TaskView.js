@@ -14,9 +14,6 @@ function($, _, mustache, BaseView, TaskTmpl) {
    */
 
   var TaskView = BaseView.extend({
-    className: 'task',
-    events: {
-    },
 
     initialize: function() {
       _.bindAll(this);
@@ -26,8 +23,10 @@ function($, _, mustache, BaseView, TaskTmpl) {
     },
 
     render: function() {
-      this.$el.html(Mustache.to_html(TaskTmpl, this.model.toJSON()));
-      $('time', this.el).timeago();
+      var data = this.model.toJSON();
+
+      data.color = ticketer.colors[data.color].name;
+      this.$el.html(Mustache.to_html(TaskTmpl, data));
 
       return this;
     }

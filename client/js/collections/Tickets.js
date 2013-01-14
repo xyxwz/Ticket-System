@@ -13,7 +13,8 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       _.bindAll(this);
 
       this.comparator = function(model) {
-        return model.get("opened_at");
+        var date = new Date(model.get("opened_at"));
+        return -date.getTime();
       };
 
       this.page = 1;

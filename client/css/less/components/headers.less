@@ -1,17 +1,24 @@
+// --------------------------------------
+// Headers
+// --------------------------------------
+
 .view-header {
-  width: 100%;
-  padding: 4px 10px 8px 10px;
-  .clearfix();
-  .box-sizing(border-box);
-  .vertical-gradient(#4C4C4C, #111);
-  .box-shadow(~"0 1px 8px rgba(0, 0, 0, 0.66), inset 0 0 4px rgba(0, 0, 0, 0.50)");
+  .clearfix;
+  position: relative;
+  padding: 8px 20px;
+  background-color: @mainHeaderBg;
+  border-bottom: 1px solid @border;
+  border-top: 1px solid @headerBorder;
 
   .title {
-    margin: 0;
-    padding: 0;
     float: left;
-    color: #D2D2D2;
-    .written(28px, 400, 1em);
+    margin: 0;
+    padding: 5px 0 4px 0;
+    font-size: 22px;
+    line-height: 22px;
+    font-weight: 400;
+    color: @lightGray;
+    text-transform: uppercase;
   }
 
   .options {
@@ -21,7 +28,11 @@
     list-style: none;
 
     li {
-      display: block;
+      display: inline-block;
+
+      button {
+        display: block;
+      }
     }
   }
 }

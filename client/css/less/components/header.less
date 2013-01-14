@@ -1,0 +1,154 @@
+// --------------------------------------
+// Header
+// --------------------------------------
+
+header {
+  .clearfix;
+  margin: 0;
+  padding: 0 10px;
+  .vertical-gradient(@headerLight, @headerDark);
+
+  .logo {
+    float: left;
+    width: @panel_1_width - 10;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1em;
+    .box-sizing(border-box);
+
+    a {
+      display: block;
+      color: @darkGray;
+      text-decoration: none;
+      padding: 9px 10px;
+    }
+  }
+
+  // Main Actions
+
+  .actions {
+    float: left;
+    margin: 0;
+    padding: 8px 0;
+    width: 50%;
+    list-style: none;
+
+    li {
+      display: inline-block;
+      position: relative;
+      margin-right: 10px;
+
+      a {
+        display: block;
+        color: @darkGray;
+        .vertical-gradient(@headerButtonsLight, @headerButtonsDark);
+        .box-shadow(~"inset 0 0 3px 2px rgba(255, 255, 255, 0.15)");
+        border: 1px solid darken(@border, 10%);
+        border-radius: 3px;
+        padding: 3px 5px;
+        text-decoration: none;
+        width: 20px;
+
+        &:active {
+          color: @active;
+        }
+      }
+
+      a[data-action="new-tag"] {
+        i {
+          width: 1em;
+        }
+
+        i.icon-sort-down {
+          vertical-align: text-top !important;
+          margin-top: -2px;
+        }
+      }
+    }
+
+    li.spacer {
+      margin-left: 50px;
+
+      a {
+        width: 34px;
+      }
+    }
+
+    // Tag Dropdown Forms
+    .tags-form {
+      position: absolute;
+      z-index: @zindexDropdown;
+      top: 100%;
+      left: -58px;
+      width: 174px;
+      background: @ashGray;
+      border: 1px solid @border;
+      border-radius: 3px;
+      margin-top: 4px;
+      .box-shadow(0 5px 10px rgba(0,0,0,.2));
+
+      form {
+        border-top: 1px solid @border;
+        padding: 8px;
+
+        input[type='text'] {
+          width: 100%;
+          border: 1px solid @border;
+          padding: 4px;
+          font-size: 14px;
+          .box-sizing(border-box);
+          font-family: "proxima-nova";
+        }
+
+        input[disabled] {
+          cursor: not-allowed;
+          background-color: darken(@ashGray, 5%);
+        }
+      }
+    }
+  }
+
+  // User Actions
+
+  .user-actions {
+    margin: 0;
+    padding: 8px 10px 8px 0;
+    float: right;
+    list-style: none;
+
+    li {
+
+      a {
+        color: @darkGray;
+        text-decoration: none;
+
+        img {
+          float: left;
+          display: block;
+          margin-right: 10px;
+          border-radius: 1000px;
+          .size(28px, 28px);
+        }
+
+        .name {
+          display: block;
+          float: left;
+          padding: 7px 0;
+          line-height: 1em;
+          font-size: 14px;
+        }
+      }
+
+      ul {
+        margin-top: 10px;
+        li {
+          a.dropdown-toggle { display: none; }
+          a {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+}
