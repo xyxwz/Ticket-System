@@ -22,7 +22,7 @@ function($, _, mustache, BaseView, TagWidget, tmpl_Header, tmpl_Options) {
       "click a[data-action]": "preventDefault",
       "click a[data-route]": "navigateTo",
       "click a[data-action='refresh']": "refresh",
-      "click a[data-action='new-tag'].active": 'showTagWidget'
+      "click a[data-action='new-tag']": 'showTagWidget'
     },
 
     initialize: function() {
@@ -70,17 +70,15 @@ function($, _, mustache, BaseView, TagWidget, tmpl_Header, tmpl_Options) {
     },
 
     showTagWidget: function(e) {
-      var element;
+      var element = $(e.currentTarget).parent();
+
+      // Prevent multiple widgets
+      if(!element.children('.tags-form').length) {
+        this.widget = this.createView(TagWidget);
+        $(element).append(this.widget.render().el);
+      }
 
       e.preventDefault();
-
-      // Prevent Multiple Widgets
-      $(e.currentTarget).removeClass('active');
-
-      element = $(e.currentTarget).parent();
-
-      this.widget = this.createView(TagWidget);
-      $(element).append(this.widget.render().el);
     }
   });
 

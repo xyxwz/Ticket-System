@@ -17,6 +17,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_TagForm) {
   var TagFormView = BaseView.extend({
     className: 'tags-form',
     events: {
+      "mouseleave": "dispose",
       "click .color-picker li": "setColor",
       "keypress input[type=text]":  "createOnEnter"
     },
@@ -69,7 +70,6 @@ function($, _, Backbone, BaseView, mustache, tmpl_TagForm) {
         }, { wait: true });
 
         this.dispose();
-        $("header a[data-action='new-tag']").addClass('active');
       }
     }
   });
