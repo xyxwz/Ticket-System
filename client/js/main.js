@@ -25,6 +25,27 @@ require(['jquery', 'underscore', 'backbone', 'BaseView'],
 function($, _, Backbone, BaseView) {
   // framework is now loaded
   require(['app'], function(){
-    // Any config or setup can go here
+
+    // Set Sidebar Height
+    (function() {
+
+      // Set the sidebar height to the size of the viewport
+      function setSidebarHeight() {
+	var pageHeight = $(window).height(),
+	    headerHeight = $('header').height(),
+	    paneHeight;
+
+	paneHeight = pageHeight - headerHeight;
+	$('[role=sidebar]').css('height', paneHeight);
+      }
+
+      $(window).resize(function() {
+	setSidebarHeight();
+      });
+
+      // Set on page render
+      setSidebarHeight();
+    })();
+
   });
 });
