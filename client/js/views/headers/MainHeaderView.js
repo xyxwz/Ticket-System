@@ -81,9 +81,6 @@ function($, _, mustache, BaseView, TagWidget, tmpl_Header, tmpl_Options) {
         widget = this.createView(TagWidget);
         $(element).append(widget.render().el);
       }
-
-      this.bindTo(widget.$el, 'click', function(e) { e.stopPropagation(); });
-      this.bindTo($('html'), 'click.widget.data-api', widget.dispose);
     }
   });
 
