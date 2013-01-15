@@ -4,11 +4,26 @@
 
 // widget styles that are context independent
 .widget {
+  .clearfix;
+  height: 36px; // might not be the best
   position: relative;
+
+  a.add {
+    float: left;
+    vertical-align: top;
+    display: block;
+    padding: 8px 7px 7px 6px;
+    text-align: center;
+    color: @lightGray;
+    text-decoration: none;
+    border-radius: 1000px;
+    border: 1px solid lighten(@lightGray, 20%);
+    background: @ashGray;
+  }
 
   input {
     float: left;
-    display: block;
+    display: none;
     width: 200px;
     margin: 0;
     padding: 4px;
@@ -23,7 +38,7 @@
   .results-list {
     display: none;
     z-index: @zindexDropdown;
-    min-width: 200px;
+    min-width: 208px;
     position: absolute;
     top: 100%;
     left: 0;

@@ -4,9 +4,9 @@
 
 define(['jquery', 'underscore', 'backbone',
   'BaseView', 'mustache',
-  'text!templates/widgets/UserList.html',
+  'text!templates/widgets/UserWidget.html',
   'text!templates/widgets/User.html'],
-function($, _, Backbone, BaseView, mustache, tmpl_UserList, tmpl_User) {
+function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
 
   /**
    * Widget to help with user assignment
@@ -17,22 +17,20 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserList, tmpl_User) {
 
   var UserWidgetView = BaseView.extend({
     tagName: 'li',
-    className: 'widget',
+    className: 'widget user-widget',
     events: {
-      "focus [data-action='assign']": "bindEvents",
+      "click [data-action='display']": "bindEvents",
       "blur [data-action='assign']": "unbindEvents",
-      "click [data-role='results-list'] li": "assignUser",
-      "click .user [data-action='remove']": "unassignUser"
+      "click [data-role='results-list'] li": "assignUser"
     },
 
     initialize: function() {
       _.bindAll(this);
+      this.$el.attr('data-role', 'assign-user');
     },
 
     render: function() {
-      this.$el.html(Mustache.to_html(tmpl_UserList, {
-        placeholder: "Find a User"
-      }));
+      this.$el.html(Mustache.to_html(tmpl_UserWidget));
 
       return this;
     },
@@ -94,29 +92,35 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserList, tmpl_User) {
     },
 
     /**
-     * Bind events on `focus` of the input field
+     * Bind events on `click` of the `display` button
      *
      * @param {jQuery.Event} e
      */
 
     bindEvents: function(e) {
-      var element = $(e.currentTarget);
+      var element = this.$el.find('input');
+
       this.bindTo(element, 'keyup', this.renderFilteredResults);
+      this.$el.find('a').hide();
+      this.$el.find('input').fadeIn(200).focus();
+
+      e.preventDefault();
     },
 
     /**
-     * Unbind previously bound events on `blur`
+     * Unbind previously bound events on `input` `blur`
      *
      * @param {jQuery.Event} e
      */
 
     unbindEvents: function(e) {
-      var element = $(e.currentTarget);
+      var self = this;
+
       this.unbind('keyup');
 
-      $('[data-role="results-list"]', this.$el).fadeOut(200, function() {
-        $(this).empty();
-        element.val('');
+      this.$el.find('.results-list, input').fadeOut(200, function() {
+        self.$el.find('input').val('');
+        self.$el.find('a').show(200);
       });
     },
 

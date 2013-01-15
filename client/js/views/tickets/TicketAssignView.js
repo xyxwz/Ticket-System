@@ -5,9 +5,8 @@
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/widgets/UserWidgetView',
   'views/widgets/TagWidgetView',
-  'text!templates/widgets/UserAssign.html',
   'text!templates/tickets/AssignedUser.html'],
-function($, _, mustache, BaseView, UserWidget, TagWidget, tmpl_UserAssign, tmpl_User) {
+function($, _, mustache, BaseView, UserWidget, TagWidget, tmpl_User) {
 
   /**
    * TicketMetaView
@@ -22,8 +21,7 @@ function($, _, mustache, BaseView, UserWidget, TagWidget, tmpl_UserAssign, tmpl_
     className: 'assigned-users',
 
     events: {
-      "click li.assigned": "unAssignUser",
-      "click a[data-widget=user-widget]": "showAssignWidget"
+      "click li.user": "unAssignUser"
     },
 
     initialize: function() {
@@ -42,9 +40,9 @@ function($, _, mustache, BaseView, UserWidget, TagWidget, tmpl_UserAssign, tmpl_
      */
 
     render: function() {
-      var self = this,
-          assigned = this.model.get('assigned_to'),
-          users;
+      var users,
+          self = this,
+          assigned = this.model.get('assigned_to');
 
       if(this.widget) {
         this.widget.dispose();
@@ -58,23 +56,15 @@ function($, _, mustache, BaseView, UserWidget, TagWidget, tmpl_UserAssign, tmpl_
         self.$el.append(Mustache.to_html(tmpl_User, user.toJSON()));
       });
 
-      self.$el.append(Mustache.to_html(tmpl_UserAssign));
-
+      this.renderWidget();
       return this;
     },
 
-    showAssignWidget: function(e) {
-      var element;
-
-      e.preventDefault();
-
+    renderWidget: function() {
       this.widget = this.createView(UserWidget, {
         collection: ticketer.collections.users,
         model: this.model
       });
-
-      element = $('li.assign-add', this.el);
-      element.remove();
 
       this.$el.append(this.widget.render().el);
     },
