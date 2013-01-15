@@ -28,7 +28,7 @@ function($, _, mustache, BaseView, UserWidget, TagWidget, tmpl_User) {
       _.bindAll(this);
 
       // Bindings
-      this.bindTo(this.model, 'change', this.render);
+      this.bindTo(this.model, 'change:assigned_to', this.render);
     },
 
     /**
