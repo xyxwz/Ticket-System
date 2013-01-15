@@ -13,7 +13,7 @@ function($, _, mustache, BaseView, tmpl_empty) {
    */
 
   var DetailsPanelView = BaseView.extend({
-    className: "panelThree",
+    className: "panel-three",
 
     initialize: function() {
       _.bindAll(this);

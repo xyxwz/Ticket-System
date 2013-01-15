@@ -18,7 +18,7 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
     className: "container",
 
     events: {
-      "click [role=panelTwo] .item": "changePanel"
+      "click [role=panel-two] .item": "changePanel"
     },
 
     initialize: function() {
@@ -48,8 +48,8 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
         view: this.options.details
       });
 
-      $('[role=panelTwo]', this.el).html(this.panelTwo.render().el);
-      $('[role=panelThree]', this.el).html(this.panelThree.render().el);
+      $('[role=panel-two]', this.el).html(this.panelTwo.render().el);
+      $('[role=panel-three]', this.el).html(this.panelThree.render().el);
 
       return this;
     },
@@ -62,8 +62,8 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
       // Subtract an extra pixel for the border on the parent container
       panelHeight = (pageHeight - headerHeight) - 1;
 
-      $('[role=panelTwo]', this.el).css('height', panelHeight);
-      $('[role=panelThree]', this.el).css('height', panelHeight);
+      $('[role=panel-two]', this.el).css('height', panelHeight);
+      $('[role=panel-three]', this.el).css('height', panelHeight);
     },
 
     changePanel: function(e) {
@@ -80,7 +80,7 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
         model: model
       });
 
-      $('[role=panelThree]', this.el).html(this.panelThree.render().el);
+      $('[role=panel-three]', this.el).html(this.panelThree.render().el);
 
       this.selectItem(id);
     },

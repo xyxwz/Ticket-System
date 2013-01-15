@@ -12,7 +12,7 @@ function($, _, mustache, BaseView) {
    */
 
   var ListPanelView = BaseView.extend({
-    className: "panelTwo",
+    className: "panel-two",
 
     initialize: function() {
       _.bindAll(this);
