@@ -4,8 +4,8 @@
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/tickets/TicketAssignView',
-  'views/tickets/TicketTagListView'],
-function($, _, mustache, BaseView, TicketAssign, TagWidget) {
+  'views/tickets/TicketTagView'],
+function($, _, mustache, BaseView, TicketAssign, TagView) {
 
   /**
    * TicketMetaView
@@ -41,7 +41,7 @@ function($, _, mustache, BaseView, TicketAssign, TagWidget) {
     renderTagWidget: function() {
       var view;
 
-      view = this.createView(TagWidget, {
+      view = this.createView(TagView, {
         model: this.model
       });
 

@@ -4,63 +4,81 @@
 
 define(['jquery', 'underscore', 'backbone',
   'BaseView', 'mustache',
+  'text!templates/widgets/TagWidget.html',
   'text!templates/widgets/Tag.html'],
-function($, _, Backbone, BaseView, mustache, tmpl_Tag) {
+function($, _, Backbone, BaseView, mustache, tmpl_TagWidget, tmpl_Tag) {
 
   /**
    * Widget to help with tag/list assignment
    *
    * @param {Backbone.Model} model ticket model
+   * @param {Backbone.Collection} collection lists collection
    */
 
   var TagWidgetView = BaseView.extend({
-    tagName: 'ul',
-    className: 'widget',
+    tagName: 'li',
+    className: 'widget tag-widget',
 
     events: {
+      "click [data-action='display']": "renderTags",
       "click li": "assignTag"
     },
 
     initialize: function() {
       _.bindAll(this);
 
-      $(this.el).attr('data-role', 'task-list');
+      $(this.el).attr('data-role', 'assign-tag');
       this.bindTo(this.$el, 'click', function(e) { e.stopPropagation(); });
-      this.bindTo($('html'), 'click.tag-widget.data-api', this.dispose);
+      this.bindTo($('html'), 'click.tag-widget.data-api', this.hideTags);
     },
 
     render: function() {
-      var self = this,
-          ticketID = this.model.id;
+      this.$el.html(Mustache.to_html(tmpl_TagWidget));
 
-      ticketer.collections.lists.each(function(tag) {
+      return this;
+    },
+
+    renderTags: function(e) {
+      var self = this,
+          ticketID = this.model.id,
+          element = this.$el.find('.tags');
+
+      element.empty();
+
+      this.collection.each(function(tag) {
         // Filter out tags already assigned
         if(!tag.hasTicket(ticketID)) {
-          self.renderTag(tag);
+          element.append(self.renderTag(tag)).fadeIn(200);
         }
       });
 
+      e.preventDefault();
       return this;
     },
 
     renderTag: function(tag) {
       var data = tag.toJSON();
-
       data.color = ticketer.colors[data.color].name;
-      this.$el.append(Mustache.to_html(tmpl_Tag, data));
+
+      return Mustache.to_html(tmpl_Tag, data);
     },
 
     assignTag: function(e) {
       var id = $(e.currentTarget).data('id'),
-          list = ticketer.collections.lists.get(id);
+          tag = this.collection.get(id);
 
-      e.preventDefault();
-
-      if(list) {
-        list.addTicket(this.model.id);
+      if(tag) {
+        tag.addTicket(this.model.id);
+        this.model.trigger('tag:add', tag);
       }
 
-      this.dispose();
+      this.hideTags();
+    },
+
+    hideTags: function() {
+      this.$el.find('.tags').fadeOut(200, function() {
+        $(this).empty();
+      });
     }
 
   });
