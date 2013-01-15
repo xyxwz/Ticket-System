@@ -59,7 +59,8 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
           headerHeight = $('header').height(),
           panelHeight;
 
-      panelHeight = pageHeight - headerHeight;
+      // Subtract an extra pixel for the border on the parent container
+      panelHeight = (pageHeight - headerHeight) - 1;
 
       $('[role=panelTwo]', this.el).css('height', panelHeight);
       $('[role=panelThree]', this.el).css('height', panelHeight);
