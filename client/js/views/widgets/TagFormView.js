@@ -17,7 +17,6 @@ function($, _, Backbone, BaseView, mustache, tmpl_TagForm) {
   var TagFormView = BaseView.extend({
     className: 'tags-form',
     events: {
-      "mouseleave": "dispose",
       "click .color-picker li": "setColor",
       "keypress input[type=text]":  "createOnEnter"
     },

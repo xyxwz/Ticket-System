@@ -70,15 +70,20 @@ function($, _, mustache, BaseView, TagWidget, tmpl_Header, tmpl_Options) {
     },
 
     showTagWidget: function(e) {
-      var element = $(e.currentTarget).parent();
+      var element = $(e.currentTarget).parent(),
+          widget;
+
+      e.preventDefault();
+      e.stopPropagation();
 
       // Prevent multiple widgets
       if(!element.children('.tags-form').length) {
-        this.widget = this.createView(TagWidget);
-        $(element).append(this.widget.render().el);
+        widget = this.createView(TagWidget);
+        $(element).append(widget.render().el);
       }
 
-      e.preventDefault();
+      this.bindTo(widget.$el, 'click', function(e) { e.stopPropagation(); });
+      this.bindTo($('html'), 'click.widget.data-api', widget.dispose);
     }
   });
 
