@@ -3,85 +3,49 @@
  */
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
-  'views/widgets/UserWidgetView',
-  'text!templates/tickets/TicketMeta.html',
-  'text!templates/tickets/AssignedUser.html'],
-function($, _, mustache, BaseView, UserWidget, tmpl_TicketMeta, tmpl_User) {
+  'views/tickets/TicketAssignView',
+  'views/tickets/TicketTagListView'],
+function($, _, mustache, BaseView, TicketAssign, TagWidget) {
 
   /**
    * TicketMetaView
    * render a tickets meta data
    *
    * @param {Backbone.Model} model
-   * @param {Boolean} renderAll
    */
 
   var TicketMetaView = BaseView.extend({
-    tagName: 'ul',
     className: 'ticket-meta',
-
-    events: {
-      "click li.assigned": "unAssignUser",
-      "click a[data-widget=user-widget]": "showAssignWidget"
-    },
 
     initialize: function() {
       _.bindAll(this);
-
-      // Bindings
-      this.bindTo(this.model, 'change', this.render);
     },
 
-    /**
-     * Fills the ticket-meta container class with meta-data.
-     *
-     *
-     * Appends all users if renderAll === true,
-     * otherwise just renders users up until cap === 0
-     */
-
     render: function() {
-      var self = this,
-          assigned = this.model.get('assigned_to'),
-          users;
-
-      if(this.widget) {
-        this.widget.dispose();
-      }
-
-      users = ticketer.collections.users.filter(function(user) {
-        return ~assigned.indexOf(user.id);
-      });
-
-      users.forEach(function(user) {
-        self.$el.append(Mustache.to_html(tmpl_User, user.toJSON()));
-      });
-
-      self.$el.append(Mustache.to_html(tmpl_TicketMeta));
+      this.renderAssignView();
+      this.renderTagWidget();
 
       return this;
     },
 
-    showAssignWidget: function(e) {
-      var element;
+    renderAssignView: function() {
+      var view;
 
-      e.preventDefault();
-
-      this.widget = this.createView(UserWidget, {
-        collection: ticketer.collections.users,
+      view = this.createView(TicketAssign, {
         model: this.model
       });
 
-      element = $('li.assign-add', this.el);
-      element.remove();
-
-      this.$el.append(this.widget.render().el);
+      this.$el.append(view.render().el);
     },
 
-    unAssignUser: function(e) {
-      var id = $(e.currentTarget).data('id');
-      var resp = confirm('Remove the user from the Ticket?');
-      if(resp) this.model.unassignUser(id);
+    renderTagWidget: function() {
+      var view;
+
+      view = this.createView(TagWidget, {
+        model: this.model
+      });
+
+      this.$el.append(view.render().el);
     }
 
   });

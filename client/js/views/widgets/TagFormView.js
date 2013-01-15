@@ -25,7 +25,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_TagForm) {
       _.bindAll(this);
 
       this.bindTo(this.$el, 'click', function(e) { e.stopPropagation(); });
-      this.bindTo($('html'), 'click.widget.data-api', this.dispose);
+      this.bindTo($('html'), 'click.tag-widget.data-api', this.dispose);
     },
 
     render: function() {
