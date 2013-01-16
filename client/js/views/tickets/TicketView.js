@@ -7,8 +7,9 @@ define(['jquery', 'underscore', 'mustache', 'BaseView',
   'text!templates/tickets/Ticket.html',
   'text!templates/tickets/AssignedUser.html',
   'text!templates/tickets/EditTicket.html',
+  'text!templates/tickets/ClosedNotification.html',
   'moment', 'marked'],
-function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl) {
+function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, NotifyTmpl) {
 
   /**
    * TicketView
@@ -39,6 +40,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl) {
       // Bindings
       this.bindTo(this.model, 'edit', this.renderEditForm);
       this.bindTo(this.model, 'change:description', this.renderDescription);
+      this.bindTo(this.model, 'change:status', this.renderStatusNotification);
     },
 
     render: function() {
@@ -178,7 +180,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl) {
       $('textarea', this.el).data('AutoResizer').destroy();
 
       self.model.save({description: description}, {
-	error: self.triggerViewError
+        error: self.triggerViewError
       });
     },
 
@@ -195,6 +197,21 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl) {
       $('.content', this.el).html(html);
     },
 
+    /**
+     * Show a Notification if a ticket's status changes when viewing it.
+     * Only display if the model is in the details view.
+     * Controlled by the RenderAll flag.
+     */
+
+    renderStatusNotification: function() {
+      if(!this.renderAll) return false;
+
+      $('.content', this.el).before(Mustache.to_html(NotifyTmpl));
+
+      // Remove close button if currentUser is an Admin
+      if(ticketer.currentUser.role === 'admin') {
+        $('.edit-options li[data-role="close-ticket"]').remove();
+      }
     },
 
     /**
