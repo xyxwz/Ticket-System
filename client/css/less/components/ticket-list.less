@@ -39,6 +39,10 @@
             padding: 0;
             display: inline-block;
             float: right;
+
+            &[class*="color-"] i {
+              text-shadow: 1px 0 2px darken(@lightGray, 20%);
+            }
           }
         }
       }
@@ -58,6 +62,10 @@
         &:before {
           background-color: @white !important;
         }
+      }
+
+      .attrs .tags li[class*="color-"] i {
+        text-shadow: 1px 1px 2px @white;
       }
     }
   }
