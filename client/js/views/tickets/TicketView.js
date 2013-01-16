@@ -8,8 +8,9 @@ define(['jquery', 'underscore', 'mustache', 'BaseView',
   'text!templates/tickets/AssignedUser.html',
   'text!templates/tickets/EditTicket.html',
   'text!templates/tickets/ClosedNotification.html',
+  'text!templates/tickets/AssignedTag.html',
   'moment', 'marked'],
-function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, NotifyTmpl) {
+function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, NotifyTmpl, TagTmpl) {
 
   /**
    * TicketView
@@ -37,6 +38,14 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       // Set the data-id attribute on this.el
       $(this.el).attr('data-id', this.model.id);
 
+      // Bind to List Collection Reset
+      // Handles page refreshes where list may render before
+      // the collection reset event
+      if(!this.renderAll) {
+        this.bindTo(ticketer.collections.lists, 'reset', this.renderTags);
+        this.bindTo(this.model, 'tag:add tag:remove', this.renderTags);
+      }
+
       // Bindings
       this.bindTo(this.model, 'edit', this.renderEditForm);
       this.bindTo(this.model, 'change:description', this.renderDescription);
@@ -50,8 +59,14 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
+      // Render Meta Data in Details View
       if(this.renderAll) {
         this.renderMeta();
+      }
+
+      // Render Tags In List View
+      if(!this.renderAll) {
+        this.renderTags();
       }
 
       return this;
@@ -76,6 +91,39 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
     },
 
     /**
+     * Render the Tag icons in the List View
+     */
+
+    renderTags: function() {
+      var self = this,
+          tags;
+
+      if(this.renderAll) return false;
+
+      // Empty element
+      $('.tags', this.el).empty();
+
+      tags = ticketer.collections.lists.filter(function(tag) {
+        return tag.hasTicket(self.model.id);
+      });
+
+      for(i = 0, len = tags.length; i < len; i++) {
+        $('ul.tags', this.el).append(this.renderTag(tags[i]));
+      }
+    },
+
+    /**
+     * Render a Single Tag on List View
+     */
+
+    renderTag: function(tag) {
+      var data = tag.toJSON();
+      data.color = ticketer.colors[data.color].name;
+
+      return Mustache.to_html(TagTmpl, data);
+    },
+
+    /**
      * Return the views current model ready to be
      * rendered to the template
      *
@@ -96,9 +144,12 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       data.statusClass = this.model.get('assigned_to').length ? 'read' : 'unread';
       data.isClosed = this.model.get('status') === 'closed';
 
+      data.showTags = true; // default
+
       if(this.renderAll) {
         data.description = marked(this.model.get('description'));
         data.fullDate = momentObj.format('MMMM Do, YYYY h:mm A');
+        data.showTags = false;
         data.isEditable = this.isEditable(data);
         data.isAdmin = ticketer.currentUser.role === 'admin' ? true : false;
       }

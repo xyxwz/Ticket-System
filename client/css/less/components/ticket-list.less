@@ -8,17 +8,39 @@
     cursor: pointer;
 
     .header {
+      .clearfix;
+
       hgroup {
         width: 80%;
       }
 
-      time {
-        width: 20%;
+      .attrs {
         float: right;
-        margin: 0;
-        font-weight: 400;
-        font-size: 16px;
-        text-align: right;
+        width: 20%;
+
+        time {
+          display: block;
+          margin: 0;
+          font-weight: 400;
+          font-size: 16px;
+          text-align: right;
+        }
+
+        .tags {
+          .clearfix;
+          position: relative;
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          list-style: none;
+
+          li {
+            margin: 0;
+            padding: 0;
+            display: inline-block;
+            float: right;
+          }
+        }
       }
     }
   }

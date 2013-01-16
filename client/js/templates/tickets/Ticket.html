@@ -5,13 +5,21 @@
       <h4>{{user.name}}</h4>
     </hgroup>
 
-    {{#fullDate}}
-      <time title="{{hoverTime}}" datetime="{{datetime}}">{{fullDate}}</time>
-    {{/fullDate}}
+    <div class="attrs">
 
-    {{^fullDate}}
-      <time title="{{hoverTime}}" datetime="{{datetime}}">{{cleanTime}}</time>
-    {{/fullDate}}
+      {{#fullDate}}
+        <time title="{{hoverTime}}" datetime="{{datetime}}">{{fullDate}}</time>
+      {{/fullDate}}
+
+      {{^fullDate}}
+        <time title="{{hoverTime}}" datetime="{{datetime}}">{{cleanTime}}</time>
+      {{/fullDate}}
+
+      {{#showTags}}
+        <ul class="tags"></ul>
+      {{/showTags}}
+
+    </div>
 
     {{#isEditable}}
       <ul class="edit-options">
