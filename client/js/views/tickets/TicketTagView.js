@@ -34,6 +34,8 @@ function($, _, Backbone, BaseView, mustache, TagWidget, tmpl_Tag) {
       var i, len, tags,
           self = this;
 
+      this.$el.empty();
+
       if(this.widget) {
         this.widget.dispose();
       }
@@ -42,11 +44,12 @@ function($, _, Backbone, BaseView, mustache, TagWidget, tmpl_Tag) {
         return tag.hasTicket(self.model.id);
       });
 
+      this.renderWidget();
+
       for(i = 0, len = tags.length; i < len; i++) {
         this.$el.append(this.renderTag(tags[i]));
       }
 
-      this.renderWidget();
       return this;
     },
 
@@ -69,7 +72,7 @@ function($, _, Backbone, BaseView, mustache, TagWidget, tmpl_Tag) {
     unassignTag: function(e) {
       var tag,
           id = $(e.currentTarget).data('id'),
-          resp = confirm('Do you tag from ticket?');
+          resp = confirm('Remove this tag from the Ticket?');
 
       if(resp) {
         tag = ticketer.collections.lists.get(id);

@@ -4,9 +4,8 @@
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/widgets/UserWidgetView',
-  'views/widgets/TagWidgetView',
   'text!templates/tickets/AssignedUser.html'],
-function($, _, mustache, BaseView, UserWidget, TagWidget, tmpl_User) {
+function($, _, mustache, BaseView, UserWidget, tmpl_User) {
 
   /**
    * TicketMetaView
@@ -32,17 +31,15 @@ function($, _, mustache, BaseView, UserWidget, TagWidget, tmpl_User) {
     },
 
     /**
-     * Fills the ticket-meta container class with meta-data.
-     *
-     *
-     * Appends all users if renderAll === true,
-     * otherwise just renders users up until cap === 0
+     * Adds the User Widget to TicketMetaView
      */
 
     render: function() {
       var users,
           self = this,
           assigned = this.model.get('assigned_to');
+
+      this.$el.empty();
 
       if(this.widget) {
         this.widget.dispose();
