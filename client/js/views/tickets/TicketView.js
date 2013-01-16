@@ -95,10 +95,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
      */
 
     renderTags: function() {
-      var self = this,
-          tags;
-
-      if(this.renderAll) return false;
+      var i, len, tags,
+          self = this;
 
       // Empty element
       $('.tags', this.el).empty();
