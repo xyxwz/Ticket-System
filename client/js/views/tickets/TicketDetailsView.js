@@ -21,8 +21,6 @@ function($, _, Backbone, BaseView, TicketView,
 
     initialize: function() {
       _.bindAll(this);
-
-      this.bindTo(this.model, 'remove', this.goBack);
     },
 
     render: function() {
@@ -48,10 +46,6 @@ function($, _, Backbone, BaseView, TicketView,
       });
 
       $(this.el).append(view.render().el);
-    },
-
-    goBack: function() {
-      ticketer.routers.ticketer.navigate("tickets/mine", true);
     }
 
   });

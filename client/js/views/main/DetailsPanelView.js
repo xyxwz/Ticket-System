@@ -4,7 +4,7 @@
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'text!templates/main/empty-details.html'],
-function($, _, mustache, BaseView, tmpl_empty) {
+function($, _, mustache, BaseView, tmpl_Empty) {
 
   /**
    * The main view for ticket lists
@@ -20,22 +20,25 @@ function($, _, mustache, BaseView, tmpl_empty) {
     },
 
     render: function() {
-      var view,
-          data;
+      return this.model ?
+        this.renderDetailsView() : this.renderFiller();
+    },
 
-      if(this.model) {
-        view = this.createView(this.options.view, {
-          model: this.model
-        });
+    renderFiller: function() {
+      this.$el.html(Mustache.to_html(tmpl_Empty, {
+        text: "Select an item to view it's details."
+      }));
 
-        this.$el.html(view.render().el);
-      } else {
-        data = {
-          text: "Select an item to view it's details."
-        };
+      return this;
+    },
 
-        $(this.el).html(Mustache.to_html(tmpl_empty, data));
-      }
+    renderDetailsView: function() {
+      var view = this.createView(this.options.view, {
+        model: this.model
+      });
+
+      this.bindTo(this.model, 'remove', this.renderFiller);
+      this.$el.html(view.render().el);
 
       return this;
     }
