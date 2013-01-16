@@ -43,6 +43,8 @@ function($, _, mustache, BaseView, TagWidget, tmpl_Header, tmpl_Options) {
     addUserOptions: function() {
       var data = {};
 
+      $('.user-actions', this.el).remove();
+
       data.user = ticketer.currentUser;
       this.$el.append(Mustache.to_html(tmpl_Options, data));
     },
