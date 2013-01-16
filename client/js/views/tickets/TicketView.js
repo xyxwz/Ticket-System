@@ -37,8 +37,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl) {
       $(this.el).attr('data-id', this.model.id);
 
       // Bindings
-      this.bindTo(this.model, 'change', this.render);
       this.bindTo(this.model, 'edit', this.renderEditForm);
+      this.bindTo(this.model, 'change:description', this.renderDescription);
     },
 
     render: function() {
@@ -178,29 +178,23 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl) {
       $('textarea', this.el).data('AutoResizer').destroy();
 
       self.model.save({description: description}, {
-        error: self.triggerViewError,
-        success: self.renderEdit
+	error: self.triggerViewError
       });
     },
 
     /**
-     * Re-render the current model after the edit
-     * has taken place
-     *
-     * @param {jQuery.Event} e
+     * Re-render the description when it has been updated.
+     * Only replace the content if the model is in the
+     * details view. Controlled by the RenderAll flag.
      */
 
-    renderEdit: function(e) {
-      var self = this;
+    renderDescription: function() {
+      if(!this.renderAll) return false;
 
-      if(e instanceof jQuery.Event) {
-        e.preventDefault();
-      }
+      var html = marked(this.model.get('description'));
+      $('.content', this.el).html(html);
+    },
 
-      $(this.el).fadeOut(200, function() {
-        self.render();
-        $(self.el).fadeIn(200);
-      });
     },
 
     /**
