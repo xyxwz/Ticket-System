@@ -64,6 +64,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
     },
 
     redirect: function() {
+      this.$el.find('textarea').data('AutoResizer').destroy();
       this.dispose();
       ticketer.routers.ticketer.navigate("tickets/mine", true);
     },
@@ -76,7 +77,6 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
       $('.dialog').animate({ 'top': '12%' });
 
       this.bindTo($('.dialog .close', this.el), 'click', this.removeHelp);
-      this.bindTo($(this.el), 'clickoutside', this.removeHelp);
     },
 
     removeHelp: function(e) {
