@@ -25,7 +25,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
     events: {
       "click a[data-action]": "ticketAction",
-      "submit form": "saveTicket",
+      "click [data-action='save']": "saveTicket",
+      "click [data-action='cancel']": "renderDescription",
       "click .md a": "openLink"
     },
 

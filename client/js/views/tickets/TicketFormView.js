@@ -19,6 +19,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
 
     events: {
       "click [data-action='create']": "createTicket",
+      "click [data-action='cancel']": "redirect",
       "click [data-role='display-guide']": "displayHelp"
     },
 
@@ -62,7 +63,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
       });
     },
 
-    redirect: function(model) {
+    redirect: function() {
       this.dispose();
       ticketer.routers.ticketer.navigate("tickets/mine", true);
     },
