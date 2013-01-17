@@ -2,13 +2,14 @@
  * View Dependencies
  */
 
-define(['jquery', 'underscore', 'mustache', 'BaseView'],
-function($, _, mustache, BaseView) {
+define(['jquery', 'underscore', 'mustache', 'BaseView',
+  'text!templates/main/Filler.html'],
+function($, _, mustache, BaseView, tmpl_Filler) {
 
   /**
-   * The main view for ticket lists
+   * The main view for panel two
    *
-   * @param {String} title
+   * @param {Backbone.Collection} collection
    */
 
   var ListPanelView = BaseView.extend({
@@ -16,14 +17,26 @@ function($, _, mustache, BaseView) {
 
     initialize: function() {
       _.bindAll(this);
+
+      this.bindTo(this.collection, 'add remove reset', this.render);
     },
 
     render: function() {
-      var self = this,
-          view;
+      return this.collection.length ?
+        this.renderView() : this.renderFiller();
+    },
 
-      view = this.createView(this.options.view, {
-        collection: self.collection
+    renderFiller: function() {
+      this.$el.html(Mustache.to_html(tmpl_Filler, {
+        text: "No items to display"
+      }));
+
+      return this;
+    },
+
+    renderView: function() {
+      var view = this.createView(this.options.view, {
+        collection: this.collection
       });
 
       this.$el.html(view.render().el);

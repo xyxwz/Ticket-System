@@ -3,13 +3,13 @@
  */
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
-  'text!templates/main/empty-details.html'],
-function($, _, mustache, BaseView, tmpl_Empty) {
+  'text!templates/main/Filler.html'],
+function($, _, mustache, BaseView, tmpl_Filler) {
 
   /**
-   * The main view for ticket lists
+   * The main view for details panel
    *
-   * @param {String} title
+   * @param {Backbone.Model}
    */
 
   var DetailsPanelView = BaseView.extend({
@@ -25,7 +25,7 @@ function($, _, mustache, BaseView, tmpl_Empty) {
     },
 
     renderFiller: function() {
-      this.$el.html(Mustache.to_html(tmpl_Empty, {
+      this.$el.html(Mustache.to_html(tmpl_Filler, {
         text: "Select an item to view it's details."
       }));
 
