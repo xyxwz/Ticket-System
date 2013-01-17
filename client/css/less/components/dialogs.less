@@ -7,82 +7,76 @@
   top: -50%;
   left: 30%;
   z-index: 999;
-  background: #DDD;
-  padding: 8px 10px;
-  border: 3px solid transparent;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  box-shadow: 0 0 18px #444;
-  color: #666;
-  font-family: "meseo-slab", "American Typewriter", "serif";
-  font-weight: 300;
+  color: @darkGray;
   overflow: hidden;
+  padding: 8px;
+  border-radius: 5px;
+  background: @mainHeaderBg;
+  box-shadow: 0 0 8px @darkGray;
+  .clearfix;
 
   .close {
     position: absolute;
-    top: 7px;
+    top: 4px;
     right: 6px;
     color: @black;
     font-size: 20px;
     font-weight: bold;
-    text-shadow: 0 1px 0 #ffffff;
     text-decoration: none;
-    line-height: 1em;
     font-family: Arial, sans-serif;
     .opacity(25);
 
     &:hover {
       color: @black;
       text-decoration: none;
-      .opacity(40);
+      .opacity(68);
     }
-  }
-
-  &:after {
-    content: " ";
-    display: block;
-    clear:both;
-    visibility: hidden;
-    font-size: 0;
-    height: 0;
   }
 
   h1 {
     font-size: 24px;
+    margin: 0 0 8px 0;
+    line-height: 1.2em;
+    font-family: "proxima-nova";
     border-bottom: 1px solid #AAA;
-    margin: 0 0 6px 0;
-    color: #222;
-  }
-
-  h2 {
-    font-size: 16px;
-    color: #444;
-    margin-bottom: 4px;
-  }
-
-  p {
-    font-size: 12px;
-    margin: 0;
-  }
-
-  pre {
-    line-height: 14px;
-    background-color: #EEE;
-    border: 1px solid #DDD;
-    border-radius: 5px;
-    padding: 4px;
-    margin: 0 0 10px 0;
   }
 
   .column {
-    width: 220px;
     float: left;
+    width: 220px;
     margin: 0 auto;
     margin-right: 10px;
 
     &:last-child {
       margin: 0;
+    }
+
+    h2, h3, pre {
+      margin: 0;
+      line-height: 1.2em;
+      font-family: "proxima-nova";
+      color: lighten(@darkGray, 10%);
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #AAA;
+    }
+
+    h3 {
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    pre {
+      padding: 4px;
+      font-size: 12px;
+      font-weight: 400;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      background: @ashGray;
+      border: 1px solid darken(@ashGray, 10%);
     }
 
     pre:last-child {

@@ -20,7 +20,8 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
     events: {
       "click [data-action='create']": "createTicket",
       "click [data-action='cancel']": "redirect",
-      "click [data-role='display-guide']": "displayHelp"
+      "click [data-role='display-guide']": "displayHelp",
+      "click .dialog .close": "removeHelp"
     },
 
     initialize: function() {
@@ -71,18 +72,17 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
 
     displayHelp: function(e) {
       e.preventDefault();
+      if(this.$el.find('.dialog').length) return;
 
       //Render help frame
       this.$el.append(Mustache.to_html(GuideTmpl));
-      $('.dialog').animate({ 'top': '12%' });
-
-      this.bindTo($('.dialog .close', this.el), 'click', this.removeHelp);
+      $('.dialog').animate({ 'top': '18%' });
     },
 
     removeHelp: function(e) {
       e.preventDefault();
 
-      $('.dialog', this.el).fadeOut(200, function() {
+      this.$el.find('.dialog').fadeOut(200, function() {
         $(this).remove();
       });
     }
