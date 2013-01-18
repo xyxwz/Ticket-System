@@ -18,13 +18,14 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
     className: "container",
 
     events: {
-      "click [role=panel-two] .item": "changePanel"
+      "click [role=panel-two] .item": "renderDetailsPanel"
     },
 
     initialize: function() {
       _.bindAll(this);
 
       this.bindTo($(window), 'resize', this.setPanelHeight);
+      this.bindTo(this.collection, 'filter', this.renderListPanel);
     },
 
     render: function() {
@@ -38,20 +39,57 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
       // Make Panel fill viewport height
       this.setPanelHeight();
 
+      this.renderListPanel();
+
+      return this;
+    },
+
+    renderListPanel: function(filter) {
+      if(this.panelTwo) {
+        this.panelTwo.dispose();
+      }
+
       this.panelTwo = new ListView({
         collection: this.collection,
         view: this.options.list,
-        filter: this.options.filter || false
+        filter: filter || this.options.filter
       });
 
-      this.panelThree = new DetailsView({
-        view: this.options.details
-      });
-
+      this.renderDetailsPanel();
       $('[role=panel-two]', this.el).html(this.panelTwo.render().el);
-      $('[role=panel-three]', this.el).html(this.panelThree.render().el);
+    },
 
-      return this;
+    /**
+     * Render the details panel, if e is present,
+     * pass the model to the details view.
+     * Otherwise just create a new detailsview.
+     *
+     * @param {jQuery.Event} e
+     */
+
+    renderDetailsPanel: function(e) {
+      if(this.panelThree) {
+        this.panelThree.dispose();
+      }
+
+      if(e) {
+        var id = $(e.currentTarget).data('id');
+        var model = this.collection.get(id);
+
+        this.panelThree = new DetailsView({
+          view: this.options.details,
+          model: model
+        });
+
+        this.selectItem(id);
+      }
+      else {
+        this.panelThree = new DetailsView({
+          view: this.options.details
+        });
+      }
+
+      $('[role=panel-three]', this.el).html(this.panelThree.render().el);
     },
 
     setPanelHeight: function() {
@@ -64,25 +102,6 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
 
       $('[role=panel-two]', this.el).css('height', panelHeight);
       $('[role=panel-three]', this.el).css('height', panelHeight);
-    },
-
-    changePanel: function(e) {
-      var id = $(e.currentTarget).data('id'),
-          model;
-
-      model = this.collection.get(id);
-
-      // Destory current panel
-      this.panelThree.dispose();
-
-      this.panelThree = new DetailsView({
-        view: this.options.details,
-        model: model
-      });
-
-      $('[role=panel-three]', this.el).html(this.panelThree.render().el);
-
-      this.selectItem(id);
     },
 
     selectItem: function(item) {
