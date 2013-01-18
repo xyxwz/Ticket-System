@@ -1,0 +1,9 @@
+<h4 class="title">Tags</h4>
+<button data-action="edit">Edit</button>
+<ul class="group">
+  {{#tags}}
+    <li data-id="{{id}}" title="{{name}}" class="color-{{color}}">
+      <i class="icon-bookmark"></i> {{name}}
+    </li>
+  {{/tags}}
+</ul>

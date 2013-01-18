@@ -14,8 +14,7 @@ function($, _, Backbone, BaseView, TaskView) {
    */
 
   var TaskListView = BaseView.extend({
-    tagName: 'ul',
-    className: 'group',
+    className: 'option-set last',
 
     events: {
       "click .task": "showDetails"

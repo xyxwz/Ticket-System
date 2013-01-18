@@ -4,7 +4,7 @@
 
 define(['jquery', 'underscore', 'backbone',
   'BaseView', 'mustache',
-  'views/tasks/TaskListView',
+  'views/widgets/TagListWidgetView',
   'text!templates/toolbars/Toolbar.html'],
 function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
 
