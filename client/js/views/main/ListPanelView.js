@@ -36,7 +36,8 @@ function($, _, mustache, BaseView, tmpl_Filler) {
 
     renderView: function() {
       var view = this.createView(this.options.view, {
-        collection: this.collection
+        collection: this.collection,
+        filter: this.options.filter
       });
 
       this.$el.html(view.render().el);
