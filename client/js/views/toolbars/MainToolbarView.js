@@ -25,16 +25,16 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
 
     render: function() {
       this.$el.html(Mustache.to_html(tmpl_Toolbar));
-      this.renderLists();
+      this.renderTagWidget();
       return this;
     },
 
-    renderLists: function() {
+    renderTagWidget: function() {
       var view = this.createView(TaskList, {
         collection: ticketer.collections.lists
       });
 
-      $("[data-role='task-list']", this.el).append(view.render().el);
+      this.$el.append(view.render().el);
     },
 
     /**

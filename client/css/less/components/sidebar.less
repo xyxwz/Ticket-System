@@ -13,10 +13,9 @@
     color: @sidebarText;
     border-bottom: 1px solid @sidebarSeperator;
 
-    &.last {
+    &:last-child {
       border-bottom: none;
     }
-
 
     .title {
       padding: 8px 20px;
@@ -57,6 +56,36 @@
           }
         }
       }
+    }
+  }
+}
+
+// Tag list sidebar widget
+.sidebar .tag-list-widget {
+  .title a {
+    float: right;
+    color: @sidebarText;
+    font-size: 12px;
+    line-height: 18px;
+    text-decoration: none;
+
+    &:visited {
+      color: @sidebarText;
+    }
+
+    &:hover {
+      color: @active;
+    }
+  }
+
+  .tags li {
+    cursor: pointer;
+    padding: 4px 12px;
+    font-weight: 600;
+    text-shadow: 0 1px 1px rgba(41, 29, 36, 0.8);
+
+    &.active {
+      color: @white;
     }
   }
 }
