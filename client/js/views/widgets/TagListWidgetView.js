@@ -70,13 +70,20 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag) {
           tag = ticketer.collections.lists.get(target.data('id')),
           tickets = tag.get('tickets');
 
-      target.siblings().removeClass('active');
-      target.addClass('active');
+      // Toggle functionality
+      if(target.hasClass('active')) {
+        target.removeClass('active');
+        ticketer.collections.openTickets.trigger('filter');
+      }
+      else {
+        target.siblings().removeClass('active');
+        target.addClass('active');
 
-      // Trigger a filter event passing the filter function
-      ticketer.collections.openTickets.trigger('filter', function(ticket) {
-        return ~tickets.indexOf(ticket.id);
-      });
+        // Trigger a filter event passing the filter function
+        ticketer.collections.openTickets.trigger('filter', function(ticket) {
+          return ~tickets.indexOf(ticket.id);
+        });
+      }
     }
 
 
