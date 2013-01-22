@@ -4,8 +4,9 @@
 
 define(['jquery', 'underscore', 'backbone', 'BaseView',
   'text!templates/widgets/TagListWidget.html',
-  'text!templates/widgets/Tag.html'],
-function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag) {
+  'text!templates/widgets/Tag.html',
+  'text!templates/widgets/TagEdit.html'],
+function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
 
   /**
    * TaskListView
@@ -18,14 +19,16 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag) {
     className: 'option-set tag-list-widget',
 
     events: {
-      "click .tags li": "filterListView"
+      "click [data-action='edit']": "editTags",
+      "click [data-action='save']": "saveTags",
+      "click .tag[data-id]": "filterListView",
+      "click .editable[data-id] .close": "deleteTag"
     },
 
     initialize: function() {
       _.bindAll(this);
 
-      this.bindTo(this.collection, 'add', this.renderTags);
-      this.bindTo(this.collection, 'reset', this.renderTags);
+      this.bindTo(this.collection, 'add reset', this.renderTags);
     },
 
     render: function() {
@@ -84,9 +87,50 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag) {
           return ~tickets.indexOf(ticket.id);
         });
       }
+    },
+
+    /**
+     * Make all tags in the current view editable
+     *
+     * @
+     */
+
+    editTags: function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      var element = this.$el.find('.group');
+
+      element.empty();
+
+      this.collection.each(function(tag) {
+        var data = tag.toJSON();
+        data.color = ticketer.colors[data.color].name;
+        element.append(Mustache.to_html(tmpl_TagEdit, data));
+      });
+
+      // Set save element
+      this.$el.find('.title a').replaceWith('<a data-action="save" title="Save tags" href="#">Save</a>');
+    },
+
+    saveTags: function(e) {
+      e.preventDefault();
+    },
+
+    deleteTag: function(e) {
+      var element = $(e.currentTarget).parent(),
+          tag = this.collection.get(element.data('id'));
+
+      if(tag) {
+        tag.destroy();
+      }
+      else {
+        console.error("Attempted to get tag: #" + id + ", but failed.");
+      }
+
+      element.remove();
+      e.preventDefault();
     }
-
-
   });
 
   return TaskListView;

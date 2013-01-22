@@ -78,14 +78,41 @@
     }
   }
 
-  .tags li {
-    cursor: pointer;
-    padding: 4px 12px;
-    font-weight: 600;
-    text-shadow: 0 1px 1px rgba(41, 29, 36, 0.8);
+  .tags {
+    .editable {
+      position: relative;
+      width: 100%;
+      .clearfix;
 
-    &.active {
-      color: @white;
+      .close {
+        float: right;
+        font-size: 14px;
+        line-height: 24px;
+        font-family: Arial;
+        font-weight: 600;
+        .opacity(40);
+
+        &:hover {
+          .opacity(88);
+        }
+      }
+
+      input {
+        width: 80%;
+        background: @sidebarText;
+      }
+    }
+
+    li {
+      cursor: pointer;
+      padding: 4px 12px;
+      font-weight: 600;
+      text-shadow: 0 1px 1px rgba(41, 29, 36, 0.8);
+      .box-sizing(border-box);
+
+      &.active {
+        color: @white;
+      }
     }
   }
 }
