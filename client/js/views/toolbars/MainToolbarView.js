@@ -21,12 +21,29 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
 
     initialize: function() {
       _.bindAll(this);
+
+      this.bindTo(ticketer.collections.openTickets, 'add remove sync reset', this.renderCounts);
     },
 
     render: function() {
       this.$el.html(Mustache.to_html(tmpl_Toolbar));
+      this.renderCounts();
       this.renderTagWidget();
+
       return this;
+    },
+
+    renderCounts: function() {
+      var mine = ticketer.collections.openTickets.filter(function(ticket) {
+        return ticket.participating() && ticket.notification();
+      }).length;
+
+      var open = ticketer.collections.openTickets.filter(function(ticket) {
+        return !ticket.get('assigned_to').length;
+      }).length;
+
+      this.$el.find('[data-role="my-count"]').text(mine);
+      this.$el.find('[data-role="open-count"]').text(open);
     },
 
     renderTagWidget: function() {

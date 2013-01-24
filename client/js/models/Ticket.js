@@ -77,24 +77,15 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
      * Returns if the user is participating in the ticket
      */
     participating: function() {
-      if(this.get('participating') && this.get('participating') === true) {
-        return true;
-      }
-      else {
-        return false;
-      }
+      return this.get('participating') && this.get('participating') === true;
     },
 
     /*
      * Returns if the user has a notification for the ticket
      */
+
     notification: function() {
-      if(this.get('notification') && this.get('notification') === true) {
-        return true;
-      }
-      else {
-        return false;
-      }
+      return this.get('notification') && this.get('notification') === true;
     },
 
     /*
