@@ -22,7 +22,8 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
     initialize: function() {
       _.bindAll(this);
 
-      this.bindTo(ticketer.collections.openTickets, 'add remove sync reset', this.renderCounts);
+      // This is a very heavy event binding...
+      this.bindTo(ticketer.collections.openTickets, 'add remove reset change', this.renderCounts);
     },
 
     render: function() {
