@@ -19,9 +19,8 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
     className: 'option-set tag-list-widget',
 
     events: {
-      "click [data-action='edit']": "editTags",
-      "click [data-action='save']": "saveTags",
       "click .tag[data-id]": "filterListView",
+      "dblclick [data-action='edit']": "editTag",
       "click .editable[data-id] .close": "deleteTag"
     },
 
@@ -39,12 +38,19 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
     },
 
     /**
-     * Render all tags
+     * Generate an array of all tag markup and
+     * render to the element
      */
 
     renderTags: function() {
-      this.$el.find('.group').empty();
-      this.collection.each(this.renderTag);
+      var self = this,
+          html = [];
+
+      this.collection.each(function(tag) {
+        html.push(self.renderTag(tag));
+      });
+
+      this.$el.find('.group').html(html.join(''));
     },
 
     /**
@@ -57,7 +63,7 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
       var data = tag.toJSON();
       data.color = ticketer.colors[data.color].name;
 
-      this.$el.find('.group').append(Mustache.to_html(tmpl_Tag, data));
+      return Mustache.to_html(tmpl_Tag, data);
     },
 
     /**
@@ -92,31 +98,51 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
     /**
      * Make all tags in the current view editable
      *
-     * @
+     * @param {jQuery.Event} e
      */
 
-    editTags: function(e) {
-      e.stopPropagation();
-      e.preventDefault();
+    editTag: function(e) {
+      var element = $(e.currentTarget).parent(),
+          data = this.collection.get(element.data('id')).toJSON();
 
-      var element = this.$el.find('.group');
+      data.color = ticketer.colors[data.color].name;
+      element.replaceWith(Mustache.to_html(tmpl_TagEdit, data));
+      this.$el.find('input').focus();
 
-      element.empty();
-
-      this.collection.each(function(tag) {
-        var data = tag.toJSON();
-        data.color = ticketer.colors[data.color].name;
-        element.append(Mustache.to_html(tmpl_TagEdit, data));
+      this.bindTo(this.$el.find('.editable'), 'click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
       });
 
-      // Set save element
-      this.$el.find('.title a').replaceWith('<a data-action="save" title="Save tags" href="#">Save</a>');
+      this.bindTo($('html'), 'click', this.saveTag);
     },
 
-    saveTags: function(e) {
-      e.preventDefault();
+    /**
+     * Save the tag that is currently being edited
+     * and unbind previously bound events
+     *
+     * @param {jQuery.Event} e
+     */
+
+    saveTag: function(e) {
+      var data,
+          element = this.$el.find('.editable'),
+          name = element.find('input').val(),
+          tag = this.collection.get(element.data('id'));
+
+      // TODO: Fix unbinding
+      this.off(element, 'click');
+      this.off($('html'), 'click', this.saveTag);
+
+      tag.save({name: name});
+      element.replaceWith(this.renderTag(tag));
     },
 
+    /**
+     * Delete the tag and remove the element from the view
+     *
+     * @param {jQuery.Event} e
+     */
     deleteTag: function(e) {
       var element = $(e.currentTarget).parent(),
           tag = this.collection.get(element.data('id'));
@@ -129,7 +155,6 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
       }
 
       element.remove();
-      e.preventDefault();
     }
   });
 
