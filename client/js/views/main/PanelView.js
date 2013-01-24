@@ -45,6 +45,18 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
     },
 
     renderListPanel: function(filter) {
+      function addFilters() {
+        var self = this;
+
+        if(filter && this.options.filter) {
+          return function(thing) {
+            return filter(thing) && self.options.filter(thing);
+          };
+        }
+
+        return filter || self.options.filter;
+      }
+
       if(this.panelTwo) {
         this.panelTwo.dispose();
       }
@@ -52,7 +64,7 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
       this.panelTwo = new ListView({
         collection: this.collection,
         view: this.options.list,
-        filter: filter || this.options.filter
+        filter: addFilters.call(this)
       });
 
       this.renderDetailsPanel();
