@@ -139,8 +139,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
       momentDate = moment(new Date(data.datetime));
 
-      if(momentDate.calendar().match(/today|yesterday/ig)) {
-        data.cleanTime = momentDate.calendar();
+      if(momentDate.calendar().match(/(Today|Yesterday)/g)) {
+        data.cleanTime = RegExp.$1; // Today || Yesterday
       }
       else {
         data.cleanTime = momentDate.format('MMM D');
