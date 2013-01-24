@@ -1,7 +1,7 @@
 #!/bin/bash
 #Builds the current directory using r.js
 
-if [[ -d 'release/' ]]; then
+if [[ -d 'js/release/' ]]; then
   rm -rf js/release/
 fi
 
