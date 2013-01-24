@@ -130,14 +130,21 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
      */
 
     packageModel: function() {
-      var data = {};
+      var momentDate,
+          data = {};
 
       data.title = this.model.get('title');
       data.user = this.model.get('user');
       data.datetime = this.model.get('closed_at') || this.model.get('opened_at');
 
-      var momentObj = moment(new Date(data.datetime));
-      data.cleanTime = momentObj.format('h:mm A');
+      momentDate = moment(new Date(data.datetime));
+
+      if(momentDate.calendar().match(/today|yesterday/ig)) {
+        data.cleanTime = momentDate.calendar();
+      }
+      else {
+        data.cleanTime = momentDate.format('MMM D');
+      }
 
       data.hoverTime = this.model.responseTime() || data.cleanTime;
       data.statusClass = this.model.get('assigned_to').length ? 'read' : 'unread';
@@ -147,7 +154,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
       if(this.renderAll) {
         data.description = marked(this.model.get('description'));
-        data.fullDate = momentObj.format('MMMM Do, YYYY h:mm A');
+        data.fullDate = momentDate.format('MMMM Do, YYYY h:mm A');
         data.showTags = false;
         data.isEditable = this.isEditable(data);
         data.isAdmin = ticketer.currentUser.role === 'admin' ? true : false;
