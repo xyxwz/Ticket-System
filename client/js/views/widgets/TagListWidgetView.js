@@ -21,7 +21,8 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
     events: {
       "click .tag[data-id]": "filterListView",
       "dblclick [data-action='edit']": "editTag",
-      "click .editable[data-id] .close": "deleteTag"
+      "mousedown [data-action='delete']": "deleteTag",
+      "blur .editable input": "saveTag"
     },
 
     initialize: function() {
@@ -108,34 +109,30 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
       data.color = ticketer.colors[data.color].name;
       element.replaceWith(Mustache.to_html(tmpl_TagEdit, data));
       this.$el.find('input').focus();
-
-      this.bindTo(this.$el.find('.editable'), 'click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-      });
-
-      this.bindTo($('html'), 'click', this.saveTag);
     },
 
     /**
      * Save the tag that is currently being edited
      * and unbind previously bound events
      *
+     * TODO: This fires when delete is clicked, event with propagation
+     *       stopped. Get a workaround so this doesn't get fired
+     *       after deletion.
+     *
      * @param {jQuery.Event} e
      */
 
     saveTag: function(e) {
       var data,
+          self = this,
           element = this.$el.find('.editable'),
           name = element.find('input').val(),
           tag = this.collection.get(element.data('id'));
 
-      // TODO: Fix unbinding
-      this.off(element, 'click');
-      this.off($('html'), 'click', this.saveTag);
-
-      tag.save({name: name});
-      element.replaceWith(this.renderTag(tag));
+      if(tag) {
+        tag.save({name: name});
+        element.replaceWith(self.renderTag(tag));
+      }
     },
 
     /**
@@ -143,6 +140,7 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
      *
      * @param {jQuery.Event} e
      */
+
     deleteTag: function(e) {
       var element = $(e.currentTarget).parent(),
           tag = this.collection.get(element.data('id'));
@@ -154,7 +152,13 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
         console.error("Attempted to get tag: #" + id + ", but failed.");
       }
 
-      element.remove();
+      element.hide(200, function() {
+        $(this).remove();
+      });
+
+      // Try to prevent the edit blur
+      e.stopPropagation();
+      e.stopImmediatePropagation();
     }
   });
 

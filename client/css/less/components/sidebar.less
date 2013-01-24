@@ -99,7 +99,15 @@
 
       input {
         width: 80%;
+        border: none;
+        padding: 4px;
+        color: darken(@darkGray, 10%);
+        border-radius: 2px;
         background: @sidebarText;
+
+        &:focus {
+          outline: none;
+        }
       }
     }
 
