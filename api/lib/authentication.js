@@ -25,12 +25,14 @@ module.exports = function(app) {
   passport.use(new txsscStrategy({
     clientID: process.env.CONSUMER_KEY,
     clientSecret: process.env.CONSUMER_SECRET,
-    callbackURL: "http://"+process.env.CALLBACK_HOST+"/login/oauth/callback"
+    callbackURL: "http://" + process.env.CALLBACK_HOST + "/login/oauth/callback"
     },
     function(accessToken, refreshToken, profile, done) {
       var sessionData;
 
       User._authorize(accessToken, refreshToken, profile, function(err, user) {
+        if(err) return done(err);
+
         sessionData = {
           id: user.id,
           token: accessToken,
@@ -38,7 +40,7 @@ module.exports = function(app) {
           role: user.role
         };
 
-        if (user.avatar) sessionData.avatar = user.avatar;
+        if(user.avatar) sessionData.avatar = user.avatar;
 
         return done(null, sessionData);
       });

@@ -184,17 +184,17 @@ module.exports = function(app) {
     var data;
 
     UserSchema
-    .findOne({ 'refresh_token': refresh_token })
+    .findOne({ 'username': profile.username })
     .run(function(err, model) {
       if(err) return cb(err);
+
       if(!model) {
-        // create a new user with base permissions
+        // create a new user if not found
         data = {
           username: profile.username,
           name: profile.name,
           role: profile.role,
           access_token: access_token,
-          refresh_token: refresh_token,
           avatar: profile.avatar
         };
 

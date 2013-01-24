@@ -8,7 +8,6 @@ var User = new mongoose.Schema({
                    enum: ['admin', 'member', 'read']},
   created_at    : {type : Date,   default : Date.now, required: true},
   access_token  : {type : String, required: true, trim: true},
-  refresh_token  : {type : String, required: true, trim: true, index: true},
   avatar        : {type: String, trim: true}
 });
 
