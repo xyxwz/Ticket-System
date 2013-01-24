@@ -28,7 +28,7 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
     initialize: function() {
       _.bindAll(this);
 
-      this.bindTo(this.collection, 'add reset', this.renderTags);
+      this.bindTo(this.collection, 'add remove reset', this.renderTags);
     },
 
     render: function() {
@@ -47,9 +47,14 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
       var self = this,
           html = [];
 
-      this.collection.each(function(tag) {
-        html.push(self.renderTag(tag));
-      });
+      if(this.collection.length) {
+        this.collection.each(function(tag) {
+          html.push(self.renderTag(tag));
+        });
+      }
+      else {
+        html.push('<li>You have no tags</li>');
+      }
 
       this.$el.find('.group').html(html.join(''));
     },
@@ -151,10 +156,6 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
       else {
         console.error("Attempted to get tag: #" + id + ", but failed.");
       }
-
-      element.hide(200, function() {
-        $(this).remove();
-      });
 
       // Try to prevent the edit blur
       e.stopPropagation();
