@@ -176,18 +176,21 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
     // Handle Actions
     ticketAction: function(e) {
-      var action = $(e.currentTarget).data('action'),
-          request = "Delete this ticket? This cannot be undone";
+      var resp,
+          action = $(e.currentTarget).data('action'),
+          delMsg = "Delete this ticket? This cannot be undone",
+          closeMsg = "Close this ticket? This cannot be undone";
 
       switch(action) {
         case 'close':
-          this.model.close();
+          resp = confirm(closeMsg);
+          if(resp) this.model.close();
           break;
         case 'edit':
           this.model.trigger('edit');
           break;
         case 'delete':
-          var resp = confirm(request);
+          resp = confirm(delMsg);
           if(resp) this.model.destroy();
           break;
       }
