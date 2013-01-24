@@ -24,7 +24,10 @@ function($, _, Backbone, BaseView, TicketView,
     },
 
     render: function() {
-      this.model.removeNotification();
+      if(this.model.notification()) {
+        this.model.removeNotification();
+      }
+
       this.renderTicket();
       this.renderComments();
       return this;
