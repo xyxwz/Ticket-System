@@ -15,7 +15,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
    */
 
   var TicketFormView = BaseView.extend({
-    className: 'ticket-form',
+    className: 'ticket-form scrollable',
     events: {
       "click [data-action='create']": "createTicket",
       "click [data-action='cancel']": "redirect",
@@ -26,6 +26,8 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
 
     initialize: function() {
       _.bindAll(this);
+
+      this.bindTo($(window), 'resize', this.setHeight);
       this.bindTo(this.collection, 'sync', this.redirect);
     },
 
@@ -36,6 +38,7 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
       data.shortname = data.name.split(' ')[0];
 
       $(this.el).html(Mustache.to_html(TicketForm, ticketer.currentUser));
+      this.setHeight();
 
       return this;
     },
@@ -97,6 +100,18 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
       this.$el.find('.dialog').fadeOut(200, function() {
         $(this).remove();
       });
+    },
+
+    /**
+     * Set the form height to fix resizing over the window height.
+     */
+
+    setHeight: function() {
+      var header = $('header').height(),
+          total = $(window).height(),
+          height = total - header;
+
+      this.$el.css({height: height});
     }
 
   });
