@@ -61,7 +61,7 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
         this.panelTwo.dispose();
       }
 
-      this.panelTwo = new ListView({
+      this.panelTwo = this.createView(ListView, {
         collection: this.collection,
         view: this.options.list,
         filter: addFilters.call(this)
@@ -88,7 +88,7 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
         var id = $(e.currentTarget).data('id');
         var model = this.collection.get(id);
 
-        this.panelThree = new DetailsView({
+        this.panelThree = this.createView(DetailsView, {
           view: this.options.details,
           model: model
         });
@@ -96,7 +96,7 @@ function($, _, mustache, BaseView, ListView, DetailsView, tmpl_container) {
         this.selectItem(id);
       }
       else {
-        this.panelThree = new DetailsView({
+        this.panelThree = this.createView(DetailsView, {
           view: this.options.details
         });
       }
