@@ -65,7 +65,7 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
     },
 
     /**
-     * Slice off all events from `this.bindings` and call `off` on all,
+     * Pop off all events from `this.bindings` and call `off` on all,
      * removing the event bindings from each saved `item`.
      *
      * Then call `this.off` to remove all events that might not
@@ -75,8 +75,8 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
     unbindAll: function() {
       var i, binding;
 
-      for(i = this.bindings.length - 1; i >= 0; i = i - 1) {
-        binding = this.bindings.splice(i, 1)[0];
+      for(i = this.bindings.length; i > 0; i = i - 1) {
+        binding = this.bindings.pop();
         binding.item.off(binding.ev, binding.callback);
       }
 
@@ -84,15 +84,15 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
     },
 
     /**
-     * Slice off all intervals from `this.intervals`
+     * Pop off all intervals from `this.intervals`
      * and clear each
      */
 
     clearIntervals: function() {
       var i, interval;
 
-      for(i = this.intervals.length - 1; i >= 0; i = i - 1) {
-        interval = this.intervals.splice(i, 1);
+      for(i = this.intervals.length; i > 0; i = i - 1) {
+        interval = this.intervals.pop();
         clearInterval(interval);
       }
     },
@@ -117,10 +117,11 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
      */
 
     dispose: function () {
-      var i, len;
+      var i, view;
 
-      for(i = 0, len = this.views.length; i < len; i = i + 1) {
-        this.views[i] = this.views[i].dispose();
+      for(i = this.views.length; i > 0; i = i - 1) {
+        view = this.views.pop();
+        view.dispose();
       }
 
       return this.trash();
