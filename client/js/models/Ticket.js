@@ -73,6 +73,10 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
 
     },
 
+    isOpen: function() {
+      return this.get('status') === 'open';
+    },
+
     /*
      * Returns if the user is participating in the ticket
      */
