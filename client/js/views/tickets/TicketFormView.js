@@ -16,12 +16,12 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
 
   var TicketFormView = BaseView.extend({
     className: 'ticket-form',
-
     events: {
       "click [data-action='create']": "createTicket",
       "click [data-action='cancel']": "redirect",
       "click [data-role='display-guide']": "displayHelp",
-      "click .dialog .close": "removeHelp"
+      "click .dialog .close": "removeHelp",
+      "focus textarea": "initResize"
     },
 
     initialize: function() {
@@ -37,14 +37,17 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
 
       $(this.el).html(Mustache.to_html(TicketForm, ticketer.currentUser));
 
-      this.bindTo(this, 'viewRendered', this.bindResize);
-
       return this;
     },
 
-    createTicket: function(e) {
-      e.preventDefault();
+    initResize: function() {
+      this.$el.find('textarea').autoResize({
+        minHeight: 168,
+        extraSpace: 14
+      });
+    },
 
+    createTicket: function(e) {
       var self = this;
       var title = $('[name=title]', this.el).val();
       var description = $('[name=description]', this.el).val();
@@ -53,20 +56,29 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
         title: title,
         description: description,
         socket: ticketer.sockets.id
-      },
-      { wait: true });
+      }, {
+        wait: true
+      });
+
+      e.preventDefault();
     },
 
-    bindResize: function() {
-      $('textarea', this.el).autoResize({
-        minHeight: 150,
-        extraSpace: 14
-      });
+    /**
+     * Override the dispose function to remove leftover
+     * autoresize data and bindings.
+     */
+
+    dispose: function() {
+      var plugin = this.$el.find('textarea').data('AutoResizer');
+
+      if(plugin) {
+        plugin.destroy();
+      }
+
+      return BaseView.prototype.dispose.call(this);
     },
 
     redirect: function() {
-      this.$el.find('textarea').data('AutoResizer').destroy();
-      this.dispose();
       ticketer.routers.ticketer.navigate("tickets/mine", true);
     },
 

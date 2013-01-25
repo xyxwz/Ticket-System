@@ -15,9 +15,9 @@ function($, _, Backbone, BaseView, mustache, FormTmpl) {
 
   var CommentFormView = BaseView.extend({
     className: 'comment-form comment',
-
     events: {
-      "keypress textarea":  "createOnEnter"
+      "click [data-action='create']":  "create",
+      "focus textarea": "initResize"
     },
 
     initialize: function() {
@@ -26,8 +26,29 @@ function($, _, Backbone, BaseView, mustache, FormTmpl) {
 
     render: function() {
       $(this.el).html(Mustache.to_html(FormTmpl, ticketer.currentUser));
-      this.bindResize();
       return this;
+    },
+
+    initResize: function() {
+      $('textarea', this.el).autoResize({
+        minHeight: 64,
+        extraSpace: 10
+      });
+    },
+
+    /**
+     * Override the default dispose function to destroy the
+     * autoresize plugin
+     */
+
+    dispose: function() {
+      var plugin = this.$el.find('textarea').data('AutoResizer');
+
+      if(plugin) {
+        plugin.destroy();
+      }
+
+      return BaseView.prototype.dispose.call(this);
     },
 
     /**
@@ -37,34 +58,19 @@ function($, _, Backbone, BaseView, mustache, FormTmpl) {
      * @param {jQuery Event} e
      */
 
-    createOnEnter: function(e) {
-      var element = $('textarea', this.$el);
+    create: function() {
+      var element = this.$el.find('textarea');
 
-      if (e.keyCode != 13) { return; }
-      if (e.keyCode === 13 && !e.ctrlKey) {
-        e.preventDefault();
-
-        var self = this;
-
-        this.collection.create({
-          comment: element.val(),
-          socket: ticketer.sockets.id
-        },{
-          wait: true
-        });
-
-        element.val('').blur();
-        element.css('height', '23px');
-      }
-    },
-
-    bindResize: function() {
-      $('textarea', this.el).autoResize({
-        minHeight: 23,
-        extraSpace: 14
+      this.collection.create({
+        comment: element.val(),
+        socket: ticketer.sockets.id
+      }, {
+        wait: true
       });
-    }
 
+      element.val('').blur();
+      element.css({height: '64px'});
+    }
   });
 
   return CommentFormView;
