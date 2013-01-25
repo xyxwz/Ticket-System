@@ -61,7 +61,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
       // Render Meta Data in Details View
-      if(this.renderAll) {
+      if(this.renderAll && this.model.isOpen()) {
         this.renderMeta();
       }
 
