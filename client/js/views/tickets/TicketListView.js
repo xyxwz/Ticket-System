@@ -16,7 +16,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
    */
 
   var TicketListView = BaseView.extend({
-    className: 'ticket-list scrollable',
+    className: 'ticket-list',
 
     initialize: function() {
       var self = this;
