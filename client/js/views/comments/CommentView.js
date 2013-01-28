@@ -21,8 +21,6 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       "click [data-action='edit']": "editComment",
       "click [data-action='save']": "saveComment",
       "click [data-action='cancel']": "renderEdit",
-      //"mouseenter": "toggleOptions",
-      //"mouseleave": "toggleOptions",
       "click .md a": "openLink"
     },
 
@@ -46,9 +44,27 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       data.comment = marked(data.comment);
 
       $(this.el).html(Mustache.to_html(CommentTmpl, data));
-      //$('time', this.el).timeago();
 
       return this;
+    },
+
+    renderEdit: function(e) {
+      var self = this,
+          plugin = this.$el.find('textarea').data('AutoResizer');
+
+      if(plugin) {
+        plugin.destroy();
+      }
+
+      this.$el.fadeOut(200, function() {
+        self.render();
+        self.$el.fadeIn(200);
+      });
+
+       /* just so we don't have to create another function */
+      if(e instanceof jQuery.Event) {
+        e.preventDefault();
+      }
     },
 
     /**
@@ -72,58 +88,31 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
               ticketer.currentUser === 'admin';
     },
 
-    toggleOptions: function() {
-      // element exists so check if it's showing
-      if($('.edit-actions', this.el).is(":visible")) {
-        $('.edit-actions', this.el).fadeOut('100');
-      }
-      else {
-        $('.edit-actions', this.el).fadeIn('100');
-      }
-    },
-
     editComment: function(e) {
-      var self = this;
+      this.$el.find('.body').html(Mustache.to_html(EditTmpl, {
+        comment: this.model.get('comment')
+      }));
 
-      if($('.body > .comment-form', this.el).length === 0) {
+      this.$el.find('textarea').autoResize({
+        minHeight: 64,
+        extraSpace: 10
+      });
 
-        $('.body', this.el).html(Mustache.to_html(EditTmpl, { comment: self.model.get('comment') }));
-
-        $('textarea', this.el).autoResize({
-          minHeight: 23,
-          extraSpace: 14
-        });
-      }
+      this.$el.find('.edit-actions').hide();
 
       e.preventDefault();
     },
 
     saveComment: function(e) {
-      e.preventDefault();
-
       var self = this,
-          comment = $('textarea', this.el).val();
+          comment = this.$el.find('textarea').val();
 
       self.model.save({comment: comment}, {
         silent: true,
         success: self.renderEdit
       });
-    },
 
-    renderEdit: function(e) {
-      /* just so we don't have to create another function */
-      if(e instanceof jQuery.Event) {
-        e.preventDefault();
-      }
-
-      var self = this;
-
-      $('textarea', this.el).data('AutoResizer').destroy();
-
-      $(this.el).fadeOut(200, function() {
-        self.render();
-        $(self.el).fadeIn(200);
-      });
+      e.preventDefault();
     },
 
     removeComment: function(e) {
