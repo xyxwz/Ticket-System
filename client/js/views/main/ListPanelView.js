@@ -22,8 +22,14 @@ function($, _, mustache, BaseView, tmpl_Filler) {
     },
 
     render: function() {
-      return this.collection.length ?
-        this.renderView() : this.renderFiller();
+      if(this.options.filter &&
+          this.collection.filter(this.options.filter).length === 0) {
+        return this.renderFiller();
+      }
+      else {
+        return this.collection.length ?
+                  this.renderView() : this.renderFiller();
+      }
     },
 
     renderFiller: function() {
