@@ -31,6 +31,24 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       this.$el.attr('data-id', this.model.id);
     },
 
+    /**
+     * Override the base `dispose()`
+     */
+
+    dispose: function() {
+      var plugin = this.$el.find('textarea');
+
+      if(plugin.length > 0) {
+        plugin = plugin.data('AutoResizer');
+
+        if(plugin) {
+          plugin.destroy();
+        }
+      }
+
+      return BaseView.prototype.dispose.call(this);
+    },
+
     render: function() {
       var data;
 
