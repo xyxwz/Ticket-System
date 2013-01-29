@@ -24,13 +24,22 @@ function($, _, Backbone, BaseView, TicketView,
     },
 
     render: function() {
+      this.renderTicket();
+      this.renderComments();
+      return this;
+    },
+
+    /**
+     * Override `.dispose()`
+     * When the view is disposed of, remove any notifications.
+     */
+
+    dispose: function() {
       if(this.model.notification()) {
         this.model.removeNotification();
       }
 
-      this.renderTicket();
-      this.renderComments();
-      return this;
+      return BaseView.prototype.dispose.call(this);
     },
 
     renderTicket: function() {

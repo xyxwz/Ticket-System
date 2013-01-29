@@ -51,6 +51,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       this.bindTo(this.model, 'edit', this.renderEditForm);
       this.bindTo(this.model, 'change:description', this.renderDescription);
       this.bindTo(this.model, 'change:status', this.renderStatusNotification);
+      this.bindTo(this.model, 'change:assigned_to', this.renderStatusMarker);
+      this.bindTo(this.model, 'change:notification', this.renderStatusMarker);
     },
 
     render: function() {
@@ -277,6 +279,25 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       // Remove close button if currentUser is an Admin
       if(ticketer.currentUser.role === 'admin') {
         $('.edit-options li[data-role="close-ticket"]').remove();
+      }
+    },
+
+    /**
+     * Add the `{{statusClass}}` to the ticket header
+     * bound to `change:notification` and `change:assigned_to`
+     */
+
+    renderStatusMarker: function() {
+      var element = this.$el.find('.header');
+
+      if(this.model.notification()) {
+        element.removeClass('unread read').addClass('notify');
+      }
+      else if(this.model.get('assigned_to').length === 0) {
+        element.removeClass('read notify').addClass('unread');
+      }
+      else {
+        element.removeClass('unread notify').addClass('read');
       }
     },
 
