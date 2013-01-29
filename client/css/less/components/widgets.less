@@ -54,7 +54,12 @@
     li {
       cursor: pointer;
       border: 1px solid @border;
+      border-bottom: none;
       .box-sizing(border-box);
+
+      &:last-child {
+        border-bottom: 1px solid @border;
+      }
 
       &.active {
         background: darken(@ashGray, 2%);
@@ -66,7 +71,6 @@
     .task {
       display: block;
       width: 100%;
-      margin-top: 2px;
       padding: 4px;
       overflow: hidden;
       white-space: nowrap;
