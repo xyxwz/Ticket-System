@@ -47,21 +47,39 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
     },
 
     /**
-     * Render a filtered results list
+     * Render a filtered results list, if enter was pressed assign
+     * the .active user; If the down arrow was pressed, make the next child .active
+     *
+     * TODO: This function is probably extremely heavy
      *
      * @param {jQuery.Event} e
      */
 
     renderFilteredResults: function(e) {
       var val = $(e.currentTarget).val(),
-          element = $('[data-role="results-list"]', this.$el);
+          element = this.$el.find('[data-role="results-list"]'),
+          activeElement = element.children('.active');
 
-      // There must be something to worth searching for...
-      if(val.replace(/\s+/g, '').length) {
-        element.html(this.filterUsers(val.toLowerCase())).fadeIn(400);
+      // On enter, assign the active user
+      if(e.keyCode === 13 && activeElement.length) {
+        this.model.assignUser(activeElement.data('id'));
+      }
+      else if(e.keyCode === 40 && activeElement.length) {
+        // Wrap the activeElement index + 1
+        var next = (activeElement.index() + 1) % element.children().length;
+
+        activeElement.removeClass('active');
+        $(element[next]).addClass('active');
       }
       else {
-        element.empty();
+        // There must be something to worth searching for...
+        if(val.replace(/\s+/g, '').length) {
+          element.html(this.filterUsers(val.toLowerCase())).fadeIn(400);
+          element.children(':first').addClass('active');
+        }
+        else {
+          element.empty();
+        }
       }
     },
 
