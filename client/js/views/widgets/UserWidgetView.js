@@ -56,7 +56,8 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
      */
 
     renderFilteredResults: function(e) {
-      var val = $(e.currentTarget).val(),
+      var next,
+          val = $(e.currentTarget).val(),
           element = this.$el.find('[data-role="results-list"]'),
           activeElement = element.children('.active');
 
@@ -66,10 +67,10 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
       }
       else if(e.keyCode === 40 && activeElement.length) {
         // Wrap the activeElement index + 1
-        var next = (activeElement.index() + 1) % element.children().length;
+        next = (activeElement.index() + 1) % element.children().length;
 
         activeElement.removeClass('active');
-        $(element[next]).addClass('active');
+        $(element.children().get(next)).addClass('active');
       }
       else {
         // There must be something to worth searching for...
