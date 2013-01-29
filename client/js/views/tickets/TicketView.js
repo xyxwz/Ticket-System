@@ -147,10 +147,16 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       }
 
       data.hoverTime = this.model.responseTime() || data.cleanTime;
-      data.statusClass = this.model.get('assigned_to').length ? 'read' : 'unread';
       data.isClosed = this.model.get('status') === 'closed';
 
       data.showTags = true; // default
+
+      if(this.model.notification()) {
+        data.statusClass = 'notify';
+      }
+      else {
+        data.statusClass = this.model.get('assigned_to').length ? 'read' : 'unread';
+      }
 
       if(this.renderAll) {
         data.description = marked(this.model.get('description'));

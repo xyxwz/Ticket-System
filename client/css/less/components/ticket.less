@@ -34,16 +34,26 @@
         }
       }
 
-      &.unread .title {
-        &:before {
-          content: "";
-          display: inline-block;
-          width: 10px;
-          height: 10px;
-          background-color: lighten(@active, 15%);
-          border-radius: 8px;
-          margin-right: 5px;
-        }
+      &.unread:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 2px;
+        left: 3px;
+        bottom: 2px;
+        width: 6px;
+        background-color: lighten(@active, 15%);
+      }
+
+      &.notify:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 2px;
+        left: 3px;
+        bottom: 2px;
+        width: 6px;
+        background-color: darken(@lightOrange, 10%);
       }
 
       time {
