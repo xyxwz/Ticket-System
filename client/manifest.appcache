@@ -8,6 +8,10 @@ CACHE:
 /js/release/main.js
 /css/bundle.css
 /fonts/FontAwesome.otf
+/fonts/fontawesome-webfont.eot
+/fonts/fontawesome-webfont.svg
+/fonts/fontawesome-webfont.ttf
+/fonts/fontawesome-webfont.woff
 /img/avatars/35x35.gif
 /img/avatars/65x65.gif
 http://www.txssc.txstate.edu/media/avatars/Allison.png
