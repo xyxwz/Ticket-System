@@ -134,8 +134,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
     unbindEvents: function(e) {
       var self = this;
 
-      this.unbind('keyup');
-
+      this.$el.find('input').off('keyup');
       this.$el.find('.results-list, input').fadeOut(200, function() {
         self.$el.find('input').val('');
         self.$el.find('a').show(200);
