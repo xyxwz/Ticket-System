@@ -5,8 +5,7 @@ var express = require('express'),
     redis = require('redis'),
     io = require('socket.io'),
     passport = require('passport'),
-    events = require('events').EventEmitter,
-    pubEvents = require('node-redis-events').Publisher;
+    Emitter = require('node-redis-events');
 
 var path = __dirname, lib, app, port;
 
@@ -18,7 +17,6 @@ exports.boot = function(params){
   // Bootstrap application
   bootApplication(app);
   bootModels(app);
-  bootEventPublisher(app);
   bootControllers(app);
   socketBindings(app);
   return app;
@@ -55,15 +53,10 @@ function bootApplication(app) {
   app.use('/api', lib.middleware.AccessControl);
   app.use(app.router);
   app.use(express.static(path + '/../client/'));
-
-  // Create a new global events emitter
-  app.eventEmitter = new events();
 }
 
 // Bootstrap models
 function bootModels(app) {
-  var rtg;
-
   mongoose.connect(app.set('db-uri'));
 
   if (process.env.NODE_ENV === 'production') {
@@ -74,29 +67,13 @@ function bootModels(app) {
     app.redis.select(app.set('redisDB'));
   }
 
-  app.models = require('./models')(app);
-}
-
-// Bootstrap event publisher
-function bootEventPublisher(app) {
-  var model_events, config, eventPublisher;
-
-  model_events = [
-    'ticket:new',
-    'ticket:update',
-    'ticket:remove',
-    'comment:new',
-    'comment:update',
-    'comment:remove'
-  ];
-
-  config = {
+  // Create a new global events emitter
+  app.eventEmitter = new Emitter({
     redis: app.redis,
-    emitter: app.eventEmitter,
     namespace: 'tickets'
-  };
+  });
 
-  eventPublisher = new pubEvents(config, model_events);
+  app.models = require('./models')(app);
 }
 
 // Bootstrap controllers
