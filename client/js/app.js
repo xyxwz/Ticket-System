@@ -12,7 +12,6 @@ define([
   'collections/Lists',
   'routers/Ticketer',
   'views/alerts/ErrorView',
-  'views/alerts/AlertView',
   'views/alerts/NotificationView',
   'SocketEvents',
   'AppCache',
@@ -28,7 +27,6 @@ define([
   Lists,
   Ticketer,
   ErrorView,
-  AlertView,
   NotificationView,
   SocketEvents,
   AppCache,
@@ -96,7 +94,6 @@ define([
     ticketer.views = {
       alerts: {
         error: new ErrorView(),
-        alert: new AlertView(),
         notifications: new NotificationView()
       }
     };
