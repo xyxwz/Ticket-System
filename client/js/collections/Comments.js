@@ -11,7 +11,8 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
       var self = this;
 
       this.comparator = function(model) {
-        return model.get("created_at");
+        var date = new Date(model.get("created_at"));
+        return date.getTime();
       };
 
       this.on('add', function(model) {

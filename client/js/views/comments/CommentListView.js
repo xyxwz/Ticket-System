@@ -4,8 +4,9 @@
 
 define(['jquery', 'underscore', 'backbone', 'BaseView',
   'views/comments/CommentView',
-  'views/comments/CommentFormView'],
-function($, _, Backbone, BaseView, CommentView, FormView) {
+  'views/comments/CommentFormView',
+  'text!templates/comments/CommentList.html'],
+function($, _, Backbone, BaseView, CommentView, FormView, tmpl_CommentList) {
 
   /**
    * CommentListView
@@ -15,7 +16,7 @@ function($, _, Backbone, BaseView, CommentView, FormView) {
    */
 
   var CommentListView = BaseView.extend({
-    className: 'comment-list',
+    className: 'comments-wrapper',
 
     initialize: function() {
       _.bindAll(this);
@@ -26,17 +27,22 @@ function($, _, Backbone, BaseView, CommentView, FormView) {
     },
 
     render: function() {
-      this.addAll();
+      this.$el.empty();
+
+      $(this.el).html(tmpl_CommentList);
+
+      this.renderCommentForm();
+      this.collection.each(this.addComment);
+
       return this;
     },
 
-    addAll: function() {
+    renderCommentForm: function() {
       var form = this.createView(FormView, {
         collection: this.collection
       });
 
-      $(this.el).html(form.render().el);
-      this.collection.each(this.addComment);
+      $('[role=comment-form]', this.$el).html(form.render().el);
     },
 
     addComment: function(comment) {
@@ -48,7 +54,7 @@ function($, _, Backbone, BaseView, CommentView, FormView) {
       // a nice fadeIn transition
       var html = view.render().el;
       $(html).hide();
-      $('.comment-form', this.el).before(html);
+      $('[role=comment-list]', this.$el).prepend(html);
       $(html).fadeIn(200);
     },
 

@@ -15,6 +15,7 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
 
   var CommentView = BaseView.extend({
     className: 'comment',
+    tagName: 'li',
 
     events: {
       "click [data-action='delete']": "removeComment",
