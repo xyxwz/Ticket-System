@@ -8,6 +8,10 @@ header {
   padding: 0 10px;
   .vertical-gradient(@headerLight, @headerDark);
 
+  .header {
+    .clearfix;
+  }
+
   .logo {
     float: left;
     width: @panel_1_width - 10;
@@ -22,8 +26,9 @@ header {
       display: block;
       color: @darkGray;
       text-decoration: none;
-      padding: 9px 10px;
+      padding: 12px 10px 4px 10px;
     }
+
   }
 
   // Main Actions
@@ -45,7 +50,7 @@ header {
         color: @darkGray;
         .vertical-gradient(@headerButtonsLight, @headerButtonsDark);
         .box-shadow(~"inset 0 0 3px 2px rgba(255, 255, 255, 0.15)");
-        border: 1px solid darken(@border, 10%);
+	border: 1px solid darken(@border, 22%);
         border-radius: 3px;
         padding: 3px 5px;
         text-decoration: none;
@@ -130,7 +135,6 @@ header {
           display: block;
           margin-right: 10px;
           border-radius: 1000px;
-          border: 1px solid @border;
           .size(28px, 28px);
         }
 
