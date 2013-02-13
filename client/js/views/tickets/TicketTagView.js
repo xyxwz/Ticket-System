@@ -46,6 +46,10 @@ function($, _, Backbone, BaseView, mustache, TagWidget, tmpl_Tag) {
 
       this.renderWidget();
 
+      if(tags.length === 0) {
+        this.$el.append("<li class='empty'>Add a Tag</li>");
+      }
+
       for(i = 0, len = tags.length; i < len; i++) {
         this.$el.append(this.renderTag(tags[i]));
       }
