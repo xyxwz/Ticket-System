@@ -43,8 +43,17 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
         return !ticket.get('assigned_to').length;
       }).length;
 
-      this.$el.find('[data-role="my-count"]').text(mine);
-      this.$el.find('[data-role="open-count"]').text(open);
+      if(mine === 0) {
+        $('[data-role="my-count"]', this.el).hide();
+      } else {
+        $('[data-role="my-count"]', this.el).text(mine).show();
+      }
+
+      if(open === 0) {
+        $('[data-role="open-count"]', this.el).hide();
+      } else {
+        $('[data-role="open-count"]', this.el).text(open).show();
+      }
     },
 
     renderTagWidget: function() {
