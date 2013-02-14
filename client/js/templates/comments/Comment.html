@@ -15,13 +15,13 @@
   </div>
 </div>
 
+{{#isDeletable}}
 <!-- Comment options -->
 <ul class="edit-actions">
   {{#isEditable}}
   <li><a href="#" data-action="edit"><i class="icon-pencil"></i></a></li>
   {{/isEditable}}
 
-  {{#isDeletable}}
   <li><a href="#" data-action="delete"><i class="icon-trash"></i></a></li>
-  {{/isDeletable}}
 </ul>
+{{/isDeletable}}
