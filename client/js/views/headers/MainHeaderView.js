@@ -91,6 +91,8 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
       var collection = ticketer.collections.openTickets,
           view;
 
+      if($('[role=popup]').length) return false;
+
       view = new TicketFormView({
         collection: collection
       });
