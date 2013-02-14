@@ -4,10 +4,11 @@
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/widgets/TagFormView',
+  'views/tickets/TicketFormView',
   'text!templates/headers/MainHeader.html',
   'text!templates/headers/UserOptions.html',
   'dropdowns'],
-function($, _, mustache, BaseView, TagWidget, tmpl_Header, tmpl_Options) {
+function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_Options) {
 
   /**
    * A basic header view
@@ -21,6 +22,7 @@ function($, _, mustache, BaseView, TagWidget, tmpl_Header, tmpl_Options) {
     events: {
       "click a[data-action]": "preventDefault",
       "click a[data-route]": "navigateTo",
+      "click a[data-action='new-ticket']": "createTicket",
       "click a[data-action='refresh']": "refresh",
       "click a[data-action='new-tag']": 'showTagWidget'
     },
@@ -83,6 +85,19 @@ function($, _, mustache, BaseView, TagWidget, tmpl_Header, tmpl_Options) {
         widget = this.createView(TagWidget);
         $(element).append(widget.render().el);
       }
+    },
+
+    createTicket: function() {
+      var collection = ticketer.collections.openTickets,
+          view;
+
+      if($('[role=popup]').length) return false;
+
+      view = new TicketFormView({
+        collection: collection
+      });
+
+      view.render();
     }
   });
 

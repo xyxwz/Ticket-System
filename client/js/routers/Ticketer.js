@@ -13,8 +13,7 @@ function(Backbone, HeaderView) {
       "tickets/open": "openTickets",
       "tickets/closed": "closedTickets",
       "tickets/closed?*params": "closedTickets",
-      "tickets/mine": "myTickets",
-      "tickets/new": "createTicket"
+      "tickets/mine": "myTickets"
     },
 
     /**

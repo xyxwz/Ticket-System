@@ -33,7 +33,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       this._filter = this.filter;
 
       this.bindTo(this.collection, 'add', function(model) {
-        if(!self.filter) {
+        if(self.filter(model)) {
           var html = self.renderTicket(model);
           $(self.el).append(html);
         }

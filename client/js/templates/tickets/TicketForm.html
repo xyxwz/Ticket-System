@@ -1,5 +1,6 @@
-<div class="view-header">
+<div class="header">
   <h1 class="title">Create a Ticket</h1>
+  <span data-action="cancel">&times;</span>
 </div>
 
 <!-- Ticket Form -->
@@ -8,17 +9,16 @@
     <input type="text" name="title" placeholder="Ticket Name...">
   </div>
 
-  <div class="wrap">
-    <textarea name="description" placeholder="Enter a description of your ticket..."></textarea>
-  </div>
+  <div role="description" class="wrap scrollable" contenteditable="true" placeholder="Enter a description of your ticket..."></div>
+</div>
 
-  <div class="actions">
-    <ul class="left">
-      <li><a data-role="display-guide" class="guide" href="#">Markdown Guide</a></li>
-    </ul>
-    <ul class="right">
-      <li><button data-action="create">Create Ticket</button></li>
-      <li><button data-action= "cancel" class="cancel">Cancel</button></li>
-    </ul>
-  </div>
+<div class="footer">
+  <ul class="left">
+    <li><a data-role="display-guide" class="guide" href="#">Markdown Guide</a></li>
+  </ul>
+
+  <ul class="right">
+    <li><button data-action="create">Create Ticket</button></li>
+    <li><button data-action= "cancel" class="cancel">Cancel</button></li>
+  </ul>
 </div>
