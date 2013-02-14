@@ -20,8 +20,7 @@ function(Backbone, AppView, HeaderView, PanelView, TicketListView,
       "tickets/open": "openTickets",
       "tickets/closed": "closedTickets",
       "tickets/closed?*params": "closedTickets",
-      "tickets/mine": "myTickets",
-      "tickets/new": "createTicket"
+      "tickets/mine": "myTickets"
     },
 
     /**
@@ -90,18 +89,6 @@ function(Backbone, AppView, HeaderView, PanelView, TicketListView,
 
       this.appView.showView(view);
       this.appView.showToolbarTab('tickets/mine');
-    },
-
-    createTicket: function() {
-      var view,
-          collection = ticketer.collections.openTickets;
-
-      view = new TicketFormView({
-        collection: collection
-      });
-
-      this.appView.showView(view, function() { view.trigger('viewRendered'); });
-      this.appView.showToolbarTab();
     }
 
   });
