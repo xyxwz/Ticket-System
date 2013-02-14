@@ -21,7 +21,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
    */
 
   var TicketView = BaseView.extend({
-    className: 'item ticket',
+    className: 'ticket',
 
     events: {
       "click a[data-action]": "ticketAction",

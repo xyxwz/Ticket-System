@@ -17,6 +17,9 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
 
   var TicketListView = BaseView.extend({
     className: 'ticket-list',
+    events: {
+      "click .ticket": "showDetails"
+    },
 
     initialize: function() {
       var self = this;
@@ -25,6 +28,9 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
 
       this.status = this.options.status ? this.options.status : 'open';
       this.filter = this.options.filter || function() { return true; };
+
+      // Save reference to original filter
+      this._filter = this.filter;
 
       this.bindTo(this.collection, 'add', function(model) {
         if(!self.filter) {
@@ -38,23 +44,35 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       });
 
       this.bindTo(this.collection, 'reset', this.render);
+      this.bindTo(this.collection, 'filter', function(fn) {
+        if(typeof fn === 'function') {
+          self.filter = function(ticket) {
+            return self._filter(ticket) && fn(ticket);
+          };
+        } else {
+          self.filter = self._filter;
+        }
+
+        self.render();
+      });
     },
 
     render: function() {
-      var html,
-          self = this;
+      var i;
+      var html = [];
+      var tickets = this.collection.filter(this.filter);
+      var len = tickets.length;
 
-      //Clear the element for clean render
-      this.$el.empty();
+      if(len) {
+        for(i = 0; i < len; i = i + 1) {
+          html.push(this.renderTicket(tickets[i]).outerHTML);
+        }
 
-      this.collection.each(function(ticket) {
-        if(!self.filter(ticket)) return;
-
-        html = self.renderTicket(ticket);
-        $(self.el).append(html);
-      });
-
-      if(this.status === 'closed') this.initTimeline();
+        this.$el.html(html.join(''));
+        if(this.status === 'closed') this.initTimeline();
+      } else {
+        this.$el.html('<div class="view-filler"><p>No tickets to list</p></div>');
+      }
 
       return this;
     },
@@ -75,8 +93,13 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
     },
 
     showDetails: function(e) {
-      var id = $(e.currentTarget).data('id');
-      ticketer.routers.ticketer.navigate("tickets/" + id, true);
+      var id = $(e.currentTarget).data('id'),
+          ticket = this.collection.get(id);
+
+      this.$el.find('.active').removeClass('active');
+      this.$el.find('.ticket[data-id="' + id + '"]').addClass('active');
+
+      ticketer.controller.showTicket(ticket);
     }
 
   });
