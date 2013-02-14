@@ -20,6 +20,7 @@ html(manifest=(process.env.NODE_ENV === 'production' ? 'manifest.appcache': ''))
   body
     header
 
-    #content
-      #sidebar.scrollable(role="sidebar")
-      #main(role="main")
+    #main(role="main")
+      #panel-one.scrollable(role="panel-one")
+      #panel-two.scrollable(role="panel-two")
+      #panel-three.scrollable(role="panel-three")
