@@ -12,14 +12,16 @@ html, body {
   font-family: @sans-serif;
 }
 
-#content {
+#main {
   position: relative;
+  border-top: 1px solid @headerBorder;
   .clearfix;
 
-  #sidebar {
+  #panel-one {
     position: absolute;
     top: 0;
     left: 0;
+    bottom: 0;
     width: @panel_1_width;
     background: @sidebarBg;
     color: @sidebarText;
@@ -32,32 +34,31 @@ html, body {
     }
   }
 
-  #main {
-    position: relative;
-    margin-left: @panel_1_width + 1;
+  #panel-two {
+    position: absolute;
+    top: 0;
+    left: @panel_1_width + 1;
+    bottom: 0;
+    border-right: 1px solid @border;
+  }
 
-    .container {
-      margin: 0;
-      position: relative;
-      width: 100%;
-      border-top: 1px solid @headerBorder;
-    }
+  #panel-three {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: @panel_1_width + @panel_2_width;
+  }
 
-    // Main Content Panes
-    #panel-wrapper {
-      .clearfix;
-      position: relative;
-      min-width: 850px;
+  #panel-two,
+  #panel-three {
+    .view-filler {
+      font-size: 18px;
+      padding: 20px 20px;
 
-      #panel-two {
-        width: @panel_2_width;
-        float: left;
-        .box-sizing(border-box);
-      }
-
-      #panel-three {
-        margin-left: @panel_2_width;
-        .box-sizing(border-box);
+      p {
+        line-height: 1;
+        margin: 0;
       }
     }
   }
