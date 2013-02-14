@@ -5,24 +5,35 @@
 
 define([
   'jquery',
-  'underscore',
   'views/helpers/FillerView',
   'views/toolbars/MainToolbarView',
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView'],
-function($, _, FillerView, ToolbarView, ListView, DetailsView) {
+function($, FillerView, ToolbarView, ListView, DetailsView) {
 
   var PanelController = function PanelController() {
+    var self = this;
+
     this._panels = {};
 
     this._setHeight();
-    this._setWidths();
+    this._setWidths(this._panelPositions());
 
     // Display toolbar in panel one by default
     this._setPanel('one', ToolbarView);
 
     // Bindings
     $(window).resize(this._setHeight);
+
+    $('#panel-divider').on('mousedown', function() {
+      $('body').addClass('unselectable');
+
+      $(window).on('mousemove', self._resizeWidths.bind(self));
+      $(window).one('mouseup', function() {
+        $(window).off('mousemove');
+        $('body').removeClass('unselectable');
+      });
+    });
   };
 
   /**
@@ -142,11 +153,63 @@ function($, _, FillerView, ToolbarView, ListView, DetailsView) {
   };
 
   /**
+   * Resize the panels determined by their current positions
+   */
+
+  PanelController.prototype._resizeWidths = function(e) {
+    var panelWidth;
+    var panels = this._panels;
+    var totalWidth = $(window).width();
+    var panelTwo = $('#panel-two');
+    var panelThree = $('#panel-three');
+    var divider = $('#panel-divider');
+    var positions = {
+      two: {},
+      three: {},
+      divider: {}
+    };
+
+    if(e.pageX > 440 && e.pageX < 1200) {
+      positions.divider.left = e.pageX;
+      positions.two.right = totalWidth - e.pageX;
+      positions.three.left = e.pageX + divider.width();
+
+      // Clear width attribute
+
+      this._setWidths(positions);
+      this._panelPositions(positions);
+    }
+  };
+
+  /**
    * Sets the width on `#panel-two` and `#panel-three`
    */
 
-  PanelController.prototype._setWidths = function() {
-    console.error('Set widths not implemented');
+  PanelController.prototype._setWidths = function(positions) {
+    if(!positions) {
+      return;
+    }
+
+    Object.keys(positions).forEach(function(key) {
+      var element = $('#panel-' + key);
+
+      if(key !== 'divider') {
+        element.css('width', 'auto');
+      }
+
+      element.css(positions[key]);
+    });
+  };
+
+  PanelController.prototype._panelPositions = function(positions) {
+    var storage = window.localStorage;
+
+    if(typeof positions !== 'undefined') {
+      storage.setItem('panel-positions', JSON.stringify(positions));
+      return positions;
+    } else {
+      return JSON.parse(storage.getItem('panel-positions'));
+    }
   };
 
   return PanelController;

@@ -12,10 +12,25 @@ html, body {
   font-family: @sans-serif;
 }
 
+.unselectable ::selection {
+  background: transparent;
+}
+
 #main {
   position: relative;
   border-top: 1px solid @headerBorder;
   .clearfix;
+
+  #panel-divider {
+    position: absolute;
+    top: 0;
+    left: @panel_resizer_left;
+    bottom: 0;
+    width: @panel_resizer_width;
+    cursor: ew-resize;
+    background: transparent;
+    z-index: 1;
+  }
 
   #panel-one {
     position: absolute;
@@ -39,6 +54,7 @@ html, body {
     top: 0;
     left: @panel_1_width + 1;
     bottom: 0;
+    width: @panel_2_width;
     border-right: 1px solid @border;
   }
 
@@ -47,7 +63,7 @@ html, body {
     top: 0;
     bottom: 0;
     right: 0;
-    left: @panel_1_width + @panel_2_width;
+    left: @panel_resizer_left;
   }
 
   #panel-two,
