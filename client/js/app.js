@@ -5,6 +5,7 @@
 define([
   'underscore',
   'backbone',
+  'support/PanelController',
   'collections/Tickets',
   'collections/Comments',
   'collections/Users',
@@ -20,6 +21,7 @@ define([
 ], function(
   _,
   Backbone,
+  PanelController,
   Tickets,
   Comments,
   Users,
@@ -79,6 +81,8 @@ define([
       projects: new Projects(),
       lists: new Lists()
     };
+
+    ticketer.controller = new PanelController();
 
     ticketer.routers = {
       ticketer: new Ticketer()

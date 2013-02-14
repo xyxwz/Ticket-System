@@ -4,15 +4,8 @@
 
 define([
   'backbone',
-  'AppView',
-  'views/headers/MainHeaderView',
-  'views/main/PanelView',
-  'views/tickets/TicketListView',
-  'views/tickets/TicketDetailsView',
-  'views/tickets/TicketFormView',
-  'views/toolbars/MainToolbarView'],
-function(Backbone, AppView, HeaderView, PanelView, TicketListView,
-  TicketDetailsView, TicketFormView, ToolbarView) {
+  'views/headers/MainHeaderView'],
+function(Backbone, HeaderView) {
 
   var Ticketer = Backbone.Router.extend({
     routes: {
@@ -30,9 +23,6 @@ function(Backbone, AppView, HeaderView, PanelView, TicketListView,
      */
 
     initialize: function(){
-      this.appView = new AppView();
-      this.appView.showToolbar(ToolbarView);
-
       // Create the Page Header
       var view = new HeaderView();
       $('header').append(view.render().el);
@@ -47,61 +37,15 @@ function(Backbone, AppView, HeaderView, PanelView, TicketListView,
     },
 
     openTickets: function() {
-      var view,
-          self = this;
-          collection = ticketer.collections.openTickets;
-
-      view = new PanelView({
-        collection: collection,
-        list: TicketListView,
-        details: TicketDetailsView
-      });
-
-      this.appView.showView(view);
-      this.appView.showToolbarTab('tickets/open');
+      ticketer.controller.showOpenTickets();
     },
 
     closedTickets: function() {
-      var view,
-          collection = ticketer.collections.closedTickets;
-
-      view = new PanelView({
-        collection: collection,
-        list: TicketListView,
-        details: TicketDetailsView
-      });
-
-      this.appView.showView(view);
-      this.appView.showToolbarTab('tickets/closed');
+      ticketer.controller.showClosedTickets();
     },
 
     myTickets: function() {
-      var view,
-          collection = ticketer.collections.openTickets;
-
-      view = new PanelView({
-        collection: collection,
-        list: TicketListView,
-        details: TicketDetailsView,
-        filter: function(ticket) {
-          return ticket.participating();
-        }
-      });
-
-      this.appView.showView(view);
-      this.appView.showToolbarTab('tickets/mine');
-    },
-
-    createTicket: function() {
-      var view,
-          collection = ticketer.collections.openTickets;
-
-      view = new TicketFormView({
-        collection: collection
-      });
-
-      this.appView.showView(view, function() { view.trigger('viewRendered'); });
-      this.appView.showToolbarTab();
+      ticketer.controller.showMyTickets();
     }
 
   });
