@@ -81,7 +81,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
      * Returns if the user is participating in the ticket
      */
     participating: function() {
-      return this.get('participating') && this.get('participating') === true;
+      return this.get('participating') ? this.get('participating') : false;
     },
 
     /*
