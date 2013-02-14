@@ -21,6 +21,8 @@ function($, _, Backbone, BaseView, TicketView,
 
     initialize: function() {
       _.bindAll(this);
+
+      this.bindTo(this.model, 'remove', this.dispose);
     },
 
     render: function() {
