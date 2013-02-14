@@ -3,10 +3,11 @@
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
+  'models/Ticket',
   'text!templates/tickets/TicketForm.html',
   'text!templates/tickets/MarkdownGuide.html',
   'autoresize'],
-function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
+function($, _, Backbone, BaseView, mustache, TicketModel, TicketForm, GuideTmpl) {
 
   /**
    * New Ticket Form
@@ -15,20 +16,19 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
    */
 
   var TicketFormView = BaseView.extend({
-    className: 'ticket-form scrollable',
+    className: 'ticket-form',
     events: {
       "click [data-action='create']": "createTicket",
-      "click [data-action='cancel']": "redirect",
+      "click [data-action='cancel']": "clearPopup",
       "click [data-role='display-guide']": "displayHelp",
-      "click .dialog .close": "removeHelp",
-      "focus textarea": "initResize"
+      "click .dialog .close": "removeHelp"
     },
 
     initialize: function() {
       _.bindAll(this);
 
-      this.bindTo($(window), 'resize', this.setHeight);
-      this.bindTo(this.collection, 'sync', this.redirect);
+      this.$el.attr('role', 'popup');
+      this.bindTo(this.collection, 'add', this.clearPopup);
     },
 
     render: function() {
@@ -38,51 +38,34 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
       data.shortname = data.name.split(' ')[0];
 
       $(this.el).html(Mustache.to_html(TicketForm, ticketer.currentUser));
-      this.setHeight();
+      $('body').append(this.el);
 
       return this;
     },
 
-    initResize: function() {
-      this.$el.find('textarea').autoResize({
-        minHeight: 168,
-        extraSpace: 14
-      });
+    clearPopup: function() {
+      this.dispose();
     },
 
     createTicket: function(e) {
-      var self = this;
-      var title = $('[name=title]', this.el).val();
-      var description = $('[name=description]', this.el).val();
+      var self = this,
+          title = $('[name=title]', this.el).val(),
+          description = $('[role=description]', this.el).html(),
+          ticket;
 
-      this.collection.create({
+      ticket = new TicketModel({
         title: title,
         description: description,
         socket: ticketer.sockets.id
-      }, {
-        wait: true
+      });
+
+      ticket.save({}, {wait: true});
+
+      this.bindTo(ticket, 'sync', function(model) {
+        self.collection.add(model);
       });
 
       e.preventDefault();
-    },
-
-    /**
-     * Override the dispose function to remove leftover
-     * autoresize data and bindings.
-     */
-
-    dispose: function() {
-      var plugin = this.$el.find('textarea').data('AutoResizer');
-
-      if(plugin) {
-        plugin.destroy();
-      }
-
-      return BaseView.prototype.dispose.call(this);
-    },
-
-    redirect: function() {
-      ticketer.routers.ticketer.navigate("tickets/mine", true);
     },
 
     displayHelp: function(e) {
@@ -100,18 +83,6 @@ function($, _, Backbone, BaseView, mustache, TicketForm, GuideTmpl) {
       this.$el.find('.dialog').fadeOut(200, function() {
         $(this).remove();
       });
-    },
-
-    /**
-     * Set the form height to fix resizing over the window height.
-     */
-
-    setHeight: function() {
-      var header = $('header').height(),
-          total = $(window).height(),
-          height = total - header;
-
-      this.$el.css({height: height});
     }
 
   });
