@@ -28,6 +28,7 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
 
       this.status = this.options.status ? this.options.status : 'open';
       this.filter = this.options.filter || function() { return true; };
+      this.controller = this.options.controller || null;
 
       // Save reference to original filter
       this._filter = this.filter;
@@ -99,7 +100,8 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
       this.$el.find('.active').removeClass('active');
       this.$el.find('.ticket[data-id="' + id + '"]').addClass('active');
 
-      ticketer.controller.showTicket(ticket);
+      if(this.controller)
+        this.controller.showTicket(ticket);
     }
 
   });

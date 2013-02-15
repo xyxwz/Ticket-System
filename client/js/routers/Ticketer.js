@@ -4,8 +4,10 @@
 
 define([
   'backbone',
-  'views/headers/MainHeaderView'],
-function(Backbone, HeaderView) {
+  'views/headers/MainHeaderView',
+  'support/PanelController'
+],
+function(Backbone, HeaderView, PanelController) {
 
   var Ticketer = Backbone.Router.extend({
     routes: {
@@ -25,6 +27,8 @@ function(Backbone, HeaderView) {
       // Create the Page Header
       var view = new HeaderView();
       $('header').append(view.render().el);
+
+      this.controller = new PanelController();
     },
 
     /**
@@ -36,15 +40,15 @@ function(Backbone, HeaderView) {
     },
 
     openTickets: function() {
-      ticketer.controller.showOpenTickets();
+      this.controller.showOpenTickets();
     },
 
     closedTickets: function() {
-      ticketer.controller.showClosedTickets();
+      this.controller.showClosedTickets();
     },
 
     myTickets: function() {
-      ticketer.controller.showMyTickets();
+      this.controller.showMyTickets();
     }
 
   });

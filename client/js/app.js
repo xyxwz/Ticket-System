@@ -82,8 +82,6 @@ define([
       lists: new Lists()
     };
 
-    ticketer.controller = new PanelController();
-
     ticketer.routers = {
       ticketer: new Ticketer()
     };
