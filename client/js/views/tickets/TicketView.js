@@ -292,11 +292,9 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
       if(this.model.notification()) {
         element.removeClass('unread read').addClass('notify');
-      }
-      else if(this.model.get('assigned_to').length === 0) {
+      } else if(this.model.get('assigned_to').length === 0) {
         element.removeClass('read notify').addClass('unread');
-      }
-      else {
+      } else {
         element.removeClass('unread notify').addClass('read');
       }
     },

@@ -28,23 +28,11 @@ function($, _, Backbone, BaseView, TicketView) {
 
       this.status = this.options.status ? this.options.status : 'open';
       this.filter = this.options.filter || function() { return true; };
+      this._filter = this.filter; // Original filter
       this.controller = this.options.controller || null;
 
-      // Save reference to original filter
-      this._filter = this.filter;
-
-      this.bindTo(this.collection, 'add', function(model) {
-        if(self.filter(model)) {
-          var html = self.renderTicket(model);
-          $(self.el).append(html);
-        }
-      });
-
-      this.bindTo(this.collection, 'remove', function(model) {
-        $('[data-id="' + model.id + '"]', self.el).remove();
-      });
-
-      this.bindTo(this.collection, 'reset', this.render);
+      // Bindings
+      this.bindTo(this.collection, 'add remove reset', this.render);
       this.bindTo(this.collection, 'filter', function(fn) {
         if(typeof fn === 'function') {
           self.filter = function(ticket) {
