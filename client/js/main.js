@@ -13,6 +13,7 @@ require.config( {
     'autoresize':       'libs/plugins/jquery.autoresize',
     'jqueryui':         'libs/jqueryui-1.8.16',
     'timeline':         'libs/timeline',
+    'spin':             'libs/spin',
     'Sync':             'support/Sync',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
