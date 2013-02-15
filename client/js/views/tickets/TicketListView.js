@@ -2,9 +2,9 @@
  * View Dependencies
  */
 
-define(['jquery', 'underscore', 'backbone', 'BaseView', 'timeline',
+define(['jquery', 'underscore', 'backbone', 'BaseView',
   'views/tickets/TicketView'],
-function($, _, Backbone, BaseView, Timeline, TicketView) {
+function($, _, Backbone, BaseView, TicketView) {
 
   /**
    * TicketListView
@@ -81,16 +81,6 @@ function($, _, Backbone, BaseView, Timeline, TicketView) {
     renderTicket: function(model) {
       var view = this.createView(TicketView, {model: model});
       return view.render().el;
-    },
-
-    initTimeline: function() {
-      var self = this;
-
-      if (this.collection.length === 0) return;
-
-      this.timeline = new Timeline(this.collection, this.renderTicket, $(this.el), '.ticket', { status: this.status });
-      this.bindTo($(window), 'scroll', function() { self.timeline.shouldCheckScroll = true ;});
-      this.createInterval(250, function() { self.timeline.didScroll(); });
     },
 
     showDetails: function(e) {
