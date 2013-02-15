@@ -6,10 +6,11 @@
 define([
   'jquery',
   'views/helpers/FillerView',
+  'views/helpers/SpinnerView',
   'views/toolbars/MainToolbarView',
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView'],
-function($, FillerView, ToolbarView, ListView, DetailsView) {
+function($, FillerView, SpinnerView, ToolbarView, ListView, DetailsView) {
 
   var PanelController = function PanelController() {
     var self = this;
@@ -41,9 +42,11 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
    */
 
   PanelController.prototype.showOpenTickets = function() {
+    this._resetCollections();
     this._callViewFunction('one', 'selectTab', 'tickets/open');
     this._setPanel('two', ListView, {
-      collection: ticketer.collections.openTickets
+      collection: ticketer.collections.openTickets,
+      controller: this
     });
 
     this._setPanel('three', FillerView);
@@ -54,9 +57,11 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
    */
 
   PanelController.prototype.showMyTickets = function() {
+    this._resetCollections();
     this._callViewFunction('one', 'selectTab', 'tickets/mine');
     this._setPanel('two', ListView, {
       collection: ticketer.collections.openTickets,
+      controller: this,
       filter: function(ticket) {
         return ticket.participating();
       }
@@ -70,12 +75,24 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
    */
 
   PanelController.prototype.showClosedTickets = function() {
-    this._callViewFunction('one', 'selectTab', 'tickets/closed');
-    this._setPanel('two', ListView, {
-      collection: ticketer.collections.closedTickets
-    });
+    var self = this;
 
-    this._setPanel('three', FillerView);
+    this._resetCollections();
+    this._callViewFunction('one', 'selectTab', 'tickets/closed');
+
+    this._setPanel('two', SpinnerView);
+
+    ticketer.collections.closedTickets.fetch({
+      data: { status: 'closed' },
+      success: function(collection, res, options) {
+        self._setPanel('two', ListView, {
+          collection: collection,
+          controller: self
+        });
+
+        self._setPanel('three', FillerView);
+      }
+    });
   };
 
   /**
@@ -139,6 +156,10 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
     } else {
       console.error('Attempted to call nonexistent function ' + fn + ' on panel ' + panel);
     }
+  };
+
+  PanelController.prototype._resetCollections = function() {
+    ticketer.collections.closedTickets.reset();
   };
 
   /**

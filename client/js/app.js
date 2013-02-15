@@ -150,9 +150,6 @@ define([
       try {
         Backbone.history.start();
       } catch (x) {}
-
-      // Fetch the first page of closed tickets after the page history starts
-      ticketer.collections.closedTickets.fetch({ data: { page: 1, status: 'closed' } });
     });
 
     ticketer.sockets.sock.on('error', function() {

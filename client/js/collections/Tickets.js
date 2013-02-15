@@ -17,8 +17,6 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
         return -date.getTime();
       };
 
-      this.page = 1;
-
       this.on('reset', this.loadAllComments);
       this.on('add', this.loadComment);
 

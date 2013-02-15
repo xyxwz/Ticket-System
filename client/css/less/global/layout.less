@@ -64,7 +64,23 @@ html, body {
     bottom: 0;
     right: 0;
     left: @panel_resizer_left;
+  }
 
+  #panel-two,
+  #panel-three {
+    .view-filler {
+      font-size: 18px;
+      padding: 20px 20px;
+
+      p {
+        line-height: 1;
+        margin: 0;
+      }
+    }
+  }
+
+  #panel-two,
+  #panel-three {
     .spin-wrap {
       position: relative;
       top: 120px;
@@ -82,19 +98,6 @@ html, body {
         text-align: center;
         font-size: 13px;
         color: @lightGray;
-      }
-    }
-  }
-
-  #panel-two,
-  #panel-three {
-    .view-filler {
-      font-size: 18px;
-      padding: 20px 20px;
-
-      p {
-        line-height: 1;
-        margin: 0;
       }
     }
   }
