@@ -2,21 +2,28 @@
  * of comments on a single ticket model */
 
 define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comment) {
-  var Comments = Backbone.Collection.extend({
 
+  var Comments = Backbone.Collection.extend({
     model: Comment,
 
-    initialize: function() {
-
+    initialize: function(models, options) {
       var self = this;
+
+      // Set url for this comment collection
+      this.url = '/api/tickets/' + options.ticketId + '/comments';
 
       this.comparator = function(model) {
         var date = new Date(model.get("created_at"));
         return date.getTime();
       };
 
-      this.on('add', function(model) {
-        self.trigger('comments:add', model);
+      ticketer.EventEmitter.on('comment:new', function(attrs) {
+        var obj = _.clone(attrs);
+
+        if(obj.ticket === options.ticketId) {
+          delete obj.ticket;
+          self.add(obj);
+        }
       });
 
       // Update attributes on changed model
@@ -37,21 +44,17 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
           self.remove(model);
         }
       });
-
     },
 
-    /* Drop all comments associated with the Ticket */
-    removeComments: function(callback) {
+    /**
+     * Override `Collection.fetch` for a neat callback
+     */
 
-      var op = this;
-      this.each(function(comment) {
-
-        comment.destroy({ error: callback });
-
+    fetch: function(callback) {
+      Backbone.Collection.prototype.fetch.call(this, {
+        success: callback
       });
-
     }
-
   });
 
   return Comments;
