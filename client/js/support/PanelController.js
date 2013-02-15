@@ -24,7 +24,6 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
 
     // Bindings
     $(window).resize(this._setHeight);
-
     $('#panel-divider').on('mousedown', function() {
       $('body').addClass('unselectable');
 
@@ -32,6 +31,7 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
       $(window).one('mouseup', function() {
         $(window).off('mousemove');
         $('body').removeClass('unselectable');
+        window.getSelection().empty();
       });
     });
   };
@@ -157,9 +157,7 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
    */
 
   PanelController.prototype._resizeWidths = function(e) {
-    var panelWidth;
-    var panels = this._panels;
-    var totalWidth = $(window).width();
+    var panelOne = $('#panel-one');
     var panelTwo = $('#panel-two');
     var panelThree = $('#panel-three');
     var divider = $('#panel-divider');
@@ -171,8 +169,8 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
 
     if(e.pageX > 440 && e.pageX < 1200) {
       positions.divider.left = e.pageX;
-      positions.two.right = totalWidth - e.pageX;
-      positions.three.left = e.pageX + divider.width();
+      positions.two.width = e.pageX - panelOne.width();
+      positions.three.left = e.pageX;
 
       // Clear width attribute
 
@@ -191,13 +189,7 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
     }
 
     Object.keys(positions).forEach(function(key) {
-      var element = $('#panel-' + key);
-
-      if(key !== 'divider') {
-        element.css('width', 'auto');
-      }
-
-      element.css(positions[key]);
+      $('#panel-' + key).css(positions[key]);
     });
   };
 
