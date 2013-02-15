@@ -15,7 +15,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
           currentUser = ticketer.currentUser;
 
       _.bindAll(this);
-
       this.validate = this._validate;
 
       // Set an attribute for the socket.id
@@ -25,20 +24,12 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
 
       this.set({socket: ticketer.sockets.id}, {silent: true});
 
-
-      this.comments = new Comments();
-      this.comments.url = '/api/tickets/' + this.id + '/comments';
-
-      this.on("change", function() {
-        self.comments.url = '/api/tickets/' + this.id + '/comments';
-      });
-
       /**
        * Set participating status on `open` tickets when a `assignedUser` of
        * `unassignedUser` event is triggered
        */
 
-      if (this.get('status') === 'open') {
+      if(this.get('status') === 'open') {
         this.on('assignedUser', function() {
           var assigned = _.include(self.get('assigned_to'), currentUser.id);
           if(assigned) self.set('participating', true);
@@ -54,10 +45,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         if(self.get('user').id === currentUser.id) self.set('participating', true);
       });
 
-      this.comments.on('comments:add', function(comment) {
-        if(comment.get('user').id === currentUser.id) self.set('participating', true);
-      });
-
       this.on('error', function(model, err) {
         ticketer.EventEmitter.trigger('error', err);
       });
@@ -69,8 +56,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
           ticketer.collections.closedTickets.add(this);
         }
       });
-
-
     },
 
     isOpen: function() {
@@ -134,7 +119,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
           self.unbind('assignedUser', self.collection.setMyTickets);
           self.unbind('unassignedUser', self.collection.setMyTickets);
         }
-
       });
 
     },
