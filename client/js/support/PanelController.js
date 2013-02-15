@@ -23,6 +23,9 @@ function($, FillerView, SpinnerView, ToolbarView, ListView, DetailsView) {
     // Display toolbar in panel one by default
     this._setPanel('one', ToolbarView);
 
+    // Set to block after header rendered
+    $('#main > div').css('display', 'block');
+
     // Bindings
     $(window).resize(this._setHeight);
     $('#panel-divider').on('mousedown', function() {

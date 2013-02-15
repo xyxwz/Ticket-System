@@ -2,96 +2,11 @@
 // Buttons
 // --------------------------------------
 
-// Login Button
-.btn-auth {
-  position: relative;
-  display: inline-block;
-  height: 22px;
-  padding: 0 1em;
-  border: 1px solid #999;
-  border-radius: 2px;
-  margin: 0;
-  text-align: center;
-  text-decoration: none;
-  font-size: 14px;
-  line-height: 22px;
-  white-space: nowrap;
-  cursor: pointer;
-  color: @lightBlack;
-  background: #fff;
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-  /* iOS */
-  -webkit-appearance: none; /* 1 */
-  /* IE6/7 hacks */
-  *overflow: visible;  /* 2 */
-  *display: inline; /* 3 */
-  *zoom: 1; /* 3 */
-
-  &:hover,
-  &:focus,
-  &:active {
-    text-decoration: none;
-  }
-
-  &:before {
-    content: "";
-    float: left;
-    width: 22px;
-    height: 22px;
-    background: url('/img/assets/logo.png') no-repeat;
-  }
-
-  &.large {
-    height: 36px;
-    line-height: 36px;
-    font-size: 20px;
-
-    &:before {
-      width: 36px;
-      height: 36px;
-    }
-  }
-
-  &::-moz-focus-inner {
-    border: 0;
-    padding: 0;
-  }
-
-  &.btn-txssc {
-    border-color: #d4d4d4;
-    .vertical-gradient(#f4f4f4, #ececec);
-
-    &:hover,
-    &:focus {
-      border-color: #d4d4d4;
-      color: @lightBlack;
-      .vertical-gradient(#e3e3e3, #dbdbdb);
-    }
-
-    &:active {
-      border-color: #d4d4d4;
-      color: @lightBlack;
-      .vertical-gradient(#e3e3e3, #ebebeb);
-    }
-
-    &:before {
-      margin: 5px 0.6em 0 -0.6em;
-      background-position: 0 0;
-    }
-
-    &.large:before {
-      background-position: 0 0;
-    }
-  }
-}
-
 button {
   margin: 0;
   color: @white;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 400;
   padding: 5px 14px;
   background: @baseButton;
   font-family: @sans-serif;
