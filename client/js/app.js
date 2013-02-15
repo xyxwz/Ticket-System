@@ -140,7 +140,6 @@ define([
       ticketer.collections.users.reset(message.users);
 
       // Fetch projects and lists
-      ticketer.sockets.sock.emit('projects:fetch');
       ticketer.collections.lists.fetch();
 
       // Emit a `tickets:fetch` event to load ticket data
