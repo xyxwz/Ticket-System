@@ -50,7 +50,7 @@ function($, _, Backbone, BaseView, mustache, TicketModel, TicketForm, GuideTmpl)
     createTicket: function(e) {
       var self = this,
           title = $('[name=title]', this.el).val(),
-          description = $('[role=description]', this.el).html(),
+          description = $('[role=description]', this.el).val(),
           ticket;
 
       ticket = new TicketModel({
