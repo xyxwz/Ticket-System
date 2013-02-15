@@ -154,6 +154,8 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
 
   /**
    * Resize the panels determined by their current positions
+   *
+   * @param {jQuery.Event} e
    */
 
   PanelController.prototype._resizeWidths = function(e) {
@@ -180,7 +182,9 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
   };
 
   /**
-   * Sets the width on `#panel-two` and `#panel-three`
+   * Sets the width on all panels with keys in `positions`
+   *
+   * @param {Objects} positions
    */
 
   PanelController.prototype._setWidths = function(positions) {
@@ -192,6 +196,13 @@ function($, FillerView, ToolbarView, ListView, DetailsView) {
       $('#panel-' + key).css(positions[key]);
     });
   };
+
+  /**
+   * If `positions` passed, set the positions of panels,
+   * otherwise fetch them from local storage
+   *
+   * @param {Object} positions
+   */
 
   PanelController.prototype._panelPositions = function(positions) {
     var storage = window.localStorage;
