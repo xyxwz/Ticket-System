@@ -141,8 +141,8 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       resp = confirm("Are you sure you want to delete this comment? It cannot be undone");
       if (resp === true) {
         this.model.destroy();
-        $(this.el).fadeOut(200, function() {
-          self.remove();
+        this.$el.fadeOut(200, function() {
+          self.dispose();
         });
       }
 

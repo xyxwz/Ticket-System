@@ -3,10 +3,12 @@
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView',
+  'views/helpers/SpinnerView',
   'views/comments/CommentView',
   'views/comments/CommentFormView',
   'text!templates/comments/CommentList.html'],
-function($, _, Backbone, BaseView, CommentView, FormView, tmpl_CommentList) {
+function($, _, Backbone, BaseView, SpinnerView,
+  CommentView, FormView, tmpl_CommentList) {
 
   /**
    * CommentListView
@@ -23,18 +25,39 @@ function($, _, Backbone, BaseView, CommentView, FormView, tmpl_CommentList) {
 
       this.bindTo(this.collection,'add', this.addComment);
       this.bindTo(this.collection, 'remove', this.removeComment);
-      this.bindTo(this.collection,'reset', this.addAll);
     },
 
     render: function() {
-      this.$el.empty();
+      var self = this,
+          loading = new SpinnerView();
 
-      $(this.el).html(tmpl_CommentList);
-
+      this.$el.html(tmpl_CommentList);
       this.renderCommentForm();
-      this.collection.each(this.addComment);
+
+      this.$el.append(loading.render().el);
+      this.collection.fetch(function() {
+        self.$el.children('.comments-list').hide();
+        self.collection.each(self.addComment);
+
+        loading.$el.fadeOut(400, function() {
+          loading.dispose();
+          self.$el.children('.comments-list').fadeIn(400);
+        });
+      });
 
       return this;
+    },
+
+    /**
+     * Override `dispose()` to make sure collection gets
+     * garbage collected
+     */
+
+    dispose: function() {
+      this.collection.reset();
+      this.collection = null;
+
+      return BaseView.prototype.dispose.call(this);
     },
 
     renderCommentForm: function() {

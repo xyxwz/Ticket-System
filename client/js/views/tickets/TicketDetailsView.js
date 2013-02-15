@@ -3,11 +3,12 @@
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView',
+  'collections/Comments',
   'views/tickets/TicketView',
   'views/comments/CommentListView',
   'views/comments/CommentFormView'],
-function($, _, Backbone, BaseView, TicketView,
-  CommentListView, CommentFormView) {
+function($, _, Backbone, BaseView, Comments,
+  TicketView, CommentListView, CommentFormView) {
 
   /**
    * TicketDetailsView
@@ -55,8 +56,12 @@ function($, _, Backbone, BaseView, TicketView,
     },
 
     renderComments: function() {
+      var collection = new Comments(null, {
+        ticketId: this.model.id
+      });
+
       var view = this.createView(CommentListView, {
-        collection: this.model.comments
+        collection: collection
       });
 
       $(this.el).append(view.render().el);
