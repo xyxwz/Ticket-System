@@ -48,16 +48,16 @@ function($, _, Backbone, BaseView, TicketView) {
 
     render: function() {
       var i;
-      var html = [];
       var tickets = this.collection.filter(this.filter);
       var len = tickets.length;
 
       if(len) {
+        this.$el.empty();
+
         for(i = 0; i < len; i = i + 1) {
-          html.push(this.renderTicket(tickets[i]).outerHTML);
+          this.$el.append(this.renderTicket(tickets[i]));
         }
 
-        this.$el.html(html.join(''));
         if(this.status === 'closed') this.initTimeline();
       } else {
         this.$el.html('<div class="view-filler"><p>No tickets to list</p></div>');
