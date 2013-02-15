@@ -1,5 +1,8 @@
-/* TxSSC Ticketer - An IT support ticket system
-   http://txssc.txstate.edu
+/**
+ * TxSSC Ticketer - An IT support ticket system
+ * http://txssc.txstate.edu
+ *
+ * The main entry point to the `ticketer` application
  */
 
 define([
