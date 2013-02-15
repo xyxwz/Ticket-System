@@ -14,7 +14,10 @@ CACHE:
 /fonts/fontawesome-webfont.woff
 /img/avatars/35x35.gif
 /img/avatars/65x65.gif
-/img/assets/logo.png
+/img/assets/logo-full.png
+/img/assets/logo-full@2x.png
+/img/assets/pw_maze_black.png
+/img/assets/pw_maze_black@2x.png
 http://www.txssc.txstate.edu/media/avatars/Allison.png
 http://www.txssc.txstate.edu/media/avatars/Andrew.png
 http://www.txssc.txstate.edu/media/avatars/Andy.png

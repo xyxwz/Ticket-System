@@ -15,9 +15,12 @@ html(manifest=(process.env.NODE_ENV === 'production' ? 'manifest.appcache': ''))
       link(rel="stylesheet/less", type="text/css", href="css/less/main.less")
       script(src="js/libs/less-1.3.3.min.js", type="text/javascript")
 
-  body
+  body.login
+
+    h1.logo Texas School Safety Center
+
     .login-form
-      h2 Login to begin
-      ul
-        li
-          a.btn-auth.btn-txssc.large(href='/login/oauth/authorize', title='Sign in with TxSSC') Sign in with <b>TxSSC</b>
+      p Tickets is a task management tool for groups, it helps you manage and collaborate on tasks.
+
+      .btn-wrapper
+        a.btn-auth.btn-txssc.large(href='/login/oauth/authorize', title='Sign in with TxSSC') Login
