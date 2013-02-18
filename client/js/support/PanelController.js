@@ -45,7 +45,6 @@ function($, FillerView, SpinnerView, ToolbarView, ListView, DetailsView) {
    */
 
   PanelController.prototype.showOpenTickets = function() {
-    this._resetCollections();
     this._callViewFunction('one', 'selectTab', 'tickets/open');
     this._setPanel('two', ListView, {
       collection: ticketer.collections.openTickets,
@@ -60,7 +59,6 @@ function($, FillerView, SpinnerView, ToolbarView, ListView, DetailsView) {
    */
 
   PanelController.prototype.showMyTickets = function() {
-    this._resetCollections();
     this._callViewFunction('one', 'selectTab', 'tickets/mine');
     this._setPanel('two', ListView, {
       collection: ticketer.collections.openTickets,
@@ -80,9 +78,7 @@ function($, FillerView, SpinnerView, ToolbarView, ListView, DetailsView) {
   PanelController.prototype.showClosedTickets = function() {
     var self = this;
 
-    this._resetCollections();
     this._callViewFunction('one', 'selectTab', 'tickets/closed');
-
     this._setPanel('two', SpinnerView);
 
     ticketer.collections.closedTickets.fetch({
@@ -90,6 +86,7 @@ function($, FillerView, SpinnerView, ToolbarView, ListView, DetailsView) {
       success: function(collection, res, options) {
         self._setPanel('two', ListView, {
           collection: collection,
+          status: 'closed',
           controller: self
         });
 
@@ -159,10 +156,6 @@ function($, FillerView, SpinnerView, ToolbarView, ListView, DetailsView) {
     } else {
       console.error('Attempted to call nonexistent function ' + fn + ' on panel ' + panel);
     }
-  };
-
-  PanelController.prototype._resetCollections = function() {
-    ticketer.collections.closedTickets.reset();
   };
 
   /**
