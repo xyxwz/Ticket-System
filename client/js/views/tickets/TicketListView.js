@@ -72,7 +72,6 @@ function($, _, Backbone, BaseView, TicketView) {
           this.$el.append(this.renderTicket(tickets[i]));
         }
 
-        if(this.status === 'closed') this.initTimeline();
       } else {
         this.$el.html('<div class="view-filler"><p>No tickets to list</p></div>');
       }
