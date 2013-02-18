@@ -1,14 +1,20 @@
-/* Comment collection - used to represent a collection
- * of comments on a single ticket model */
+/**
+ * Collection dependencies
+ */
 
 define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comment) {
+
+  /**
+   * Comment collection, used to hold a collection of comments for
+   * ticket with id `ticketId`
+   *
+   * @param {String} ticketId
+   */
 
   var Comments = Backbone.Collection.extend({
     model: Comment,
 
     initialize: function(models, options) {
-      var self = this;
-
       // Set url for this comment collection
       this.url = '/api/tickets/' + options.ticketId + '/comments';
 
@@ -17,33 +23,10 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
         return date.getTime();
       };
 
-      ticketer.EventEmitter.on('comment:new', function(attrs) {
-        var obj = _.clone(attrs);
-
-        if(obj.ticket === options.ticketId) {
-          delete obj.ticket;
-          self.add(obj);
-        }
-      });
-
-      // Update attributes on changed model
-      ticketer.EventEmitter.on('comment:update', function(attrs) {
-        var obj = _.clone(attrs),
-            model = self.get(obj.id);
-
-        if(model) {
-          model.set(model.parse(obj));
-        }
-      });
-
-      // Remove model from collection
-      ticketer.EventEmitter.on('comment:remove', function(id) {
-        var model = self.get(id);
-
-        if(model) {
-          self.remove(model);
-        }
-      });
+      // Global event bindings
+      ticketer.EventEmitter.on('comment:new', this.addComment, this);
+      ticketer.EventEmitter.on('comment:update', this.updateComment, this);
+      ticketer.EventEmitter.on('comment:remove', this.removeComment, this);
     },
 
     /**
@@ -54,6 +37,62 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
       Backbone.Collection.prototype.fetch.call(this, {
         success: callback
       });
+    },
+
+    /**
+     * Unbind events from this collection so it can be garbage collected
+     */
+
+    destroy: function() {
+      this.reset();
+      ticketer.EventEmitter.off(null, null, this);
+      return null;
+    },
+
+    /**
+     * If the comment belongs to the current comment collection's ticket
+     * add it to the collection
+     *
+     * @param {Object} attrs
+     */
+
+    addComment: function(attrs) {
+      var obj = _.clone(attrs);
+
+      if(obj.ticket === options.ticketId) {
+        delete obj.ticket;
+        this.add(obj);
+      }
+    },
+
+    /**
+     * If the comment with id `attrs.id` is in this collection,
+     * update the attributes
+     *
+     * @param {Object} attrs
+     */
+
+    updateComment: function(attrs) {
+      var obj = _.clone(attrs),
+          model = this.get(obj.id);
+
+      if(model) {
+        model.set(model.parse(obj));
+      }
+    },
+
+    /**
+     * Remove the comment with `id` from this collection
+     *
+     * @param {String} id
+     */
+
+    removeComment: function(id) {
+      var model = this.get(id);
+
+      if(model) {
+        this.remove(model);
+      }
     }
   });
 

@@ -46,6 +46,20 @@ function($, _, Backbone, BaseView, TicketView) {
       });
     },
 
+    /**
+     * If a closed ticket collection destroy the collection on
+     * view disposal.
+     */
+
+    dispose: function() {
+      if(this.status === 'closed') {
+        this.collection = this.collection.destroy();
+        delete this.collection;
+      }
+
+      return BaseView.prototype.dispose.call(this);
+    },
+
     render: function() {
       var i;
       var tickets = this.collection.filter(this.filter);

@@ -49,14 +49,12 @@ function($, _, Backbone, BaseView, SpinnerView,
     },
 
     /**
-     * Override `dispose()` to make sure collection gets
-     * garbage collected
+     * Override `dispose()` and call `destroy()` on the collection
      */
 
     dispose: function() {
-      this.collection.reset();
-      this.collection = null;
-
+      this.collection = this.collection.destroy();
+      delete this.collection;
       return BaseView.prototype.dispose.call(this);
     },
 

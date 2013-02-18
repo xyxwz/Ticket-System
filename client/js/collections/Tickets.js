@@ -8,8 +8,6 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
     url: '/api/tickets',
 
     initialize: function() {
-      var self = this;
-
       _.bindAll(this);
 
       this.comparator = function(model) {
@@ -18,10 +16,26 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       };
 
       /* Global EventEmitter bindings */
-      ticketer.EventEmitter.on('comment:new comment:update', this.addNotification);
-      ticketer.EventEmitter.on('ticket:update', this.updateTicket);
-      ticketer.EventEmitter.on('ticket:remove', this.removeTicket);
+      ticketer.EventEmitter.on('comment:new comment:update', this.addNotification, this);
+      ticketer.EventEmitter.on('ticket:update', this.updateTicket, this);
+      ticketer.EventEmitter.on('ticket:remove', this.removeTicket, this);
     },
+
+    /**
+     * Reset the collection and clear all global event bindings
+     */
+
+    destroy: function() {
+      this.reset();
+      ticketer.EventEmitter.off(null, null, this);
+      return null;
+    },
+
+    /**
+     * Add a notification to ticket with id `data.ticket`
+     *
+     * @param {Object} data
+     */
 
     addNotification: function(data) {
       var obj = _.clone(data),
@@ -32,7 +46,12 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       }
     },
 
-    /* Update attributes on a changed model */
+    /**
+     * Update the ticket with id `attrs.id` if found in the collection
+     *
+     * @param {Object} attrs
+     */
+
     updateTicket: function(attrs) {
       var obj = _.clone(attrs),
           model = this.get(obj.id);
@@ -42,7 +61,12 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       }
     },
 
-    /* Destroy a ticket on the ticket:remove event */
+    /**
+     * Remove the ticket with id `ticket` if in this collection
+     *
+     * @param {String} ticket
+     */
+
     removeTicket: function(ticket) {
       this.remove(ticket);
     }
