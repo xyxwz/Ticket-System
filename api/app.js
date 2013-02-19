@@ -17,6 +17,7 @@ exports.boot = function(params){
   bootApplication(app);
   bootModels(app);
   bootControllers(app);
+  sourceEvents(app);
   return app;
 };
 
@@ -45,6 +46,7 @@ function bootApplication(app) {
 
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use('/events', lib.middleware.SSE);
   app.use('/api', lib.middleware.CORS); // Allow CORS
   app.use('/api', lib.middleware.Auth);
   app.use('/api', lib.middleware.Error);
@@ -77,6 +79,11 @@ function bootModels(app) {
 // Bootstrap controllers
 function bootControllers(app) {
   app.controllers = require('./controllers')(app);
+}
+
+// Include Server Sent Event Bindings
+function sourceEvents(app) {
+  app.sse = require('./events')(app);
 }
 
 // allow normal node loading if appropriate
