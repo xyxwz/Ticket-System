@@ -30,6 +30,16 @@ module.exports = function(app) {
     // Push the connection into a socket array
     app.sockets.push({ id: id, res: res, user: req.user });
 
+    // Initial message with IE padding
+    res.write(':' + Array(2049).join(' ') + '\n'); //2kb padding for IE
+    res.write('retry: 2000\n');
+    res.write('data: ' + Date() + '\n\n');
+
+    // Send a Heartbeat every 10 seconds to detect disconnect
+    var t = setInterval(function () {
+      res.write('data: ' + Date() + '\n\n');
+    }, 10000);
+
     // Remove the socket from the array when connection is closed
     req.on('close', function() {
       var _i, _len;
