@@ -108,9 +108,6 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
       this.clearIntervals();
       this.remove();
 
-      delete this.el;
-      delete this.$el;
-
       return null;
     },
 
