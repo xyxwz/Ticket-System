@@ -98,14 +98,14 @@ define([
       }
     };
 
+    // Override Backbone Sync
+    new Sync();
+
     /**
      * Initialize an EventSource listener
      */
     ticketer.SSE = new EventSource('/events', { withCredentials: true });
     new ServerEvents();
-
-    // Override Backbone Sync
-    new Sync();
 
     // Fetch projects and lists
     ticketer.collections.lists.fetch();
@@ -114,7 +114,7 @@ define([
     ticketer.collections.users.fetch();
 
     // Fetch open tickets
-    ticketer.collection.openTickets.fetch({
+    ticketer.collections.openTickets.fetch({
       status: 'open'
     });
 

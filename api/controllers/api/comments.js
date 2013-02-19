@@ -30,7 +30,7 @@ module.exports = function(app) {
     var data;
 
     data = req.body;
-    data.user = req.user.id;
+    data.user = req.user._id;
 
     Comment.create(req.ticket, req.user, data, function(err, model) {
       if(err) return res.json({error: err}, 400);

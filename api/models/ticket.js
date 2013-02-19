@@ -92,11 +92,11 @@ module.exports = function(app) {
       newAssigned = _.uniq(data.assigned_to);
 
       this._manageSets(newAssigned, function() {
-        _this._execUpdate(user.id, cb);
+        _this._execUpdate(user._id, cb);
       });
     }
     else {
-      this._execUpdate(user.id, cb);
+      this._execUpdate(user._id, cb);
     }
   };
 
@@ -518,7 +518,7 @@ module.exports = function(app) {
       });
     }
     else {
-      Notifications.nowParticipating(app.redis, user.id, ticket.id, function(err) {
+      Notifications.nowParticipating(app.redis, user._id, ticket.id, function(err) {
         if(err) return cb(err);
         createTicketObject(ticket, data, cb);
       });

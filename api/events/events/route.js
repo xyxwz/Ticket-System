@@ -25,7 +25,7 @@ module.exports = function(app) {
     });
 
     // generate a unique ID
-    var id = new Date().getTime() + '-' + req.user.id;
+    var id = new Date().getTime() + '-' + req.user._id;
 
     // Push the connection into a socket array
     app.sockets.push({ id: id, res: res, user: req.user });

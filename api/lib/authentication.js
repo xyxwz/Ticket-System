@@ -34,10 +34,11 @@ module.exports = function(app) {
         if(err) return done(err);
 
         sessionData = {
-          id: user.id,
-          token: accessToken,
+          _id: user.id,
+          access_token: accessToken,
           name: user.name,
-          role: user.role
+          role: user.role,
+          username: user.username
         };
 
         if(user.avatar) sessionData.avatar = user.avatar;

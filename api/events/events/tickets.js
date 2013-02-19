@@ -63,14 +63,14 @@ module.exports = function(app) {
   var _checkNotification = function (user, obj, ticket, cb) {
     var _obj = _.clone(obj);
 
-    notifications.isParticipating(app.redis, user.id, ticket, function(err, status) {
+    notifications.isParticipating(app.redis, user._id, ticket, function(err, status) {
       if(err) return cb(err);
       if(status) _obj.participating = true;
 
-      notifications.hasNotification(app.redis, user.id, ticket, function(err, notify) {
-	if(err) return cb(err);
-	if(notify) _obj.notification = true;
-	return cb(null, _obj);
+      notifications.hasNotification(app.redis, user._id, ticket, function(err, notify) {
+        if(err) return cb(err);
+        if(notify) _obj.notification = true;
+        return cb(null, _obj);
       });
     });
   };

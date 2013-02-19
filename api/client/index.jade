@@ -20,10 +20,10 @@ html(manifest=(process.env.NODE_ENV === 'production' ? 'manifest.appcache': ''))
     script
       window.ticketer = window.ticketer || {};
       window.ticketer.currentUser = {
-	id: "#{user.id}",
-	name: "#{user.name}",
-	token: "#{user.token}",
-	role: "#{user.role}"
+        id: "#{user.id}",
+        name: "#{user.name}",
+        access_token: "#{user.access_token}",
+        role: "#{user.role}"
       };
 
   body

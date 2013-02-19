@@ -93,7 +93,6 @@ exports.pushNotification = function(redis, user, ticket, cb) {
 
   redis.SMEMBERS(ticketRef, function(err, users) {
     if(err) return cb('Error getting participating users');
-
     users.forEach(function(userID) {
       if(userID.toString() !== user.toString()) {
         tempUserRef = 'user:' + userID + ':notifications';

@@ -15,7 +15,7 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
     model: Comment,
 
     initialize: function(models, options) {
-      options = options || {};
+      this.options = options || {};
 
       // Set url for this comment collection
       this.url = '/api/tickets/' + options.ticketId + '/comments';
@@ -60,11 +60,10 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
 
     addComment: function(attrs) {
       var obj = _.clone(attrs),
-	  model = this.get(obj.id);
+          model = this.get(obj.id);
 
       if(model) return false;
-
-      if(obj.ticket === options.ticketId) {
+      if(obj.ticket === this.options.ticketId) {
         delete obj.ticket;
         this.add(obj);
       }

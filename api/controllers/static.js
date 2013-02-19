@@ -9,12 +9,12 @@ module.exports = function(app) {
     if(req.session.passport.user) {
       // If User session then user has been authenticated.
       res.render('index', {
-	user: {
-	  id: req.session.passport.user.id,
-	  name: req.session.passport.user.name,
-	  token: req.session.passport.user.token,
-	  role: req.session.passport.user.role
-	}
+        user: {
+          id: req.session.passport.user._id,
+          name: req.session.passport.user.name,
+          access_token: req.session.passport.user.access_token,
+          role: req.session.passport.user.role
+        }
       });
     }
     else {

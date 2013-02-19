@@ -9,7 +9,7 @@ module.exports = function(app) {
    *  returns all lists
    */
   app.get('/api/lists', function(req, res) {
-    List.mine(req.user.id, function(err, lists) {
+    List.mine(req.user._id, function(err, lists) {
       if(err) return res.json({ error: err }, 400);
       return res.json(lists, 200);
     });
@@ -26,7 +26,7 @@ module.exports = function(app) {
    */
   app.post('/api/lists', function(req, res) {
     var data = req.body;
-    data.user = req.user.id;
+    data.user = req.user._id;
 
     List.create(data, function(err, model) {
       if(err) return res.json({error: err}, 400);

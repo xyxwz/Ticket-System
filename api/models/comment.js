@@ -220,8 +220,8 @@ module.exports = function(app) {
 
       if (user.avatar) obj.user.avatar = user.avatar;
 
-      Notifications.nowParticipating(redis, user.id, ticket.id, function(err) {
-        Notifications.pushNotification(redis, user.id, ticket.id, function(err) {
+      Notifications.nowParticipating(redis, user._id, ticket.id, function(err) {
+        Notifications.pushNotification(redis, user._id, ticket.id, function(err) {
           if(err) return cb(err);
 
           var emitObj = {body: obj};

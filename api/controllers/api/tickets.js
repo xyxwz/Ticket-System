@@ -34,7 +34,7 @@ module.exports = function(app) {
     status = req.query.status ? req.query.status : 'open';
     page = req.query.page ? req.query.page : 1;
 
-    Ticket.mine(req.user.id, status, page, function(err, tickets){
+    Ticket.mine(req.user._id, status, page, function(err, tickets){
       if(err) return res.json({error: 'Error getting tickets'}, 400);
       res.json(tickets);
     });
@@ -51,7 +51,7 @@ module.exports = function(app) {
   *  adds a ticket to the database */
   app.post('/api/tickets', function(req, res) {
     var data = req.body;
-    data.user = req.user.id;
+    data.user = req.user._id;
     Ticket.create(data, req.user, function(err, ticket) {
       if(err) return res.json({error: 'Missing required attributes'}, 400);
       res.json(ticket, 201);

@@ -26,7 +26,7 @@ module.exports = function(app) {
    */
   app.post('/api/projects', function(req, res) {
     var data = req.body;
-    data.user = req.user.id;
+    data.user = req.user._id;
 
     Project.create(data, function(err, model) {
       if(err) return res.json({error: err}, 400);
