@@ -80,7 +80,6 @@ define([
     ticketer.collections = {
       openTickets: new Tickets(),
       users: new Users(),
-      projects: new Projects(),
       lists: new Lists()
     };
 
