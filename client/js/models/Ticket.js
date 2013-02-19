@@ -45,9 +45,8 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
 
       // When a ticket is closed move it to the closed tickets collection
       this.on("change:status", function(model, status) {
-        if(status === 'closed') {
-          ticketer.collections.openTickets.remove(this);
-          ticketer.collections.closedTickets.add(this);
+        if(status === 'closed' && typeof model.collection !== 'undefined') {
+          model.collection.remove(model.id);
         }
       });
     },
@@ -105,16 +104,9 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
      *    :callback - An error callback
      */
     close: function(callback) {
-      var self = this;
-
       this.save({ status: 'closed' }, {
-        error: callback,
-        success: function() {
-          self.unbind('assignedUser', self.collection.setMyTickets);
-          self.unbind('unassignedUser', self.collection.setMyTickets);
-        }
+        error: callback
       });
-
     },
 
     /* Assigns a User to the ticket
