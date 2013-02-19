@@ -115,7 +115,7 @@ define([
 
     // Fetch open tickets
     ticketer.collections.openTickets.fetch({
-      status: 'open'
+      data: { status: 'open' }
     });
 
     // Start Backbone History

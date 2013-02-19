@@ -34,7 +34,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       }
 
       if(self.get('user')) {
-	if(self.get('user').id === currentUser.id) self.set('participating', true);
+        if(self.get('user').id === currentUser.id) self.set('participating', true);
       }
 
       this.on('sync', function() {
