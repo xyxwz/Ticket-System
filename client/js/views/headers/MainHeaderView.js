@@ -27,16 +27,9 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
       "click a[data-action='new-tag']": 'showTagWidget'
     },
 
-    initialize: function() {
-      var self = this;
-
-      ticketer.EventEmitter.on('session:set', function() {
-        self.addUserOptions();
-      });
-    },
-
     render: function() {
       this.$el.html(Mustache.to_html(tmpl_Header));
+      this.addUserOptions();
 
       return this;
     },
@@ -65,8 +58,7 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
       ticketer.collections.openTickets.reset();
       ticketer.collections.users.reset();
 
-      // Emit a `tickets:fetch` event to load ticket data
-      ticketer.sockets.sock.emit('tickets:fetch');
+      ticketer.collections.openTickets.fetch({ data: { status: 'open' }});
       ticketer.collections.users.fetch();
     },
 
