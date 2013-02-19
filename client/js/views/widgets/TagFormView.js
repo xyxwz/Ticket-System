@@ -22,8 +22,20 @@ function($, _, Backbone, BaseView, mustache, tmpl_TagForm) {
     },
 
     initialize: function() {
-      this.bindTo(this.$el, 'click', function(e) { e.stopPropagation(); });
-      this.bindTo($('html'), 'click.tag-widget.data-api', this.dispose, this);
+      var self = this;
+
+      this.$el.on('click', function(e) {
+        e.stopPropagation();
+      });
+
+      $('html').on('click.tag-widget.data-api', function() {
+        self.dispose();
+      });
+    },
+
+    dispose: function() {
+      $('html').off('click.tag-widget.data-api');
+      return BaseView.prototype.dispose.call(this);
     },
 
     render: function() {

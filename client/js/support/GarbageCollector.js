@@ -49,7 +49,7 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
      * Bind handler `callback` to event `ev` on object
      * `item` and store the binding to unbinding on view disposal.
      *
-     * @param {Object} item
+     * @param {Backbone.Events} item
      * @param {String} ev
      * @param {Function} callback
      */

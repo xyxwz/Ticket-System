@@ -25,9 +25,21 @@ function($, _, Backbone, BaseView, mustache, tmpl_TagWidget, tmpl_Tag) {
     },
 
     initialize: function() {
-      $(this.el).attr('data-role', 'assign-tag');
-      this.bindTo(this.$el, 'click', function(e) { e.stopPropagation(); });
-      this.bindTo($('html'), 'click.tag-widget.data-api', this.hideTags, this);
+      var self = this;
+
+      this.$el.attr('data-role', 'assign-tag');
+      this.$el.on('click', function(e) {
+        e.stopPropagation();
+      });
+
+      $('html').on('click.tag-widget.data-api', function() {
+        self.hideTags();
+      });
+    },
+
+    dispose: function() {
+      $('html').off('click.tag-widget.data-api');
+      return BaseView.prototype.dispose.call(this);
     },
 
     render: function() {

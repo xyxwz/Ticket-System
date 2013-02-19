@@ -22,26 +22,29 @@ function($, _, Backbone, BaseView, TicketView) {
     },
 
     initialize: function() {
-      var self = this;
-
       this.status = this.options.status ? this.options.status : 'open';
       this.filter = this.options.filter || function() { return true; };
       this._filter = this.filter; // Original filter
       this.controller = this.options.controller || null;
 
-      // Bindings
-      this.bindTo(this.collection, 'add remove reset', this.render, this);
-      this.bindTo(this.collection, 'filter', function(fn) {
+      // The original filter and a filter function that is triggered with 'filter'
+      function setFilter(fn) {
+        var self = this;
+
         if(typeof fn === 'function') {
-          self.filter = function(ticket) {
+          this.filter = function(ticket) {
             return self._filter(ticket) && fn(ticket);
           };
         } else {
-          self.filter = self._filter;
+          this.filter = this._filter;
         }
 
-        self.render();
-      }, this);
+        this.render();
+      }
+
+      // Bindings
+      this.bindTo(this.collection, 'add remove reset', this.render, this);
+      this.bindTo(this.collection, 'filter', setFilter, this);
     },
 
     /**

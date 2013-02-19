@@ -116,12 +116,9 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
      */
 
     bindEvents: function(e) {
-      var element = this.$el.find('input');
-
-      this.bindTo(element, 'keyup', this.renderFilteredResults);
+      this.$el.find('input').on('keyup', this.renderFilteredResults.bind(this));
       this.$el.find('a').hide();
       this.$el.find('input').fadeIn(200).focus();
-
       e.preventDefault();
     },
 
