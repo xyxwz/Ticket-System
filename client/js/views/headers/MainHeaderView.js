@@ -63,12 +63,10 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
 
     refresh: function() {
       ticketer.collections.openTickets.reset();
-      ticketer.collections.closedTickets.reset();
       ticketer.collections.users.reset();
 
       // Emit a `tickets:fetch` event to load ticket data
       ticketer.sockets.sock.emit('tickets:fetch');
-      ticketer.collections.closedTickets.fetch({ data: { page: 1, status: 'closed' } });
       ticketer.collections.users.fetch();
     },
 

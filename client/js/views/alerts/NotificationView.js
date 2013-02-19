@@ -39,8 +39,7 @@ function($, _, Backbone, mustache, NotificationTmpl) {
      */
     commentNotification: function(message) {
       // Look up the ticket in the various collections
-      var ticket = ticketer.collections.openTickets.get(message.ticket) ||
-                   ticketer.collections.closedTickets.get(message.ticket);
+      var ticket = ticketer.collections.openTickets.get(message.ticket);
 
       // ticket exists
       if(ticket) {

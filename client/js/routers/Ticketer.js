@@ -14,7 +14,6 @@ function(Backbone, HeaderView, PanelController) {
       "": "index",
       "tickets/open": "openTickets",
       "tickets/closed": "closedTickets",
-      "tickets/closed?*params": "closedTickets",
       "tickets/mine": "myTickets"
     },
 
