@@ -7,10 +7,6 @@ function(_, Backbone, List) {
     model: List,
     url: '/api/lists',
 
-    initialize: function() {
-      _.bindAll(this);
-    },
-
     getListTickets: function(model) {
       var list = this.get(model.id);
 
