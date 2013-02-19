@@ -75,7 +75,6 @@ module.exports = function(app) {
 
       var emitObj = {body: clientObj};
       emitObj.ticket = ticket.id;
-      if(data.socket) emitObj.socket = data.socket;
       app.eventEmitter.emit('comment:update', emitObj);
 
       return cb(null, clientObj);
@@ -227,7 +226,6 @@ module.exports = function(app) {
 
           var emitObj = {body: obj};
           emitObj.ticket = ticket.id;
-          if(data.socket) emitObj.socket = data.socket;
           app.eventEmitter.emit('comment:new', emitObj);
 
           return cb(null, obj);

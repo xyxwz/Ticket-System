@@ -3,7 +3,6 @@ var express = require('express'),
     RedisStore = require('connect-redis')(express),
     url = require('url'),
     redis = require('redis'),
-    io = require('socket.io'),
     passport = require('passport'),
     Emitter = require('node-redis-events');
 
@@ -18,7 +17,6 @@ exports.boot = function(params){
   bootApplication(app);
   bootModels(app);
   bootControllers(app);
-  socketBindings(app);
   return app;
 };
 
@@ -79,21 +77,6 @@ function bootModels(app) {
 // Bootstrap controllers
 function bootControllers(app) {
   app.controllers = require('./controllers')(app);
-}
-
-// Include Socket.io Bindings
-function socketBindings(app) {
-  app.socket = io.listen(app);
-  app.socket.enable('browser client minification');
-  app.socket.enable('browser client etag');
-  app.socket.enable('browser client gzip');
-  app.socket.set('log level', 1);
-  app.socket.set('transports', [
-    'websocket',
-    'xhr-polling'
-  ]);
-
-  app.socketBindings = require('./sockets')(app);
 }
 
 // allow normal node loading if appropriate

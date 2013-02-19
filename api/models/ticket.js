@@ -84,9 +84,6 @@ module.exports = function(app) {
     if (data.title) model.title = data.title;
     if (data.description) model.description = data.description.replace(/<\/?script>/ig, '');
 
-    // If data came from client include socket id
-    if (data.socket) { this.socket = data.socket; }
-
     // Manage assigned users
     if (data.assigned_to) {
       // if someone is assigned set read status to true
@@ -257,7 +254,6 @@ module.exports = function(app) {
 
           //Build model to emit
           var obj = { body: ticket };
-          if(_this.socket) obj.socket = _this.socket;
 
           //If toClient was successful, push a notification and emit a ticket:update event
           Notifications.pushNotification(redis, userID, ticket.id, function(err) {
@@ -542,8 +538,6 @@ module.exports = function(app) {
 
           //Build model to emit
           var obj = { body: model };
-          // If data came from client include socket id
-          if (data.socket) { obj.socket = data.socket; }
 
           // Emit a 'ticket:new' event
           app.eventEmitter.emit('ticket:new', obj);
