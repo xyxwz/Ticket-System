@@ -77,7 +77,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
      */
     removeNotification: function() {
       this.unset('notification');
-      ticketer.EventEmitter.trigger('ticket:notification:remove', this.id);
+      // Make an API call here to remove notification
     },
 
     /* Validate the model to ensure that the title and body have content */
