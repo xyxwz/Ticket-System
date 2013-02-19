@@ -134,8 +134,10 @@ function($, Tickets, FillerView, SpinnerView,
   PanelController.prototype._setPanel = function(panel, View, options) {
     options = options || {};
 
-    if(this._panels[panel]) {
+    if(this._panels.hasOwnProperty(panel) &&
+        typeof this._panels[panel].dispose === 'function') {
       this._panels[panel].dispose();
+      delete this._panels[panel];
     }
 
     this._panels[panel] = new View(options);
