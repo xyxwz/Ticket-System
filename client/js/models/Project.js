@@ -4,8 +4,6 @@ define(['underscore', 'backbone'], function(_, Backbone) {
   Project = Backbone.Model.extend({
 
     initialize: function() {
-      _.bindAll(this);
-
       this.validate = this._validate;
 
       this.set({socket: ticketer.sockets.id}, {silent: true});

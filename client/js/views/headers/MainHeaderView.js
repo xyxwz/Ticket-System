@@ -29,7 +29,6 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
 
     initialize: function() {
       var self = this;
-      _.bindAll(this);
 
       ticketer.EventEmitter.on('session:set', function() {
         self.addUserOptions();

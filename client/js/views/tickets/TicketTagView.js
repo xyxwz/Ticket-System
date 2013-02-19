@@ -24,10 +24,8 @@ function($, _, Backbone, BaseView, mustache, TagWidget, tmpl_Tag) {
     },
 
     initialize: function() {
-      _.bindAll(this);
-
       // Remove tag on model `tag:remove`
-      this.bindTo(this.model, 'tag:add tag:remove', this.render);
+      this.bindTo(this.model, 'tag:add tag:remove', this.render, this);
     },
 
     render: function() {

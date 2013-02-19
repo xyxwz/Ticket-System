@@ -21,9 +21,7 @@ function($, _, Backbone, BaseView, Comments,
     className: "ticket-details",
 
     initialize: function() {
-      _.bindAll(this);
-
-      this.bindTo(this.model, 'remove', this.dispose);
+      this.bindTo(this.model, 'remove', this.dispose, this);
     },
 
     render: function() {

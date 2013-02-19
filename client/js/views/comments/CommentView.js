@@ -26,9 +26,7 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
     },
 
     initialize: function() {
-      _.bindAll(this);
-
-      this.bindTo(this.model, 'change', this.render);
+      this.bindTo(this.model, 'change', this.render, this);
       this.$el.attr('data-id', this.model.id);
     },
 

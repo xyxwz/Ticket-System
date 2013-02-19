@@ -17,10 +17,6 @@ function($, _, mustache, BaseView, TicketAssign, TagView) {
   var TicketMetaView = BaseView.extend({
     className: 'ticket-meta',
 
-    initialize: function() {
-      _.bindAll(this);
-    },
-
     render: function() {
       this.renderAssignView();
       this.renderTagWidget();

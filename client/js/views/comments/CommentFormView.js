@@ -20,10 +20,6 @@ function($, _, Backbone, BaseView, mustache, FormTmpl) {
       "focus textarea": "initResize"
     },
 
-    initialize: function() {
-      _.bindAll(this);
-    },
-
     render: function() {
       $(this.el).html(Mustache.to_html(FormTmpl, ticketer.currentUser));
       return this;

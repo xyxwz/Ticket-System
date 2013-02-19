@@ -25,11 +25,9 @@ function($, _, Backbone, BaseView, mustache, tmpl_TagWidget, tmpl_Tag) {
     },
 
     initialize: function() {
-      _.bindAll(this);
-
       $(this.el).attr('data-role', 'assign-tag');
       this.bindTo(this.$el, 'click', function(e) { e.stopPropagation(); });
-      this.bindTo($('html'), 'click.tag-widget.data-api', this.hideTags);
+      this.bindTo($('html'), 'click.tag-widget.data-api', this.hideTags, this);
     },
 
     render: function() {

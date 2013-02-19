@@ -7,10 +7,6 @@ function($, _, Backbone) {
       "click .close" : "close"
     },
 
-    initialize: function() {
-      _.bindAll(this);
-    },
-
     close: function(e) {
       if(e.type === 'click') e.preventDefault();
 

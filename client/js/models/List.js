@@ -4,8 +4,6 @@ define(['underscore', 'backbone'], function(_, Backbone) {
   List = Backbone.Model.extend({
 
     initialize: function() {
-      _.bindAll(this);
-
       this.validate = this._validate;
 
       this.on('error', function(model, err) {

@@ -26,9 +26,7 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
     },
 
     initialize: function() {
-      _.bindAll(this);
-
-      this.bindTo(this.collection, 'add remove reset', this.renderTags);
+      this.bindTo(this.collection, 'add remove reset', this.renderTags, this);
     },
 
     render: function() {

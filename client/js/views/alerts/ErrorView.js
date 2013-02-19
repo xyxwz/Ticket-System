@@ -6,9 +6,7 @@ function($, _, Backbone, BaseAlertView, mustache, ErrorTmpl) {
   var ErrorView = BaseAlertView.extend({
 
     initialize: function() {
-      _.bindAll(this);
-
-      ticketer.EventEmitter.on('error', this.render);
+      ticketer.EventEmitter.on('error', this.render, this);
     },
 
     render: function(msg) {

@@ -18,8 +18,6 @@ function($, _, BaseView, Spinner) {
     className: "spin-wrap",
 
     initialize: function() {
-      _.bindAll(this);
-
       this.opts = {
         lines: 11, // The number of lines to draw
         length: 7, // The length of each line

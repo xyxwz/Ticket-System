@@ -24,10 +24,8 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
     },
 
     initialize: function() {
-      _.bindAll(this);
-
       // Bindings
-      this.bindTo(this.model, 'change:assigned_to', this.render);
+      this.bindTo(this.model, 'change:assigned_to', this.render, this);
     },
 
     /**

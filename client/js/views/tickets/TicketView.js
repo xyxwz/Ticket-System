@@ -31,8 +31,6 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
     },
 
     initialize: function() {
-      _.bindAll(this);
-
       // Render all data for the ticket
       this.renderAll = this.options.renderAll || false;
 
@@ -43,16 +41,16 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       // Handles page refreshes where list may render before
       // the collection reset event
       if(!this.renderAll) {
-        this.bindTo(ticketer.collections.lists, 'reset', this.renderTags);
-        this.bindTo(this.model, 'tag:add tag:remove', this.renderTags);
+        this.bindTo(ticketer.collections.lists, 'reset', this.renderTags, this);
+        this.bindTo(this.model, 'tag:add tag:remove', this.renderTags, this);
       }
 
       // Bindings
-      this.bindTo(this.model, 'edit', this.renderEditForm);
-      this.bindTo(this.model, 'change:description', this.renderDescription);
-      this.bindTo(this.model, 'change:status', this.renderStatusNotification);
-      this.bindTo(this.model, 'change:assigned_to', this.renderStatusMarker);
-      this.bindTo(this.model, 'change:notification', this.renderStatusMarker);
+      this.bindTo(this.model, 'edit', this.renderEditForm, this);
+      this.bindTo(this.model, 'change:description', this.renderDescription, this);
+      this.bindTo(this.model, 'change:status', this.renderStatusNotification, this);
+      this.bindTo(this.model, 'change:assigned_to', this.renderStatusMarker, this);
+      this.bindTo(this.model, 'change:notification', this.renderStatusMarker, this);
     },
 
     render: function() {

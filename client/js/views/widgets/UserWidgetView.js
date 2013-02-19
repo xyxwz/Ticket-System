@@ -25,7 +25,6 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
     },
 
     initialize: function() {
-      _.bindAll(this);
       this.$el.attr('data-role', 'assign-user');
     },
 

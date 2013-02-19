@@ -14,13 +14,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       var self = this,
           currentUser = ticketer.currentUser;
 
-      _.bindAll(this);
       this.validate = this._validate;
-
-      // Set an attribute for the socket.id
-      ticketer.sockets.sock.on('connect', function() {
-        self.set({socket: ticketer.sockets.id}, {silent: true});
-      });
 
       this.set({socket: ticketer.sockets.id}, {silent: true});
 

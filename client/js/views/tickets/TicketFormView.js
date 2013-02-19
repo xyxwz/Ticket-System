@@ -25,10 +25,8 @@ function($, _, Backbone, BaseView, mustache, TicketModel, TicketForm, GuideTmpl)
     },
 
     initialize: function() {
-      _.bindAll(this);
-
       this.$el.attr('role', 'popup');
-      this.bindTo(this.collection, 'add', this.clearPopup);
+      this.bindTo(this.collection, 'add', this.clearPopup, this);
     },
 
     render: function() {

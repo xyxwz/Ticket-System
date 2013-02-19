@@ -16,10 +16,6 @@ function($, _, BaseView) {
   var FillerView = BaseView.extend({
     className: "view-filler",
 
-    initialize: function() {
-      _.bindAll(this);
-    },
-
     render: function() {
       this.$el.html("<p>Select an item to view it's details.</p>");
       return this;

@@ -54,14 +54,14 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
      * @param {Function} callback
      */
 
-    bindTo: function(item, ev, callback) {
+    bindTo: function(item, ev, callback, context) {
       this.bindings.push({
         item: item,
         ev: ev,
         callback: callback
       });
 
-      return item.on(ev, callback);
+      return item.on(ev, callback, context);
     },
 
     /**

@@ -21,10 +21,8 @@ function($, _, Backbone, BaseView, SpinnerView,
     className: 'comments-wrapper',
 
     initialize: function() {
-      _.bindAll(this);
-
-      this.bindTo(this.collection,'add', this.addComment);
-      this.bindTo(this.collection, 'remove', this.removeComment);
+      this.bindTo(this.collection,'add', this.addComment, this);
+      this.bindTo(this.collection, 'remove', this.removeComment, this);
     },
 
     render: function() {
@@ -37,7 +35,7 @@ function($, _, Backbone, BaseView, SpinnerView,
       this.$el.append(loading.render().el);
       this.collection.fetch(function() {
         self.$el.children('.comments-list').hide();
-        self.collection.each(self.addComment);
+        self.collection.each(self.addComment, self);
 
         loading.$el.fadeOut(400, function() {
           loading.dispose();

@@ -24,15 +24,13 @@ function($, _, Backbone, BaseView, TicketView) {
     initialize: function() {
       var self = this;
 
-      _.bindAll(this);
-
       this.status = this.options.status ? this.options.status : 'open';
       this.filter = this.options.filter || function() { return true; };
       this._filter = this.filter; // Original filter
       this.controller = this.options.controller || null;
 
       // Bindings
-      this.bindTo(this.collection, 'add remove reset', this.render);
+      this.bindTo(this.collection, 'add remove reset', this.render, this);
       this.bindTo(this.collection, 'filter', function(fn) {
         if(typeof fn === 'function') {
           self.filter = function(ticket) {
@@ -43,7 +41,7 @@ function($, _, Backbone, BaseView, TicketView) {
         }
 
         self.render();
-      });
+      }, this);
     },
 
     /**

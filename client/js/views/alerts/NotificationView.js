@@ -9,9 +9,8 @@ function($, _, Backbone, mustache, NotificationTmpl) {
     },
 
     initialize: function() {
-      _.bindAll(this);
-      ticketer.EventEmitter.on('comment:new', this.commentNotification);
-      ticketer.EventEmitter.on('ticket:update', this.closedNotification);
+      ticketer.EventEmitter.on('comment:new', this.commentNotification, this);
+      ticketer.EventEmitter.on('ticket:update', this.closedNotification, this);
     },
 
     render: function() {
