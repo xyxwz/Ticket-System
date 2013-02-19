@@ -126,7 +126,9 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
 
       self.model.save({comment: comment}, {
         silent: true,
-        success: self.renderEdit
+        success: function() {
+          self.renderEdit();
+        }
       });
 
       e.preventDefault();
