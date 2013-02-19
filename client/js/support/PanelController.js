@@ -5,12 +5,14 @@
 
 define([
   'jquery',
+  'collections/Tickets',
   'views/helpers/FillerView',
   'views/helpers/SpinnerView',
   'views/toolbars/MainToolbarView',
   'views/tickets/TicketListView',
   'views/tickets/TicketDetailsView'],
-function($, FillerView, SpinnerView, ToolbarView, ListView, DetailsView) {
+function($, Tickets, FillerView, SpinnerView,
+          ToolbarView, ListView, DetailsView) {
 
   var PanelController = function PanelController() {
     var self = this;
@@ -77,13 +79,20 @@ function($, FillerView, SpinnerView, ToolbarView, ListView, DetailsView) {
 
   PanelController.prototype.showClosedTickets = function() {
     var self = this;
+    var collection = new Tickets(null, {
+      comparator: function(collection) {
+        var datum = new Date(collection.get('closed_at'));
+        var closed_at = datum.getTime();
+        return -closed_at;
+      }
+    });
 
     this._callViewFunction('one', 'selectTab', 'tickets/closed');
     this._setPanel('two', SpinnerView);
 
-    ticketer.collections.closedTickets.fetch({
+    collection.fetch({
       data: { status: 'closed' },
-      success: function(collection, res, options) {
+      success: function() {
         self._setPanel('two', ListView, {
           collection: collection,
           status: 'closed',

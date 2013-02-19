@@ -7,9 +7,10 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
     model: Ticket,
     url: '/api/tickets',
 
-    initialize: function() {
+    initialize: function(models, options) {
+      options = options || {};
 
-      this.comparator = function(model) {
+      this.comparator = options.comparator || function(model) {
         var date = new Date(model.get("opened_at"));
         return -date.getTime();
       };

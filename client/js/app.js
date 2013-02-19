@@ -79,7 +79,6 @@ define([
      */
     ticketer.collections = {
       openTickets: new Tickets(),
-      closedTickets: new Tickets(),
       users: new Users(),
       projects: new Projects(),
       lists: new Lists()
@@ -110,15 +109,6 @@ define([
 
     // Override Backbone Sync
     new Sync();
-
-    /**
-     * Override the closedTicket collection's comparator
-     */
-    ticketer.collections.closedTickets.comparator = function(collection) {
-      var datum = new Date(collection.get('closed_at'));
-      var closed_at = datum.getTime();
-      return -closed_at;
-    };
 
     /**
      * Using Socket Authentication get the server-side

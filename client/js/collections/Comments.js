@@ -15,6 +15,8 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
     model: Comment,
 
     initialize: function(models, options) {
+      options = options || {};
+
       // Set url for this comment collection
       this.url = '/api/tickets/' + options.ticketId + '/comments';
 
