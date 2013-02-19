@@ -17,10 +17,10 @@ define([
   'routers/Ticketer',
   'views/alerts/ErrorView',
   'views/alerts/NotificationView',
-  'SocketEvents',
+  'EventSource',
+  'ServerEvents',
   'AppCache',
-  'Sync',
-  'socket.io'
+  'Sync'
 ], function(
   _,
   Backbone,
@@ -33,7 +33,8 @@ define([
   Ticketer,
   ErrorView,
   NotificationView,
-  SocketEvents,
+  EventSource,
+  ServerEvents,
   AppCache,
   Sync
 ) {
@@ -87,10 +88,6 @@ define([
       ticketer: new Ticketer()
     };
 
-    ticketer.sockets = {
-      sock: io.connect()
-    };
-
     /**
      * Create new instances of alert views and start event bindings
      */
@@ -102,50 +99,29 @@ define([
     };
 
     /**
-     * Initialize Socket Event Handlers
+     * Initialize an EventSource listener
      */
-    new SocketEvents();
+    ticketer.SSE = new EventSource('/events', { withCredentials: true });
+    new ServerEvents();
 
     // Override Backbone Sync
     new Sync();
 
-    /**
-     * Using Socket Authentication get the server-side
-     * session info from the socket and set the currentUser
-     * attribute. Bootstrap models over the socket by sending
-     * a 'tickets:fetch' event.
-     */
-    ticketer.sockets.sock.on('session:info', function(message) {
-      if(!message.user) {
-        self.location.href = '/login';
-      }
+    // Fetch projects and lists
+    ticketer.collections.lists.fetch();
 
-      ticketer.currentUser = message.user;
-      ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;
+    // Fetch Users
+    ticketer.collections.users.fetch();
 
-      ticketer.EventEmitter.trigger('session:set');
-
-      // Reset the users collection
-      ticketer.collections.users.reset(message.users);
-
-      // Fetch projects and lists
-      ticketer.collections.lists.fetch();
-
-      // Emit a `tickets:fetch` event to load ticket data
-      ticketer.sockets.sock.emit('tickets:fetch');
-
-      // Set Default User Avatar
-      if (!ticketer.currentUser.avatar) ticketer.currentUser.avatar = "/img/avatars/65x65.gif";
-
-      // Start Backbone History
-      try {
-        Backbone.history.start();
-      } catch (x) {}
+    // Fetch open tickets
+    ticketer.collection.openTickets.fetch({
+      status: 'open'
     });
 
-    ticketer.sockets.sock.on('error', function() {
-      self.location.href = '/login';
-    });
+    // Start Backbone History
+    try {
+      Backbone.history.start();
+    } catch (x) {}
 
     /**
      * Bind `ESCAPE` to remove all dialogs

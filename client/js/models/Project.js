@@ -6,8 +6,6 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     initialize: function() {
       this.validate = this._validate;
 
-      this.set({socket: ticketer.sockets.id}, {silent: true});
-
       this.on('error', function(model, err) {
         ticketer.EventEmitter.trigger('error', err);
       });

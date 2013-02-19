@@ -10,12 +10,12 @@ require.config( {
     'dropdowns':        'libs/plugins/bootstrap.dropdowns',
     'autoresize':       'libs/plugins/jquery.autoresize',
     'spin':             'libs/spin',
+    'EventSource':      'libs/eventsource',
     'Sync':             'support/Sync',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
-    'SocketEvents':     'support/SocketEvents',
-    'AppCache':         'support/AppCache',
-    'socket.io':        '/socket.io/socket.io'
+    'ServerEvents':     'support/ServerEvents',
+    'AppCache':         'support/AppCache'
   }
 });
 

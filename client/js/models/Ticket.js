@@ -16,8 +16,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
 
       this.validate = this._validate;
 
-      this.set({socket: ticketer.sockets.id}, {silent: true});
-
       /**
        * Set participating status on `open` tickets when a `assignedUser` of
        * `unassignedUser` event is triggered
@@ -33,6 +31,10 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
           var assigned = _.include(self.get('assigned_to'), currentUser.id);
           if(!assigned) self.set('participating', false);
         });
+      }
+
+      if(self.get('user')) {
+	if(self.get('user').id === currentUser.id) self.set('participating', true);
       }
 
       this.on('sync', function() {

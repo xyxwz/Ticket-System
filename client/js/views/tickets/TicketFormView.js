@@ -53,8 +53,7 @@ function($, _, Backbone, BaseView, mustache, TicketModel, TicketForm, GuideTmpl)
 
       ticket = new TicketModel({
         title: title,
-        description: description,
-        socket: ticketer.sockets.id
+	description: description
       });
 
       ticket.save({}, {wait: true});

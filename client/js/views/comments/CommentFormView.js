@@ -58,8 +58,7 @@ function($, _, Backbone, BaseView, mustache, FormTmpl) {
       var element = this.$el.find('textarea');
 
       this.collection.create({
-        comment: element.val(),
-        socket: ticketer.sockets.id
+	comment: element.val()
       }, {
         wait: true
       });

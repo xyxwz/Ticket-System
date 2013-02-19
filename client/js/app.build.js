@@ -16,9 +16,8 @@
     'Sync':             'support/Sync',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
-    'SocketEvents':     'support/SocketEvents',
-    'AppCache':         'support/AppCache',
-    'socket.io':        'empty:'
+    'ServerEvents':     'support/ServerEvents',
+    'AppCache':         'support/AppCache'
   },
   optimize: "uglify",
   findNestedDependencies: true,

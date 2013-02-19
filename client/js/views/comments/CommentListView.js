@@ -78,8 +78,8 @@ function($, _, Backbone, BaseView, SpinnerView,
     },
 
     removeComment: function(comment) {
-      var id = comment.id;
-      $('#' + id, this.el).remove();
+      var id = comment.get('id');
+      $('[data-id=' + id + ']', this.el).remove();
     }
 
   });

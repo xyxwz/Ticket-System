@@ -59,7 +59,10 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
      */
 
     addComment: function(attrs) {
-      var obj = _.clone(attrs);
+      var obj = _.clone(attrs),
+	  model = this.get(obj.id);
+
+      if(model) return false;
 
       if(obj.ticket === options.ticketId) {
         delete obj.ticket;
@@ -89,8 +92,8 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
      * @param {String} id
      */
 
-    removeComment: function(id) {
-      var model = this.get(id);
+    removeComment: function(attrs) {
+      var model = this.get(attrs.comment);
 
       if(model) {
         this.remove(model);
