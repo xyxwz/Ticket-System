@@ -128,10 +128,12 @@ describe('list', function(){
       before(function(done) {
         attrs = {
           name: 'List creation',
-          user: fixtures.users[0].id
+          user: fixtures.users[0].id,
+          color: 0
         };
 
         List.create(attrs, function(err, model) {
+          errors = err;
           list = model;
           return done();
         });
@@ -140,7 +142,7 @@ describe('list', function(){
       it('with no errors', function() {
         should.not.exist(errors);
         should.exist(list);
-        list.should.have.keys('id', 'name', 'tickets', 'user', 'created');
+        list.should.have.keys('id', 'name', 'color', 'tickets', 'user', 'created');
       });
 
       it('with correct name', function() {
@@ -158,13 +160,15 @@ describe('list', function(){
       before(function(done) {
         List.create({
           name: 'Find my lists test',
-          user: fixtures.users[1].id
+          user: fixtures.users[1].id,
+          color: 0
         }, function(err, model) {
           if(err) return done(err);
 
           List.create({
             name: 'Find my lists test',
-            user: fixtures.users[1].id
+            user: fixtures.users[1].id,
+            color: 0
           }, function(err, model) {
             if(err) return done(err);
 
@@ -218,7 +222,7 @@ describe('list', function(){
         var i, len;
 
         for(i = 0, len = lists.length; i < len; i++) {
-          lists[i].should.have.keys('user', 'name', 'id', 'tickets', 'created');
+          lists[i].should.have.keys('user', 'name', 'id', 'color', 'tickets', 'created');
         }
       });
     });
@@ -243,7 +247,7 @@ describe('list', function(){
       });
 
       it('and be a valid list', function() {
-        list.should.have.keys('user', 'name', 'id', 'tickets', 'created');
+        list.should.have.keys('user', 'name', 'id', 'color', 'tickets', 'created');
       });
     });
 
@@ -279,12 +283,13 @@ describe('list', function(){
     it('should fire on create', function(done) {
       var attrs = {
         name: 'Create event test',
-        user: fixtures.users[1].id
+        user: fixtures.users[1].id,
+        color: 0
       };
 
       server.eventEmitter.once('list:new', function(model) {
         should.exist(model);
-        model.should.have.keys('id', 'name', 'tickets', 'user', 'created');
+        model.should.have.keys('id', 'name', 'tickets', 'color', 'user', 'created');
         return done();
       });
 

@@ -269,7 +269,8 @@ function addLists(cb) {
 function addList(user, i, callback) {
   var list = new schemas.List({
     name: 'Test List ' + i,
-    user: user.id
+    user: user.id,
+    color: 0
   });
 
   list.save(function(err, model) {

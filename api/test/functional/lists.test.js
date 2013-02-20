@@ -58,7 +58,7 @@ describe('lists controller', function() {
 
     it('should return my lists', function() {
       res.body.forEach(function(list) {
-        list.should.have.keys('user', 'id', 'created', 'tickets', 'name');
+        list.should.have.keys('user', 'id', 'created', 'color', 'tickets', 'name');
         list.user.should.equal(fixtures.users[0].id);
       });
     });
@@ -113,7 +113,8 @@ describe('lists controller', function() {
     before(function(done) {
       attrs = {
         'name': 'New list',
-        'user': fixtures.users[0].id
+        'user': fixtures.users[0].id,
+        'color': 0
       };
 
       request.post('http://127.0.0.1:3000/api/lists')
@@ -132,7 +133,7 @@ describe('lists controller', function() {
     });
 
     it('should return valid list', function() {
-      res.body.should.have.keys('user', 'id', 'name', 'created', 'tickets');
+      res.body.should.have.keys('user', 'id', 'name', 'color', 'created', 'tickets');
     });
 
     it('should have the same attributes', function() {
@@ -154,7 +155,8 @@ describe('lists controller', function() {
     before(function(done) {
       attrs = {
         name: 'Updated test list',
-        tickets: [ fixtures.tickets[0].id ]
+        tickets: [ fixtures.tickets[0].id ],
+        color: 0
       };
 
       request.put('http://127.0.0.1:3000/api/lists/' + fixtures.lists[0].id)
@@ -169,7 +171,7 @@ describe('lists controller', function() {
     });
 
     it('should return a list object', function() {
-      res.body.should.have.keys('name', 'id', 'user', 'tickets', 'created');
+      res.body.should.have.keys('name', 'id', 'user', 'color', 'tickets', 'created');
     });
 
     it('should return a 200 status code', function() {
