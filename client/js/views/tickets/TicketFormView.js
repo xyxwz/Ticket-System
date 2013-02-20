@@ -26,6 +26,7 @@ function($, _, Backbone, BaseView, mustache, TicketModel, MarkdownGuide, TicketF
     initialize: function() {
       this.$el.attr('role', 'popup');
       this.bindTo(this.collection, 'add', this.clearPopup, this);
+      $('body').on('keyup', $.proxy(this.escape, this));
     },
 
     render: function() {
@@ -40,7 +41,17 @@ function($, _, Backbone, BaseView, mustache, TicketModel, MarkdownGuide, TicketF
       return this;
     },
 
+    // Handle Escape key to close dialog
+    escape: function(e) {
+      var self = this;
+      e.preventDefault();
+
+      if(e.which == 27)
+        self.clearPopup(e);
+    },
+
     clearPopup: function() {
+      $('body').off('keyup', this.escape);
       this.dispose();
     },
 
@@ -51,8 +62,8 @@ function($, _, Backbone, BaseView, mustache, TicketModel, MarkdownGuide, TicketF
           ticket;
 
       ticket = new TicketModel({
-	title: title,
-	description: description
+        title: title,
+        description: description
       });
 
       ticket.save({}, {wait: true});

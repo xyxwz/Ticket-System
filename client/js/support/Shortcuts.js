@@ -10,10 +10,15 @@ define(['jquery', 'underscore', 'backbone', 'Mousetrap', 'mustache',
 
     // Key Bindings
     Mousetrap.bind('m', showMarkdownGuide);
+    Mousetrap.bind('c', showTicketForm);
 
     // Bind Functions
     function showMarkdownGuide(e) {
       new MarkdownGuide();
+    }
+
+    function showTicketForm(e) {
+      ticketer.EventEmitter.trigger('popup:TicketForm');
     }
 
   }

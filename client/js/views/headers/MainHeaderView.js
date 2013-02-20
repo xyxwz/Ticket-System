@@ -27,6 +27,10 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
       "click a[data-action='new-tag']": 'showTagWidget'
     },
 
+    initialize: function() {
+      this.bindTo(ticketer.EventEmitter, 'popup:TicketForm', this.createTicket, this);
+    },
+
     render: function() {
       this.$el.html(Mustache.to_html(tmpl_Header));
       this.addUserOptions();
