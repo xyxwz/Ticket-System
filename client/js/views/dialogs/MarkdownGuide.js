@@ -17,6 +17,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_MarkdownGuide) {
       this.render();
 
       $('body').on('keyup', $.proxy(this.escape, this));
+      $('body').on('click', $.proxy(this.clickOutside, this));
     },
 
     render: function() {
@@ -27,6 +28,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_MarkdownGuide) {
       this.$el.animate({ 'top': '18%' });
     },
 
+    // Handle Escape key to close dialog
     escape: function(e) {
       var self = this;
       e.preventDefault();
@@ -35,6 +37,13 @@ function($, _, Backbone, BaseView, mustache, tmpl_MarkdownGuide) {
         $('body').off('keyup', this.escape);
         self.destroy(e);
       }
+    },
+
+    // Handle Click Outside to close dialog
+    clickOutside: function(e) {
+      if ($(e.target).parents('.dialog').length > 0) return;
+      $('body').off('click', this.clickOutside);
+      this.destroy(e);
     },
 
     destroy: function(e) {
