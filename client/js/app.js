@@ -19,6 +19,7 @@ define([
   'views/alerts/NotificationView',
   'EventSource',
   'ServerEvents',
+  'Shortcuts',
   'AppCache',
   'Sync'
 ], function(
@@ -35,6 +36,7 @@ define([
   NotificationView,
   EventSource,
   ServerEvents,
+  Shortcuts,
   AppCache,
   Sync
 ) {
@@ -123,15 +125,8 @@ define([
       Backbone.history.start();
     } catch (x) {}
 
-    /**
-     * Bind `ESCAPE` to remove all dialogs
-     */
-
-    $('body').keyup(function(e) {
-      if(e.keyCode === 27) {
-        $('body .dialog').remove();
-      }
-    });
+    // Bind Keyboard Shortcuts
+    new Shortcuts();
 
     /* Check for Desktop Notification Support
      * and permissions. If supported and no permissions

@@ -13,6 +13,8 @@
     'dropdowns':        'libs/plugins/bootstrap.dropdowns',
     'autoresize':       'libs/plugins/jquery.autoresize',
     'spin':             'libs/spin',
+    'Mousetrap':        'libs/mousetrap',
+    'Shortcuts':        'support/Shortcuts',
     'Sync':             'support/Sync',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
