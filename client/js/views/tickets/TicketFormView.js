@@ -4,10 +4,10 @@
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
   'models/Ticket',
+  'views/dialogs/MarkdownGuide',
   'text!templates/tickets/TicketForm.html',
-  'text!templates/tickets/MarkdownGuide.html',
   'autoresize'],
-function($, _, Backbone, BaseView, mustache, TicketModel, TicketForm, GuideTmpl) {
+function($, _, Backbone, BaseView, mustache, TicketModel, MarkdownGuide, TicketForm) {
 
   /**
    * New Ticket Form
@@ -20,8 +20,7 @@ function($, _, Backbone, BaseView, mustache, TicketModel, TicketForm, GuideTmpl)
     events: {
       "click [data-action='create']": "createTicket",
       "click [data-action='cancel']": "clearPopup",
-      "click [data-role='display-guide']": "displayHelp",
-      "click .dialog .close": "removeHelp"
+      "click [data-role='display-guide']": "displayHelp"
     },
 
     initialize: function() {
@@ -52,8 +51,8 @@ function($, _, Backbone, BaseView, mustache, TicketModel, TicketForm, GuideTmpl)
           ticket;
 
       ticket = new TicketModel({
-        title: title,
-        description: description
+	title: title,
+	description: description
       });
 
       ticket.save({}, {wait: true});
@@ -67,19 +66,7 @@ function($, _, Backbone, BaseView, mustache, TicketModel, TicketForm, GuideTmpl)
 
     displayHelp: function(e) {
       e.preventDefault();
-      if(this.$el.find('.dialog').length) return;
-
-      //Render help frame
-      this.$el.append(Mustache.to_html(GuideTmpl));
-      $('.dialog').animate({ 'top': '18%' });
-    },
-
-    removeHelp: function(e) {
-      e.preventDefault();
-
-      this.$el.find('.dialog').fadeOut(200, function() {
-        $(this).remove();
-      });
+      new MarkdownGuide();
     }
 
   });
