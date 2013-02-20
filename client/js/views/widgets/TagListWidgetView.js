@@ -51,7 +51,7 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
         });
       }
       else {
-        html.push('<li>You have no tags</li>');
+	html.push('<li class="empty">You have no tags</li>');
       }
 
       this.$el.find('.group').html(html.join(''));

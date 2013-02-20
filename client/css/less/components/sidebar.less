@@ -126,6 +126,7 @@
         color: darken(@darkGray, 10%);
         border-radius: 2px;
         background: @sidebarText;
+	font-family: @sans-serif;
 
         &:focus {
           outline: none;
@@ -135,13 +136,21 @@
 
     li {
       cursor: pointer;
-      padding: 4px 12px;
+      padding: 4px 20px;
       font-weight: 400;
       text-shadow: 0 1px 1px rgba(41, 29, 36, 0.8);
       .box-sizing(border-box);
 
       &.active {
         color: @white;
+      }
+
+      &.empty {
+	cursor: auto;
+      }
+
+      i {
+	margin-left: -2px;
       }
 
       span {
