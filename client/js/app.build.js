@@ -5,7 +5,7 @@
   paths: {
     'jquery':           'empty:',
     'backbone':         'libs/AMDbackbone-0.9.0',
-    'underscore':       'libs/underscore',
+    'underscore':       'libs/lodash',
     'text':             'libs/require/text',
     'mustache':         'libs/mustache',
     'marked':           'libs/marked',
