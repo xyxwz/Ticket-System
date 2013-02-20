@@ -13,7 +13,8 @@ module.exports = function(app) {
           id: req.session.passport.user._id,
           name: req.session.passport.user.name,
           access_token: req.session.passport.user.access_token,
-          role: req.session.passport.user.role
+          role: req.session.passport.user.role,
+          avatar: req.session.passport.user.avatar
         }
       });
     }
