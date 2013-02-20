@@ -57,9 +57,7 @@ function($, _, Backbone, BaseView, mustache, FormTmpl) {
     create: function() {
       var element = this.$el.find('textarea');
 
-      this.collection.create({
-	comment: element.val()
-      }, {
+      this.collection.create({comment: element.val()}, {
         wait: true
       });
 

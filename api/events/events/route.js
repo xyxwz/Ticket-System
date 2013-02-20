@@ -45,10 +45,10 @@ module.exports = function(app) {
       var _i, _len;
 
       for(_i = 0, _len = app.sockets.length; _i < _len; _i++) {
-	if(app.sockets[_i].id === id) {
-	  app.sockets.splice(_i,1);
-	  break;
-	}
+        if(app.sockets[_i].id === id) {
+          app.sockets.splice(_i,1);
+          break;
+        }
       }
     });
   });
