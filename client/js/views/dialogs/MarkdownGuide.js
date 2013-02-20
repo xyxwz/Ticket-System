@@ -32,8 +32,8 @@ function($, _, Backbone, BaseView, mustache, tmpl_MarkdownGuide) {
       e.preventDefault();
 
       if(e.which == 27) {
-	$('body').off('keyup', this.escape);
-	self.destroy(e);
+        $('body').off('keyup', this.escape);
+        self.destroy(e);
       }
     },
 
@@ -42,7 +42,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_MarkdownGuide) {
       e.preventDefault();
 
       this.$el.fadeOut(200, function() {
-	self.dispose();
+        self.dispose();
       });
     }
 
