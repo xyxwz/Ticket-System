@@ -45,7 +45,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
         ticketer.EventEmitter.trigger('error', err);
       });
 
-      // When a ticket is closed move it to the closed tickets collection
+      // When a ticket is closed remove it from the collection
       this.on("change:status", function(model, status) {
         if(status === 'closed' && typeof model.collection !== 'undefined') {
           model.collection.remove(model.id);
