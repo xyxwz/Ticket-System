@@ -33,22 +33,23 @@ function($, _, Backbone, BaseView, mustache, tmpl_MarkdownGuide) {
       var self = this;
       e.preventDefault();
 
-      if(e.which == 27) {
-        $('body').off('keyup', this.escape);
+      if(e.which == 27)
         self.destroy(e);
-      }
     },
 
     // Handle Click Outside to close dialog
     clickOutside: function(e) {
       if ($(e.target).parents('.dialog').length > 0) return;
-      $('body').off('click', this.clickOutside);
       this.destroy(e);
     },
 
     destroy: function(e) {
       var self = this;
       e.preventDefault();
+
+      // Remove Event Listeners
+      $('body').off('keyup', this.escape);
+      $('body').off('click', this.clickOutside);
 
       this.$el.fadeOut(200, function() {
         self.dispose();
