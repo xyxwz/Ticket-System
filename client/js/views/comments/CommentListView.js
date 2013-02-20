@@ -73,7 +73,7 @@ function($, _, Backbone, BaseView, SpinnerView,
       // a nice fadeIn transition
       var html = view.render().el;
       $(html).hide();
-      $('[role=comment-list]', this.$el).prepend(html);
+      $('[role=comment-list]', this.$el).append(html);
       $(html).fadeIn(200);
     },
 
