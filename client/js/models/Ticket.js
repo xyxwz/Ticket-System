@@ -14,23 +14,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       var self = this,
           currentUser = ticketer.currentUser;
 
-      /**
-       * Set participating status on `open` tickets when a `assignedUser` of
-       * `unassignedUser` event is triggered
-       */
-
-      if(this.get('status') === 'open') {
-        this.on('assignedUser', function() {
-          var assigned = _.include(self.get('assigned_to'), currentUser.id);
-          if(assigned) self.set('participating', true);
-        });
-
-        this.on('unassignedUser', function() {
-          var assigned = _.include(self.get('assigned_to'), currentUser.id);
-          if(!assigned) self.set('participating', false);
-        });
-      }
-
       if(self.get('user')) {
         if(self.get('user').id === currentUser.id) self.set('participating', true);
       }
@@ -116,8 +99,8 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     assignUser: function(id, callback) {
       var array = _.clone(this.get('assigned_to'));
       array.push(id);
-      this.set({assigned_to: _.uniq(array)}, {silent: true});
-      this.trigger('assignedUser', this);
+      this.set({assigned_to: _.uniq(array)});
+      this.setParticipatingStatus();
       this.save(null, { error: callback });
     },
 
@@ -130,9 +113,21 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       var newArray = _.reject(array, function(user) {
         return user === id;
       });
-      this.set({assigned_to: _.uniq(newArray)}, {silent: true});
-      this.trigger('unassignedUser', this);
+
+      this.set({assigned_to: _.uniq(newArray)});
+      this.setParticipatingStatus();
       this.save(null, { error: callback });
+    },
+
+    /**
+     * If the user is assigned to a ticket, they are considered participating.
+     */
+
+    setParticipatingStatus: function() {
+      var user = ticketer.currentUser.id;
+
+      var assigned = _.include(this.get('assigned_to'), user);
+      this.set({participating: assigned });
     },
 
     /* If the ticket is closed take the difference of the created time,

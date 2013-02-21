@@ -148,20 +148,6 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
       e.preventDefault();
       e.stopPropagation();
       this.model.assignUser(id);
-    },
-
-    /**
-     * Unassigns the clicked user list item from `this.model`
-     *
-     * @param {jQuery.Event} e
-     */
-
-    unassignUser: function(e) {
-      var id = $(e.currentTarget).parent().data('id');
-
-      e.preventDefault();
-      e.stopPropagation();
-      this.model.unassignUser(id);
     }
   });
 
