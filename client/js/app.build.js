@@ -1,10 +1,10 @@
 {
   "baseUrl": "./",
   "name": "libs/almond",
-  "include": ["main"],
+  "include": ["jquery", "main"],
   "out": "./release/bundle.js",
   "paths": {
-    "jquery":           "empty:",
+    "jquery":           "libs/jquery",
     "backbone":         "libs/backbone-0.9.10",
     "underscore":       "libs/lodash",
     "text":             "libs/require/text",
@@ -25,5 +25,6 @@
   },
   "optimize": "uglify",
   "preserveLicenseComments": false,
-  "findNestedDependencies": true
+  "findNestedDependencies": true,
+  "wrap": true
 }
