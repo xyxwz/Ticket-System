@@ -14,8 +14,14 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
    */
 
   var CommentView = BaseView.extend({
-    className: 'comment',
     tagName: 'li',
+    className: 'comment',
+
+    attributes: function() {
+      return {
+        'data-id': this.model.id
+      };
+    },
 
     events: {
       "click [data-action='delete']": "removeComment",
@@ -26,7 +32,6 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
     },
 
     initialize: function() {
-      this.$el.attr('data-id', this.model.id);
       this.bindTo(this.model, 'change', this.render, this);
     },
 

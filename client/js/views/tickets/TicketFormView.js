@@ -17,6 +17,8 @@ function($, _, Backbone, BaseView, mustache, TicketModel, MarkdownGuide, TicketF
 
   var TicketFormView = BaseView.extend({
     className: 'ticket-form',
+    attributes: {'role': 'popup'},
+
     events: {
       "click [data-action='create']": "createTicket",
       "click [data-action='cancel']": "clearPopup",

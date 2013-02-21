@@ -14,8 +14,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       var self = this,
           currentUser = ticketer.currentUser;
 
-      this.validate = this._validate;
-
       /**
        * Set participating status on `open` tickets when a `assignedUser` of
        * `unassignedUser` event is triggered
@@ -81,7 +79,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     },
 
     /* Validate the model to ensure that the title and body have content */
-    _validate: function(attrs) {
+    validate: function(attrs) {
       if(typeof(attrs.title) !== 'undefined' && !attrs.title.replace(/ /g, '').length) {
         return "You must enter a ticket title.";
       }

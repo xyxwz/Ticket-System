@@ -8,8 +8,6 @@ function(_, Backbone, Project) {
     url: '/api/projects',
 
     initialize: function() {
-      _.bindAll(this);
-
       ticketer.EventEmitter.on('project:new', this.addProject);
       ticketer.EventEmitter.on('project:update', this.updateProject);
       ticketer.EventEmitter.on('project:remove', this.removeProject);

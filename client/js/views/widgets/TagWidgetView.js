@@ -18,6 +18,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_TagWidget, tmpl_Tag) {
   var TagWidgetView = BaseView.extend({
     tagName: 'li',
     className: 'widget tag-widget',
+    attributes: {'data-role': 'assign-tag'},
 
     events: {
       "click [data-action='display']": "renderTags",
@@ -27,7 +28,6 @@ function($, _, Backbone, BaseView, mustache, tmpl_TagWidget, tmpl_Tag) {
     initialize: function() {
       var self = this;
 
-      this.$el.attr('data-role', 'assign-tag');
       this.$el.on('click', function(e) {
         e.stopPropagation();
       });

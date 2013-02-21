@@ -23,6 +23,12 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
   var TicketView = BaseView.extend({
     className: 'ticket',
 
+    attributes: function() {
+      return {
+        'data-id': this.model.id
+      };
+    },
+
     events: {
       "click a[data-action]": "ticketAction",
       "click [data-action='save']": "saveTicket",
@@ -33,9 +39,6 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
     initialize: function() {
       // Render all data for the ticket
       this.renderAll = this.options.renderAll || false;
-
-      // Set the data-id attribute on this.el
-      $(this.el).attr('data-id', this.model.id);
 
       // Bind to List Collection Reset
       // Handles page refreshes where list may render before
