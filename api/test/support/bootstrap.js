@@ -8,7 +8,7 @@ process.env.NODE_ENV = "test";
 
 
 function createServer(){
-  var app = express.createServer(),
+  var app = express(),
       lib = require('../../lib')(app);
 
   // Load DB Connection
@@ -34,7 +34,8 @@ function createServer(){
   app.models = require('../../models')(app);
   app.controllers = require('../../controllers')(app);
 
-  return app.listen(3000);
+  app.listen(3000);
+  return app;
 }
 
 function getApp() {

@@ -362,6 +362,7 @@ describe('tickets', function(){
       url = "http://127.0.0.1:3000/api/tickets/"+fixtures.tickets[0].id;
       request
       .del(url)
+      .send({})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)

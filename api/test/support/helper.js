@@ -160,7 +160,7 @@ function addOpenTicket(user, i, cb) {
     schemas.Ticket
     .findOne({ _id: model._id })
     .populate('user')
-    .run(function(err, model){
+    .exec(function(err, model){
       if(err) return cb(err);
       return cb(null, model);
     });
@@ -181,7 +181,7 @@ function addClosedTicket(user, i, cb) {
     schemas.Ticket
     .findOne({ _id: model._id })
     .populate('user')
-    .run(function(err, model){
+    .exec(function(err, model){
       if(err) return cb(err);
       return cb(null, model);
     });

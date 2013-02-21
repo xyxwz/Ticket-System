@@ -82,7 +82,7 @@ module.exports = function(app) {
   User.all = function all(cb) {
     var array, obj;
 
-    UserSchema.find().run(function(err, models) {
+    UserSchema.find().exec(function(err, models) {
       if(err) {
         return cb("Error finding users");
       }
@@ -115,7 +115,7 @@ module.exports = function(app) {
   User.find = function find(id, cb){
     UserSchema
     .findOne({'_id':id})
-    .run(function(err, model){
+    .exec(function(err, model){
       if(err || !model) {
         return cb("User not found");
       }
@@ -185,7 +185,7 @@ module.exports = function(app) {
 
     UserSchema
     .findOne({ 'username': profile.username })
-    .run(function(err, model) {
+    .exec(function(err, model) {
       if(err) return cb(err);
 
       if(!model) {
@@ -229,7 +229,7 @@ module.exports = function(app) {
 
     UserSchema
     .where('role', 'admin')
-    .run(function(err, models) {
+    .exec(function(err, models) {
       if(err) return cb('error getting admins');
 
       users = models.map(function(user) {

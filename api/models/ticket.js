@@ -327,10 +327,10 @@ module.exports = function(app) {
     if(args.status) {
       query = TicketSchema.find({'status': args.status});
       if (args.status === 'open') {
-        query.asc('opened_at');
+        query.sort('opened_at');
       }
       else {
-        query.desc('closed_at');
+        query.sort('-closed_at');
       }
     }
     else {
@@ -344,7 +344,7 @@ module.exports = function(app) {
 
     query
     .populate('user')
-    .run(function(err, models){
+    .exec(function(err, models){
       if(err) {
         return cb("Error finding tickets");
       }
@@ -402,17 +402,17 @@ module.exports = function(app) {
       .where('status', status);
 
       if(status === 'open') {
-        query.asc('opened_at');
+        query.sort('opened_at');
       }
       else {
-        query.desc('closed_at');
+        query.sort('-closed_at');
       }
 
       query
       .populate('user')
       .skip((page - 1) * 10)
       .limit(10)
-      .run(function(err, models) {
+      .exec(function(err, models) {
         if(err) {
           return cb("Error finding tickets");
         }
@@ -461,7 +461,7 @@ module.exports = function(app) {
     TicketSchema
     .findOne({'_id':id})
     .populate('user')
-    .run(function(err, model) {
+    .exec(function(err, model) {
       if(err || !model){
         return cb("Error finding ticket");
       }

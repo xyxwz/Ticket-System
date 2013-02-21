@@ -13,7 +13,7 @@ module.exports = function(route) {
   route.param('userID', function(id, key, models, cb){
     schemas.User
     .findOne({'_id':id})
-    .run(function(err, model) {
+    .exec(function(err, model) {
       if(err || !model) return cb(err);
       cb(null, key, model);
     });
@@ -25,7 +25,7 @@ module.exports = function(route) {
     .Project
     .findOne({ '_id': id })
     .populate('user')
-    .run(function(err, model) {
+    .exec(function(err, model) {
       if(err || !model) return cb(err);
       return cb(null, key, model);
     });
@@ -37,7 +37,7 @@ module.exports = function(route) {
     .List
     .findOne({ '_id': id })
     .populate('user')
-    .run(function(err, model) {
+    .exec(function(err, model) {
       if(err || !model) return cb(err);
       return cb(null, key, model);
     });
@@ -49,7 +49,7 @@ module.exports = function(route) {
     .findOne({'_id':id})
     .populate('user')
     .populate('comments.user')
-    .run(function(err, model){
+    .exec(function(err, model){
       if(err || !model) return cb(err);
       return cb(null, key, model);
     });

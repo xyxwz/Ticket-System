@@ -206,6 +206,7 @@ describe('projects controller', function() {
 
     before(function(done) {
       request.del('http://127.0.0.1:3000/api/projects/' + fixtures.projects[0].id)
+      .send({})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[1].access_token)

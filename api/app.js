@@ -10,7 +10,7 @@ var path = __dirname, lib, app, port;
 
 /* Initial Bootstrap */
 exports.boot = function(params){
-  app = express.createServer();
+  app = express();
   require(path + '/conf/configuration')(app,express);
 
   // Bootstrap application

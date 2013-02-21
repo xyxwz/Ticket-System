@@ -197,6 +197,7 @@ describe('lists controller', function() {
 
     before(function(done) {
       request.del('http://127.0.0.1:3000/api/lists/' + fixtures.lists[0].id)
+      .send({})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)

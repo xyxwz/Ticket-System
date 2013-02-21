@@ -20,7 +20,7 @@ exports.Authenticate = function(req, res, next) {
     var token = req.header('X-Auth-Token');
     User
     .findOne({'access_token':token})
-    .run(function(err, model){
+    .exec(function(err, model){
       if(err || !model) {
         next(new Error("Not Authenticated"));
       }
