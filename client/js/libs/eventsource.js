@@ -404,9 +404,9 @@
     global.EventSource = EventSource;
   }
 
-  if (typeof global.define === "function" && global.define.amd) {
-    global.define("EventSource", [], function () {
-      return global.EventSource;
+  if (typeof define === "function" && define.amd) {
+    define("EventSource", [], function () {
+      return EventSource;
     });
   }
 
