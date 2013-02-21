@@ -59,11 +59,7 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
     },
 
     refresh: function() {
-      ticketer.collections.openTickets.reset();
-      ticketer.collections.users.reset();
-
-      ticketer.collections.openTickets.fetch({ data: { status: 'open' }});
-      ticketer.collections.users.fetch();
+      ticketer.EventEmitter.trigger('collection:reset');
     },
 
     showTagWidget: function(e) {

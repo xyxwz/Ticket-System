@@ -45,6 +45,8 @@ function($, _, Backbone, BaseView, TicketView) {
       // Bindings
       this.bindTo(this.collection, 'add remove reset', this.render, this);
       this.bindTo(this.collection, 'filter', setFilter, this);
+      this.bindTo(ticketer.EventEmitter, 'collection:reset', this.refresh, this);
+
     },
 
     /**
@@ -78,6 +80,12 @@ function($, _, Backbone, BaseView, TicketView) {
       }
 
       return this;
+    },
+
+    refresh: function() {
+      this.collection.fetch({
+        data: { status: this.status }
+      });
     },
 
     renderTicket: function(model) {
