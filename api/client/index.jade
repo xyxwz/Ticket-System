@@ -10,7 +10,7 @@ html(manifest=(process.env.NODE_ENV === 'production' ? 'manifest.appcache': ''))
         try{Typekit.load();}catch(e){}
 
     - if (process.env.NODE_ENV === 'production')
-      script(data-main="js/release/main", src="js/release/require-jquery.js")
+      script(src="js/release/bundle.js")
       link(rel="stylesheet", href="css/bundle.css")
     - else
       script(data-main="js/main", src="js/libs/require/require-jquery.js")

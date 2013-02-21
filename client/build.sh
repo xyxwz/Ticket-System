@@ -13,11 +13,6 @@ if [[ $? == 0 ]]; then
   now="# `date +%s`"
   echo "Updating appcache with new timestamp -`echo $now | sed 's/#//'`"
   sed -i "2 s/# [0-9]*/$now/" manifest.appcache
-
-  # Move require, and remove all unneeded files
-  echo "Removing unnecessary files from js/release"
-  mv js/release/libs/require/require-jquery.js js/release/
-  find js/release/* \( -iname "*" ! -iname "main.js" ! -iname "require-jquery.js" \) -delete
 fi
 
 # compile less styles
