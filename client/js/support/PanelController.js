@@ -47,13 +47,23 @@ function($, Tickets, FillerView, SpinnerView,
    */
 
   PanelController.prototype.showOpenTickets = function() {
-    this._callViewFunction('one', 'selectTab', 'tickets/open');
-    this._setPanel('two', ListView, {
-      collection: ticketer.collections.openTickets,
-      controller: this
-    });
+    var self = this,
+        collection = new Tickets();
 
-    this._setPanel('three', FillerView);
+    this._callViewFunction('one', 'selectTab', 'tickets/open');
+    this._setPanel('two', SpinnerView);
+
+    collection.fetch({
+      data: {status: 'open'},
+      success: function() {
+        self._setPanel('two', ListView, {
+          collection: collection,
+          controller: self
+        });
+
+        self._setPanel('three', FillerView);
+      }
+    });
   };
 
   /**
@@ -61,16 +71,22 @@ function($, Tickets, FillerView, SpinnerView,
    */
 
   PanelController.prototype.showMyTickets = function() {
+    var self = this,
+        collection = new Tickets(null, {url: '/api/tickets/mine'});
+
     this._callViewFunction('one', 'selectTab', 'tickets/mine');
-    this._setPanel('two', ListView, {
-      collection: ticketer.collections.openTickets,
-      controller: this,
-      filter: function(ticket) {
-        return ticket.participating();
+    this._setPanel('two', SpinnerView);
+
+    collection.fetch({
+      success: function() {
+        self._setPanel('two', ListView, {
+          collection: collection,
+          controller: self
+        });
+
+        self._setPanel('three', FillerView);
       }
     });
-
-    this._setPanel('three', FillerView);
   };
 
   /**
