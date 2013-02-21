@@ -2,14 +2,14 @@
  * tickets */
 
 define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket) {
-  var Tickets = Backbone.Collection.extend({
 
+  var Tickets = Backbone.Collection.extend({
     model: Ticket,
-    url: '/api/tickets',
 
     initialize: function(models, options) {
       options = options || {};
 
+      this.url = options.url || '/api/tickets';
       this.comparator = options.comparator || function(model) {
         var date = new Date(model.get("opened_at"));
         return -date.getTime();
