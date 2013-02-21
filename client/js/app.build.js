@@ -14,6 +14,7 @@
     'autoresize':       'libs/plugins/jquery.autoresize',
     'spin':             'libs/spin',
     'Mousetrap':        'libs/mousetrap',
+    'EventSource':      'libs/eventsource',
     'Shortcuts':        'support/Shortcuts',
     'Sync':             'support/Sync',
     'BaseView':         'support/GarbageCollector',
