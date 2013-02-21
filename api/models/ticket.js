@@ -429,11 +429,22 @@ module.exports = function(app) {
             obj._toClient(function(err, model) {
               if (err) return cb(err);
 
-              array.push(model);
+              Notifications.isParticipating(redis, user, model.id, function(err, participating) {
+                if(err) cb(err);
 
-              if(array.length === count) {
-                return cb(null, array);
-              }
+                Notifications.hasNotification(redis, user, model.id, function(err, notification) {
+                  if(err) cb(err);
+
+                  model.participating = participating;
+                  model.notification = notification;
+
+                  array.push(model);
+
+                  if(array.length === count) {
+                    return cb(null, array);
+                  }
+                });
+              });
             });
             _i++;
           }
