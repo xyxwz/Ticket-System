@@ -4,8 +4,7 @@ CACHE MANIFEST
 # Cacheable entities
 CACHE:
 /favicon.ico
-/js/release/require-jquery.js
-/js/release/main.js
+/js/release/bundle.js
 /css/bundle.css
 /fonts/FontAwesome.otf
 /fonts/fontawesome-webfont.eot
