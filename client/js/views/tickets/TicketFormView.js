@@ -66,12 +66,17 @@ function($, _, Backbone, BaseView, mustache, TicketModel, MarkdownGuide, TicketF
         description: description
       });
 
+<<<<<<< HEAD
       ticket.save({}, {
         wait: true,
         success: function() {
           self.clearPopup();
         }
       });
+=======
+      this.bindTo(ticket, 'sync', this.clearPopup, this);
+      ticket.save({}, {wait: true});
+>>>>>>> remove ticketer.collections.openTickets references
 
       e.preventDefault();
     },

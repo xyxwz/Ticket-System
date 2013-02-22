@@ -35,24 +35,16 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
     },
 
     renderCounts: function() {
-      var mine = ticketer.collections.openTickets.filter(function(ticket) {
-        return ticket.participating() && ticket.notification();
-      }).length;
-
-      var open = ticketer.collections.openTickets.filter(function(ticket) {
-        return !ticket.get('assigned_to').length;
-      }).length;
-
-      if(mine === 0) {
+      if(this.notifications === 0) {
         $('[data-role="my-count"]', this.el).hide();
       } else {
-        $('[data-role="my-count"]', this.el).text(mine).show();
+        $('[data-role="my-count"]', this.el).text(this.notifications).show();
       }
 
-      if(open === 0) {
+      if(this.unread === 0) {
         $('[data-role="open-count"]', this.el).hide();
       } else {
-        $('[data-role="open-count"]', this.el).text(open).show();
+        $('[data-role="open-count"]', this.el).text(this.unread).show();
       }
     },
 

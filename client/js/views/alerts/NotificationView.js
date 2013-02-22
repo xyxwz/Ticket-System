@@ -1,5 +1,9 @@
-define(['jquery', 'underscore', 'backbone', 'mustache', 'text!templates/alerts/Notification.html'],
-function($, _, Backbone, mustache, NotificationTmpl) {
+define([
+  'jquery', 'underscore', 'backbone',
+  'mustache', 'models/Ticket',
+  'text!templates/alerts/Notification.html'
+],
+function($, _, Backbone, mustache, Ticket, NotificationTmpl) {
 
   var NotificationView = Backbone.View.extend({
     id: "notification",
@@ -38,18 +42,17 @@ function($, _, Backbone, mustache, NotificationTmpl) {
      * in, send a desktop notification if enabled.
      */
     commentNotification: function(message) {
-      // Look up the ticket in the various collections
-      var ticket = ticketer.collections.openTickets.get(message.ticket);
+      // Fetch the ticket from the server
+      var ticket = new Ticket({id: message.ticket});
 
-      // ticket exists
-      if(ticket) {
-        // Fire a notification if the user is participating
-        // and has notifications enabled
-        if(ticketer.notifications && message.participating) {
-          var title = message.user.name + ' made a comment on "' + ticket.get('title') + '":';
-          webkitNotifications.createNotification('', title, message.comment).show();
+      ticket.fetch({
+        success: function() {
+          if(ticket.get('status') === 'open' && ticketer.notifications && message.notification) {
+            var title = message.user.name + ' made a comment on "' + ticket.get('title') + '":';
+            webkitNotifications.createNotification('', title, message.comment).show();
+          }
         }
-      }
+      });
     },
 
     /* When a ticket is closed, send the creator and the people assigned

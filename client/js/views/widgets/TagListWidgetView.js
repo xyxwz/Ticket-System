@@ -80,20 +80,20 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
 
     filterListView: function(e) {
       var target = $(e.currentTarget),
-          tag = ticketer.collections.lists.get(target.data('id')),
+          tag = this.collection.get(target.data('id')),
           tickets = tag.get('tickets');
 
       // Toggle functionality
       if(target.hasClass('active')) {
         target.removeClass('active');
-        ticketer.collections.openTickets.trigger('filter');
+        ticketer.EventEmitter.trigger('list:filter');
       }
       else {
         target.siblings().removeClass('active');
         target.addClass('active');
 
         // Trigger a filter event passing the filter function
-        ticketer.collections.openTickets.trigger('filter', function(ticket) {
+        ticketer.EventEmitter.trigger('list:filter', function(ticket) {
           return ~tickets.indexOf(ticket.id);
         });
       }

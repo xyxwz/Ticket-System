@@ -77,14 +77,11 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
     },
 
     createTicket: function() {
-      var collection = ticketer.collections.openTickets,
-          view;
+      var view;
 
       if($('[role=popup]').length) return false;
 
-      view = new TicketFormView({
-        collection: collection
-      });
+      view = new TicketFormView();
 
       view.render();
     }

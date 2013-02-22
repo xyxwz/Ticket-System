@@ -81,7 +81,6 @@ define([
      * Load Global Collections after EventEmitter
      */
     ticketer.collections = {
-      openTickets: new Tickets(),
       users: new Users(),
       lists: new Lists()
     };
@@ -114,11 +113,6 @@ define([
 
     // Fetch Users
     ticketer.collections.users.fetch();
-
-    // Fetch open tickets
-    ticketer.collections.openTickets.fetch({
-      data: { status: 'open' }
-    });
 
     // Start Backbone History
     try {
