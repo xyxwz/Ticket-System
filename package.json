@@ -12,7 +12,8 @@
     "redis": "0.8.2",
     "connect-redis": "1.4.5",
     "passport-txssc": "git://github.com/TxSSC/passport-txssc.git",
-    "node-redis-events": "0.9.0"
+    "node-redis-events": "0.9.0",
+    "async": "0.2.5"
   },
   "devDependencies": {
     "mocha": "1.1.x",
