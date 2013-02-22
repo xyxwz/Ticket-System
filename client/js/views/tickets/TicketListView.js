@@ -56,10 +56,8 @@ function($, _, Backbone, BaseView, TicketView) {
      */
 
     dispose: function() {
-      if(this.status === 'closed') {
-        this.collection = this.collection.destroy();
-        delete this.collection;
-      }
+      this.collection.destroy();
+      delete this.collection;
 
       return BaseView.prototype.dispose.call(this);
     },
