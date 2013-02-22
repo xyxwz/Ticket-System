@@ -431,14 +431,14 @@ describe('ticket', function(){
       });
 
       it('should return open tickets assigned to user', function(done){
-        Ticket.mine(fixtures.users[0]._id, 'open', 1, function(err, models){
+        Ticket.mine(fixtures.users[0]._id, {'status': 'open'}, function(err, models){
           models.length.should.equal(2);
           done();
         });
       });
 
       it('should return closed tickets assigned to user', function(done){
-        Ticket.mine(fixtures.users[0]._id, 'closed', 1, function(err, models){
+        Ticket.mine(fixtures.users[0]._id, {'status': 'closed'}, function(err, models){
           models.length.should.equal(2);
           done();
         });

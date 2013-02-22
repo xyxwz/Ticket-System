@@ -1,9 +1,9 @@
 var mongoose = require('mongoose'),
     redis = require('redis'),
     _ = require('underscore'),
+    async = require('async'),
     TicketSchema = require('./schemas/ticket').Ticket,
     Notifications = require('./helpers/').Notifications;
-
 
 module.exports = function(app) {
 
@@ -29,6 +29,8 @@ module.exports = function(app) {
     obj = this.model.toObject();
     obj.id = obj._id;
     delete obj._id;
+
+    if(obj.__v) delete obj.__v;
 
     user = {
       id: obj.user._id,
@@ -387,69 +389,70 @@ module.exports = function(app) {
    *  @api public
    */
 
-  Ticket.mine = function mine(user, status, page, cb) {
-    var _this, redis, obj, query, array, count, _i;
-
-    _this = this;
-    redis = app.redis;
-
+  Ticket.mine = function mine(user, args, cb) {
     var userNamespace = 'user:' + user + ':assignedTo';
 
-    redis.SMEMBERS(userNamespace, function(err, res){
-      query = TicketSchema
-      .where('_id')
-      .in(res)
-      .where('status', status);
+    async.waterfall([
+      // Get Tickets User is Assigned To
+      function(callback) {
+        app.redis.SMEMBERS(userNamespace, function(err, res) {
+          callback(err, res);
+        });
+      },
 
-      if(status === 'open') {
-        query.sort('opened_at');
-      }
-      else {
-        query.sort('-closed_at');
-      }
+      // Build a Query and Exec it
+      function(res, callback) {
+        var query = TicketSchema.where('_id').in(res);
 
-      query
-      .populate('user')
-      .skip((page - 1) * 10)
-      .limit(10)
-      .exec(function(err, models) {
-        if(err) {
-          return cb("Error finding tickets");
+        // Check Status
+        if(args.status) {
+          query.where('status', args.status);
+          var sort = args.status === 'open' ? 'opened_at' : '-closed_at';
+          query.sort(sort);
         }
-        else {
-          array = [];
-          _i = 0;
-          count = models.length;
 
-          // return empty array if no tickets
-          if(count === 0) return cb(null, []);
+        // Check Pagination
+        if(args.page) {
+          query.skip((args.page - 1) * 10);
+          query.limit(10);
+        }
 
-          while(_i < count) {
-            obj = new Ticket(models[_i]);
-            obj._toClient(function(err, model) {
-              if (err) return cb(err);
+        query.populate('user').exec(function(err, models) {
+          callback(err, models);
+        });
+      },
 
-              Notifications.isParticipating(redis, user, model.id, function(err, participating) {
-                if(err) cb(err);
+      // Loop through models and set participating and notification flags
+      function(models, callback) {
+        if(models.length === 0) return callback(null, []);
 
-                Notifications.hasNotification(redis, user, model.id, function(err, notification) {
-                  if(err) cb(err);
+        var tickets = [];
 
-                  model.participating = participating;
-                  model.notification = notification;
+        async.forEachSeries(models, checkFlags, function(err) {
+          if(err) return callback(err);
+          return callback(null, tickets);
+        });
 
-                  array.push(model);
+        function checkFlags(model, callback) {
+          var obj = new Ticket(model);
+          obj._toClient(function(err, item) {
+            checkParticipating(user, item.id, function(err, participating) {
+              if(err) return callback(err);
+              item.participating = participating;
 
-                  if(array.length === count) {
-                    return cb(null, array);
-                  }
-                });
+              checkNotification(user, item.id, function(err, notification) {
+                if(err) return callback(err);
+                item.notification = notification;
+                tickets.push(item);
+                callback(null);
               });
             });
-            _i++;
-          }
+          });
         }
-      });
+      }
+    ],
+    function(err, results){
+      return cb(err, results);
     });
   };
 
@@ -555,6 +558,34 @@ module.exports = function(app) {
           return cb(null, model);
         });
       }
+    });
+  }
+
+  /**
+   * Check Participating status on a model
+   *
+   * user {String} - User ID
+   * Model {String} - Model ID
+   * Callback {Function}
+   */
+
+  function checkParticipating(user, model, callback) {
+    Notifications.isParticipating(app.redis, user, model, function(err, bool) {
+      return callback(err, bool);
+    });
+  }
+
+  /**
+   * Check Notification status on a model
+   *
+   * user {String} - User ID
+   * Model {String} - Model ID
+   * Callback {Function}
+   */
+
+  function checkNotification(user, model, callback) {
+    Notifications.hasNotification(app.redis, user, model, function(err, bool) {
+      return callback(err, bool);
     });
   }
 

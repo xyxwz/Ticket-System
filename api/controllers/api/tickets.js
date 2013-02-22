@@ -29,12 +29,12 @@ module.exports = function(app) {
   *  marked as :status and :page. Uses the Mongoose Populate method
   *  to fill in information for the ticket user. */
   app.get('/api/tickets/mine', function(req, res) {
-    var status, page;
+    var args = {};
 
-    status = req.query.status ? req.query.status : 'open';
-    page = req.query.page ? req.query.page : 1;
+    if (req.query.status) args.status = req.query.status;
+    if (req.query.page) args.page = req.query.page;
 
-    Ticket.mine(req.user._id, status, page, function(err, tickets){
+    Ticket.mine(req.user._id, args, function(err, tickets){
       if(err) return res.json({error: 'Error getting tickets'}, 400);
       res.json(tickets);
     });
