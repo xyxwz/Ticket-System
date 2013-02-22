@@ -275,7 +275,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
     renderStatusNotification: function() {
       if(!this.renderAll) return false;
 
-      $('.content', this.el).before(Mustache.to_html(NotifyTmpl));
+      this.$('.content').before(Mustache.to_html(NotifyTmpl));
 
       // Remove close button if currentUser is an Admin
       if(ticketer.currentUser.role === 'admin') {
@@ -289,7 +289,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
      */
 
     renderStatusMarker: function() {
-      var element = this.$el.find('.header');
+      var element = this.$('.header');
 
       if(this.model.notification()) {
         element.removeClass('unread read').addClass('notify');

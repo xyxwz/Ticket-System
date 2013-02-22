@@ -45,7 +45,7 @@ function($, _, Backbone, BaseView, TicketView) {
 
       // Bindings
       this.bindTo(this.collection, 'add remove reset', this.render, this);
-      this.bindTo(this.collection, 'filter', setFilter, this);
+      this.bindTo(ticketer.EventEmitter, 'list:filter', setFilter, this);
       this.bindTo(ticketer.EventEmitter, 'collection:reset', this.refresh, this);
       this.bindTo(ticketer.EventEmitter, 'ticket:new', this.newTicket, this);
     },
