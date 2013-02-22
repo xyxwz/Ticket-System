@@ -324,21 +324,16 @@ module.exports = function(app) {
    */
 
   Ticket.all = function all(args, cb) {
-    var query, array, count, _i, obj;
+    var query = TicketSchema.find();
 
+    // Check Status
     if(args.status) {
-      query = TicketSchema.find({'status': args.status});
-      if (args.status === 'open') {
-        query.sort('opened_at');
-      }
-      else {
-        query.sort('-closed_at');
-      }
-    }
-    else {
-      query = TicketSchema.find();
+      query.where('status', args.status);
+      var sort = args.status === 'open' ? 'opened_at' : '-closed_at';
+      query.sort(sort);
     }
 
+    // Check Pagination
     if(args.page) {
       query.skip((args.page - 1) * 10);
       query.limit(10);
@@ -347,29 +342,22 @@ module.exports = function(app) {
     query
     .populate('user')
     .exec(function(err, models){
-      if(err) {
-        return cb("Error finding tickets");
-      }
-      else {
-        array = [];
-        _i = 0;
-        count = models.length;
+      if(err) return cb(new Error("Error finding tickets"));
 
-        // return empty array if no tickets
-        if(count === 0) return cb(null, []);
+      var tickets = [];
 
-        while(_i < count) {
-          obj = new Ticket(models[_i]);
+      async.forEachSeries(models, cleanTickets, function(err) {
+        if(err) return callback(err);
+        return cb(null, tickets);
+      });
 
-          obj._toClient(function(err, model) {
-            if (err) return cb(err);
-            array.push(model);
-            if(array.length === count) {
-              return cb(null, array);
-            }
-          });
-          _i++;
-        }
+      function cleanTickets(item, callback) {
+        var obj = new Ticket(item);
+        obj._toClient(function(err, model) {
+          if(err) return callback(err);
+          tickets.push(model);
+          callback(null);
+        });
       }
     });
   };
