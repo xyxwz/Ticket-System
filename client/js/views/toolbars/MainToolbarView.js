@@ -20,7 +20,7 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
     },
 
     initialize: function() {
-      var events = 'ticket:new ticket:update comment:new';
+      var events = 'ticket:new ticket:update ticket:remove comment:new';
 
       this.unread = ticketer.counts.unread || [];
       this.notifications = ticketer.counts.notifications || [];
@@ -67,7 +67,7 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
       if(typeof data.ticket === 'undefined') {
         idx = ~this.unread.indexOf(data.id);
 
-        if(data.assigned_to.length && idx) {
+        if((!data.assigned_to || data.assigned_to.length) && idx) {
           this.unread.slice(idx, 1);
         } else if(!data.assigned_to.length && !idx) {
           this.unread.push(data.id);
