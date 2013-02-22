@@ -26,8 +26,6 @@ function($, _, Backbone, BaseView, mustache, TicketModel, MarkdownGuide, TicketF
     },
 
     initialize: function() {
-      this.$el.attr('role', 'popup');
-      this.bindTo(this.collection, 'add', this.clearPopup, this);
       $('body').on('keyup', $.proxy(this.escape, this));
     },
 
@@ -68,10 +66,11 @@ function($, _, Backbone, BaseView, mustache, TicketModel, MarkdownGuide, TicketF
         description: description
       });
 
-      ticket.save({}, {wait: true});
-
-      this.bindTo(ticket, 'sync', function(model) {
-        self.collection.add(model);
+      ticket.save({}, {
+        wait: true,
+        success: function() {
+          self.clearPopup();
+        }
       });
 
       e.preventDefault();
