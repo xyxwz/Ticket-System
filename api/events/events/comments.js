@@ -66,11 +66,11 @@ module.exports = function(app) {
 
     notifications.isParticipating(app.redis, user._id, ticket, function(err, status) {
       if(err) return cb(err);
-      if(status) _obj.participating = true;
+      _obj.participating = status;
 
       notifications.hasNotification(app.redis, user._id, ticket, function(err, notify) {
         if(err) return cb(err);
-        if(notify) _obj.notification = true;
+        _obj.notification = notify;
         return cb(null, _obj);
       });
     });
