@@ -20,10 +20,12 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
     },
 
     initialize: function() {
-      var collection = ticketer.collections.openTickets;
+      var events = 'ticket:new ticket:update comment:new';
 
-      // This is a very heavy event binding...
-      this.bindTo(collection, 'add remove reset change', this.renderCounts, this);
+      this.unread = ticketer.counts.unread || [];
+      this.notifications = ticketer.counts.notifications || [];
+
+      ticketer.EventEmitter.on(events, this.calculateCounts, this);
     },
 
     render: function() {
@@ -35,16 +37,19 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
     },
 
     renderCounts: function() {
-      if(this.notifications === 0) {
-        $('[data-role="my-count"]', this.el).hide();
+      var open = this.unread.length,
+          mine = this.notifications.length;
+
+      if(mine === 0) {
+        this.$('[data-role="my-count"]').hide();
       } else {
-        $('[data-role="my-count"]', this.el).text(this.notifications).show();
+        this.$('[data-role="my-count"]').text(mine).show();
       }
 
-      if(this.unread === 0) {
-        $('[data-role="open-count"]', this.el).hide();
+      if(open === 0) {
+        this.$('[data-role="open-count"]').hide();
       } else {
-        $('[data-role="open-count"]', this.el).text(this.unread).show();
+        this.$('[data-role="open-count"]').text(open).show();
       }
     },
 
@@ -54,6 +59,36 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
       });
 
       this.$el.append(view.render().el);
+    },
+
+    calculateCounts: function(data) {
+      var idx;
+
+      if(typeof data.ticket === 'undefined') {
+        idx = ~this.unread.indexOf(data.id);
+
+        if(data.assigned_to.length && idx) {
+          this.unread.slice(idx, 1);
+        } else if(!data.assigned_to.length && !idx) {
+          this.unread.push(data.id);
+        }
+
+        this.renderCounts();
+      } else {
+        idx = ~this.notifications.indexOf(data.ticket);
+
+        if(data.notification) {
+          if(!idx) {
+            this.notifications.push(data.ticket);
+          }
+        } else {
+          if(idx) {
+            this.notifications.slice(idx, 1);
+          }
+        }
+
+        this.renderCounts();
+      }
     },
 
     /**
