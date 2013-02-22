@@ -81,7 +81,10 @@ function($, Tickets, FillerView, SpinnerView,
       success: function() {
         self._setPanel('two', ListView, {
           collection: collection,
-          controller: self
+          controller: self,
+          collectionFilter: function(model) {
+            return model.participating ? model.participating : false;
+          }
         });
 
         self._setPanel('three', FillerView);

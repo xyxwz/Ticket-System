@@ -11,13 +11,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     ticketer.SSE.addEventListener('ticket:new', function(e) {
       var data = JSON.parse(e.data);
       ticketer.EventEmitter.trigger('ticket:new', data);
-
-      // Check if model already exists in collection
-      var model = ticketer.collections.openTickets.get(data.id);
-      if(model) return false;
-
-      ticketer.collections.openTickets.add(data);
-    }, false);
+    });
 
     /**
      * Binding for a `ticket:update` event
