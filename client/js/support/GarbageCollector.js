@@ -58,7 +58,8 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
       this.bindings.push({
         item: item,
         ev: ev,
-        callback: callback
+        callback: callback,
+        context: context
       });
 
       return item.on(ev, callback, context);
@@ -77,7 +78,7 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
 
       for(i = this.bindings.length; i > 0; i = i - 1) {
         binding = this.bindings.pop();
-        binding.item.off(binding.ev, binding.callback);
+        binding.item.off(binding.ev, binding.callback, binding.context);
       }
 
       this.off();
