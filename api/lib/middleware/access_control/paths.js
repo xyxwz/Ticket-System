@@ -11,14 +11,14 @@ module.exports = {
   // Members and Admins can access all paths
   // except /users and /tickets/mine
   "get": {
-    "/users": ["admin", "read"],
+    "/users": ["admin", "member", "read"],
     "/users/:userID": ["admin", "read"],
     "/projects": ["member", "admin", "read"],
     "/projects/:projectID": ["member", "admin", "read"],
     "/lists": ["admin", "member"],
     "/lists/:listID": ["owner"],
     "/tickets": ["member", "admin", "read"],
-    "/tickets/mine": ["admin"],
+    "/tickets/mine": ["admin", "member"],
     "/tickets/:ticketID": ["member", "admin", "read"],
     "/tickets/:ticketID/comments": ["member", "admin", "read"],
     "/tickets/:ticketID/comments/:commentID": ["member", "admin", "read"],
