@@ -37,9 +37,11 @@ function($, _, Backbone, BaseView, mustache,
         url: '/api/notifications'
       });
 
-      ticketer.EventEmitter.on(events, this.fetch, this);
+      this.bindTo(ticketer.EventEmitter, events, this.fetch, this);
       this.bindTo(this.unread, 'sync', this.renderCounts, this);
       this.bindTo(this.notifications, 'sync', this.renderCounts, this);
+      this.bindTo(ticketer.EventEmitter,
+                    'notification:remove', this.destroyNotification, this);
     },
 
     /**
@@ -49,6 +51,21 @@ function($, _, Backbone, BaseView, mustache,
     fetch: function() {
       this.unread.fetch();
       this.notifications.fetch();
+    },
+
+    /**
+     * Destroy the notification with `id` and call `this.renderCounts`
+     * on success
+     */
+
+    destroyNotification: function(id) {
+      var model = this.notifications.get(id);
+
+      if(model) {
+        model.destroy({
+          success: this.renderCounts.bind(this)
+        });
+      }
     },
 
     render: function() {
