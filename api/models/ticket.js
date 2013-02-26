@@ -323,7 +323,7 @@ module.exports = function(app) {
    *  @api public
    */
 
-  Ticket.all = function all(args, cb) {
+  Ticket.all = function all(user, args, callback) {
     var query = TicketSchema.find();
 
     // Check Status
@@ -343,20 +343,36 @@ module.exports = function(app) {
     .populate('user')
     .exec(function(err, models){
       if(err) return cb(new Error("Error finding tickets"));
+      if(models.length === 0) return callback(null, []);
 
       var tickets = [];
 
-      async.forEachSeries(models, cleanTickets, function(err) {
+      async.forEachSeries(models, checkFlags, function(err) {
         if(err) return callback(err);
-        return cb(null, tickets);
+	return callback(null, tickets);
       });
 
-      function cleanTickets(item, callback) {
-        var obj = new Ticket(item);
-        obj._toClient(function(err, model) {
-          if(err) return callback(err);
-          tickets.push(model);
-          callback(null);
+      function checkFlags(model, callback) {
+	var obj = new Ticket(model);
+	obj._toClient(function(err, item) {
+
+	  // Don't check participating or notifications for closed tickets
+	  if(args.status === 'closed') {
+	    tickets.push(item);
+	    return callback(null);
+	  }
+
+	  checkParticipating(user, item.id, function(err, participating) {
+	    if(err) return callback(err);
+	    item.participating = participating;
+
+	    checkNotification(user, item.id, function(err, notification) {
+	      if(err) return callback(err);
+	      item.notification = notification;
+	      tickets.push(item);
+	      callback(null);
+	    });
+	  });
         });
       }
     });

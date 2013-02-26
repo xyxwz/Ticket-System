@@ -16,7 +16,7 @@ module.exports = function(app) {
     if (req.query.status) args.status = req.query.status;
     if (req.query.page) args.page = req.query.page;
 
-    Ticket.all(args, function(err, tickets){
+    Ticket.all(req.user._id, args, function(err, tickets){
       if(err) return res.json({error: 'Error getting tickets'}, 400);
       res.json(tickets);
     });
