@@ -78,6 +78,7 @@ function($, Tickets, FillerView, SpinnerView,
     this._setPanel('two', SpinnerView);
 
     collection.fetch({
+      data: {status: 'open'},
       success: function() {
         self._setPanel('two', ListView, {
           collection: collection,
