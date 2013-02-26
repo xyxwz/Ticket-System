@@ -381,4 +381,50 @@ describe('tickets', function(){
     });
   });
 
+  // Follow
+  describe('POST /api/tickets/:ticketID/follow', function(){
+    var res;
+
+    before(function(done){
+      url = "http://127.0.0.1:3000/api/tickets/" + fixtures.tickets[1].id + '/follow';
+      request
+      .post(url)
+      .send({})
+      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json')
+      .set('X-Auth-Token', fixtures.users[0].access_token)
+      .end(function(data){
+	res = data;
+	done();
+      });
+    });
+
+    it('should return a 201 status code', function(){
+      res.status.should.equal(201);
+    });
+  });
+
+  // Unfollow
+  describe('DELETE /api/tickets/:ticketID/follow', function(){
+    var res;
+
+    before(function(done){
+      url = "http://127.0.0.1:3000/api/tickets/" + fixtures.tickets[1].id + '/follow';
+      request
+      .del(url)
+      .send({})
+      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json')
+      .set('X-Auth-Token', fixtures.users[0].access_token)
+      .end(function(data){
+	res = data;
+	done();
+      });
+    });
+
+    it('should return a 200 status code', function(){
+      res.status.should.equal(200);
+    });
+  });
+
 });

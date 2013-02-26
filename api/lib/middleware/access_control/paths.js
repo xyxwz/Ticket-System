@@ -31,8 +31,9 @@ module.exports = {
     "/users": ["admin"],
     "/projects": ["admin", "member"],
     "/lists": ["admin", "member"],
-    "/tickets": ["member", "admin"],
-    "/tickets/:ticketID/comments": ["member", "admin"]
+    "/tickets": ["admin", "member"],
+    "/tickets/:ticketID/follow": ["admin", "member"],
+    "/tickets/:ticketID/comments": ["admin", "member"]
   },
 
   // Limit updates to only the resource owner, except for
@@ -52,6 +53,7 @@ module.exports = {
     "/lists/:listID": ["owner"],
     "/tickets/:ticketID": ["owner", "admin"],
     "/tickets/:ticketID/comments/:commentID": ["owner", "admin"],
-    "/notifications/:notificationID": ["member", "admin", "read"]
+    "/notifications/:notificationID": ["member", "admin", "read"],
+    "/tickets/:ticketID/follow": ["admin", "member"]
   }
 };
