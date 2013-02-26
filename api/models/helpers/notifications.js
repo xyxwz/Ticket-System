@@ -35,9 +35,9 @@ exports.isParticipating = function(redis, user, ticket, cb) {
 exports.nowParticipating = function(redis, user, ticket, cb) {
   var ticketRef = 'ticket:' + ticket + P_NAMESPACE;
 
-  redis.SADD(ticketRef, user, function(err) {
+  redis.SADD(ticketRef, user, function(err, status) {
     if(err) return cb('Error adding user to participating');
-    return cb(null, true);
+    return cb(null, !!status);
   });
 };
 
@@ -49,9 +49,9 @@ exports.nowParticipating = function(redis, user, ticket, cb) {
 exports.removeParticipating = function(redis, user, ticket, cb) {
   var ticketRef = 'ticket:' + ticket + P_NAMESPACE;
 
-  redis.SREM(ticketRef, user, function(err) {
+  redis.SREM(ticketRef, user, function(err, status) {
     if(err) return cb('Error removing user from participating');
-    return cb(null, true);
+    return cb(null, !!status);
   });
 };
 

@@ -540,6 +540,28 @@ module.exports = function(app) {
     }
   };
 
+  /**
+   * Allow a User to follow and unfollow updates on a Ticket
+   *
+   * @user - A User ID
+   * @model - A Ticket ID
+   * @callback - A callback to run
+   *
+   * @api Public
+   */
+
+  Ticket.follow = function follow(user, model, callback) {
+    Notifications.nowParticipating(app.redis, user, model, function(err, status) {
+      return callback(err, !!status);
+    });
+  };
+
+  Ticket.unfollow = function follow(user, model, callback) {
+    Notifications.removeParticipating(app.redis, user, model, function(err, status) {
+      return callback(err, !!status);
+    });
+  };
+
   // Perform the actual I/O in seperate function
   function createTicketObject(ticket, data, cb) {
     ticket.save(function(err, ticket) {
