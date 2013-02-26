@@ -74,4 +74,13 @@ module.exports = function(route) {
     }
   });
 
+  /**
+   * Limitation of authentication middleware
+   * - pass on populating :notificationID
+   */
+
+  route.param('notificationID', function(id, key, models, cb) {
+    return cb(null, key, null);
+  });
+
 };

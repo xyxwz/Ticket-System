@@ -21,7 +21,9 @@ module.exports = {
     "/tickets/mine": ["admin"],
     "/tickets/:ticketID": ["member", "admin", "read"],
     "/tickets/:ticketID/comments": ["member", "admin", "read"],
-    "/tickets/:ticketID/comments/:commentID": ["member", "admin", "read"]
+    "/tickets/:ticketID/comments/:commentID": ["member", "admin", "read"],
+    "/notifications": ["member", "admin", "read"],
+    "/unread": ["member", "admin", "read"]
   },
 
   // Only admins may create users
@@ -49,6 +51,7 @@ module.exports = {
     "/projects/:projectID": ["owner", "admin"],
     "/lists/:listID": ["owner"],
     "/tickets/:ticketID": ["owner", "admin"],
-    "/tickets/:ticketID/comments/:commentID": ["owner", "admin"]
+    "/tickets/:ticketID/comments/:commentID": ["owner", "admin"],
+    "/notifications/:notificationID": ["member", "admin", "read"]
   }
 };
