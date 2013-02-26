@@ -41,7 +41,7 @@ describe('notification', function(){
       Notifications.nowParticipating(server.redis, 'user123', 'ticket123', function(err, status) {
         should.not.exist(err);
         status.should.be.true;
-	Notifications.isParticipating(server.redis, 'user123', 'ticket123', function(err, status) {
+        Notifications.isParticipating(server.redis, 'user123', 'ticket123', function(err, status) {
           should.not.exist(err);
           status.should.be.true;
           done();
@@ -54,11 +54,11 @@ describe('notification', function(){
         should.not.exist(err);
         status.should.be.true;
 
-	Notifications.removeParticipating(server.redis, 'user1234', 'ticket1234', function(err, status) {
+        Notifications.removeParticipating(server.redis, 'user1234', 'ticket1234', function(err, status) {
           should.not.exist(err);
           status.should.be.true;
 
-	  Notifications.isParticipating(server.redis, 'user1234', 'ticket1234', function(err, status) {
+          Notifications.isParticipating(server.redis, 'user1234', 'ticket1234', function(err, status) {
             should.not.exist(err);
             status.should.be.false;
             done();

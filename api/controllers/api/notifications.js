@@ -68,14 +68,14 @@ module.exports = function(app) {
         status = req.query.status || 'open';
 
     Ticket.all(req.user._id, {status: status}, function(err, tickets) {
-        if(err) return res.json({error: 'Error fetching unread statuses.'}, 500);
-        if(!tickets || !tickets.length) return res.json([], 200);
+      if(err) return res.json({error: 'Error fetching unread statuses.'}, 500);
+      if(!tickets || !tickets.length) return res.json([], 200);
 
-        for(i = 0, len = tickets.length; i < len; i = i + 1) {
-          if(tickets[i].assigned_to.length === 0) unread.push({id: tickets[i].id});
-        }
+      for(i = 0, len = tickets.length; i < len; i = i + 1) {
+        if(tickets[i].assigned_to.length === 0) unread.push({id: tickets[i].id});
+      }
 
-        res.json(unread, 200);
-      });
+      res.json(unread, 200);
+    });
   });
 };
