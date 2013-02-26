@@ -31,7 +31,7 @@ module.exports = function(app) {
       if(!tickets || !tickets.length) return res.json([], 200);
 
       for(i = 0, len = tickets.length; i < len; i = i + 1) {
-        if(tickets[i].notification) notifications.push({id: tickets[i].id, notification: true});
+        if(tickets[i].notification) notifications.push({id: tickets[i].id});
       }
 
       res.json(notifications, 200);
