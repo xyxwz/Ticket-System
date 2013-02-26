@@ -27,7 +27,7 @@ function($, _, Backbone, BaseView, mustache,
         'ticket:update',
         'ticket:remove',
         'comment:new',
-        'collection:refresh'].join(' ');
+        'collection:reset'].join(' ');
 
       this.unread = new PollingCollection(null, {
         url: '/api/unread'
