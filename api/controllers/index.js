@@ -6,7 +6,8 @@ module.exports = function requireControllers(app) {
       tickets: require('./api/tickets')(app),
       comments: require('./api/comments')(app),
       projects: require('./api/projects')(app),
-      lists: require('./api/lists')(app)
+      lists: require('./api/lists')(app),
+      notifications: require('./api/notifications')(app)
     },
 
     authentication: require('./authentication')(app),
