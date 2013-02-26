@@ -4,9 +4,11 @@
 
 define(['jquery', 'underscore', 'backbone',
   'BaseView', 'mustache',
+  'collections/PollingCollection',
   'views/widgets/TagListWidgetView',
   'text!templates/toolbars/Toolbar.html'],
-function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
+function($, _, Backbone, BaseView, mustache,
+          PollingCollection, TaskList, tmpl_Toolbar) {
 
   /**
    * Toolbar view
@@ -20,12 +22,33 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
     },
 
     initialize: function() {
-      var events = 'ticket:new ticket:update ticket:remove comment:new';
+      var events = [
+        'ticket:new',
+        'ticket:update',
+        'ticket:remove',
+        'comment:new',
+        'collection:refresh'].join(' ');
 
-      this.unread = ticketer.counts.unread || [];
-      this.notifications = ticketer.counts.notifications || [];
+      this.unread = new PollingCollection(null, {
+        url: '/api/unread'
+      });
 
-      ticketer.EventEmitter.on(events, this.calculateCounts, this);
+      this.notifications = new PollingCollection(null, {
+        url: '/api/notifications'
+      });
+
+      ticketer.EventEmitter.on(events, this.fetch, this);
+      this.bindTo(this.unread, 'sync', this.renderCounts, this);
+      this.bindTo(this.notifications, 'sync', this.renderCounts, this);
+    },
+
+    /**
+     * Call fetch on `this.unread` and `this.notifications`
+     */
+
+    fetch: function() {
+      this.unread.fetch();
+      this.notifications.fetch();
     },
 
     render: function() {
@@ -59,36 +82,6 @@ function($, _, Backbone, BaseView, mustache, TaskList, tmpl_Toolbar) {
       });
 
       this.$el.append(view.render().el);
-    },
-
-    calculateCounts: function(data) {
-      var idx;
-
-      if(typeof data.ticket === 'undefined') {
-        idx = ~this.unread.indexOf(data.id);
-
-        if((!data.assigned_to || data.assigned_to.length) && idx) {
-          this.unread.slice(idx, 1);
-        } else if(!data.assigned_to.length && !idx) {
-          this.unread.push(data.id);
-        }
-
-        this.renderCounts();
-      } else {
-        idx = ~this.notifications.indexOf(data.ticket);
-
-        if(data.notification) {
-          if(!idx) {
-            this.notifications.push(data.ticket);
-          }
-        } else {
-          if(idx) {
-            this.notifications.slice(idx, 1);
-          }
-        }
-
-        this.renderCounts();
-      }
     },
 
     /**
