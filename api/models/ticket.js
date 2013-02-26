@@ -378,19 +378,34 @@ module.exports = function(app) {
    */
 
   Ticket.mine = function mine(user, args, cb) {
-    var userNamespace = 'user:' + user + ':assignedTo';
-
     async.waterfall([
-      // Get Tickets User is Assigned To
+      // Get all keys that match ticket:xxx:participating
       function(callback) {
-        app.redis.SMEMBERS(userNamespace, function(err, res) {
-          callback(err, res);
+	app.redis.KEYS('ticket:*:participating', function(err, keys) {
+	  callback(err, keys);
         });
       },
 
-      // Build a Query and Exec it
-      function(res, callback) {
-        var query = TicketSchema.where('_id').in(res);
+      // Loop through all keys and check if user ID is in the array
+      function(keys, callback) {
+	var participating = [];
+
+	var filter = function(item, cb) {
+	  app.redis.SISMEMBER(item, user, function(err, status) {
+	    if(err) return cb(err);
+	    if(status) participating.push(item.split(":")[1]);
+	    cb();
+	  });
+	};
+
+	async.forEach(keys, filter, function(err) {
+	  return callback(err, participating);
+	});
+      },
+
+      // Lookup Tickets in Mongo
+      function(tickets, callback) {
+	var query = TicketSchema.where('_id').in(tickets);
 
         // Check Status
         if(args.status) {
@@ -405,9 +420,7 @@ module.exports = function(app) {
           query.limit(10);
         }
 
-        query.populate('user').exec(function(err, models) {
-          callback(err, models);
-        });
+	query.populate('user').exec(callback);
       },
 
       // Loop through models and set participating and notification flags
