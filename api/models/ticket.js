@@ -349,30 +349,30 @@ module.exports = function(app) {
 
       async.forEachSeries(models, checkFlags, function(err) {
         if(err) return callback(err);
-	return callback(null, tickets);
+        return callback(null, tickets);
       });
 
       function checkFlags(model, callback) {
-	var obj = new Ticket(model);
-	obj._toClient(function(err, item) {
+        var obj = new Ticket(model);
+        obj._toClient(function(err, item) {
 
-	  // Don't check participating or notifications for closed tickets
-	  if(args.status === 'closed') {
-	    tickets.push(item);
-	    return callback(null);
-	  }
+          // Don't check participating or notifications for closed tickets
+          if(args.status === 'closed') {
+            tickets.push(item);
+            return callback(null);
+          }
 
-	  checkParticipating(user, item.id, function(err, participating) {
-	    if(err) return callback(err);
-	    item.participating = participating;
+          checkParticipating(user, item.id, function(err, participating) {
+            if(err) return callback(err);
+            item.participating = participating;
 
-	    checkNotification(user, item.id, function(err, notification) {
-	      if(err) return callback(err);
-	      item.notification = notification;
-	      tickets.push(item);
-	      callback(null);
-	    });
-	  });
+            checkNotification(user, item.id, function(err, notification) {
+              if(err) return callback(err);
+              item.notification = notification;
+              tickets.push(item);
+              callback(null);
+            });
+          });
         });
       }
     });
@@ -397,31 +397,31 @@ module.exports = function(app) {
     async.waterfall([
       // Get all keys that match ticket:xxx:participating
       function(callback) {
-	app.redis.KEYS('ticket:*:participating', function(err, keys) {
-	  callback(err, keys);
+        app.redis.KEYS('ticket:*:participating', function(err, keys) {
+          callback(err, keys);
         });
       },
 
       // Loop through all keys and check if user ID is in the array
       function(keys, callback) {
-	var participating = [];
+        var participating = [];
 
-	var filter = function(item, cb) {
-	  app.redis.SISMEMBER(item, user, function(err, status) {
-	    if(err) return cb(err);
-	    if(status) participating.push(item.split(":")[1]);
-	    cb();
-	  });
-	};
+        var filter = function(item, cb) {
+          app.redis.SISMEMBER(item, user, function(err, status) {
+            if(err) return cb(err);
+            if(status) participating.push(item.split(":")[1]);
+            cb();
+          });
+        };
 
-	async.forEach(keys, filter, function(err) {
-	  return callback(err, participating);
-	});
+        async.forEach(keys, filter, function(err) {
+          return callback(err, participating);
+        });
       },
 
       // Lookup Tickets in Mongo
       function(tickets, callback) {
-	var query = TicketSchema.where('_id').in(tickets);
+        var query = TicketSchema.where('_id').in(tickets);
 
         // Check Status
         if(args.status) {
@@ -436,7 +436,7 @@ module.exports = function(app) {
           query.limit(10);
         }
 
-	query.populate('user').exec(callback);
+        query.populate('user').exec(callback);
       },
 
       // Loop through models and set participating and notification flags

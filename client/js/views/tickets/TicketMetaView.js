@@ -4,8 +4,9 @@
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/tickets/TicketAssignView',
-  'views/tickets/TicketTagView'],
-function($, _, mustache, BaseView, TicketAssign, TagView) {
+  'views/tickets/TicketTagView',
+  'views/tickets/TicketFollowView'],
+function($, _, mustache, BaseView, TicketAssign, TagView, FollowView) {
 
   /**
    * TicketMetaView
@@ -18,7 +19,12 @@ function($, _, mustache, BaseView, TicketAssign, TagView) {
     className: 'ticket-meta',
 
     render: function() {
-      this.renderAssignView();
+      if(ticketer.currentUser.role === 'admin') {
+        this.renderAssignView();
+      } else {
+        this.renderFollowView();
+      }
+
       this.renderTagWidget();
 
       return this;
@@ -28,6 +34,14 @@ function($, _, mustache, BaseView, TicketAssign, TagView) {
       var view;
 
       view = this.createView(TicketAssign, {
+        model: this.model
+      });
+
+      this.$el.append(view.render().el);
+    },
+
+    renderFollowView: function() {
+      var view = this.createView(FollowView, {
         model: this.model
       });
 

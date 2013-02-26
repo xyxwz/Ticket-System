@@ -14,14 +14,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       var self = this,
           currentUser = ticketer.currentUser;
 
-      if(self.get('user')) {
-        if(self.get('user').id === currentUser.id) self.set('participating', true);
-      }
-
-      this.on('sync', function() {
-        if(self.get('user').id === currentUser.id) self.set('participating', true);
-      });
-
       this.on('error', function(model, err) {
         ticketer.EventEmitter.trigger('error', err);
       });
@@ -36,13 +28,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
 
     isOpen: function() {
       return this.get('status') === 'open';
-    },
-
-    /*
-     * Returns if the user is participating in the ticket
-     */
-    participating: function() {
-      return this.get('participating') ? this.get('participating') : false;
     },
 
     /*

@@ -66,8 +66,8 @@ module.exports = function(app) {
 
   app.post('/api/tickets/:ticketID/follow', function(req, res) {
     Ticket.follow(req.user._id, req.ticket._id, function(err) {
-      if(err) return res.json({error: 'Could not follow'}, 400);
-      res.json({status: true}, 201);
+      if(err) return res.json({participating: false, error: 'Could not follow'}, 400);
+      res.json({participating: true}, 201);
     });
   });
 
@@ -79,8 +79,8 @@ module.exports = function(app) {
 
   app.del('/api/tickets/:ticketID/follow', function(req, res) {
     Ticket.unfollow(req.user._id, req.ticket._id, function(err) {
-      if(err) return res.json({error: 'Could not unfollow'}, 400);
-      res.json({status: true}, 200);
+      if(err) return res.json({participating: true, error: 'Could not unfollow'}, 400);
+      res.json({participating: false}, 200);
     });
   });
 
