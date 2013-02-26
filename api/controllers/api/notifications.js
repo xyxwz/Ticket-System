@@ -67,7 +67,7 @@ module.exports = function(app) {
         unread = [],
         status = req.query.status || 'open';
 
-    Ticket.all({status: status}, function(err, tickets) {
+    Ticket.all(req.user._id, {status: status}, function(err, tickets) {
         if(err) return res.json({error: 'Error fetching unread statuses.'}, 500);
         if(!tickets || !tickets.length) return res.json([], 200);
 

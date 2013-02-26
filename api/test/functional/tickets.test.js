@@ -394,8 +394,8 @@ describe('tickets', function(){
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
       .end(function(data){
-	res = data;
-	done();
+        res = data;
+        done();
       });
     });
 
@@ -417,8 +417,8 @@ describe('tickets', function(){
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
       .end(function(data){
-	res = data;
-	done();
+        res = data;
+        done();
       });
     });
 
