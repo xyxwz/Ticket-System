@@ -62,7 +62,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
 
       // On enter, assign the active user
       if(e.keyCode === 13 && activeElement.length) {
-        this.model.assignUser(activeElement.data('id'));
+        this.model.participate(activeElement.data('id'));
       }
       else if(e.keyCode === 40 && activeElement.length) {
         // Wrap the activeElement index + 1
