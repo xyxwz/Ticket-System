@@ -24,7 +24,8 @@ module.exports = function(app) {
    */
 
   Ticket.prototype._toClient = function toClient(cb) {
-    var obj, user, namespace;
+    var self = this,
+        obj, user, namespace;
 
     obj = this.model.toObject();
     obj.id = obj._id;
@@ -42,12 +43,24 @@ module.exports = function(app) {
     obj.user = user;
     delete obj.comments;
 
-    namespace = 'ticket:' + obj.id + ':assignees';
-    // Get assigned_to from redis
-    this.redis.SMEMBERS(namespace, function(err, members) {
-      if(err) return cb(err);
-      obj.assigned_to = members;
-      cb(null, obj);
+    // Get the Ticket's Assigned_to and Participants
+    async.parallel([
+      function(callback) {
+        self.redis.SMEMBERS('ticket:' + obj.id + ':assignees', function(err, members) {
+          if(err) return cb(err);
+          obj.assigned_to = members;
+          callback(null, obj);
+        });
+      },
+      function(callback) {
+        self.redis.SMEMBERS('ticket:' + obj.id + ':participating', function(err, members) {
+          if(err) return cb(err);
+          obj.participants = members;
+          callback(null, obj);
+        });
+      }
+    ], function(err, results) {
+      cb(err, obj);
     });
   };
 
@@ -71,10 +84,8 @@ module.exports = function(app) {
    */
 
   Ticket.prototype.update = function update(data, user, cb) {
-    var _this, model, newAssigned;
-
-    _this = this;
-    model = this.model;
+    var self = this,
+        model = this.model;
 
     if (data.status) {
       if(model.status === "open" && data.status === "closed") {
@@ -86,20 +97,47 @@ module.exports = function(app) {
     if (data.title) model.title = data.title;
     if (data.description) model.description = data.description.replace(/<\/?script>/ig, '');
 
-    // Manage assigned users
-    if (data.assigned_to) {
-      // if someone is assigned set read status to true
-      model.read = true;
+    async.parallel([
+      // Set Participants Array in Redis
+      function(callback) {
+        if(!data.participants) return callback(null);
 
-      newAssigned = _.uniq(data.assigned_to);
+        Notifications.resetParticipating(self.redis, data.participants, model.id, function(err) {
+          callback(err);
+        });
+      },
 
-      this._manageSets(newAssigned, function() {
-        _this._execUpdate(user._id, cb);
+      // Manage Assigned User
+      function(callback) {
+        if(!data.assigned_to) return callback(null);
+        model.read = true;
+        var newAssigned = _.uniq(data.assigned_to);
+        self._manageSets(newAssigned, function() {
+          callback(null);
+        });
+      }
+
+    ], function(err) {
+      // Save Ticket
+      model.modified_at = Date.now();
+      model.save(function(err, ticket) {
+        if (err || !ticket) return cb('Error updating model. Check required attributes.');
+        var obj = new Ticket(ticket);
+        obj._toClient(function(err, ticket){
+          if(err) return cb(err);
+
+          // Build model to emit
+          var obj = { body: ticket };
+
+          // If toClient was successful, push a notification and emit a ticket:update event
+          Notifications.pushNotification(self.redis, user._id, ticket.id, function(err) {
+            if(err) return cb(err);
+            app.eventEmitter.emit('ticket:update', obj);
+            return cb(null, ticket);
+          });
+        });
       });
-    }
-    else {
-      this._execUpdate(user._id, cb);
-    }
+    });
   };
 
 
@@ -217,55 +255,6 @@ module.exports = function(app) {
         if(err) error = 'Error deleting ticket';
         return cb(error, error ? false : true );
       });
-    });
-  };
-
-
-  /**
-   *  execUpdate
-   *
-   *  Runs the save function to update a ticket after other
-   *  functions have been run. Takes a callback to return the
-   *  saved ticket's toClient() properties.
-   *
-   *    :userID - User's id in string form
-   *    :cb - A callback to run
-   *
-   *  returns formatted ticket ready to send to client
-   *
-   *  @api private
-   */
-
-  Ticket.prototype._execUpdate = function execUpdate(userID, cb) {
-    var _this, model, obj, redis;
-
-    _this = this;
-    model = this.model;
-    redis = this.redis;
-    model.modified_at = Date.now();
-
-    model.save(function(err, ticket) {
-      if (err || !ticket) {
-        return cb('Error updating model. Check required attributes.');
-      }
-      else {
-        obj = new Ticket(ticket);
-
-        obj._toClient(function(err, ticket){
-          if(err) return cb(err);
-
-          //Build model to emit
-          var obj = { body: ticket };
-
-          //If toClient was successful, push a notification and emit a ticket:update event
-          Notifications.pushNotification(redis, userID, ticket.id, function(err) {
-            if(err) return cb(err);
-
-            app.eventEmitter.emit('ticket:update', obj);
-            return cb(null, ticket);
-          });
-        });
-      }
     });
   };
 
@@ -526,7 +515,7 @@ module.exports = function(app) {
    */
 
   Ticket.create = function create(data, user, cb) {
-    var ticket, klass, assigned_to;
+    var ticket, klass;
 
     ticket = new TicketSchema({
       title: data.title,
@@ -536,24 +525,10 @@ module.exports = function(app) {
 
     if (ticket.description) ticket.description.replace(/<\/?script>/ig, '');
 
-    // Check if user is admin and automatically assign them if true
-    if(user.role && user.role === 'admin') {
-      assigned_to = [user._id];
-      ticket.read = true;
-
-      klass = new Ticket(ticket);
-
-      klass._manageSets(assigned_to, function(err) {
-        if(err) return cb(err);
-        createTicketObject(ticket, data, cb);
-      });
-    }
-    else {
-      Notifications.nowParticipating(app.redis, user._id, ticket.id, function(err) {
-        if(err) return cb(err);
-        createTicketObject(ticket, data, cb);
-      });
-    }
+    Notifications.nowParticipating(app.redis, user._id, ticket.id, function(err) {
+      if(err) return cb(err);
+      createTicketObject(ticket, data, cb);
+    });
   };
 
   /**
@@ -568,13 +543,19 @@ module.exports = function(app) {
 
   Ticket.follow = function follow(user, model, callback) {
     Notifications.nowParticipating(app.redis, user, model, function(err, status) {
-      return callback(err, !!status);
+      Ticket.find(model, function(err, ticket) {
+        app.eventEmitter.emit('ticket:update', { body: ticket });
+        return callback(err, !!status);
+      });
     });
   };
 
-  Ticket.unfollow = function follow(user, model, callback) {
+  Ticket.unfollow = function unfollow(user, model, callback) {
     Notifications.removeParticipating(app.redis, user, model, function(err, status) {
-      return callback(err, !!status);
+      Ticket.find(model, function(err, ticket) {
+        app.eventEmitter.emit('ticket:update', { body: ticket });
+        return callback(err, !!status);
+      });
     });
   };
 

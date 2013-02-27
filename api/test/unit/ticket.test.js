@@ -455,13 +455,13 @@ describe('ticket', function(){
 
     describe('follow', function() {
       before(function(done) {
-        Ticket.follow('user123', 'ticket123', function(err, status) {
+        Ticket.follow('user123', fixtures.tickets[1], function(err, status) {
           done(err);
         });
       });
 
       it('should add user id to ticket participating array', function(done) {
-        server.redis.SISMEMBER('ticket:ticket123:participating', 'user123', function(err, status) {
+        server.redis.SISMEMBER('ticket:' + fixtures.tickets[1] + ':participating', 'user123', function(err, status) {
           status.should.eql(1);
           done();
         });
@@ -470,13 +470,13 @@ describe('ticket', function(){
 
     describe('unfollow', function() {
       before(function(done) {
-        Ticket.unfollow('user123', 'ticket123', function(err, status) {
+        Ticket.unfollow('user123', fixtures.tickets[1], function(err, status) {
           done(err);
         });
       });
 
       it('should remove user id from ticket participating array', function(done) {
-        server.redis.SISMEMBER('ticket:ticket123:participating', 'user123', function(err, status) {
+        server.redis.SISMEMBER('ticket:' + fixtures.tickets[1] + ':participating', 'user123', function(err, status) {
           status.should.eql(0);
           done();
         });
@@ -584,15 +584,6 @@ describe('ticket', function(){
           result = ticket;
           done();
         });
-      });
-
-      it('should assign admin user to ticket', function(){
-        var assignedTo = result.assigned_to[0].toString();
-        assignedTo.should.equal(fixtures.users[0].id);
-      });
-
-      it('should set read to true because we are assigning users', function(){
-        result.read.should.be.true;
       });
 
       it('should add admin user to participating users', function(done) {

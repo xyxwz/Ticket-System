@@ -55,6 +55,20 @@ exports.removeParticipating = function(redis, user, ticket, cb) {
   });
 };
 
+/*
+ * Reset a ticket's participating set
+ */
+exports.resetParticipating = function(redis, data, ticket, cb) {
+  var ticketRef = 'ticket:' + ticket + P_NAMESPACE;
+
+  redis.DEL(ticketRef, function(err) {
+    redis.SADD(ticketRef, data, function(err, res) {
+      if(err) return cb('Error resetting ticket participating');
+      return cb(null, res);
+    });
+  });
+};
+
 
 /* ----- Notification functions ----- */
 

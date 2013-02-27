@@ -66,6 +66,15 @@ describe('notification', function(){
         });
       });
     });
+
+    it('should reset participating', function(done) {
+      Notifications.resetParticipating(server.redis, ['user1234', 'user12345'], 'ticket12345', function(err, res) {
+        server.redis.SMEMBERS('ticket:ticket12345:participating', function(err, res) {
+          res.length.should.eql(2);
+          done();
+        });
+      });
+    });
   });
 
   describe('notifications', function() {
