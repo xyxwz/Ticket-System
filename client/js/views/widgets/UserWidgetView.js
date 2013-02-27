@@ -23,11 +23,13 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
     events: {
       "click [data-action='display']": "bindEvents",
       "blur [data-action='assign']": "unbindEvents",
-      "click [data-role='results-list'] li": "assignUser"
+      "click [data-role='results-list'] li": "participate"
     },
 
     render: function() {
-      this.$el.html(Mustache.to_html(tmpl_UserWidget));
+      var data = {};
+      data.title = ticketer.currentUser.role === 'admin' ? "Add a Follower" : "Follow";
+      this.$el.html(Mustache.to_html(tmpl_UserWidget, data));
 
       return this;
     },
@@ -97,7 +99,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
 
         // user.name contains input and is not already added
         if(~name.indexOf(input) &&
-            !~self.model.get('assigned_to').indexOf(user.id)) {
+            !~self.model.get('participants').indexOf(user.id)) {
 
           results.push(self.renderUser(user.toJSON()));
         }
@@ -114,9 +116,14 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
      */
 
     bindEvents: function(e) {
-      this.$el.find('input').on('keyup', this.renderFilteredResults.bind(this));
-      this.$el.find('a').hide();
-      this.$el.find('input').fadeIn(200).focus();
+      if(ticketer.currentUser.role === 'admin') {
+        this.$el.find('input').on('keyup', this.renderFilteredResults.bind(this));
+        this.$el.find('a').hide();
+        this.$el.find('input').fadeIn(200).focus();
+      } else {
+        this.follow();
+      }
+
       e.preventDefault();
     },
 
@@ -142,13 +149,18 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
      * @param {jQuery.Event} e
      */
 
-    assignUser: function(e) {
+    participate: function(e) {
       var id = $(e.currentTarget).data('id');
 
       e.preventDefault();
       e.stopPropagation();
-      this.model.assignUser(id);
+      this.model.participate(id);
+    },
+
+    follow: function() {
+      this.model.follow();
     }
+
   });
 
   return UserWidgetView;

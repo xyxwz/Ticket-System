@@ -20,12 +20,12 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
     className: 'assigned-users',
 
     events: {
-      "click li.user": "unAssignUser"
+      "click li.user": "unFollow"
     },
 
     initialize: function() {
       // Bindings
-      this.bindTo(this.model, 'change:assigned_to', this.render, this);
+      this.bindTo(this.model, 'change:participants', this.render, this);
     },
 
     /**
@@ -35,7 +35,7 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
     render: function() {
       var users,
           self = this,
-          assigned = this.model.get('assigned_to');
+          participants = this.model.get('participants');
 
       this.$el.empty();
 
@@ -44,12 +44,14 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
       }
 
       users = ticketer.collections.users.filter(function(user) {
-        return ~assigned.indexOf(user.id);
+        return ~participants.indexOf(user.id);
       });
 
       users.forEach(function(user) {
         self.$el.append(Mustache.to_html(tmpl_User, user.toJSON()));
       });
+
+      if(ticketer.currentUser.role !== 'admin' && participants.indexOf(ticketer.currentUser.id) >= 0) return this;
 
       this.renderWidget();
       return this;
@@ -64,12 +66,21 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
       this.$el.append(this.widget.render().el);
     },
 
-    unAssignUser: function(e) {
-      var id = $(e.currentTarget).data('id');
-      var resp = confirm('Remove the user from the Ticket?');
-      if(resp) this.model.unassignUser(id);
-    }
+    unFollow: function(e) {
+      var id = $(e.currentTarget).data('id'),
+          role = ticketer.currentUser.role,
+          rep;
 
+      if(role === 'admin') {
+        resp = confirm('Remove the user from the Ticket?');
+        if(resp) this.model.stopParticipating(id);
+      } else {
+        if(id === ticketer.currentUser.id) {
+          resp = confirm('Unfollow this Ticket?');
+          if(resp) this.model.unfollow();
+        }
+      }
+    }
   });
 
   return TicketAssignView;

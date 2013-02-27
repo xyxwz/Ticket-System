@@ -77,6 +77,42 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       });
     },
 
+    /**
+     * Sets a user to participating
+     */
+    participate: function(id, callback) {
+      var array = _.clone(this.get('participants'));
+      array.push(id);
+      this.set({participants: _.uniq(array)});
+      this.save(null, { error: callback });
+    },
+
+    stopParticipating: function(id, callback) {
+      var array = _.clone(this.get('participants'));
+      var newArray = _.reject(array, function(user) {
+        return user === id;
+      });
+
+      this.set({participants: _.uniq(newArray)});
+      this.save(null, { error: callback });
+    },
+
+    follow: function() {
+      var self = this,
+          clone = _.clone(this);
+
+      clone.url = "/api/tickets/" + clone.get('id') + '/follow';
+      Backbone.sync("create", clone);
+    },
+
+    unfollow: function() {
+      var self = this,
+          clone = _.clone(this);
+
+      clone.url = "/api/tickets/" + clone.get('id') + '/follow';
+      Backbone.sync("delete", clone);
+    },
+
     /* Assigns a User to the ticket
      *    :id       -  A user model id to assign
      *    :callback - An error callback
@@ -102,17 +138,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       this.set({assigned_to: _.uniq(newArray)});
       this.setParticipatingStatus();
       this.save(null, { error: callback });
-    },
-
-    /**
-     * If the user is assigned to a ticket, they are considered participating.
-     */
-
-    setParticipatingStatus: function() {
-      var user = ticketer.currentUser.id;
-
-      var assigned = _.include(this.get('assigned_to'), user);
-      this.set({participating: assigned });
     },
 
     /* If the ticket is closed take the difference of the created time,
