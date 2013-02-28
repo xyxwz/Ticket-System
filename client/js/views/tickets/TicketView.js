@@ -166,7 +166,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
         data.fullDate = momentDate.format('MMMM Do, YYYY h:mm A');
         data.showTags = false;
         data.isEditable = this.isEditable(data);
-        data.isAdmin = ticketer.currentUser.role === 'admin' ? true : false;
+        data.isClosable = !!~this.model.get('assigned_to').indexOf(ticketer.currentUser.id);
       }
 
       return data;
