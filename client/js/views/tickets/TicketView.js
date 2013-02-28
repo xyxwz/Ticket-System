@@ -134,8 +134,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
     packageModel: function() {
       var momentDate,
-          data = {},
-          assigned_to = this.model.get('assigned_to');
+          data = {};
 
       data.title = this.model.get('title');
       data.user = this.model.get('user');
@@ -167,8 +166,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
         data.fullDate = momentDate.format('MMMM Do, YYYY h:mm A');
         data.showTags = false;
         data.isEditable = this.isEditable(data);
-        data.isAssignable = ticketer.currentUser.role === 'admin' && !assigned_to.length;
-        data.isClosable = !!~assigned_to.indexOf(ticketer.currentUser.id);
+        data.isAssignable = ticketer.currentUser.role === 'admin' && !this.model.get('read');
+        data.isClosable = !!~this.model.get('assigned_to').indexOf(ticketer.currentUser.id);
       }
 
       return data;
@@ -181,15 +180,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
      */
 
     isEditable: function(data) {
-      if(data.user.id === ticketer.currentUser.id) {
-        return true;
-      }
-
-      if(ticketer.currentUser.role === 'admin') {
-        return true;
-      }
-
-      return false;
+      return data.user.id === ticketer.currentUser.id ||
+              ticketer.currentUser.role === 'admin';
     },
 
     // Handle Actions
