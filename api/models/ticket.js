@@ -100,7 +100,7 @@ module.exports = function(app) {
     async.parallel([
       // Set Participants Array in Redis
       function(callback) {
-        if(!data.participants) return callback(null);
+        if(!data.participants || !data.participants.length) return callback(null);
 
         Notifications.resetParticipating(self.redis, data.participants, model.id, function(err) {
           callback(err);
