@@ -100,7 +100,7 @@ module.exports = function(app) {
     async.parallel([
       // Set Participants Array in Redis
       function(callback) {
-        if(!data.participants || !data.participants.length) return callback(null);
+        if(!data.participants) return callback(null);
 
         Notifications.resetParticipating(self.redis, data.participants, model.id, function(err) {
           callback(err);
@@ -109,7 +109,7 @@ module.exports = function(app) {
 
       // Manage Assigned User
       function(callback) {
-        if(!data.assigned_to || !data.assigned_to.length) return callback(null);
+        if(!data.assigned_to) return callback(null);
         self._manageAssigned(data.assigned_to, function(err) {
           callback(err);
         });
@@ -163,7 +163,7 @@ module.exports = function(app) {
 
     // Wipe the assignees set prior to assigning the new user
     redis.DEL(ticketNamespace, function(err) {
-      if(err) return callback(err);
+      if(err || !array.length) return callback(err);
       redis.SADD(ticketNamespace, array, function(err) {
         if(err) return callback(err);
         Notifications.nowParticipating(redis, array[0], model.id, function(err) {
