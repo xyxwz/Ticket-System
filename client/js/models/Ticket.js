@@ -113,33 +113,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       Backbone.sync("delete", clone);
     },
 
-    /* Assigns a User to the ticket
-     *    :id       -  A user model id to assign
-     *    :callback - An error callback
-     */
-    assignUser: function(id, callback) {
-      var array = _.clone(this.get('assigned_to'));
-      array.push(id);
-      this.set({assigned_to: _.uniq(array)});
-      this.setParticipatingStatus();
-      this.save(null, { error: callback });
-    },
-
-    /* Unassign a User from the ticket
-     *    :id       - A user model id to remove
-     *    :callback - An error callback
-     */
-    unassignUser: function(id, callback) {
-      var array = _.clone(this.get('assigned_to'));
-      var newArray = _.reject(array, function(user) {
-        return user === id;
-      });
-
-      this.set({assigned_to: _.uniq(newArray)});
-      this.setParticipatingStatus();
-      this.save(null, { error: callback });
-    },
-
     /* If the ticket is closed take the difference of the created time,
      * and the closed time, and return a formatted string.
      */
