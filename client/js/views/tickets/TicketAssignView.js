@@ -20,7 +20,7 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
     className: 'involved-users',
 
     events: {
-      "click li.user": "unFollow"
+      "click li.removable": "unFollow"
     },
 
     initialize: function() {
@@ -33,8 +33,8 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
      */
 
     render: function() {
-      var users,
-          self = this,
+      var i, len, user, html,
+          users = ticketer.collections.users,
           assigned_to = this.model.get('assigned_to'),
           participants = this.model.get('participants');
 
@@ -46,25 +46,31 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
 
       // TODO: This can be changed to just render `assigned_to` in the future
       if(assigned_to.length) {
-        assigned_to.forEach(function(id) {
-          var user = ticketer.collections.users.get(id),
-              html = Mustache.to_html(tmpl_User, user.toJSON());
-
-          self.$el.append($(html).addClass('assigned'));
-        });
+        for(i = 0, len = assigned_to.length; i < len; i = i + 1) {
+          user = users.get(assigned_to[i]);
+          html = $(Mustache.to_html(tmpl_User, user.toJSON()));
+          this.$el.append(html.addClass('assigned'));
+        }
       }
 
-      users = ticketer.collections.users.filter(function(user) {
-        return ~participants.indexOf(user.id) && !~assigned_to.indexOf(user.id);
-      });
+      for(i = 0, len = participants.length; i < len; i = i + 1) {
+        if(~assigned_to.indexOf(participants[i])) continue;
+        user = users.get(participants[i]);
+        html = $(Mustache.to_html(tmpl_User, user.toJSON()));
 
-      users.forEach(function(user) {
-        self.$el.append(Mustache.to_html(tmpl_User, user.toJSON()));
-      });
+        if(ticketer.currentUser.role === 'admin' ||
+            ticketer.currentUser.id === participants[i]) {
+          html.addClass('removable');
+        }
 
-      if(ticketer.currentUser.role !== 'admin' && participants.indexOf(ticketer.currentUser.id) >= 0) return this;
+        this.$el.append(html);
+      }
 
-      this.renderWidget();
+      if(ticketer.currentUser.role === 'admin' ||
+          !~participants.indexOf(ticketer.currentUser.id)) {
+        this.renderWidget();
+      }
+
       return this;
     },
 
