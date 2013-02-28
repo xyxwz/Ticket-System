@@ -111,8 +111,7 @@ module.exports = function(app) {
       function(callback) {
         if(!data.assigned_to) return callback(null);
         model.read = true;
-        var newAssigned = _.uniq(data.assigned_to);
-        self._manageSets(newAssigned, function() {
+        self._manageAssigned(data.assigned_to, function() {
           callback(null);
         });
       }
@@ -142,83 +141,28 @@ module.exports = function(app) {
 
 
   /**
-   *  manageSets
+   * manageAssigned
+   *  Add an array of users to the ticket's assignees redis set
    *
-   *  Adds/Removes TicketID in Redis Set. Set key is the
-   *  User's mongoID. Finds the difference between the current
-   *  assigned_to array and the new assigned_to array then checks
-   *  if the id is new or old in order to determine if it needs
-   *  to be added or removed from the set.
-   *
-   *    :newArray  -  The array passed in the put request for
-   *                  assigned_users
-   *    :cb        -  A callback to run when completed
-   *
-   *  returns cb(null)
-   *
-   *  @api private
+   * @param {Array} array used to maintain backwards compatability
+   * @param {Function} callback
+   * @api private
    */
 
-  Ticket.prototype._manageSets = function manageSets(array, cb) {
+  Ticket.prototype._manageAssigned = function manageAssigned(array, callback) {
     var redis = this.redis,
-        _this = this,
         model = this.model,
-        newArray = [],
-        currentArray = [],
-        _add = [],
-        _rem = [],
-        error = null,
-        exists, ticketNamespace, userNamespace;
+        ticketNamespace = 'ticket:' + model.id + ':assignees';
 
-    ticketNamespace = 'ticket:' + model.id + ':assignees';
-
-    redis.SMEMBERS(ticketNamespace, function(err, members) {
-
-      // Ensure input is strings before comparing
-      _.each(array, function(user){
-        newArray.push(user.toString());
-      });
-
-      // Ensure input is strings before comparing
-      _.each(members, function(user){
-        currentArray.push(user.toString());
-      });
-
-      _add = _.difference(_.uniq(newArray), _.uniq(currentArray));
-      _rem = _.difference(_.uniq(currentArray), _.uniq(newArray));
-
-
-      // Loop through the _add array for users to assign
-      _.each(_add, function(user) {
-        userNamespace = 'user:' + user + ':assignedTo';
-
-        redis.SADD(userNamespace, model.id);
-        redis.SADD(ticketNamespace, user);
-
-        // add user to ticket's now participating set
-        Notifications.nowParticipating(redis, user, model.id, function(err) {
-          if(err) error = err;
+    // Wipe the assignees set prior to assigning the new user
+    redis.DEL(ticketNamespace, function(err) {
+      if(err) return callback(err);
+      redis.SADD(ticketNamespace, array, function(err) {
+        if(err) return callback(err);
+        Notifications.nowParticipating(redis, array[0], model.id, function(err) {
+          callback(err);
         });
       });
-
-      // Loop through the _rem array for users to unassign
-      // ** Don't unassign the ticket owner **
-      _.each(_rem, function(user) {
-        userNamespace = 'user:' + user + ':assignedTo';
-
-        redis.SREM(userNamespace, model.id);
-        redis.SREM(ticketNamespace, user);
-
-        // don't remove ticket owner
-        if(user.toString() !== _this.model.user._id.toString()) {
-          // remove user from participating if they are removed from assigned
-          Notifications.removeParticipating(redis, user, model.id, function(err) {
-            if(err) error = err;
-          });
-        }
-      });
-
-      return cb(error);
     });
   };
 
@@ -226,6 +170,8 @@ module.exports = function(app) {
   /*
    * Remove the ticket's assignees set and ticket reference from
    * users assignedto set in redis
+   *
+   * @param {Function} cb
    */
 
   Ticket.prototype._removeSets = function(cb) {
@@ -245,6 +191,7 @@ module.exports = function(app) {
       users.forEach(function(user) {
         userNamespace = 'user:' + user + ':assignedTo';
 
+        // This is left to maintain backwards compatability, and delete any old sets
         redis.SREM(userNamespace, model.id, function(err) {
           if(err) error = 'Error deleting ticket from user';
         });

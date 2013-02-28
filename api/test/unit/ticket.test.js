@@ -211,7 +211,7 @@ describe('ticket', function(){
       describe('addUsers', function(){
 
         before(function(done){
-          klass._manageSets([user1, user2], function(){
+          klass._manageAssigned([user1, user2], function(){
             done();
           });
         });
@@ -225,25 +225,12 @@ describe('ticket', function(){
           });
         });
 
-        it('should add a ticket to each users set', function(done){
-          var user1_namespace = 'user:' + user1 + ':assignedTo',
-              user2_namespace = 'user:' + user2 + ':assignedTo';
-
-          client.SMEMBERS(user1_namespace, function(err, res){
-            res.length.should.equal(1);
-            client.SMEMBERS(user2_namespace, function(err, res){
-              res.length.should.equal(1);
-              done();
-            });
-          });
-        });
-
       }); // close addUsers
 
       describe('removeUsers', function(){
 
         before(function(done){
-          klass._manageSets([user1], function(){
+          klass._manageAssigned([user1], function(){
             done();
           });
         });
@@ -257,25 +244,12 @@ describe('ticket', function(){
           });
         });
 
-        it('should remove ticket from user2 set', function(done){
-          var user1_namespace = 'user:' + user1 + ':assignedTo',
-              user2_namespace = 'user:' + user2 + ':assignedTo';
-
-          client.smembers(user1_namespace, function(err, res){
-            res.length.should.equal(1);
-            client.smembers(user2_namespace, function(err, res){
-              res.length.should.equal(0);
-              done();
-            });
-          });
-        });
-
       }); // close removeUsers
 
       describe('Remove Ticket Owner', function(){
 
         before(function(done){
-          klass._manageSets([user2], function(){
+          klass._manageAssigned([user2], function(){
             done();
           });
         });
