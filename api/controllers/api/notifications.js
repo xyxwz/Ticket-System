@@ -63,19 +63,17 @@ module.exports = function(app) {
    */
 
   app.get('/api/unread', function(req, res) {
-    var i, len,
-        unread = [],
-        status = req.query.status || 'open';
+    var status = req.query.status || 'open';
 
-    Ticket.all(req.user._id, {status: status}, function(err, tickets) {
+    Ticket.all(req.user._id, {status: status, read: false}, function(err, tickets) {
       if(err) return res.json({error: 'Error fetching unread statuses.'}, 500);
       if(!tickets || !tickets.length) return res.json([], 200);
 
-      for(i = 0, len = tickets.length; i < len; i = i + 1) {
-        if(tickets[i].assigned_to.length === 0) unread.push({id: tickets[i].id});
-      }
+      tickets = tickets.map(function(ticket) {
+        return {id: ticket.id};
+      });
 
-      res.json(unread, 200);
+      res.json(tickets, 200);
     });
   });
 };

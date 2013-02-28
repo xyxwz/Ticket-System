@@ -110,7 +110,6 @@ module.exports = function(app) {
       // Manage Assigned User
       function(callback) {
         if(!data.assigned_to) return callback(null);
-        model.read = true;
         self._manageAssigned(data.assigned_to, function() {
           callback(null);
         });
@@ -153,6 +152,12 @@ module.exports = function(app) {
     var redis = this.redis,
         model = this.model,
         ticketNamespace = 'ticket:' + model.id + ':assignees';
+
+    if(array.length) {
+      model.read = true;
+    } else {
+      model.read = false;
+    }
 
     // Wipe the assignees set prior to assigning the new user
     redis.DEL(ticketNamespace, function(err) {
@@ -267,6 +272,11 @@ module.exports = function(app) {
       query.where('status', args.status);
       var sort = args.status === 'open' ? 'opened_at' : '-closed_at';
       query.sort(sort);
+    }
+
+    // Optional read status
+    if(args.read) {
+      query.where('read', args.read);
     }
 
     // Check Pagination
