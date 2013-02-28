@@ -62,9 +62,9 @@ exports.resetParticipating = function(redis, data, ticket, cb) {
   var ticketRef = 'ticket:' + ticket + P_NAMESPACE;
 
   redis.DEL(ticketRef, function(err) {
-    redis.SADD(ticketRef, data, function(err, res) {
-      if(err) return cb('Error resetting ticket participating');
-      return cb(null, res);
+    if(err) return cb(err);
+    redis.SADD(ticketRef, data, function(err) {
+      return cb(err);
     });
   });
 };

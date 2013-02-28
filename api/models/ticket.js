@@ -110,12 +110,14 @@ module.exports = function(app) {
       // Manage Assigned User
       function(callback) {
         if(!data.assigned_to) return callback(null);
-        self._manageAssigned(data.assigned_to, function() {
-          callback(null);
+        self._manageAssigned(data.assigned_to, function(err) {
+          callback(err);
         });
       }
 
     ], function(err) {
+      if(err) return cb(err);
+
       // Save Ticket
       model.modified_at = Date.now();
       model.save(function(err, ticket) {
