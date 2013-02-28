@@ -84,17 +84,23 @@
       margin: 0;
       .clearfix;
 
-      &.assigned-users {
+      &.involved-users {
         float: left;
 
         li {
           display: inline-block;
           margin-right: 10px;
 
+          &.assigned img {
+            // Change this to the best way to notate the responsible user for the ticket
+            border: 2px solid rgba(0,0,0, .5);
+          }
+
           img {
             display: block;
             border-radius: 1000px;
             .size(35px, 35px);
+            .box-sizing(border-box);
           }
         }
       }

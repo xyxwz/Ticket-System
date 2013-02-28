@@ -134,7 +134,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
     packageModel: function() {
       var momentDate,
-          data = {};
+          data = {},
+          assigned_to = this.model.get('assigned_to');
 
       data.title = this.model.get('title');
       data.user = this.model.get('user');
@@ -166,7 +167,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
         data.fullDate = momentDate.format('MMMM Do, YYYY h:mm A');
         data.showTags = false;
         data.isEditable = this.isEditable(data);
-        data.isClosable = !!~this.model.get('assigned_to').indexOf(ticketer.currentUser.id);
+        data.isAssignable = ticketer.currentUser.role === 'admin' && !assigned_to.length;
+        data.isClosable = !!~assigned_to.indexOf(ticketer.currentUser.id);
       }
 
       return data;
@@ -195,9 +197,14 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       var resp,
           action = $(e.currentTarget).data('action'),
           delMsg = "Delete this ticket? This cannot be undone",
-          closeMsg = "Close this ticket? This cannot be undone";
+          closeMsg = "Close this ticket? This cannot be undone",
+          assignMsg = "Take responsibility for this ticket? This cannot be undone";
 
       switch(action) {
+        case 'assign':
+          resp = confirm(assignMsg);
+          if(resp) this.model.assignUser(ticketer.currentUser.id);
+          break;
         case 'close':
           resp = confirm(closeMsg);
           if(resp) this.model.close();

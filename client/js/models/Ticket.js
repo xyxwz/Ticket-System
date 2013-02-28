@@ -113,6 +113,16 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       Backbone.sync("delete", clone);
     },
 
+    /**
+     * Assign user with `id`
+     *
+     * @param {String} id
+     */
+
+    assignUser: function(id) {
+      this.save({assigned_to: [id]});
+    },
+
     /* If the ticket is closed take the difference of the created time,
      * and the closed time, and return a formatted string.
      */

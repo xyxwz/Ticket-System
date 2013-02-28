@@ -23,6 +23,9 @@
 
     {{#isEditable}}
       <ul class="edit-options">
+        {{#isAssignable}}
+          <li data-role="assign-ticket"><a data-action="assign" href="#"><i class="icon-pushpin"></i></a></li>
+        {{/isAssignable}}
         {{#isClosable}}
           <li data-role="close-ticket"><a data-action="close" href="#"><i class="icon-ok"></i></a></li>
         {{/isClosable}}

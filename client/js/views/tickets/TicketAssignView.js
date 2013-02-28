@@ -17,7 +17,7 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
 
   var TicketAssignView = BaseView.extend({
     tagName: 'ul',
-    className: 'assigned-users',
+    className: 'involved-users',
 
     events: {
       "click li.user": "unFollow"
@@ -35,6 +35,7 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
     render: function() {
       var users,
           self = this,
+          assigned_to = this.model.get('assigned_to'),
           participants = this.model.get('participants');
 
       this.$el.empty();
@@ -43,8 +44,18 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
         this.widget.dispose();
       }
 
+      // TODO: This can be changed to just render `assigned_to` in the future
+      if(assigned_to.length) {
+        assigned_to.forEach(function(id) {
+          var user = ticketer.collections.users.get(id),
+              html = Mustache.to_html(tmpl_User, user.toJSON());
+
+          self.$el.append($(html).addClass('assigned'));
+        });
+      }
+
       users = ticketer.collections.users.filter(function(user) {
-        return ~participants.indexOf(user.id);
+        return ~participants.indexOf(user.id) && !~assigned_to.indexOf(user.id);
       });
 
       users.forEach(function(user) {
