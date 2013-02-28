@@ -50,9 +50,9 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
       // Bindings
       this.bindTo(this.model, 'edit', this.renderEditForm, this);
+      this.bindTo(this.model, 'change:read', this.render, this);
       this.bindTo(this.model, 'change:description', this.renderDescription, this);
       this.bindTo(this.model, 'change:status', this.renderStatusNotification, this);
-      this.bindTo(this.model, 'change:assigned_to', this.renderStatusMarker, this);
       this.bindTo(this.model, 'change:notification', this.renderStatusMarker, this);
     },
 
@@ -300,10 +300,10 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
       if(this.model.notification()) {
         element.removeClass('unread read').addClass('notify');
-      } else if(this.model.get('assigned_to').length === 0) {
-        element.removeClass('read notify').addClass('unread');
-      } else {
+      } else if(this.model.get('read')) {
         element.removeClass('unread notify').addClass('read');
+      } else {
+        element.removeClass('read notify').addClass('unread');
       }
     },
 
