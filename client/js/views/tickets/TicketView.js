@@ -158,7 +158,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
         data.statusClass = 'notify';
       }
       else {
-        data.statusClass = this.model.get('assigned_to').length ? 'read' : 'unread';
+        data.statusClass = this.model.get('read') ? 'read' : 'unread';
       }
 
       if(this.renderAll) {
