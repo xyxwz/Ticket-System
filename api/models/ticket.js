@@ -109,7 +109,7 @@ module.exports = function(app) {
 
       // Manage Assigned User
       function(callback) {
-        if(!data.assigned_to) return callback(null);
+        if(!data.assigned_to || !data.assigned_to.length) return callback(null);
         self._manageAssigned(data.assigned_to, function(err) {
           callback(err);
         });
