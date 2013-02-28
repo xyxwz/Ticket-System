@@ -145,7 +145,7 @@ describe('notifications and unread tickets', function(){
     });
 
     it('should return one unread ticket', function(){
-      res.body.should.have.length(2);
+      res.body.should.have.length(1);
     });
   });
 

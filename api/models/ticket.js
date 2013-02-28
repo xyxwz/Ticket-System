@@ -275,7 +275,7 @@ module.exports = function(app) {
     }
 
     // Optional read status
-    if(args.read) {
+    if(typeof args.read !== 'undefined') {
       query.where('read', args.read);
     }
 
@@ -287,10 +287,9 @@ module.exports = function(app) {
 
     query
     .populate('user')
-    .exec(function(err, models){
+    .exec(function(err, models) {
       if(err) return cb(new Error("Error finding tickets"));
       if(models.length === 0) return callback(null, []);
-
       var tickets = [];
 
       async.forEachSeries(models, checkFlags, function(err) {
