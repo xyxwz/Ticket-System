@@ -14,8 +14,8 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       var self = this,
           currentUser = ticketer.currentUser;
 
-      this.on('error', function(model, err) {
-        ticketer.EventEmitter.trigger('error', err);
+      this.on('error', function() {
+        ticketer.EventEmitter.trigger('error', "Error saving ticket");
       });
 
       // When a ticket is closed remove it from the collection
