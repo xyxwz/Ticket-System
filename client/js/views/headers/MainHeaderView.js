@@ -21,7 +21,6 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
     className: 'header',
     events: {
       "click a[data-action]": "preventDefault",
-      "click a[data-route]": "navigateTo",
       "click a[data-action='new-ticket']": "createTicket",
       "click a[data-action='refresh']": "refresh",
       "click a[data-action='new-tag']": 'showTagWidget'
@@ -49,13 +48,6 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
 
     preventDefault: function(e) {
       e.preventDefault();
-    },
-
-    navigateTo: function(e) {
-      e.preventDefault();
-
-      var target = $(e.currentTarget).data('route');
-      ticketer.routers.ticketer.navigate(target, true);
     },
 
     refresh: function() {
