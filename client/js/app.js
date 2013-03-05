@@ -20,7 +20,6 @@ define([
   'EventSource',
   'ServerEvents',
   'Shortcuts',
-  'AppCache',
   'Sync'
 ], function(
   _,
@@ -37,14 +36,10 @@ define([
   EventSource,
   ServerEvents,
   Shortcuts,
-  AppCache,
   Sync
 ) {
 
   $(function() {
-
-    /* Begin AppCache Monitoring */
-    new AppCache();
 
     /*
      * ticketer - our namespace object, create

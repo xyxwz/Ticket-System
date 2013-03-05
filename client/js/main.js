@@ -16,8 +16,7 @@ require.config( {
     'Sync':             'support/Sync',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
-    'ServerEvents':     'support/ServerEvents',
-    'AppCache':         'support/AppCache'
+    'ServerEvents':     'support/ServerEvents'
   }
 });
 
