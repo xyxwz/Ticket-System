@@ -109,10 +109,11 @@ function($, _, Backbone, BaseView, mustache,
     navigateTo: function(e) {
       e.preventDefault();
 
-      var target = $(e.target).data('route');
+      var target = $(e.target);
 
-      this.selectTab(target);
-      ticketer.routers.ticketer.navigate(target, true);
+      if(!target.parent().hasClass('.active')) {
+        ticketer.routers.ticketer.navigate(target.data('route'), true);
+      }
     },
 
     selectTab: function(tab) {
