@@ -47,6 +47,7 @@ module.exports = function(app) {
       for(_i = 0, _len = app.sockets.length; _i < _len; _i++) {
         if(app.sockets[_i].id === id) {
           app.sockets.splice(_i,1);
+          clearInterval(t);
           break;
         }
       }
