@@ -167,7 +167,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
         data.showTags = false;
         data.isEditable = this.isEditable(data);
         data.isAssignable = ticketer.currentUser.role === 'admin' && !this.model.get('read');
-        data.isClosable = !!~this.model.get('assigned_to').indexOf(ticketer.currentUser.id);
+        data.isClosable = !!~this.model.get('assigned_to')
+          .indexOf(ticketer.currentUser.id) && !data.isClosed;
       }
 
       return data;
@@ -180,8 +181,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
      */
 
     isEditable: function(data) {
-      return data.user.id === ticketer.currentUser.id ||
-              ticketer.currentUser.role === 'admin';
+      return (data.user.id === ticketer.currentUser.id ||
+              ticketer.currentUser.role === 'admin') && !data.isClosed;
     },
 
     // Handle Actions
