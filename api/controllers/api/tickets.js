@@ -16,7 +16,7 @@ module.exports = function(app) {
     if (req.query.status) args.status = req.query.status;
     if (req.query.page) args.page = req.query.page;
 
-    Ticket.all(args, function(err, tickets){
+    Ticket.all(req.user._id, args, function(err, tickets){
       if(err) return res.json({error: 'Error getting tickets'}, 400);
       res.json(tickets);
     });
@@ -29,12 +29,12 @@ module.exports = function(app) {
   *  marked as :status and :page. Uses the Mongoose Populate method
   *  to fill in information for the ticket user. */
   app.get('/api/tickets/mine', function(req, res) {
-    var status, page;
+    var args = {};
 
-    status = req.query.status ? req.query.status : 'open';
-    page = req.query.page ? req.query.page : 1;
+    if (req.query.status) args.status = req.query.status;
+    if (req.query.page) args.page = req.query.page;
 
-    Ticket.mine(req.user.id, status, page, function(err, tickets){
+    Ticket.mine(req.user._id, args, function(err, tickets){
       if(err) return res.json({error: 'Error getting tickets'}, 400);
       res.json(tickets);
     });
@@ -51,10 +51,36 @@ module.exports = function(app) {
   *  adds a ticket to the database */
   app.post('/api/tickets', function(req, res) {
     var data = req.body;
-    data.user = req.user.id;
+    data.user = req.user._id;
     Ticket.create(data, req.user, function(err, ticket) {
       if(err) return res.json({error: 'Missing required attributes'}, 400);
       res.json(ticket, 201);
+    });
+  });
+
+  /**
+   * Follow a ticket
+   *
+   * Adds user to the tickets participating set
+   */
+
+  app.post('/api/tickets/:ticketID/follow', function(req, res) {
+    Ticket.follow(req.user._id, req.ticket._id, function(err) {
+      if(err) return res.json({participating: false, error: 'Could not follow'}, 400);
+      res.json({participating: true}, 201);
+    });
+  });
+
+  /**
+   * Unfollow a ticket
+   *
+   * Removes a user from the tickets participating set
+   */
+
+  app.del('/api/tickets/:ticketID/follow', function(req, res) {
+    Ticket.unfollow(req.user._id, req.ticket._id, function(err) {
+      if(err) return res.json({participating: true, error: 'Could not unfollow'}, 400);
+      res.json({participating: false}, 200);
     });
   });
 

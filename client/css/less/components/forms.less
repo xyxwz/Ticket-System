@@ -1,0 +1,108 @@
+// --------------------------------------
+// Forms
+// --------------------------------------
+
+.task-form,
+.ticket-form {
+
+  .wrapper {
+    padding: 20px;
+
+    .wrap {
+      position: relative;
+      margin-bottom: 20px;
+      .box-sizing(border-box);
+
+      input[type="text"] {
+        font-size: 18px;
+        line-height: 1.3;
+        font-weight: 400;
+        padding: 6px;
+      }
+
+      textarea {
+        border-radius: 2px;
+      }
+    }
+  }
+
+}
+
+.task-form,
+.ticket-form,
+.comment-form {
+
+  .actions {
+    margin-top: 20px;
+    .clearfix();
+
+    .left {
+      float: left;
+    }
+
+    .right {
+      float: right;
+    }
+
+    a {
+      color: @lightGray;
+      text-decoration: none;
+
+      &:hover {
+        color: @active;
+      }
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        float: right;
+        margin: 0;
+      }
+
+      li button[data-action] {
+        margin-left: 12px;
+      }
+    }
+  }
+
+  input[type="text"] {
+    font-family: @sans-serif;
+    width: 100%;
+    padding: 4px;
+    border: 1px solid @border;
+    border-radius: 2px;
+    .box-sizing(border-box);
+  }
+
+  textarea {
+    padding: 8px;
+    font-family: @sans-serif;
+    line-height: 1.5;
+    margin: 0;
+    border: 1px solid @border;
+    width: 100%;
+    resize: none;
+    .box-sizing(border-box);
+
+    &:focus {
+      background: #fff;
+    }
+  }
+}
+
+// Default height for ticket and comment forms
+.ticket-form {
+  textarea {
+    height: 168px;
+  }
+}
+
+.comment-form {
+  textarea {
+    height: 64px;
+  }
+}

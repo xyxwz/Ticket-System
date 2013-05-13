@@ -6,7 +6,7 @@ var should = require("should"),
     mongoose = require("mongoose");
 
 var server = app(),
-    Comment = require('../../models/comment')(server),
+    Comment = server.models.Comment,
     Notification = require('../../models/helpers/notifications');
 
 /* Comment Model Unit Tests */
@@ -16,46 +16,44 @@ describe('comment', function(){
   // Hold values used in async hooks
   var fixtures;
 
-  before(function(done){
-    helper.Setup(server, function(err, data){
-      if(err) return done(err);
+  // Get our fixtures from the helper module
+  before(function(done) {
+    helper.Setup(server, function(err, data) {
       fixtures = data;
-      done();
+      return done(err);
     });
   });
 
-  after(function(done){
-    helper.Teardown(server, function(err){
-      if(err) return done(err);
-      fixtures = {};
-      done();
+  after(function(done) {
+    helper.Teardown(server, function(err) {
+      return done(err);
     });
   });
+
 
   /* Validations */
   describe('validations', function(){
+    var ticket, user;
 
-    describe('required fields', function(){
-      var ticket, user;
-
-      before(function() {
-        ticket = fixtures.tickets[0];
-        user = fixtures.users[0];
-      });
-
-      it("should enforce required fields", function(done){
-        Comment.create(ticket, user, {}, function(err){
-          // Comment
-          should.exist(err.errors.comment);
-          err.errors.comment.type.should.equal("required");
-          // User
-          should.exist(err.errors.user);
-          err.errors.user.type.should.equal("required");
-          done();
-        });
-      });
+    before(function() {
+      ticket = fixtures.tickets[0];
+      user = fixtures.users[0];
     });
 
+    it("should enforce required fields", function(done){
+      Comment.create(ticket, user, {}, function(err){
+        var keys = Object.keys(err.errors);
+
+        // Comment
+        keys[0].split('.')[2].should.eql('comment');
+        err.errors[keys[0]].type.should.equal("required");
+
+        // User
+        keys[1].split('.')[2].should.eql('user');
+        err.errors[keys[1]].type.should.equal("required");
+        done();
+      });
+    });
   }); // close validations
 
 
@@ -72,7 +70,7 @@ describe('comment', function(){
       before(function(done){
         schemas.Ticket.findOne({_id:fixtures.tickets[0].id})
         .populate('comments.user')
-        .run(function(err, model){
+        .exec(function(err, model){
           if(err) return done(err);
 
           ticket = model;
@@ -109,7 +107,7 @@ describe('comment', function(){
 
         schemas.Ticket.findOne({_id:fixtures.tickets[0].id})
         .populate('comments.user')
-        .run(function(err, model){
+        .exec(function(err, model){
           if(err) return done(err);
 
           ticket = model;
@@ -154,7 +152,7 @@ describe('comment', function(){
 
         schemas.Ticket.findOne({_id:fixtures.tickets[0].id})
         .populate('comments.user')
-        .run(function(err, model){
+        .exec(function(err, model){
           if(err) return done(err);
 
           ticket = model;
@@ -171,7 +169,7 @@ describe('comment', function(){
       });
 
       it('should destroy a comment', function(done){
-        schemas.Ticket.findOne({_id:fixtures.tickets[0].id}).run(function(err, ticket){
+        schemas.Ticket.findOne({_id:fixtures.tickets[0].id}).exec(function(err, ticket){
           if(err) return done(err);
           ticket.comments.length.should.equal(0);
           done();
@@ -194,7 +192,7 @@ describe('comment', function(){
    * Static Methods
    * ------------------------------- */
   describe('static methods', function(){
-    var comments = new Array();
+    var comments = [];
 
 
     // Insert a Test Comment
@@ -208,7 +206,7 @@ describe('comment', function(){
 
       schemas.Ticket.findOne({_id:fixtures.tickets[0].id})
       .populate('comments.user')
-      .run(function(err, model){
+      .exec(function(err, model){
         if(err) return done(err);
 
         ticket = model;
@@ -259,7 +257,7 @@ describe('comment', function(){
         schemas.Ticket.findOne({_id:fixtures.tickets[0].id})
         .populate('user')
         .populate('comments.user')
-        .run(function(err, model){
+        .exec(function(err, model){
           if(err) return done(err);
           Comment.find(model.comments, comments[0].id, function(err, model){
             if(err) return done(err);
@@ -300,7 +298,7 @@ describe('comment', function(){
         Notification.nowParticipating(server.redis, fixtures.users[0].id, fixtures.tickets[0].id, function(err) {
           schemas.Ticket.findOne({_id:fixtures.tickets[0].id})
           .populate('comments.user')
-          .run(function(err, model){
+          .exec(function(err, model){
             if(err) return done(err);
 
             ticket = model;
@@ -318,7 +316,7 @@ describe('comment', function(){
       it('should successfully create a comment', function(done){
         // Perform a query to ensure comment is added
         schemas.Ticket.findOne({_id:ticket.id})
-        .run(function(err, model){
+        .exec(function(err, model){
           model.comments.length.should.equal(2);
           done();
         });
@@ -339,7 +337,7 @@ describe('comment', function(){
       it('should err if validations fail', function(done){
         data.comment = null;
         Comment.create(ticket, user, data, function(err, ticket){
-          should.exist(err.errors.comment);
+          should.exist(err);
           done();
         });
       });

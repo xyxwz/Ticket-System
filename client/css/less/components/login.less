@@ -1,0 +1,114 @@
+// --------------------------------------
+// Login Screen
+// --------------------------------------
+
+.login {
+  .at2x('/img/assets/pw_maze_black.png', 46px, 23px);
+  background-color: @black;
+  background-repeat: repeat;
+
+  .logo {
+    display: block;
+    margin: 50px auto 0 auto;
+    text-indent: -9999em;
+    width: 400px;
+    height: 105px;
+    .at2x('/img/assets/logo-full.png', 400px, 105px);
+  }
+
+  .login-form {
+    color: @lightBlack;
+    width: 400px;
+    margin: 80px auto 0 auto;
+    text-align: center;
+
+    p {
+      margin: 0;
+      color: darken(@white, 10%);
+      line-height: 1.5;
+      font-size: 18px;
+      font-weight: 200;
+      text-align: left;
+    }
+
+    .btn-wrapper {
+      display: block;
+      margin: 25px auto;
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+      padding: 4px;
+    }
+  }
+
+  // Login Button
+  .btn-auth {
+    position: relative;
+    display: block;
+    text-transform: uppercase;
+    text-align: center;
+    height: 22px;
+    padding: 0 1em;
+    border-radius: 2px;
+    margin: 0;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 22px;
+    white-space: nowrap;
+    cursor: pointer;
+    color: @white;
+    background: #fff;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    /* iOS */
+    -webkit-appearance: none; /* 1 */
+    /* IE6/7 hacks */
+    *overflow: visible;  /* 2 */
+    *display: inline; /* 3 */
+    *zoom: 1; /* 3 */
+
+    &:hover,
+    &:focus,
+    &:active {
+      text-decoration: none;
+    }
+
+    &.large {
+      height: 36px;
+      line-height: 36px;
+      font-size: 20px;
+
+      &:before {
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    &::-moz-focus-inner {
+      border: 0;
+      padding: 0;
+    }
+
+    &.btn-txssc {
+      border-color: darken(@active, 5%);
+      .vertical-gradient(darken(@activeBright, 5%), @active);
+
+      &:hover,
+      &:focus {
+        border-color: darken(@active, 5%);
+        .vertical-gradient(darken(@activeBright, 8%), darken(@active, 8%));
+      }
+
+      &:active {
+        border-color: darken(@active, 5%);
+        .vertical-gradient(darken(@activeBright, 5%), @active);
+      }
+
+      &.large:before {
+        background-position: 0 0;
+      }
+    }
+  }
+
+}

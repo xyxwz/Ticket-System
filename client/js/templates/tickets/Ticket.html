@@ -1,43 +1,43 @@
-<!-- Ticket Creator's Avatar -->
-<div class="two columns avatar clearfix">
-  <a class="right shadow paper" href="#">
-    <span class="tape"></span>
-    <img src="{{user.avatar}}" alt="{{user.name}}">
-    <span class="written">{{user.shortname}}</span>
-  </a>
-</div>
+<div class="ticket-content">
+  <div class="header {{statusClass}}">
+    <hgroup>
+      <h2 class="title">{{title}}</h2>
+      <h4>{{user.name}}</h4>
+    </hgroup>
 
-<!-- Ticket Body -->
-<div class="ten columns ticketInfo shadow paper">
-  <!-- Ticket Header -->
-  <div class="ticketHeader written clearfix {{notify}}">
-    <span class="tack {{tackClass}}"></span>
+    <div class="attrs">
 
-    <!-- Ticket Title -->
-    <div class="ticketName left">
-      <h2>{{title}}</h2>
+      {{#fullDate}}
+        <time title="{{hoverTime}}" datetime="{{datetime}}">{{fullDate}}</time>
+      {{/fullDate}}
+
+      {{^fullDate}}
+        <time title="{{hoverTime}}" datetime="{{datetime}}">{{cleanTime}}</time>
+      {{/fullDate}}
+
+      {{#showTags}}
+        <ul class="tags"></ul>
+      {{/showTags}}
+
     </div>
 
-    <!-- Ticket Assigned To -->
-    <ul class="right clearfix">
-    </ul>
-  </div> <!-- end of ticketHeader -->
+    {{#isEditable}}
+      <ul class="edit-options">
+        {{#isAssignable}}
+          <li data-role="assign-ticket"><a data-action="assign" href="#"><i class="icon-pushpin"></i></a></li>
+        {{/isAssignable}}
+        {{#isClosable}}
+          <li data-role="close-ticket"><a data-action="close" href="#"><i class="icon-ok"></i></a></li>
+        {{/isClosable}}
+        <li><a data-action="edit" href="#"><i class="icon-edit"></i></a></li>
+        <li><a data-action="delete" href="#"><i class="icon-trash"></i></a></li>
+      </ul>
+    {{/isEditable}}
+  </div>
 
-  <!-- Ticket Body -->
-  <div class="ticketBody written md">
-    {{{description}}}
-  </div> <!-- end of ticketBody -->
-
-  <!-- Ticket Comment Count -->
-  <ul class="ticketMeta">
-    <li class="chat written commentCount">{{comments}}</li>
-  </ul>
-
-</div> <!-- end of ticketInfo -->
-
-{{#showAdmin}}
-<!-- Admin Ticket Options -->
-<ul id="ticketOptions" class="ten columns offset-by-two written">
-  <li id="closeTicket" class="red shadow">Close Ticket</li>
-</ul>
-{{/showAdmin}}
+  {{#description}}
+    <div class="content md">
+      {{{description}}}
+    </div>
+  {{/description}}
+</div>

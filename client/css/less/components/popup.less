@@ -1,0 +1,98 @@
+// --------------------------------------
+// Popup
+// --------------------------------------
+
+[role='popup'] {
+  position: absolute;
+  bottom: 0;
+  right: 20px;
+  width: 450px;
+  height: 425px;
+  border: 1px solid darken(@borderDark, 22%);
+  border-bottom: none;
+  background: @white;
+  .box-shadow(rgba(0,0,0,0.2) 0 2px 6px);
+
+  // Header
+  .header {
+    .clearfix;
+    position: relative;
+    padding: 8px 20px;
+    background-color: @mainHeaderBg;
+    border-bottom: 1px solid @border;
+
+    .title {
+      float: left;
+      margin: 0;
+      padding: 5px 0 4px 0;
+      font-size: 22px;
+      line-height: 22px;
+      font-weight: 400;
+      color: @lightGray;
+      text-transform: uppercase;
+    }
+
+    span {
+      display: block;
+      position: absolute;
+      right: 20px;
+      padding: 5px;
+      font-size: 18px;
+      line-height: 22px;
+      font-weight: 700;
+      color: @lightGray;
+      cursor: pointer;
+    }
+  }
+
+  // Wrapper
+  .wrapper {
+
+    [role='description'] {
+      height: 220px;
+      border: 1px solid @border;
+      outline: none;
+      padding: 8px;
+      font-family: @sans-serif;
+      line-height: 1.5;
+    }
+
+  }
+
+  // Footer
+  .footer {
+    .clearfix;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 20px 20px 20px;
+
+    .left { float: left; }
+    .right { float: right; }
+
+    a {
+      color: @lightGray;
+      text-decoration: none;
+      display: inline-block;
+      line-height: 2.1;
+
+      &:hover { color: @active; }
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        float: right;
+        margin: 0;
+      }
+
+      li button[data-action] {
+        margin-left: 12px;
+      }
+    }
+  }
+}

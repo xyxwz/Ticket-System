@@ -14,87 +14,28 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       var self = this,
           currentUser = ticketer.currentUser;
 
-      _.bindAll(this);
-
-      this.validate = this._validate;
-
-      // Set an attribute for the socket.id
-      ticketer.sockets.sock.on('connect', function() {
-        self.set({socket: ticketer.sockets.id}, {silent: true});
+      this.on('error', function() {
+        ticketer.EventEmitter.trigger('error', "Error saving ticket");
       });
 
-      this.set({socket: ticketer.sockets.id}, {silent: true});
-
-
-      this.comments = new Comments();
-      this.comments.url = '/api/tickets/' + this.id + '/comments';
-
-      this.on("change", function() {
-        self.comments.url = '/api/tickets/' + this.id + '/comments';
-      });
-
-      /**
-       * Set participating status on `open` tickets when a `assignedUser` of
-       * `unassignedUser` event is triggered
-       */
-
-      if (this.get('status') === 'open') {
-        this.on('assignedUser', function() {
-          var assigned = _.include(self.get('assigned_to'), currentUser.id);
-          if(assigned) self.set('participating', true);
-        });
-
-        this.on('unassignedUser', function() {
-          var assigned = _.include(self.get('assigned_to'), currentUser.id);
-          if(!assigned) self.set('participating', false);
-        });
-      }
-
-      this.on('sync', function() {
-        if(self.get('user').id === currentUser.id) self.set('participating', true);
-      });
-
-      this.comments.on('comments:add', function(comment) {
-        if(comment.get('user').id === currentUser.id) self.set('participating', true);
-      });
-
-      this.on('error', function(model, err) {
-        ticketer.EventEmitter.trigger('error', err);
-      });
-
-      // When a ticket is closed move it to the closed tickets collection
+      // When a ticket is closed remove it from the collection
       this.on("change:status", function(model, status) {
-        if(status === 'closed') {
-          ticketer.collections.openTickets.remove(this);
-          ticketer.collections.closedTickets.add(this);
+        if(status === 'closed' && typeof model.collection !== 'undefined') {
+          model.collection.remove(model.id);
         }
       });
-
-
     },
 
-    /*
-     * Returns if the user is participating in the ticket
-     */
-    participating: function() {
-      if(this.get('participating') && this.get('participating') === true) {
-        return true;
-      }
-      else {
-        return false;
-      }
+    isOpen: function() {
+      return this.get('status') === 'open';
     },
 
     /*
      * Returns if the user has a notification for the ticket
      */
+
     notification: function() {
-      if(this.get('notification') && this.get('notification') === true) {
-        return true;
-      }
-      else {
-        return false;
-      }
+      return this.get('notification') && this.get('notification') === true;
     },
 
     /*
@@ -102,11 +43,11 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
      */
     removeNotification: function() {
       this.unset('notification');
-      ticketer.EventEmitter.trigger('ticket:notification:remove', this.id);
+      ticketer.EventEmitter.trigger('notification:remove', this.id);
     },
 
     /* Validate the model to ensure that the title and body have content */
-    _validate: function(attrs) {
+    validate: function(attrs) {
       if(typeof(attrs.title) !== 'undefined' && !attrs.title.replace(/ /g, '').length) {
         return "You must enter a ticket title.";
       }
@@ -131,43 +72,55 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
      *    :callback - An error callback
      */
     close: function(callback) {
-      var self = this;
-
       this.save({ status: 'closed' }, {
-        error: callback,
-        success: function() {
-          self.unbind('assignedUser', self.collection.setMyTickets);
-          self.unbind('unassignedUser', self.collection.setMyTickets);
-        }
-
+        error: callback
       });
-
     },
 
-    /* Assigns a User to the ticket
-     *    :id       -  A user model id to assign
-     *    :callback - An error callback
+    /**
+     * Sets a user to participating
      */
-    assignUser: function(id, callback) {
-      var array = _.clone(this.get('assigned_to'));
+    participate: function(id, callback) {
+      var array = _.clone(this.get('participants'));
       array.push(id);
-      this.set({assigned_to: _.uniq(array)}, {silent: true});
-      this.trigger('assignedUser', this);
+      this.set({participants: _.uniq(array)});
       this.save(null, { error: callback });
     },
 
-    /* Unassign a User from the ticket
-     *    :id       - A user model id to remove
-     *    :callback - An error callback
-     */
-    unassignUser: function(id, callback) {
-      var array = _.clone(this.get('assigned_to'));
+    stopParticipating: function(id, callback) {
+      var array = _.clone(this.get('participants'));
       var newArray = _.reject(array, function(user) {
         return user === id;
       });
-      this.set({assigned_to: _.uniq(newArray)}, {silent: true});
-      this.trigger('unassignedUser', this);
+
+      this.set({participants: _.uniq(newArray)});
       this.save(null, { error: callback });
+    },
+
+    follow: function() {
+      var self = this,
+          clone = _.clone(this);
+
+      clone.url = "/api/tickets/" + clone.get('id') + '/follow';
+      Backbone.sync("create", clone);
+    },
+
+    unfollow: function() {
+      var self = this,
+          clone = _.clone(this);
+
+      clone.url = "/api/tickets/" + clone.get('id') + '/follow';
+      Backbone.sync("delete", clone);
+    },
+
+    /**
+     * Assign user with `id`
+     *
+     * @param {String} id
+     */
+
+    assignUser: function(id) {
+      this.save({assigned_to: [id]});
     },
 
     /* If the ticket is closed take the difference of the created time,

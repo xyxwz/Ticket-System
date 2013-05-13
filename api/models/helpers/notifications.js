@@ -35,9 +35,9 @@ exports.isParticipating = function(redis, user, ticket, cb) {
 exports.nowParticipating = function(redis, user, ticket, cb) {
   var ticketRef = 'ticket:' + ticket + P_NAMESPACE;
 
-  redis.SADD(ticketRef, user, function(err) {
+  redis.SADD(ticketRef, user, function(err, status) {
     if(err) return cb('Error adding user to participating');
-    return cb(null, true);
+    return cb(null, !!status);
   });
 };
 
@@ -49,9 +49,23 @@ exports.nowParticipating = function(redis, user, ticket, cb) {
 exports.removeParticipating = function(redis, user, ticket, cb) {
   var ticketRef = 'ticket:' + ticket + P_NAMESPACE;
 
-  redis.SREM(ticketRef, user, function(err) {
+  redis.SREM(ticketRef, user, function(err, status) {
     if(err) return cb('Error removing user from participating');
-    return cb(null, true);
+    return cb(null, !!status);
+  });
+};
+
+/*
+ * Reset a ticket's participating set
+ */
+exports.resetParticipating = function(redis, data, ticket, cb) {
+  var ticketRef = 'ticket:' + ticket + P_NAMESPACE;
+
+  redis.DEL(ticketRef, function(err) {
+    if(err || !data.length) return cb(err);
+    redis.SADD(ticketRef, data, function(err) {
+      return cb(err);
+    });
   });
 };
 
@@ -93,7 +107,6 @@ exports.pushNotification = function(redis, user, ticket, cb) {
 
   redis.SMEMBERS(ticketRef, function(err, users) {
     if(err) return cb('Error getting participating users');
-
     users.forEach(function(userID) {
       if(userID.toString() !== user.toString()) {
         tempUserRef = 'user:' + userID + ':notifications';

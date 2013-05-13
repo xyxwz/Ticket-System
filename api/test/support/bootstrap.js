@@ -1,14 +1,14 @@
-var express = require('express'),
+var globalApp,
+    express = require('express'),
     mongoose = require('mongoose'),
     redis = require('redis'),
     events = require('events').EventEmitter;
-
 
 process.env.NODE_ENV = "test";
 
 
 function createServer(){
-  var app = express.createServer(),
+  var app = express(),
       lib = require('../../lib')(app);
 
   // Load DB Connection
@@ -34,7 +34,14 @@ function createServer(){
   app.models = require('../../models')(app);
   app.controllers = require('../../controllers')(app);
 
-  return app.listen(3000);
+  app.listen(3000);
+  return app;
 }
 
-exports.app = createServer;
+function getApp() {
+  globalApp = globalApp || createServer();
+
+  return globalApp;
+}
+
+exports.app = getApp;

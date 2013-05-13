@@ -3,7 +3,6 @@ var express = require('express'),
     RedisStore = require('connect-redis')(express),
     url = require('url'),
     redis = require('redis'),
-    io = require('socket.io'),
     passport = require('passport'),
     Emitter = require('node-redis-events');
 
@@ -11,14 +10,14 @@ var path = __dirname, lib, app, port;
 
 /* Initial Bootstrap */
 exports.boot = function(params){
-  app = express.createServer();
+  app = express();
   require(path + '/conf/configuration')(app,express);
 
   // Bootstrap application
   bootApplication(app);
   bootModels(app);
   bootControllers(app);
-  socketBindings(app);
+  sourceEvents(app);
   return app;
 };
 
@@ -47,6 +46,7 @@ function bootApplication(app) {
 
   app.use(passport.initialize());
   app.use(passport.session());
+  app.use('/events', lib.middleware.SSE);
   app.use('/api', lib.middleware.CORS); // Allow CORS
   app.use('/api', lib.middleware.Auth);
   app.use('/api', lib.middleware.Error);
@@ -81,19 +81,9 @@ function bootControllers(app) {
   app.controllers = require('./controllers')(app);
 }
 
-// Include Socket.io Bindings
-function socketBindings(app) {
-  app.socket = io.listen(app);
-  app.socket.enable('browser client minification');
-  app.socket.enable('browser client etag');
-  app.socket.enable('browser client gzip');
-  app.socket.set('log level', 1);
-  app.socket.set('transports', [
-    'websocket',
-    'xhr-polling'
-  ]);
-
-  app.socketBindings = require('./sockets')(app);
+// Include Server Sent Event Bindings
+function sourceEvents(app) {
+  app.sse = require('./events')(app);
 }
 
 // allow normal node loading if appropriate

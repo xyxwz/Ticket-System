@@ -1,63 +1,66 @@
-/* TxSSC Ticketer - An IT support ticket system
-   http://txssc.txstate.edu
+/**
+ * TxSSC Ticketer - An IT support ticket system
+ * http://txssc.txstate.edu
+ *
+ * The main entry point to the `ticketer` application
  */
 
 define([
   'underscore',
   'backbone',
+  'support/PanelController',
   'collections/Tickets',
   'collections/Comments',
   'collections/Users',
+  'collections/Projects',
+  'collections/Lists',
   'routers/Ticketer',
-  'views/headers/MainHeaderView',
-  'views/headers/BackHeaderView',
   'views/alerts/ErrorView',
-  'views/alerts/AlertView',
   'views/alerts/NotificationView',
-  'SocketEvents',
-  'AppCache',
-  'Sync',
-  'socket.io'
+  'EventSource',
+  'ServerEvents',
+  'Shortcuts',
+  'Sync'
 ], function(
   _,
   Backbone,
+  PanelController,
   Tickets,
   Comments,
   Users,
+  Projects,
+  Lists,
   Ticketer,
-  MainHeaderView,
-  BackHeaderView,
   ErrorView,
-  AlertView,
   NotificationView,
-  SocketEvents,
-  AppCache,
+  EventSource,
+  ServerEvents,
+  Shortcuts,
   Sync
 ) {
 
   $(function() {
 
-    /* Begin AppCache Monitoring */
-    new AppCache();
-
     /*
      * ticketer - our namespace object, create
      * the object and attach functions and models to it
      */
-    window.ticketer = window.ticketer || {
-      routers: {
-        ticketer: new Ticketer()
-      },
-      views: {
-        headers: {
-          main: MainHeaderView,
-          back: BackHeaderView
-        }
-      },
-      sockets: {
-        sock: io.connect()
-      }
-    };
+    window.ticketer = window.ticketer || {};
+
+    /**
+     * Set Color Array on Ticketer Object
+     */
+
+    ticketer.colors = [
+      { value: 0, name: 'lightOrange' },
+      { value: 1, name: 'blue' },
+      { value: 2, name: 'red' },
+      { value: 3, name: 'green' },
+      { value: 4, name: 'teal' },
+      { value: 5, name: 'pink' },
+      { value: 6, name: 'brightGreen' },
+      { value: 7, name: 'tan' }
+    ];
 
     /**
      * Create a global namespaced event emitter to deal with
@@ -73,73 +76,46 @@ define([
      * Load Global Collections after EventEmitter
      */
     ticketer.collections = {
-      openTickets: new Tickets(),
-      closedTickets: new Tickets(),
-      admins: new Users()
+      users: new Users(),
+      lists: new Lists()
+    };
+
+    ticketer.routers = {
+      ticketer: new Ticketer()
     };
 
     /**
      * Create new instances of alert views and start event bindings
      */
-    ticketer.views.alerts = {
-      error: new ErrorView(),
-      alert: new AlertView(),
-      notifications: new NotificationView()
-    };
-
-    /**
-     * Initialize Socket Event Handlers
-     */
-    new SocketEvents();
-
-    /**
-     * Override the closedTicket collection's comparator
-     */
-    ticketer.collections.closedTickets.comparator = function(collection) {
-      var datum = new Date(collection.get('closed_at'));
-      var closed_at = datum.getTime();
-      return -closed_at;
-    };
-
-    /**
-     * Using Socket Authentication get the server-side
-     * session info from the socket and set the currentUser
-     * attribute. Bootstrap models over the socket by sending
-     * a 'tickets:fetch' event.
-     */
-    ticketer.sockets.sock.on('session:info', function(message) {
-      if(!message.user) {
-        self.location.href = '/login';
+    ticketer.views = {
+      alerts: {
+        error: new ErrorView(),
+        notifications: new NotificationView()
       }
+    };
 
-      ticketer.currentUser = message.user;
-      ticketer.sockets.id = ticketer.sockets.id || this.socket.sessionid;
+    // Override Backbone Sync
+    new Sync();
 
-      // Reset the admins collection
-      ticketer.collections.admins.reset(message.admins);
+    /**
+     * Initialize an EventSource listener
+     */
+    ticketer.SSE = new EventSource('/events', { withCredentials: true });
+    new ServerEvents();
 
-      // Emit a `tickets:fetch` event to load ticket data
-      ticketer.sockets.sock.emit('tickets:fetch');
+    // Fetch projects and lists
+    ticketer.collections.lists.fetch();
 
-      // Set Default User Avatar
-      if (!ticketer.currentUser.avatar) ticketer.currentUser.avatar = "/img/avatars/65x65.gif";
+    // Fetch Users
+    ticketer.collections.users.fetch();
 
-      // Override Backbone Sync
-      new Sync();
+    // Start Backbone History
+    try {
+      Backbone.history.start();
+    } catch (x) {}
 
-      // Start Backbone History
-      try {
-        Backbone.history.start();
-      } catch (x) {}
-
-      // Fetch the first page of closed tickets after the page history starts
-      ticketer.collections.closedTickets.fetch({ data: { page: 1, status: 'closed' } });
-    });
-
-    ticketer.sockets.sock.on('error', function() {
-      self.location.href = '/login';
-    });
-
+    // Bind Keyboard Shortcuts
+    new Shortcuts();
 
     /* Check for Desktop Notification Support
      * and permissions. If supported and no permissions

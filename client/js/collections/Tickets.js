@@ -2,52 +2,56 @@
  * tickets */
 
 define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket) {
+
   var Tickets = Backbone.Collection.extend({
-
     model: Ticket,
-    url: '/api/tickets',
 
-    initialize: function() {
-      var self = this;
+    initialize: function(models, options) {
+      options = options || {};
 
-      _.bindAll(this);
-
-      this.comparator = function(model) {
-        return model.get("opened_at");
+      this.url = options.url || '/api/tickets';
+      this.comparator = options.comparator || function(model) {
+        var date = new Date(model.get("opened_at"));
+        return -date.getTime();
       };
 
-      this.page = 1;
-
-      this.on('reset', this.loadAllComments);
-      this.on('add', this.loadComment);
-
       /* Global EventEmitter bindings */
-      ticketer.EventEmitter.on('ticket:update', this.updateTicket);
-      ticketer.EventEmitter.on('ticket:remove', this.removeTicket);
-      ticketer.EventEmitter.on('comment:new', this.addComment);
-      ticketer.EventEmitter.on('comment:update', this.updateComment);
-      ticketer.EventEmitter.on('comment:remove', this.removeComment);
+      ticketer.EventEmitter.on('comment:new comment:update', this.addNotification, this);
+      ticketer.EventEmitter.on('ticket:update', this.updateTicket, this);
+      ticketer.EventEmitter.on('ticket:remove', this.removeTicket, this);
     },
 
-    loadAllComments: function() {
-      var self = this;
+    /**
+     * Reset the collection and clear all global event bindings
+     */
 
-      this.each(function(ticket) {
-        self.loadComment(ticket);
-      });
+    destroy: function() {
+      this.reset();
+      ticketer.EventEmitter.off(null, null, this);
+      return null;
     },
 
-    loadComment: function(model) {
-      model.comments.fetch();
+    /**
+     * Add a notification to ticket with id `data.ticket`
+     *
+     * @param {Object} data
+     */
+
+    addNotification: function(data) {
+      var obj = _.clone(data),
+          model = this.get(obj.ticket);
+
+      if(model && obj.notification) {
+        model.set({notification: obj.notification});
+      }
     },
 
-    filter: function(name) {
-      return _(this.models.filter(function(ticket) {
-        return ticket.get(name) === true;
-      }));
-    },
+    /**
+     * Update the ticket with id `attrs.id` if found in the collection
+     *
+     * @param {Object} attrs
+     */
 
-    /* Update attributes on a changed model */
     updateTicket: function(attrs) {
       var obj = _.clone(attrs),
           model = this.get(obj.id);
@@ -57,56 +61,15 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       }
     },
 
-    /* Destroy a ticket on the ticket:remove event */
+    /**
+     * Remove the ticket with id `ticket` if in this collection
+     *
+     * @param {String} ticket
+     */
+
     removeTicket: function(ticket) {
       this.remove(ticket);
-    },
-
-    /* Add a comment to the correct ticket on `comment:new` */
-    addComment: function(attrs) {
-      var obj = _.clone(attrs),
-          model = this.get(obj.ticket);
-
-      if(model) {
-        delete obj.ticket;
-
-        if(obj.notification) {
-          model.set({ 'notification': obj.notification });
-          delete obj.notification;
-        }
-
-        model.comments.add(obj);
-      }
-    },
-
-    /* Update a comment on `comment:update` */
-    updateComment: function(attrs) {
-      var obj = _.clone(attrs),
-          model = this.get(obj.ticket);
-
-      if(model) {
-        delete obj.ticket;
-
-        if(attrs.notification) {
-          model.set({ 'notification': obj.notification });
-          delete obj.notification;
-        }
-
-        var comment = model.comments.get(obj.id);
-        comment.set(comment.parse(obj));
-      }
-    },
-
-    /* Remove a comment on `comment:remove` */
-    removeComment: function(attrs) {
-      var obj = _.clone(attrs),
-          model = this.get(obj.ticket);
-
-      if(model) {
-        model.comments.remove(obj.comment);
-      }
     }
-
   });
 
   return Tickets;

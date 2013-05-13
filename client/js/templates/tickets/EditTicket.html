@@ -1,12 +1,11 @@
-<div class="ticketEdit">
-  <form action="#" class="clearfix">
-  	<div class="outerWrap">
-    	<textarea name="description" class="written">{{description}}</textarea>
-	  </div>
-
-    <ul class="optionButtons clearfix">
-      <li><button id="saveTicket" class="written green">Save</button></li>
-      <li><button id="cancelEdit" class="written red">Cancel</button></li>
+<div class="ticket-form">
+	<div class="wrap">
+  	<textarea name="description">{{description}}</textarea>
+  </div>
+  <div class="actions">
+    <ul class="right">
+      <li><button data-action="save">Save</button></li>
+      <li><button data-action="cancel" class="cancel">Cancel</button></li>
     </ul>
-  </form>
+  </div>
 </div>

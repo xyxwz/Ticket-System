@@ -1,0 +1,163 @@
+// --------------------------------------
+// Sidebar
+// --------------------------------------
+
+.sidebar {
+  .options {
+    margin: 15px 0;
+  }
+
+  .option-set {
+    margin: 0;
+    padding: 0 0 25px 0;
+    color: @sidebarText;
+    border-bottom: 1px solid @sidebarSeperator;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .title {
+      padding: 8px 20px;
+      margin: 0;
+      font-weight: 400;
+      text-transform: uppercase;
+      border-bottom: 1px solid @sidebarSeperator;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .group {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+      li {
+        margin: 0;
+        padding: 0;
+        .clearfix;
+
+        a {
+          display: block;
+          margin: 0;
+          padding: 8px 20px;
+          font-weight: 400;
+          color: @sidebarText;
+          text-decoration: none;
+          cursor: pointer;
+          line-height: 1em;
+
+          i {
+            margin-right: 3px;
+          }
+
+          .count {
+            float: right;
+            width: 30px;
+            height: 15px;
+            margin-top: -1px;
+            display: block;
+            text-align: center;
+            border-radius: 20px;
+            color: @white;
+            font-size: 14px;
+            line-height: 14px;
+            text-shadow: none;
+            padding: 4px 0 2px 0;
+            text-align: center;
+            background: @notifyRed;
+            text-shadow: 0 1px 1px rgba(41, 29, 36, 0.2);
+          }
+        }
+
+        &.active {
+          background: darken(@sidebarBg, 5%);
+
+          a {
+            color: @white;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Tag list sidebar widget
+.sidebar .tag-list-widget {
+  .title a {
+    float: right;
+    color: @sidebarText;
+    font-size: 12px;
+    line-height: 18px;
+    text-decoration: none;
+
+    &:visited {
+      color: @sidebarText;
+    }
+
+    &:hover {
+      color: @active;
+    }
+  }
+
+  .tags {
+    .editable {
+      position: relative;
+      width: 100%;
+      .clearfix;
+
+      .close {
+        margin: 0;
+        float: right;
+        font-size: 14px;
+        line-height: 28px;
+        font-family: Arial;
+        font-weight: 700;
+        .opacity(40);
+
+        &:hover {
+          .opacity(88);
+        }
+      }
+
+      input {
+        width: 80%;
+        border: none;
+        padding: 4px;
+        color: darken(@darkGray, 10%);
+        border-radius: 2px;
+        background: @sidebarText;
+        font-family: @sans-serif;
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+
+    li {
+      cursor: pointer;
+      padding: 4px 20px;
+      font-weight: 400;
+      text-shadow: 0 1px 1px rgba(41, 29, 36, 0.8);
+      .box-sizing(border-box);
+
+      &.active {
+        color: @white;
+      }
+
+      &.empty {
+        cursor: auto;
+      }
+
+      i {
+        margin-left: -2px;
+      }
+
+      span {
+        display: inline-block;
+        margin-left: 5px;
+      }
+    }
+  }
+}

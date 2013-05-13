@@ -1,147 +1,83 @@
-/* FullHeaderView
- * Renders a header with delegated events
+/**
+ * View Dependencies
  */
 
-define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/headers/MainHeader.html', 'text!templates/headers/AssignPullTab.html',
-'outsideEvents', 'jqueryui/draggable'],
-function($, _, Backbone, BaseView, mustache, HeaderTmpl, PullTabTmpl) {
+define(['jquery', 'underscore', 'mustache', 'BaseView',
+  'views/widgets/TagFormView',
+  'views/tickets/TicketFormView',
+  'text!templates/headers/MainHeader.html',
+  'text!templates/headers/UserOptions.html',
+  'dropdowns'],
+function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_Options) {
 
-  var MainHeadersView = BaseView.extend({
+  /**
+   * A basic header view
+   *
+   * @param {String} route
+   * @param {String} title
+   */
 
-    className: "row",
-    tagName: "header",
-
+  var MainHeader = BaseView.extend({
+    className: 'header',
     events: {
-      "click #createTicket"  : "navigateToForm",
-      "click #myTickets"     : "toggleMyTickets",
-      "click #openTickets"   : "toggleOpen",
-      "click #closedTickets" : "toggleClosed"
+      "click a[data-action]": "preventDefault",
+      "click a[data-action='new-ticket']": "createTicket",
+      "click a[data-action='refresh']": "refresh",
+      "click a[data-action='new-tag']": 'showTagWidget'
     },
 
     initialize: function() {
-      _.bindAll(this);
+      this.bindTo(ticketer.EventEmitter, 'popup:TicketForm', this.createTicket, this);
     },
 
     render: function() {
-      var ViewData = {};
-      ViewData.showAdmin = this.renderAdminOptions();
-      $(this.el).html(Mustache.to_html(HeaderTmpl, ViewData));
-
-      if(ViewData.showAdmin) this.renderAssignees();
+      this.$el.html(Mustache.to_html(tmpl_Header));
+      this.addUserOptions();
 
       return this;
     },
 
-    /* Does user have the role of admin? */
-    renderAdminOptions: function() {
-      if(ticketer.currentUser.role === 'admin') {
-        return true;
-      }
-      else {
-        return false;
-      }
+    addUserOptions: function() {
+      var data = {};
+
+      $('.user-actions', this.el).remove();
+
+      data.user = ticketer.currentUser;
+      this.$el.append(Mustache.to_html(tmpl_Options, data));
     },
 
-    renderAssignees: function() {
-      var self = this,
-          admins = ticketer.collections.admins;
-
-      _.each(admins.models, function(admin) {
-        var data = admin.toJSON();
-        data.shortname = data.name.split(' ')[0];
-        $('ul#assignees', self.el).append(Mustache.to_html(PullTabTmpl, data));
-      });
-
-      $('ul#assignees li', this.el).draggable({
-        revert: true,
-        helper: "clone",
-        scope: "assigned_to",
-        zIndex: 302,
-        cursorAt: {
-          top: 28,
-          left: 69
-        }
-      });
-
-      this.bindTo($('.pullTab .tab', this.el), 'click', this.togglePullTab);
-      this.bindTo($('.pullTab', this.el), 'clickoutside', this.hidePullTab);
+    preventDefault: function(e) {
+      e.preventDefault();
     },
 
-    navigateToForm: function() {
-      ticketer.routers.ticketer.navigate("tickets/new", true);
+    refresh: function() {
+      ticketer.EventEmitter.trigger('collection:reset');
     },
 
-    toggleMyTickets: function() {
-      ticketer.routers.ticketer.navigate("tickets/activity", true);
-    },
+    showTagWidget: function(e) {
+      var element = $(e.currentTarget).parent(),
+          widget;
 
-    toggleOpen: function() {
-      ticketer.routers.ticketer.navigate("tickets/open", true);
-    },
+      e.preventDefault();
+      e.stopPropagation();
 
-    toggleClosed: function() {
-      ticketer.routers.ticketer.navigate("tickets/closed", true);
-    },
-
-    /* Sets the correct highlighted state (.yellow) on
-     * the selected tab. Checks that the tab isn't currently
-     * highlighted then clears out all highlights on the tabs
-     * and adds class to correct tab.
-     *    :tab - a div ID to represent the desired page tab
-     */
-    toggleTab: function(tab) {
-      if ($('#' + tab + ' .yellow', 'header').length === 0) {
-        $('li', this.el).removeClass('yellow');
-        $('#' + tab, this.el).addClass('yellow');
+      // Prevent multiple widgets
+      if(!element.children('.tags-form').length) {
+        widget = this.createView(TagWidget);
+        $(element).append(widget.render().el);
       }
     },
 
-    toggleAssign: function(tab) {
-      var self = this;
+    createTicket: function() {
+      var view;
 
-      if(tab === 'closedTickets') {
-        if($('.pullTab', self.el).css('display') != 'none') {
-          $('.pullTab', self.el).hide();
-        }
-      }
-      else {
-        if($('.pullTab', self.el).css('display') == 'none') {
-          $('.pullTab', self.el).fadeIn(200);
-        }
-      }
-    },
+      if($('[role=popup]').length) return false;
 
-    /* Toggles PullTab Menu Up or Down */
-    togglePullTab: function(e) {
-      var tab = $(e.currentTarget).closest('.pullTab'),
-          content = $('.scroll', tab);
+      view = new TicketFormView();
 
-      $(content).is(':hidden') ? this.showPullTab(e) : this.hidePullTab(e);
-    },
-
-    showPullTab: function(e) {
-      var tab = $(e.currentTarget).closest('.pullTab'),
-          content = $('.scroll', tab);
-
-      if( $(content).is(':hidden') ) {
-        $(tab).removeClass('shadow').addClass('lightShadow');
-        $(content).slideDown(200);
-      }
-    },
-
-    hidePullTab: function(e) {
-      var tab = $(e.currentTarget).closest('.pullTab'),
-          content = $('.scroll', tab);
-
-      if( $(content).is(':visible') ) {
-        $(content).slideUp(200, function() {
-          $(tab).removeClass('lightShadow').addClass('shadow');
-        });
-      }
+      view.render();
     }
-
   });
 
-  return MainHeadersView;
- });
+  return MainHeader;
+});

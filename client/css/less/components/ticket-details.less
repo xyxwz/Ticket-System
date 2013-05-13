@@ -1,0 +1,48 @@
+// --------------------------------------
+// Ticket Details
+// --------------------------------------
+
+.ticket-details {
+  height: 100%;
+
+  .ticket {
+    .header {
+      border-bottom: 1px solid @border;
+      padding: 10px 20px 20px 20px;
+      margin-bottom: 20px;
+
+      hgroup {
+        width: 80%;
+      }
+
+      time {
+        width: 20%;
+        float: right;
+        margin: 0;
+        font-weight: 400;
+        font-size: 14px;
+        text-align: right;
+      }
+    }
+  }
+
+  .ticket-meta {
+    padding: 10px 20px 30px 20px !important;
+  }
+
+  .notification {
+    margin: 25px 20px 10px 20px;
+    background: @notifyBG;
+    border: 1px solid @notifyBorder;
+    border-radius: 3px;
+
+    p {
+      padding: 6px 0;
+      margin: 0;
+      font-size: 16px;
+      text-align: center;
+      color: @darkGray;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+  }
+}

@@ -42,7 +42,7 @@ function Access(route, accessLevels) {
 
 Access.prototype.checkAccess = function(user) {
   var accessModel, status, self;
-  
+
   self = this;
   status = false;
 
@@ -59,7 +59,7 @@ Access.prototype.checkAccess = function(user) {
 
       // check the accessModel's user.id
       if(accessModel.user) {
-        status = user.id.toString() === accessModel.user._id.toString() ? true : false;
+        status = user._id.toString() === accessModel.user._id.toString() ? true : false;
       }
       else {
         // It's the User model so just check the _id property
@@ -157,7 +157,7 @@ Access.prototype.registerParam = function(name, fn){
 
 Access.prototype.setKeys = function(key, model, cb) {
   this.keys.push([key, model]);
-  
+
   if (this.keys.length === this.route.keys.length) {
     return cb(null);
   }

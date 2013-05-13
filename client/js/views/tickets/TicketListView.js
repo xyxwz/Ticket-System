@@ -1,90 +1,111 @@
-/* TicketListView
- * Renders a collection of Tickets
+/**
+ * View Dependencies
  */
 
-define(['jquery', 'underscore', 'backbone', 'BaseView', 'timeline', 'views/tickets/TicketView', 'truncate'],
-function($, _, Backbone, BaseView, Timeline, TicketView) {
+define(['jquery', 'underscore', 'backbone', 'BaseView',
+  'views/tickets/TicketView'],
+function($, _, Backbone, BaseView, TicketView) {
+
+  /**
+   * TicketListView
+   * Renders a collection of Tickets
+   *
+   * @param {Backbone.Collection} collection
+   * @param {Function} filter
+   * @param {String} status
+   */
 
   var TicketListView = BaseView.extend({
-
+    className: 'ticket-list',
     events: {
-      "click .ticketInfo": "showDetails"
+      "click .ticket": "showDetails"
     },
 
     initialize: function() {
-      var self;
-
-      self = this;
-      _.bindAll(this);
-
       this.status = this.options.status ? this.options.status : 'open';
+      this.filter = this.options.filter || function() { return true; };
+      this._filter = this.filter; // Original filter
+      this.controller = this.options.controller || null;
+      this.collectionFilter = this.options.collectionFilter || function() { return true; };
 
-      this.filter = this.options.filter;
+      // The original filter and a filter function that is triggered with 'filter'
+      function setFilter(fn) {
+        var self = this;
 
-      this.bindTo(this.collection, 'add', function(model) {
-        if(!self.filter) {
-          var html = self.renderTicket(model);
-          $(self.el).append(html);
+        if(typeof fn === 'function') {
+          this.filter = function(ticket) {
+            return self._filter(ticket) && fn(ticket);
+          };
+        } else {
+          this.filter = this._filter;
         }
-      });
 
-      this.bindTo(this.collection, 'remove', function(model) {
-        $('#id_'+model.id, self.el).remove();
-      });
+        this.render();
+      }
 
-      this.bindTo(this.collection, 'reset', this.render);
+      // Bindings
+      this.bindTo(this.collection, 'add remove reset', this.render, this);
+      this.bindTo(ticketer.EventEmitter, 'list:filter', setFilter, this);
+      this.bindTo(ticketer.EventEmitter, 'collection:reset', this.refresh, this);
+      this.bindTo(ticketer.EventEmitter, 'ticket:new', this.newTicket, this);
+    },
+
+    /**
+     * If a closed ticket collection destroy the collection on
+     * view disposal.
+     */
+
+    dispose: function() {
+      this.collection.destroy();
+      delete this.collection;
+
+      return BaseView.prototype.dispose.call(this);
     },
 
     render: function() {
-      var self = this,
-          view,
-          collection;
+      var i;
+      var tickets = this.collection.filter(this.filter);
+      var len = tickets.length;
 
-      //Clear the element for clean render
-      this.$el.empty();
+      if(len) {
+        this.$el.empty();
 
-      collection = typeof(this.filter) != 'undefined' ? this.collection.filter(this.filter) : this.collection;
+        for(i = 0; i < len; i = i + 1) {
+          this.$el.append(this.renderTicket(tickets[i]));
+        }
 
-      collection.each(function(ticket) {
-        view = self.renderTicket(ticket);
-        $(self.el).append(view);
-      });
-
-      if (this.status === 'closed') this.initTimeline();
+      } else {
+        this.$el.html('<div class="view-filler"><p>No tickets to list</p></div>');
+      }
 
       return this;
     },
 
-    renderTicket: function(model) {
-      var view, notify, html;
-
-      notify = typeof(this.filter) !== 'undefined' ? true : false;
-
-      view = this.createView(
-        TicketView,
-        {model: model, notify: notify}
-      );
-
-      html = view.render().el;
-      $('.ticketInfo .ticketBody', html).truncate({max_length: 500});
-      $('.ticketInfo', html).addClass('hover');
-
-      return html;
+    refresh: function() {
+      this.collection.fetch({
+        data: { status: this.status }
+      });
     },
 
-    initTimeline: function() {
-      var self = this;
-
-      if (this.collection.length === 0) return;
-
-      this.timeline = new Timeline(this.collection, this.renderTicket, $(this.el), '.ticket', { status: this.status });
-      this.bindTo($(window), 'scroll', function() { self.timeline.shouldCheckScroll = true ;});
-      this.createInterval(250, function() { self.timeline.didScroll(); });
+    renderTicket: function(model) {
+      var view = this.createView(TicketView, {model: model});
+      return view.render().el;
     },
 
     showDetails: function(e) {
-      var id = $(e.currentTarget).closest('.ticket').attr('id').split('id_')[1];
-      ticketer.routers.ticketer.navigate("tickets/"+id, true);
+      var id = $(e.currentTarget).data('id'),
+          ticket = this.collection.get(id);
+
+      this.$el.find('.active').removeClass('active');
+      this.$el.find('.ticket[data-id="' + id + '"]').addClass('active');
+
+      if(this.controller)
+        this.controller.showTicket(ticket);
+    },
+
+    newTicket: function(data) {
+      if(data.status === this.status && this.collectionFilter(data))
+        this.collection.add(data);
     }
 
   });

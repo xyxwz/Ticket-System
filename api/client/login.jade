@@ -1,11 +1,7 @@
 !!! html
-html(manifest=(process.env.NODE_ENV === 'production' ? 'manifest.appcache': ''))
+html
   head
     title TxSSC Ticket System
-
-    link(rel="stylesheet", href="css/foundation.2.1.4.min.css")
-    link(rel="stylesheet", href="css/app.css")
-
     meta(name="viewport", content="width=device-width,initial-scale=1")
 
     - if (process.env.TYPEKIT)
@@ -13,17 +9,18 @@ html(manifest=(process.env.NODE_ENV === 'production' ? 'manifest.appcache': ''))
       script(type='text/javascript')
         try{Typekit.load();}catch(e){}
 
-  body
+    - if (process.env.NODE_ENV === 'production')
+      link(rel="stylesheet", href="css/bundle.css")
+    - else
+      link(rel="stylesheet/less", type="text/css", href="css/less/main.less")
+      script(src="js/libs/less-1.3.3.min.js", type="text/javascript")
 
-    .container
+  body.login
 
-      #main(role="main")
+    h1.logo Texas School Safety Center
 
-        .row
-          .eight.columns.offset-by-two.shadow.paper
-            span.tack
-            #loginForm
-              h2.marker Login to begin
-              ul
-                li
-                  a.btn-auth.btn-txssc.large(href='/login/oauth/authorize', title='Sign in with TxSSC') Sign in with <b>TxSSC</b>
+    .login-form
+      p Tickets is a task management tool for groups, it helps you manage and collaborate on tasks.
+
+      .btn-wrapper
+        a.btn-auth.btn-txssc.large(href='/login/oauth/authorize', title='Sign in with TxSSC') Login

@@ -1,59 +1,69 @@
-/* CommentForm
- * Renders the comment form
+/**
+ * View Dependencies
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-'text!templates/comments/CommentForm.html'],
-function($, _, Backbone, BaseView, mustache, form) {
+  'text!templates/comments/CommentForm.html'],
+function($, _, Backbone, BaseView, mustache, FormTmpl) {
+
+  /**
+   * CommentForm
+   * Renders the comment form
+   *
+   * @param {Backbone.Collection} collection
+   */
 
   var CommentFormView = BaseView.extend({
-
+    className: 'comment-form comment',
     events: {
-      "keypress textarea":  "createOnEnter"
-    },
-
-    initialize: function() {
-      _.bindAll(this);
+      "click [data-action='create']":  "create",
+      "focus textarea": "initResize"
     },
 
     render: function() {
-
-      $(this.el).html(Mustache.to_html(form, ticketer.currentUser));
-
-      // Set input to get form values from
-      this.input = this.$('form textarea');
-
+      $(this.el).html(Mustache.to_html(FormTmpl, ticketer.currentUser));
       return this;
     },
 
-    // If you hit return submit form to create a
-    // a new **Comment** model
-    createOnEnter: function(e) {
-      if (e.keyCode != 13) { return; }
-      if (e.keyCode === 13 && !e.ctrlKey) {
-        e.preventDefault();
-
-        var self = this;
-
-        this.collection.create({
-          comment: this.input.val(),
-          socket: ticketer.sockets.id
-        },{
-          wait: true
-        });
-
-        this.input.val('').blur();
-        this.input.css('height', '23px');
-      }
+    initResize: function() {
+      $('textarea', this.el).autoResize({
+        minHeight: 64,
+        extraSpace: 10
+      });
     },
 
-    bindResize: function() {
-      $('textarea', this.el).autoResize({
-        minHeight: 23,
-        extraSpace: 14
-      });
-    }
+    /**
+     * Override the default dispose function to destroy the
+     * autoresize plugin
+     */
 
+    dispose: function() {
+      var plugin = this.$el.find('textarea').data('AutoResizer');
+
+      if(plugin) {
+        plugin.destroy();
+      }
+
+      return BaseView.prototype.dispose.call(this);
+    },
+
+    /**
+     * When enter is pressed create a new comment model
+     * and resize the textarea to 23px with no content
+     *
+     * @param {jQuery Event} e
+     */
+
+    create: function() {
+      var element = this.$el.find('textarea');
+
+      this.collection.create({comment: element.val()}, {
+        wait: true
+      });
+
+      element.val('').blur();
+      element.css({height: '64px'});
+    }
   });
 
   return CommentFormView;

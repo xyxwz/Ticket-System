@@ -1,0 +1,162 @@
+// --------------------------------------
+// Tickets
+// --------------------------------------
+
+.ticket {
+  .clearfix;
+  position: relative;
+
+  .ticket-content {
+
+    .header {
+      .clearfix;
+      position: relative;
+
+      hgroup {
+        float: left;
+
+        .title {
+          margin: 0;
+          color: @darkGray;
+          font-weight: 700;
+          font-size: 18px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        h4 {
+          margin: 0;
+          color: @lightGray;
+          font-weight: 400;
+          font-size: 14px;
+        }
+      }
+
+      time {
+        color: lighten(@active, 5%);
+      }
+
+      // Edit Options
+      ul.edit-options {
+        position: absolute;
+        bottom: -14px;
+        right: 20px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        background: @ashGray;
+        border: 1px solid @border;
+        border-radius: 50px;
+        padding: 0 6px;
+
+        li {
+          display: inline-block;
+          border-right: 1px solid @border;
+
+          &:last-child {
+            border-right: none;
+          }
+
+          a {
+            display: block;
+            padding: 4px 6px;
+            color: @lightGray;
+            text-decoration: none;
+          }
+        }
+      }
+    }
+
+    .content {
+      margin: 30px 0;
+      padding: 0 20px;
+    }
+  }
+
+  .ticket-meta {
+    position: relative;
+    .clearfix;
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      .clearfix;
+
+      &.involved-users {
+        float: left;
+
+        li {
+          display: inline-block;
+          margin-right: 10px;
+
+          &.removable {
+            cursor: pointer;
+          }
+
+          &.assigned img {
+            // Change this to the best way to notate the responsible user for the ticket
+            border: 2px solid rgba(0,0,0, .5);
+          }
+
+          img {
+            display: block;
+            border-radius: 1000px;
+            .size(35px, 35px);
+            .box-sizing(border-box);
+          }
+        }
+      }
+
+      &.assigned-tags {
+        float: right;
+        margin-top: 3px;
+
+        & > li {
+          float: right;
+          vertical-align: middle;
+          display: inline-block;
+          margin-left: 8px;
+
+          &.tag {
+            line-height: 36px;
+          }
+
+          &.empty {
+            font-size: 13px;
+            color: @lightGray;
+            line-height: 36px;
+          }
+        }
+      }
+
+      // prevent ticket-meta container from resizing
+      .user-widget {
+        height: 36px;
+      }
+    }
+
+    .follow.button {
+      float: left;
+      display: inline-block;
+      padding: 3px 8px 2px 8px;
+      margin: 6px 0;
+      border-radius: 2px;
+      font-size: 12px;
+      background: @ashGray;
+      color: @lightGray;
+      border: 1px solid @border;
+      cursor: pointer;
+      line-height: 1.6;
+
+      i {
+        margin-right: 3px;
+      }
+
+      &:hover {
+        background: darken(@ashGray, 5%);
+      }
+    }
+  }
+}

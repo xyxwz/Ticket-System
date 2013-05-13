@@ -1,90 +1,99 @@
-var mongoose = require("mongoose"),
-    should = require("should"),
-    _ = require('underscore'),
-    schemas = require('../../models/schemas');
+var schemas = require('../../models/schemas'),
+    async = require('async');
+
 
 // Hold values used in async functions
-var fixtures = {
-  users: [],
-  tickets: [],
-  comments: []
-}
+var fixtures;
 
 // Setup and Seed Database
-function setup(app, callback){
-  var collections, coll, collCount, _i, _len;
+function setup(server, callback) {
+  server.redis.FLUSHDB();
 
-  // Clean Database
-  collections = [schemas.User, schemas.Ticket];
-
-  app.redis.FLUSHDB();
-
-  collCount = collections.length;
-  for (_i = 0, _len = collections.length; _i < _len; _i++) {
-    coll = collections[_i];
-    collCount--;
-    coll.collection.drop(function(err) {});
-    if (collCount === 0) {
-      seedDatabase(function(err){
-        if(err) return callback(err);
-        callback(null, fixtures); 
-      });
-    }
-  }
+  async.series([
+    flushFixtures,
+    seedDatabase
+  ],
+  function(err) {
+    if(err) return callback(err);
+    return callback(null, fixtures);
+  });
 }
 
 // Teardown Database
-function teardown(app, callback){
-  var collections, coll, collCount, _i, _len;
+function teardown(server, callback) {
+  server.redis.FLUSHDB();
 
-  // Clean Database
-  collections = [schemas.User, schemas.Ticket];
+  flushFixtures(function(err) {
+    if(err) return callback(err);
+    return callback(null);
+  });
+}
 
-  app.redis.FLUSHDB();
+// Flush our database fixtures and object
+function flushFixtures(callback) {
+  fixtures = {
+    users: [],
+    projects: [],
+    tickets: [],
+    comments: [],
+    lists: []
+  };
 
-  collCount = collections.length;
-  for (_i = 0, _len = collections.length; _i < _len; _i++) {
-    coll = collections[_i];
-    collCount--;
-    coll.collection.drop(function(err) {});
-    if (collCount === 0) {
-      fixtures = {
-        users: [],
-        tickets: [],
-        comments: []
-      }
-      callback(null); 
+  async.parallel([
+    function(callback) {
+      schemas.Ticket.collection.drop(function() { callback(null); });
+    },
+    function(callback) {
+      schemas.Project.collection.drop(function() { callback(null); });
+    },
+    function(callback) {
+      schemas.User.collection.drop(function() { callback(null); });
+    },
+    function(callback) {
+      schemas.List.collection.drop(function() { callback(null); });
     }
-  }
+  ],
+  function(err) {
+    if(err) return callback(err);
+    return callback(null);
+  });
 }
 
 // Seed Database
 function seedDatabase(cb){
-  addUsers(function(err, users){
+  async.series([
+    addUsers,
+    addTickets,
+    addProjects,
+    addComment,
+    addLists
+  ],
+  function(err) {
     if(err) return cb(err);
-    addTickets(users[0], function(err, tickets){
-      if(err) return cb(err);
-      addComment(tickets[0], users[0], function(err, comment){
-        if(err) return cb(err);
-        fixtures.comments.push(comment);
-        cb(null);
-      });
-    });
+    return cb(null);
   });
 }
 
 // Add Multiple Users
 function addUsers(cb) {
   var i = 0;
-  while(i < 2) {
-    addUser(i, function(err, model) {
-      fixtures.users.push(model)
-      if(fixtures.users.length == 2) {
-        cb(null, fixtures.users);
-      }
-    });
-    i++;
-  }
+
+  async.whilst(
+    function() { return i < 2; },
+    function(callback) {
+      addUser(i, function(err, model) {
+        if(err) return callback(err);
+        fixtures.users.push(model);
+        return callback(null);
+      });
+
+      i++;
+    },
+    function(err) {
+      if(err) return cb(err);
+      return cb(null);
+    }
+  );
 }
 
 // Add User
@@ -94,63 +103,72 @@ function addUser(i, cb){
     name: "John Doe",
     role: "member",
     access_token: "abc"+i,
-    refresh_token: "abc"+i,
+    refresh_token: "abc"+i
   });
 
   // Set the first user to an admin role
   if(i === 0) user.role = 'admin';
 
-  user.save(function(err, model){
+  user.save(function(err, model) {
     if(err) return cb(err);
-    cb(null, model);
+    return cb(null, model);
   });
 }
 
-// Add Ticket
-function addTickets(user, cb){
-  var i = 1;
-  while(i <= 5) {
-    if(i % 2 == 0) {
-      addOpenTicket(user, i, function(err, model) {
-        fixtures.tickets.push(model);
-        if (fixtures.tickets.length == 4) {
-          cb(null, fixtures.tickets);
-        }
-      });
+// Add 5 Tickets to the collection
+function addTickets(cb){
+  var i = 1,
+      user = fixtures.users[0];
+
+  async.whilst(
+    function() { return i <= 5; },
+    function(callback) {
+      if(i % 2 === 0) {
+        addOpenTicket(user, i, function(err, model) {
+          if(err) return callback(err);
+          fixtures.tickets.push(model);
+          return callback(null);
+        });
+      }
+      else {
+        addClosedTicket(user, i, function(err, model) {
+          if(err) return callback(err);
+          fixtures.tickets.push(model);
+          return callback(null);
+        });
+      }
+
+      i++;
+    },
+    function(err) {
+      if(err) return cb(err);
+      return cb(null);
     }
-    else {
-      addClosedTicket(user, i, function(err, model) {
-        fixtures.tickets.push(model);
-        if (fixtures.tickets.length == 4) {
-          cb(null, fixtures.tickets);
-        }
-      });
-    }
-    i++;
-  }
+  );
 }
 
 // Add Open Ticket
-function addOpenTicket(user, i, cb){
+function addOpenTicket(user, i, cb) {
   var ticket = new schemas.Ticket({
     title: "test ticket " + i,
     description: "a ticket to use with test",
     user: user.id,
     status: 'open'
   });
-  ticket.save(function(err, model){
+
+  ticket.save(function(err, model) {
     schemas.Ticket
-    .find({_id:model._id})
+    .findOne({ _id: model._id })
     .populate('user')
-    .run(function(err, model){
+    .exec(function(err, model){
       if(err) return cb(err);
-      cb(null, model[0]);
+      return cb(null, model);
     });
   });
 }
 
 // Add Closed Ticket
-function addClosedTicket(user, i, cb){
+function addClosedTicket(user, i, cb) {
   var ticket = new schemas.Ticket({
     title: "test ticket " + i,
     description: "a ticket to use with test",
@@ -158,31 +176,109 @@ function addClosedTicket(user, i, cb){
     status: 'closed',
     closed_at: Date.now()
   });
-  var dt = new Date();
-  while ((new Date()) - dt <= 100) {}
-  ticket.save(function(err, model){
+
+  ticket.save(function(err, model) {
     schemas.Ticket
-    .find({_id:model._id})
+    .findOne({ _id: model._id })
     .populate('user')
-    .run(function(err, model){
+    .exec(function(err, model){
       if(err) return cb(err);
-      cb(null, model[0]);
+      return cb(null, model);
     });
   });
 }
 
 // Add Comment
-function addComment(ticket,user, cb){
-  var comment = new schemas.Comment({
-    comment: "test comment",
-    user: user._id
-  });
+function addComment(cb) {
+  var ticket = fixtures.tickets[0],
+      user = fixtures.users[0],
+      comment = new schemas.Comment({
+        comment: "test comment",
+        user: user._id
+      });
+
   ticket.comments.push(comment);
   ticket.save(function(err, model) {
-    if (err) return cb(err);
-    return cb(null, model.comments.id(comment.id));
+    if(err) return cb(err);
+    fixtures.comments.push(model.comments.id(comment.id));
+    return cb(null);
   });
 }
+
+// Add projects
+function addProjects(cb) {
+  var i = 0,
+      user = fixtures.users[1];
+
+  async.whilst(
+    function() { return i < 2; },
+    function(callback) {
+      addProject(user, i, function(err, model) {
+        if(err) return callback(err);
+        fixtures.projects.push(model);
+        return callback(null);
+      });
+
+      i++;
+    },
+    function(err) {
+      if(err) return cb(err);
+      return cb(null);
+    }
+  );
+}
+
+// Add Project
+function addProject(user, i, callback) {
+  var project = new schemas.Project({
+    name: 'Test Project ' + i,
+    description: 'Just a test project',
+    user: user.id
+  });
+
+  project.save(function(err, model) {
+    if(err) return callback(err);
+    return callback(null, model);
+  });
+}
+
+// Add Lists
+function addLists(cb) {
+  var i = 0,
+      user = fixtures.users[0];
+
+  async.whilst(
+    function() { return i < 2; },
+    function(callback) {
+      addList(user, i, function(err, model) {
+        if(err) return callback(err);
+        fixtures.lists.push(model);
+        return callback(null);
+      });
+
+      i++;
+    },
+    function(err) {
+      if(err) return cb(err);
+      return cb(null);
+    }
+  );
+}
+
+// Add Project
+function addList(user, i, callback) {
+  var list = new schemas.List({
+    name: 'Test List ' + i,
+    user: user.id,
+    color: 0
+  });
+
+  list.save(function(err, model) {
+    if(err) return callback(err);
+    return callback(null, model);
+  });
+}
+
 
 exports.Setup = setup;
 exports.Teardown = teardown;
