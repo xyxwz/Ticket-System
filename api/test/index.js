@@ -1,2 +1,4 @@
-exports.Unit = require('./unit');
-exports.Functional = require('./functional');
+module.exports = {
+  Unit: require('./unit'),
+  Functional: require('./functional')
+};

@@ -1,0 +1,113 @@
+// --------------------------------------
+// Layout
+// --------------------------------------
+
+// Base font color
+html, body {
+  color: @darkGray;
+  background: @white;
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: @sans-serif;
+}
+
+.unselectable ::selection {
+  background: transparent;
+}
+
+#main {
+  position: relative;
+  .clearfix;
+
+  #panel-divider {
+    position: absolute;
+    top: 0;
+    left: @panel_resizer_left;
+    bottom: 0;
+    width: @panel_resizer_width;
+    cursor: ew-resize;
+    background: transparent;
+    z-index: 1;
+  }
+
+  #panel-one,
+  #panel-two,
+  #panel-three {
+    display: none;
+  }
+
+  #panel-one {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: @panel_1_width;
+    background: @sidebarBg;
+    color: @sidebarText;
+    border-right: 1px solid rgba(85, 85, 85, 0.2);
+    border-top: 1px solid @headerBorder;
+    .box-shadow(inset 0 0 8px 2px rgba(0, 0, 0, .22));
+
+    ::selection,
+    &::selection {
+      background: transparent;
+    }
+  }
+
+  #panel-two {
+    position: absolute;
+    border-top: 1px solid lighten(@headerBorder, 40%);
+    top: 0;
+    left: @panel_1_width + 1;
+    bottom: 0;
+    width: @panel_2_width;
+    border-right: 1px solid @border;
+  }
+
+  #panel-three {
+    position: absolute;
+    border-top: 1px solid lighten(@headerBorder, 40%);
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: @panel_resizer_left;
+  }
+
+  #panel-two,
+  #panel-three {
+    .view-filler {
+      font-size: 22px;
+      padding: 20px;
+
+      p {
+        line-height: 1;
+        margin: 0;
+        font-weight: 200;
+      }
+    }
+  }
+
+  #panel-two,
+  #panel-three {
+    .spin-wrap {
+      position: relative;
+      top: 80px;
+
+      .spinner {
+        margin: 0 auto;
+        width: 40px;
+        height: 40px;
+      }
+
+      p {
+        position: relative;
+        line-height: 1em;
+        margin: 0;
+        text-align: center;
+        font-size: 13px;
+        color: @lightGray;
+      }
+    }
+  }
+}

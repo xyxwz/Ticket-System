@@ -1,16 +1,7 @@
-/* User model - used to get the current user and store that
- * information in memory. */
+/**
+ * User model, just a base backbone.js model
+ */
 
 define(['underscore', 'backbone'], function(_, Backbone) {
-  var User = Backbone.Model.extend({
-
-    url: '/api/users',
-
-    initialize: function() {
-
-    }
-
-  });
-
-  return User;
+  return Backbone.Model.extend({});
 });

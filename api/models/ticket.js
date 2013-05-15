@@ -1,9 +1,9 @@
 var mongoose = require('mongoose'),
     redis = require('redis'),
     _ = require('underscore'),
+    async = require('async'),
     TicketSchema = require('./schemas/ticket').Ticket,
     Notifications = require('./helpers/').Notifications;
-
 
 module.exports = function(app) {
 
@@ -24,11 +24,14 @@ module.exports = function(app) {
    */
 
   Ticket.prototype._toClient = function toClient(cb) {
-    var obj, user, namespace;
+    var self = this,
+        obj, user, namespace;
 
     obj = this.model.toObject();
     obj.id = obj._id;
     delete obj._id;
+
+    if(obj.__v) delete obj.__v;
 
     user = {
       id: obj.user._id,
@@ -40,12 +43,24 @@ module.exports = function(app) {
     obj.user = user;
     delete obj.comments;
 
-    namespace = 'ticket:' + obj.id + ':assignees';
-    // Get assigned_to from redis
-    this.redis.SMEMBERS(namespace, function(err, members) {
-      if(err) return cb(err);
-      obj.assigned_to = members;
-      cb(null, obj);
+    // Get the Ticket's Assigned_to and Participants
+    async.parallel([
+      function(callback) {
+        self.redis.SMEMBERS('ticket:' + obj.id + ':assignees', function(err, members) {
+          if(err) return callback(err);
+          obj.assigned_to = members;
+          callback(null, obj);
+        });
+      },
+      function(callback) {
+        self.redis.SMEMBERS('ticket:' + obj.id + ':participating', function(err, members) {
+          if(err) return callback(err);
+          obj.participants = members;
+          callback(null, obj);
+        });
+      }
+    ], function(err, results) {
+      cb(err, obj);
     });
   };
 
@@ -69,10 +84,8 @@ module.exports = function(app) {
    */
 
   Ticket.prototype.update = function update(data, user, cb) {
-    var _this, model, newAssigned;
-
-    _this = this;
-    model = this.model;
+    var self = this,
+        model = this.model;
 
     if (data.status) {
       if(model.status === "open" && data.status === "closed") {
@@ -84,104 +97,79 @@ module.exports = function(app) {
     if (data.title) model.title = data.title;
     if (data.description) model.description = data.description.replace(/<\/?script>/ig, '');
 
-    // If data came from client include socket id
-    if (data.socket) { this.socket = data.socket; }
+    async.parallel([
+      // Set Participants Array in Redis
+      function(callback) {
+        if(!data.participants) return callback(null);
 
-    // Manage assigned users
-    if (data.assigned_to) {
-      // if someone is assigned set read status to true
-      model.read = true;
+        Notifications.resetParticipating(self.redis, data.participants, model.id, function(err) {
+          callback(err);
+        });
+      },
 
-      newAssigned = _.uniq(data.assigned_to);
+      // Manage Assigned User
+      function(callback) {
+        if(!data.assigned_to) return callback(null);
+        self._manageAssigned(data.assigned_to, function(err) {
+          callback(err);
+        });
+      }
 
-      this._manageSets(newAssigned, function() {
-        _this._execUpdate(user.id, cb);
+    ], function(err) {
+      if(err) return cb(err);
+
+      // Save Ticket
+      model.modified_at = Date.now();
+      model.save(function(err, ticket) {
+        if (err || !ticket) return cb('Error updating model. Check required attributes.');
+        var obj = new Ticket(ticket);
+        obj._toClient(function(err, ticket){
+          if(err) return cb(err);
+
+          // Build model to emit
+          var obj = { body: ticket };
+
+          // If toClient was successful, push a notification and emit a ticket:update event
+          Notifications.pushNotification(self.redis, user._id, ticket.id, function(err) {
+            if(err) return cb(err);
+            app.eventEmitter.emit('ticket:update', obj);
+            return cb(null, ticket);
+          });
+        });
       });
-    }
-    else {
-      this._execUpdate(user.id, cb);
-    }
+    });
   };
 
 
   /**
-   *  manageSets
+   * manageAssigned
+   *  Add an array of users to the ticket's assignees redis set
    *
-   *  Adds/Removes TicketID in Redis Set. Set key is the
-   *  User's mongoID. Finds the difference between the current
-   *  assigned_to array and the new assigned_to array then checks
-   *  if the id is new or old in order to determine if it needs
-   *  to be added or removed from the set.
-   *
-   *    :newArray  -  The array passed in the put request for
-   *                  assigned_users
-   *    :cb        -  A callback to run when completed
-   *
-   *  returns cb(null)
-   *
-   *  @api private
+   * @param {Array} array used to maintain backwards compatability
+   * @param {Function} callback
+   * @api private
    */
 
-  Ticket.prototype._manageSets = function manageSets(array, cb) {
+  Ticket.prototype._manageAssigned = function manageAssigned(array, callback) {
     var redis = this.redis,
-        _this = this,
         model = this.model,
-        newArray = [],
-        currentArray = [],
-        _add = [],
-        _rem = [],
-        error = null,
-        exists, ticketNamespace, userNamespace;
+        ticketNamespace = 'ticket:' + model.id + ':assignees';
 
-    ticketNamespace = 'ticket:' + model.id + ':assignees';
+    if(array.length) {
+      model.read = true;
+    } else {
+      model.read = false;
+    }
 
-    redis.SMEMBERS(ticketNamespace, function(err, members) {
-
-      // Ensure input is strings before comparing
-      _.each(array, function(user){
-        newArray.push(user.toString());
-      });
-
-      // Ensure input is strings before comparing
-      _.each(members, function(user){
-        currentArray.push(user.toString());
-      });
-
-      _add = _.difference(_.uniq(newArray), _.uniq(currentArray));
-      _rem = _.difference(_.uniq(currentArray), _.uniq(newArray));
-
-
-      // Loop through the _add array for users to assign
-      _.each(_add, function(user) {
-        userNamespace = 'user:' + user + ':assignedTo';
-
-        redis.SADD(userNamespace, model.id);
-        redis.SADD(ticketNamespace, user);
-
-        // add user to ticket's now participating set
-        Notifications.nowParticipating(redis, user, model.id, function(err) {
-          if(err) error = err;
+    // Wipe the assignees set prior to assigning the new user
+    redis.DEL(ticketNamespace, function(err) {
+      if(err || !array.length) return callback(err);
+      redis.SADD(ticketNamespace, array, function(err) {
+        if(err) return callback(err);
+        Notifications.nowParticipating(redis, array[0], model.id, function(err) {
+          callback(err);
         });
       });
-
-      // Loop through the _rem array for users to unassign
-      // ** Don't unassign the ticket owner **
-      _.each(_rem, function(user) {
-        userNamespace = 'user:' + user + ':assignedTo';
-
-        redis.SREM(userNamespace, model.id);
-        redis.SREM(ticketNamespace, user);
-
-        // don't remove ticket owner
-        if(user.toString() !== _this.model.user._id.toString()) {
-          // remove user from participating if they are removed from assigned
-          Notifications.removeParticipating(redis, user, model.id, function(err) {
-            if(err) error = err;
-          });
-        }
-      });
-
-      return cb(error);
     });
   };
 
@@ -189,6 +177,8 @@ module.exports = function(app) {
   /*
    * Remove the ticket's assignees set and ticket reference from
    * users assignedto set in redis
+   *
+   * @param {Function} cb
    */
 
   Ticket.prototype._removeSets = function(cb) {
@@ -208,6 +198,7 @@ module.exports = function(app) {
       users.forEach(function(user) {
         userNamespace = 'user:' + user + ':assignedTo';
 
+        // This is left to maintain backwards compatability, and delete any old sets
         redis.SREM(userNamespace, model.id, function(err) {
           if(err) error = 'Error deleting ticket from user';
         });
@@ -218,56 +209,6 @@ module.exports = function(app) {
         if(err) error = 'Error deleting ticket';
         return cb(error, error ? false : true );
       });
-    });
-  };
-
-
-  /**
-   *  execUpdate
-   *
-   *  Runs the save function to update a ticket after other
-   *  functions have been run. Takes a callback to return the
-   *  saved ticket's toClient() properties.
-   *
-   *    :userID - User's id in string form
-   *    :cb - A callback to run
-   *
-   *  returns formatted ticket ready to send to client
-   *
-   *  @api private
-   */
-
-  Ticket.prototype._execUpdate = function execUpdate(userID, cb) {
-    var _this, model, obj, redis;
-
-    _this = this;
-    model = this.model;
-    redis = this.redis;
-    model.modified_at = Date.now();
-
-    model.save(function(err, ticket) {
-      if (err || !ticket) {
-        return cb('Error updating model. Check required attributes.');
-      }
-      else {
-        obj = new Ticket(ticket);
-
-        obj._toClient(function(err, ticket){
-          if(err) return cb(err);
-
-          //Build model to emit
-          var obj = { body: ticket };
-          if(_this.socket) obj.socket = _this.socket;
-
-          //If toClient was successful, push a notification and emit a ticket:update event
-          Notifications.pushNotification(redis, userID, ticket.id, function(err) {
-            if(err) return cb(err);
-
-            app.eventEmitter.emit('ticket:update', obj);
-            return cb(null, ticket);
-          });
-        });
-      }
     });
   };
 
@@ -325,22 +266,22 @@ module.exports = function(app) {
    *  @api public
    */
 
-  Ticket.all = function all(args, cb) {
-    var query, array, count, _i, obj;
+  Ticket.all = function all(user, args, callback) {
+    var query = TicketSchema.find();
 
+    // Check Status
     if(args.status) {
-      query = TicketSchema.find({'status': args.status});
-      if (args.status === 'open') {
-        query.asc('opened_at');
-      }
-      else {
-        query.desc('closed_at');
-      }
-    }
-    else {
-      query = TicketSchema.find();
+      query.where('status', args.status);
+      var sort = args.status === 'open' ? 'opened_at' : '-closed_at';
+      query.sort(sort);
     }
 
+    // Optional read status
+    if(typeof args.read !== 'undefined') {
+      query.where('read', args.read);
+    }
+
+    // Check Pagination
     if(args.page) {
       query.skip((args.page - 1) * 10);
       query.limit(10);
@@ -348,30 +289,38 @@ module.exports = function(app) {
 
     query
     .populate('user')
-    .run(function(err, models){
-      if(err) {
-        return cb("Error finding tickets");
-      }
-      else {
-        array = [];
-        _i = 0;
-        count = models.length;
+    .exec(function(err, models) {
+      if(err) return cb(new Error("Error finding tickets"));
+      if(models.length === 0) return callback(null, []);
+      var tickets = [];
 
-        // return empty array if no tickets
-        if(count === 0) return cb(null, []);
+      async.forEachSeries(models, checkFlags, function(err) {
+        if(err) return callback(err);
+        return callback(null, tickets);
+      });
 
-        while(_i < count) {
-          obj = new Ticket(models[_i]);
+      function checkFlags(model, callback) {
+        var obj = new Ticket(model);
+        obj._toClient(function(err, item) {
 
-          obj._toClient(function(err, model) {
-            if (err) return cb(err);
-            array.push(model);
-            if(array.length === count) {
-              return cb(null, array);
-            }
+          // Don't check participating or notifications for closed tickets
+          if(args.status === 'closed') {
+            tickets.push(item);
+            return callback(null);
+          }
+
+          checkParticipating(user, item.id, function(err, participating) {
+            if(err) return callback(err);
+            item.participating = participating;
+
+            checkNotification(user, item.id, function(err, notification) {
+              if(err) return callback(err);
+              item.notification = notification;
+              tickets.push(item);
+              callback(null);
+            });
           });
-          _i++;
-        }
+        });
       }
     });
   };
@@ -391,58 +340,83 @@ module.exports = function(app) {
    *  @api public
    */
 
-  Ticket.mine = function mine(user, status, page, cb) {
-    var _this, redis, obj, query, array, count, _i;
+  Ticket.mine = function mine(user, args, cb) {
+    async.waterfall([
+      // Get all keys that match ticket:xxx:participating
+      function(callback) {
+        app.redis.KEYS('ticket:*:participating', function(err, keys) {
+          callback(err, keys);
+        });
+      },
 
-    _this = this;
-    redis = app.redis;
+      // Loop through all keys and check if user ID is in the array
+      function(keys, callback) {
+        var participating = [];
 
-    var userNamespace = 'user:' + user + ':assignedTo';
+        var filter = function(item, cb) {
+          app.redis.SISMEMBER(item, user, function(err, status) {
+            if(err) return cb(err);
+            if(status) participating.push(item.split(":")[1]);
+            cb();
+          });
+        };
 
-    redis.SMEMBERS(userNamespace, function(err, res){
-      query = TicketSchema
-      .where('_id')
-      .in(res)
-      .where('status', status);
+        async.forEach(keys, filter, function(err) {
+          return callback(err, participating);
+        });
+      },
 
-      if(status === 'open') {
-        query.asc('opened_at');
-      }
-      else {
-        query.desc('closed_at');
-      }
+      // Lookup Tickets in Mongo
+      function(tickets, callback) {
+        var query = TicketSchema.where('_id').in(tickets);
 
-      query
-      .populate('user')
-      .skip((page - 1) * 10)
-      .limit(10)
-      .run(function(err, models) {
-        if(err) {
-          return cb("Error finding tickets");
+        // Check Status
+        if(args.status) {
+          query.where('status', args.status);
+          var sort = args.status === 'open' ? 'opened_at' : '-closed_at';
+          query.sort(sort);
         }
-        else {
-          array = [];
-          _i = 0;
-          count = models.length;
 
-          // return empty array if no tickets
-          if(count === 0) return cb(null, []);
+        // Check Pagination
+        if(args.page) {
+          query.skip((args.page - 1) * 10);
+          query.limit(10);
+        }
 
-          while(_i < count) {
-            obj = new Ticket(models[_i]);
-            obj._toClient(function(err, model) {
-              if (err) return cb(err);
+        query.populate('user').exec(callback);
+      },
 
-              array.push(model);
+      // Loop through models and set participating and notification flags
+      function(models, callback) {
+        if(models.length === 0) return callback(null, []);
 
-              if(array.length === count) {
-                return cb(null, array);
-              }
+        var tickets = [];
+
+        async.forEachSeries(models, checkFlags, function(err) {
+          if(err) return callback(err);
+          return callback(null, tickets);
+        });
+
+        function checkFlags(model, callback) {
+          var obj = new Ticket(model);
+          obj._toClient(function(err, item) {
+            checkParticipating(user, item.id, function(err, participating) {
+              if(err) return callback(err);
+              item.participating = participating;
+
+              checkNotification(user, item.id, function(err, notification) {
+                if(err) return callback(err);
+                item.notification = notification;
+                tickets.push(item);
+                callback(null);
+              });
             });
-            _i++;
-          }
+          });
         }
-      });
+      }
+    ],
+    function(err, results){
+      return cb(err, results);
     });
   };
 
@@ -465,7 +439,7 @@ module.exports = function(app) {
     TicketSchema
     .findOne({'_id':id})
     .populate('user')
-    .run(function(err, model) {
+    .exec(function(err, model) {
       if(err || !model){
         return cb("Error finding ticket");
       }
@@ -499,7 +473,7 @@ module.exports = function(app) {
    */
 
   Ticket.create = function create(data, user, cb) {
-    var ticket, klass, assigned_to;
+    var ticket, klass;
 
     ticket = new TicketSchema({
       title: data.title,
@@ -509,24 +483,38 @@ module.exports = function(app) {
 
     if (ticket.description) ticket.description.replace(/<\/?script>/ig, '');
 
-    // Check if user is admin and automatically assign them if true
-    if(user.role && user.role === 'admin') {
-      assigned_to = [user._id];
-      ticket.read = true;
+    Notifications.nowParticipating(app.redis, user._id, ticket.id, function(err) {
+      if(err) return cb(err);
+      createTicketObject(ticket, data, cb);
+    });
+  };
 
-      klass = new Ticket(ticket);
+  /**
+   * Allow a User to follow and unfollow updates on a Ticket
+   *
+   * @user - A User ID
+   * @model - A Ticket ID
+   * @callback - A callback to run
+   *
+   * @api Public
+   */
 
-      klass._manageSets(assigned_to, function(err) {
-        if(err) return cb(err);
-        createTicketObject(ticket, data, cb);
+  Ticket.follow = function follow(user, model, callback) {
+    Notifications.nowParticipating(app.redis, user, model, function(err, status) {
+      Ticket.find(model, function(err, ticket) {
+        app.eventEmitter.emit('ticket:update', { body: ticket });
+        return callback(err, !!status);
       });
-    }
-    else {
-      Notifications.nowParticipating(app.redis, user.id, ticket.id, function(err) {
-        if(err) return cb(err);
-        createTicketObject(ticket, data, cb);
+    });
+  };
+
+  Ticket.unfollow = function unfollow(user, model, callback) {
+    Notifications.removeParticipating(app.redis, user, model, function(err, status) {
+      Ticket.find(model, function(err, ticket) {
+        app.eventEmitter.emit('ticket:update', { body: ticket });
+        return callback(err, !!status);
       });
-    }
+    });
   };
 
   // Perform the actual I/O in seperate function
@@ -542,14 +530,40 @@ module.exports = function(app) {
 
           //Build model to emit
           var obj = { body: model };
-          // If data came from client include socket id
-          if (data.socket) { obj.socket = data.socket; }
 
           // Emit a 'ticket:new' event
           app.eventEmitter.emit('ticket:new', obj);
           return cb(null, model);
         });
       }
+    });
+  }
+
+  /**
+   * Check Participating status on a model
+   *
+   * user {String} - User ID
+   * Model {String} - Model ID
+   * Callback {Function}
+   */
+
+  function checkParticipating(user, model, callback) {
+    Notifications.isParticipating(app.redis, user, model, function(err, bool) {
+      return callback(err, bool);
+    });
+  }
+
+  /**
+   * Check Notification status on a model
+   *
+   * user {String} - User ID
+   * Model {String} - Model ID
+   * Callback {Function}
+   */
+
+  function checkNotification(user, model, callback) {
+    Notifications.hasNotification(app.redis, user, model, function(err, bool) {
+      return callback(err, bool);
     });
   }
 

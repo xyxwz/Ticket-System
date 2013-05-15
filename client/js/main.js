@@ -1,30 +1,27 @@
 require.config( {
   baseUrl:'js',
   paths: {
-    'backbone':         'libs/AMDbackbone-0.9.0',
-    'underscore':       'libs/underscore',
+    'backbone':         'libs/backbone-0.9.10',
+    'underscore':       'libs/lodash',
     'text':             'libs/require/text',
     'mustache':         'libs/mustache',
     'marked':           'libs/marked',
-    'timeago':          'libs/plugins/jquery.timeago',
-    'truncate':         'libs/plugins/jquery.truncator',
-    'outsideEvents':    'libs/plugins/jquery.ba-outside-events.min',
+    'moment':           'libs/moment',
+    'dropdowns':        'libs/plugins/bootstrap.dropdowns',
     'autoresize':       'libs/plugins/jquery.autoresize',
-    'jqueryui':         'libs/jqueryui-1.8.16',
-    'timeline':         'libs/timeline',
+    'spin':             'libs/spin',
+    'EventSource':      'libs/eventsource',
+    'Mousetrap':        'libs/mousetrap',
+    'Shortcuts':        'support/Shortcuts',
     'Sync':             'support/Sync',
     'BaseView':         'support/GarbageCollector',
     'AppView':          'support/AppView',
-    'SocketEvents':     'support/SocketEvents',
-    'AppCache':         'support/AppCache',
-    'socket.io':        '/socket.io/socket.io'
+    'ServerEvents':     'support/ServerEvents'
   }
 });
 
 require(['jquery', 'underscore', 'backbone', 'BaseView'],
 function($, _, Backbone, BaseView) {
   // framework is now loaded
-  require(['app'], function(){
-    // Any config or setup can go here
-  });
+  require(['app'], function(){ });
 });

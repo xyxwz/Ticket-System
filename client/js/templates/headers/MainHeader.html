@@ -1,21 +1,7 @@
-<nav class="clearfix">
-  <ul class="left marker">
-    <li id="createTicket" class="green shadow">Create Ticket</li>
-    {{#showAdmin}}
-    <li class="pullTab shadow">
-      <ul id="assignees" class="scroll clearfix">
-        <!-- Append Admins Here -->
-      </ul>
-      <ul class="clearfix">
-        <li class="tab">Assign Ticket</li>
-      </ul>
-    </li>
-    {{/showAdmin}}
-  </ul>
+<h1 class="logo"><a href="/">Tickets</a></h1>
 
-  <ul class="right marker">
-    <li id="myTickets" class="shadow">Activity</li>
-    <li id="openTickets" class="shadow">Open Tickets</li>
-    <li id="closedTickets" class="shadow">Closed Tickets</li>
-  </ul>
-</nav>
+<ul data-role="action-container" class="actions">
+  <li><a title="Refresh" href="#" data-action="refresh"><i class="icon-refresh"></i></a></li>
+  <li><a title="New Ticket" href="#" data-action="new-ticket"><i class="icon-edit"></i></a></li>
+  <li class="spacer"><a title="New Tag" href="#" data-action="new-tag"><i class="icon-bookmark"></i><i class="icon-sort-down"></i></a></li>
+</ul>

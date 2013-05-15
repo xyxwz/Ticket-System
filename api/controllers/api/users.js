@@ -14,8 +14,8 @@ module.exports = function(app) {
       res.json(users);
     });
   });
-  
-  
+
+
   /* Create a new user
   *  POST /api/users
   *
@@ -32,8 +32,8 @@ module.exports = function(app) {
       res.json(model, 201);
     });
   });
-  
-  
+
+
   /* User Info
   *  GET /api/users/:userID
   *
@@ -43,8 +43,8 @@ module.exports = function(app) {
   app.get('/api/users/:userID', function(req, res) {
     res.json(req.user.toClient());
   });
-  
-  
+
+
   /* Update a user
   *  PUT /api/users/:userID
   *
@@ -65,8 +65,8 @@ module.exports = function(app) {
       res.json(model);
     });
   });
-  
-  
+
+
   /* Delete a user
   *  DELETE /api/users/:userID
   *
@@ -80,5 +80,5 @@ module.exports = function(app) {
       res.json({success: "ok"});
     });
   });
-  
+
 };

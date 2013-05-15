@@ -13,12 +13,35 @@ module.exports = function(route) {
   route.param('userID', function(id, key, models, cb){
     schemas.User
     .findOne({'_id':id})
-    .run(function(err, model) {
+    .exec(function(err, model) {
       if(err || !model) return cb(err);
       cb(null, key, model);
     });
   });
 
+  /* Find a project */
+  route.param('projectID', function(id, key, models, cb) {
+    schemas
+    .Project
+    .findOne({ '_id': id })
+    .populate('user')
+    .exec(function(err, model) {
+      if(err || !model) return cb(err);
+      return cb(null, key, model);
+    });
+  });
+
+  /* Find a list */
+  route.param('listID', function(id, key, models, cb) {
+    schemas
+    .List
+    .findOne({ '_id': id })
+    .populate('user')
+    .exec(function(err, model) {
+      if(err || !model) return cb(err);
+      return cb(null, key, model);
+    });
+  });
 
   /* Find A Ticket */
   route.param('ticketID', function(id, key, models, cb){
@@ -26,7 +49,7 @@ module.exports = function(route) {
     .findOne({'_id':id})
     .populate('user')
     .populate('comments.user')
-    .run(function(err, model){
+    .exec(function(err, model){
       if(err || !model) return cb(err);
       return cb(null, key, model);
     });
@@ -49,6 +72,15 @@ module.exports = function(route) {
     else {
       return cb(new Error('no comment exists'));
     }
+  });
+
+  /**
+   * Limitation of authentication middleware
+   * - pass on populating :notificationID
+   */
+
+  route.param('notificationID', function(id, key, models, cb) {
+    return cb(null, key, null);
   });
 
 };

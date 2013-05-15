@@ -13,33 +13,24 @@ describe('notification', function(){
   // Hold values used in async hooks
   var fixtures;
 
-  before(function(done){
-    helper.Setup(server, function(err, data){
-      if(err) return done(err);
+  // Get our fixtures from the helper module
+  before(function(done) {
+    helper.Setup(server, function(err, data) {
       fixtures = data;
-      done();
+      return done(err);
     });
   });
 
-  after(function(done){
-    helper.Teardown(server, function(err){
-      if(err) return done(err);
-      fixtures = {};
-      done();
+  after(function(done) {
+    helper.Teardown(server, function(err) {
+      return done(err);
     });
   });
+
 
   describe('participating', function() {
-    var user, ticket;
-
-    before(function(done) {
-      user = fixtures.users[1];
-      ticket = fixtures.tickets[0];
-      done();
-    });
-
     it('should not be participating in ticket', function(done) {
-      Notifications.isParticipating(server.redis, user.id, ticket.id, function(err, status) {
+      Notifications.isParticipating(server.redis, 'user123', 'ticket123', function(err, status) {
         should.not.exist(err);
         status.should.be.false;
         done();
@@ -47,10 +38,10 @@ describe('notification', function(){
     });
 
     it('should add', function(done) {
-      Notifications.nowParticipating(server.redis, user.id, ticket.id, function(err, status) {
+      Notifications.nowParticipating(server.redis, 'user123', 'ticket123', function(err, status) {
         should.not.exist(err);
         status.should.be.true;
-        Notifications.isParticipating(server.redis, user.id, ticket.id, function(err, status) {
+        Notifications.isParticipating(server.redis, 'user123', 'ticket123', function(err, status) {
           should.not.exist(err);
           status.should.be.true;
           done();
@@ -59,19 +50,28 @@ describe('notification', function(){
     });
 
     it('should remove participation', function(done) {
-      Notifications.nowParticipating(server.redis, user.id, ticket.id, function(err, status) {
+      Notifications.nowParticipating(server.redis, 'user1234', 'ticket1234', function(err, status) {
         should.not.exist(err);
         status.should.be.true;
 
-        Notifications.removeParticipating(server.redis, user.id, ticket.id, function(err, status) {
+        Notifications.removeParticipating(server.redis, 'user1234', 'ticket1234', function(err, status) {
           should.not.exist(err);
           status.should.be.true;
 
-          Notifications.isParticipating(server.redis, user.id, ticket.id, function(err, status) {
+          Notifications.isParticipating(server.redis, 'user1234', 'ticket1234', function(err, status) {
             should.not.exist(err);
             status.should.be.false;
             done();
           });
+        });
+      });
+    });
+
+    it('should reset participating', function(done) {
+      Notifications.resetParticipating(server.redis, ['user1234', 'user12345'], 'ticket12345', function(err, res) {
+        server.redis.SMEMBERS('ticket:ticket12345:participating', function(err, res) {
+          res.length.should.eql(2);
+          done();
         });
       });
     });

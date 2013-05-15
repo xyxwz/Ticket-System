@@ -1,0 +1,98 @@
+// --------------------------------------
+// Comments
+// --------------------------------------
+
+.comments-wrapper {
+  margin: 0;
+  padding: 0;
+
+  .title {
+    padding: 0 0 0 20px;
+    margin: 0;
+    font-weight: 200;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .form-wrapper {
+    border-bottom: 1px solid @border;
+  }
+}
+
+.comment {
+  .clearfix;
+  position: relative;
+  padding: 20px;
+  border-bottom: 1px solid @border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .avatar {
+    float: left;
+
+    img {
+      display: block;
+      border-radius: 1000px;
+      .size(35px, 35px);
+    }
+  }
+
+  .body {
+    margin-left: 55px;
+
+    .commentHeader {
+      position: relative;
+      padding-bottom: 12px;
+
+      h5 {
+        display: inline-block;
+        margin: 0;
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      time {
+        float: right;
+        font-size: 14px;
+        color: @lightGray;
+      }
+    }
+  }
+
+  .body.full {
+    margin-left: 0;
+  }
+
+  .timestamp {
+    float: right;
+  }
+
+  .edit-actions {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    list-style: none;
+
+    li {
+      float: left;
+      margin-left: 8px;
+
+      a {
+        color: @lightGray;
+        text-decoration: none;
+
+        &:hover {
+          color: darken(@lightGray, 20%);
+        }
+      }
+    }
+  }
+}

@@ -13,27 +13,25 @@ describe('Access', function(){
   var fixtures, route, user, accessLevels, access;
 
   // Use a nested route to ensure nested paths work
-  before(function(done){
-    helper.Setup(server, function(err, data){
-      if(err) return done(err);
+  before(function(done) {
+    helper.Setup(server, function(err, data) {
       fixtures = data;
       var path = "/tickets/:ticketID/comments/:commentID";
-      var url = "/tickets/"+fixtures.tickets[0].id+"/comments/"+fixtures.comments[0].id;
+      var url = "/tickets/" + fixtures.tickets[0].id + "/comments/" + fixtures.comments[0].id;
       route = new Route(path);
       route.match(url);
       route.mapKeys();
       user = fixtures.users[0];
-      done();
+      return done(err);
     });
   });
 
-  after(function(done){
-    helper.Teardown(server, function(err){
-      if(err) return done(err);
-      fixtures = {};
-      done();
+  after(function(done) {
+    helper.Teardown(server, function(err) {
+      return done(err);
     });
   });
+
 
   describe('.checkAccess(user)', function(){
 

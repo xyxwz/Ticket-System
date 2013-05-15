@@ -1,12 +1,8 @@
 var should = require("should"),
     _ = require('underscore'),
+    server = require('../support/bootstrap').app(),
     helper = require('../support/helper'),
-    redis = ('redis'),
-    app = require('../support/bootstrap').app,
-    mongoose = require("mongoose");
-
-var server = app(),
-    Ticket = require('../../models/ticket')(server),
+    Ticket = server.models.Ticket,
     Notification = require('../../models/helpers/notifications');
 
 /* Ticket Model Unit Tests */
@@ -16,21 +12,20 @@ describe('ticket', function(){
   // Hold values used in async hooks
   var fixtures;
 
-  before(function(done){
-    helper.Setup(server, function(err, data){
-      if(err) return done(err);
+    // Get our fixtures from the helper module
+  before(function(done) {
+    fixtures = helper.Setup(server, function(err, data) {
       fixtures = data;
-      done();
+      return done(err);
     });
   });
 
-  after(function(done){
-    helper.Teardown(server, function(err){
-      if(err) return done(err);
-      fixtures = {};
-      done();
+  after(function(done) {
+    helper.Teardown(server, function(err) {
+      return done(err);
     });
   });
+
 
   /* Validations */
   describe('validations', function(){
@@ -174,8 +169,8 @@ describe('ticket', function(){
       });
 
       it('should assign user to ticket', function(){
-        var assignedTo = testObject.assigned_to[0].toString();
-        assignedTo.should.equal(fixtures.users[0].id);
+        testObject.assigned_to.should.include(fixtures.users[0].id);
+        testObject.assigned_to.should.include(fixtures.users[1].id);
       });
 
       it('should send participating users a notification', function(done) {
@@ -216,7 +211,7 @@ describe('ticket', function(){
       describe('addUsers', function(){
 
         before(function(done){
-          klass._manageSets([user1, user2], function(){
+          klass._manageAssigned([user1, user2], function(){
             done();
           });
         });
@@ -230,25 +225,12 @@ describe('ticket', function(){
           });
         });
 
-        it('should add a ticket to each users set', function(done){
-          var user1_namespace = 'user:' + user1 + ':assignedTo',
-              user2_namespace = 'user:' + user2 + ':assignedTo';
-
-          client.SMEMBERS(user1_namespace, function(err, res){
-            res.length.should.equal(1);
-            client.SMEMBERS(user2_namespace, function(err, res){
-              res.length.should.equal(1);
-              done();
-            });
-          });
-        });
-
       }); // close addUsers
 
       describe('removeUsers', function(){
 
         before(function(done){
-          klass._manageSets([user1], function(){
+          klass._manageAssigned([user1], function(){
             done();
           });
         });
@@ -262,25 +244,12 @@ describe('ticket', function(){
           });
         });
 
-        it('should remove ticket from user2 set', function(done){
-          var user1_namespace = 'user:' + user1 + ':assignedTo',
-              user2_namespace = 'user:' + user2 + ':assignedTo';
-
-          client.smembers(user1_namespace, function(err, res){
-            res.length.should.equal(1);
-            client.smembers(user2_namespace, function(err, res){
-              res.length.should.equal(0);
-              done();
-            });
-          });
-        });
-
       }); // close removeUsers
 
       describe('Remove Ticket Owner', function(){
 
         before(function(done){
-          klass._manageSets([user2], function(){
+          klass._manageAssigned([user2], function(){
             done();
           });
         });
@@ -355,7 +324,7 @@ describe('ticket', function(){
 
       // Run get all and assign to users
       before(function(done){
-        Ticket.all({status:'open', page: 1}, function(err, results){
+        Ticket.all(fixtures.users[0]._id, {status:'open', page: 1}, function(err, results){
           if(err) return done(err);
           models = results;
           done();
@@ -385,7 +354,7 @@ describe('ticket', function(){
 
       // Run get all and assign to users
       before(function(done){
-        Ticket.all({status: 'closed', page: 1}, function(err, results){
+        Ticket.all(fixtures.users[0]._id, {status: 'closed', page: 1}, function(err, results){
           if(err) return done(err);
           models = results;
           done();
@@ -436,14 +405,14 @@ describe('ticket', function(){
       });
 
       it('should return open tickets assigned to user', function(done){
-        Ticket.mine(fixtures.users[0]._id, 'open', 1, function(err, models){
+        Ticket.mine(fixtures.users[0]._id, {'status': 'open'}, function(err, models){
           models.length.should.equal(2);
           done();
         });
       });
 
       it('should return closed tickets assigned to user', function(done){
-        Ticket.mine(fixtures.users[0]._id, 'closed', 1, function(err, models){
+        Ticket.mine(fixtures.users[0]._id, {'status': 'closed'}, function(err, models){
           models.length.should.equal(2);
           done();
         });
@@ -451,6 +420,42 @@ describe('ticket', function(){
 
     });
 
+
+    /**
+     * Follow
+     *
+     * Should add a User ID to a Ticket's participating array
+     */
+
+    describe('follow', function() {
+      before(function(done) {
+        Ticket.follow('user123', fixtures.tickets[1], function(err, status) {
+          done(err);
+        });
+      });
+
+      it('should add user id to ticket participating array', function(done) {
+        server.redis.SISMEMBER('ticket:' + fixtures.tickets[1] + ':participating', 'user123', function(err, status) {
+          status.should.eql(1);
+          done();
+        });
+      });
+    });
+
+    describe('unfollow', function() {
+      before(function(done) {
+        Ticket.unfollow('user123', fixtures.tickets[1], function(err, status) {
+          done(err);
+        });
+      });
+
+      it('should remove user id from ticket participating array', function(done) {
+        server.redis.SISMEMBER('ticket:' + fixtures.tickets[1] + ':participating', 'user123', function(err, status) {
+          status.should.eql(0);
+          done();
+        });
+      });
+    });
 
     /* getSingle */
     /* Should test a single ticket is returned */
@@ -553,15 +558,6 @@ describe('ticket', function(){
           result = ticket;
           done();
         });
-      });
-
-      it('should assign admin user to ticket', function(){
-        var assignedTo = result.assigned_to[0].toString();
-        assignedTo.should.equal(fixtures.users[0].id);
-      });
-
-      it('should set read to true because we are assigning users', function(){
-        result.read.should.be.true;
       });
 
       it('should add admin user to participating users', function(done) {

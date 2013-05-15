@@ -11,7 +11,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
       var new_options = _.extend({
 
         beforeSend: function(xhr) {
-          var auth_token = ticketer.currentUser.token;
+          var auth_token = ticketer.currentUser.access_token;
           if (auth_token) {
             xhr.setRequestHeader('X-Auth-Token', auth_token);
           }

@@ -30,7 +30,7 @@ exports.AccessControl = function(req, res, next) {
 
   // routes for the method
   routes = Object.getOwnPropertyDescriptor(routes, method).value;
-  
+
   for (var route in routes) {
     accessLevels = Object.getOwnPropertyDescriptor(routes, route).value;
     route = new Route(route);

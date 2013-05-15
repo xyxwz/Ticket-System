@@ -1,25 +1,24 @@
-<!-- Ticket Creator's Avatar -->
-<div class="two columns offset-by-one avatar clearfix">
-  <a class="right shadow paper" href="#">
-    <span class="tape"></span>
-    <img src="{{avatar}}" alt="{{name}}">
-    <span class="written">{{shortname}}</span>
-  </a>
+<div class="header">
+  <h1 class="title">Create a Ticket</h1>
+  <span data-action="cancel">&times;</span>
 </div>
 
 <!-- Ticket Form -->
-<div class="eight columns ticketInfo shadow paper">
-  <span class="tack"></span>
-  <div id="ticketForm">
-    <form action="#" class="clearfix">
-      <div class="seperator">
-        <input type="text" name="title" class="written" placeholder="Ticket Name...">
-      </div>
-      <div class="outerWrap">
-        <textarea name="description" class="written" placeholder="Enter a description of your ticket..."></textarea>
-      </div>
-      <a class="guide left" href="#">Markdown Guide</a>
-      <button class="right written green">Create Ticket</button>
-    </form>
+<div class="wrapper">
+  <div class="wrap">
+    <input type="text" name="title" placeholder="Ticket Name...">
   </div>
-</div> <!-- end of Ticket Form -->
+
+  <textarea class="wrap scrollable" role="description" placeholder="Enter a description of your ticket..."></textarea>
+</div>
+
+<div class="footer">
+  <ul class="left">
+    <li><a data-role="display-guide" class="guide" href="#">Markdown Guide</a></li>
+  </ul>
+
+  <ul class="right">
+    <li><button data-action="create">Create Ticket</button></li>
+    <li><button data-action= "cancel" class="cancel">Cancel</button></li>
+  </ul>
+</div>

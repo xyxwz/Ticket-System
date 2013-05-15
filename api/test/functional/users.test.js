@@ -146,7 +146,7 @@ describe('user', function(){
       .end(function(data){
         res = data;
         done();
-      });  
+      });
     });
 
     it('should return a 200 status code', function(){
@@ -156,7 +156,7 @@ describe('user', function(){
     it('should update user name', function(){
       res.body.name.should.equal('UPDATED');
     });
-    
+
     it('should return a user object', function(){
       var user = res.body;
       should.exist(user.id);
@@ -173,19 +173,20 @@ describe('user', function(){
       url = "http://127.0.0.1:3000/api/users/"+fixtures.users[0].id;
       request
       .del(url)
+      .send({})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
       .end(function(data){
         res = data;
         done();
-      });  
+      });
     });
 
-    it('should return a 200 status code', function(){
+    it('should return a 200 status code', function() {
       res.status.should.equal(200);
     });
-    
+
     it('should return success', function(){
       should.exist(res.body.success);
     });

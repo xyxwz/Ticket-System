@@ -75,7 +75,6 @@ module.exports = function(app) {
 
       var emitObj = {body: clientObj};
       emitObj.ticket = ticket.id;
-      if(data.socket) emitObj.socket = data.socket;
       app.eventEmitter.emit('comment:update', emitObj);
 
       return cb(null, clientObj);
@@ -221,13 +220,12 @@ module.exports = function(app) {
 
       if (user.avatar) obj.user.avatar = user.avatar;
 
-      Notifications.nowParticipating(redis, user.id, ticket.id, function(err) {
-        Notifications.pushNotification(redis, user.id, ticket.id, function(err) {
+      Notifications.nowParticipating(redis, user._id, ticket.id, function(err) {
+        Notifications.pushNotification(redis, user._id, ticket.id, function(err) {
           if(err) return cb(err);
 
           var emitObj = {body: obj};
           emitObj.ticket = ticket.id;
-          if(data.socket) emitObj.socket = data.socket;
           app.eventEmitter.emit('comment:new', emitObj);
 
           return cb(null, obj);
