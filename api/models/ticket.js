@@ -47,14 +47,14 @@ module.exports = function(app) {
     async.parallel([
       function(callback) {
         self.redis.SMEMBERS('ticket:' + obj.id + ':assignees', function(err, members) {
-          if(err) return cb(err);
+          if(err) return callback(err);
           obj.assigned_to = members;
           callback(null, obj);
         });
       },
       function(callback) {
         self.redis.SMEMBERS('ticket:' + obj.id + ':participating', function(err, members) {
-          if(err) return cb(err);
+          if(err) return callback(err);
           obj.participants = members;
           callback(null, obj);
         });
