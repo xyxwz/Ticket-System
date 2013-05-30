@@ -3,7 +3,7 @@ TXSSC Ticket System
 
 ## Overview
 
-The project is split into two parts *api* and *client*, contained the core api code and all front-end code respectively. Documentation for the specific components have a corresponding `Readme`.
+The project is split into two parts ***api*** and ***client***, containing the core api code and all front-end code respectively. Documentation for the specific components have a corresponding `Readme`.
 
 
 ## Installing
