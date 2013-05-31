@@ -1,5 +1,5 @@
 var passport = require('passport'),
-    txsscStrategy = require('passport-txssc').Strategy,
+    Strategy = require('passport-github').Strategy,
     User;
 
 
@@ -22,13 +22,16 @@ module.exports = function(app) {
   });
 
   // Use the GitHubStrategy within Passport.
-  passport.use(new txsscStrategy({
+  passport.use(new Strategy({
     clientID: process.env.CONSUMER_KEY,
     clientSecret: process.env.CONSUMER_SECRET,
     callbackURL: "http://" + process.env.CALLBACK_HOST + "/login/oauth/callback"
     },
     function(accessToken, refreshToken, profile, done) {
       var sessionData;
+
+      // hack for github avatar images
+      profile.avatar = profile._json.avatar_url;
 
       User._authorize(accessToken, refreshToken, profile, function(err, user) {
         if(err) return done(err);

@@ -1,8 +1,6 @@
-var strategies = require('../lib/authentication'),
-    passport = require('passport'),
+var passport = require('passport'),
     mongoose = require('mongoose'),
-    User = mongoose.model('User'),
-    txsscStrategy = require('passport-txssc').Strategy;
+    User = mongoose.model('User');
 
 module.exports = function(app) {
 
@@ -12,7 +10,7 @@ module.exports = function(app) {
    * Sends the user to the OAuth provider to authenticate with.
    * Afterwards will use callback specified in OAuth application (SSO) */
   app.get('/login/oauth/authorize',
-    passport.authenticate('txssc'),
+    passport.authenticate('github'),
     function(req, res){ /* Redirected to SSO. Function is never called */});
 
 
@@ -22,7 +20,7 @@ module.exports = function(app) {
    * Use passport.authenticate() as route middleware to authenticate the request.
    * Currently if authentication fails redirect back to home page. */
   app.get('/login/oauth/callback',
-    passport.authenticate('txssc', { failureRedirect: '/' }),
+    passport.authenticate('github', { failureRedirect: '/' }),
     function(req, res) {
       res.redirect('/');
     });
