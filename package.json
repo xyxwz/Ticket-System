@@ -1,32 +1,27 @@
 {
-  "name": "TxSSC-Ticket-System",
+  "name": "Ticket-System",
   "version": "0.2.1",
   "dependencies": {
-    "express": "3.1.0",
-    "connect": "2.7.3",
-    "jade": "0.28.1",
-    "mongoose": "3.5.6",
-    "underscore": "1.4.4",
-    "passport": "0.1.15",
-    "hiredis": "0.1.14",
-    "redis": "0.8.2",
-    "connect-redis": "1.4.5",
-    "passport-txssc": "git://github.com/TxSSC/passport-txssc.git",
-    "node-redis-events": "0.9.0",
-    "async": "0.2.5"
+    "async": "~0.2.9",
+    "connect": "~2.7.10",
+    "connect-redis": "~1.4.5",
+    "express": "~3.2.5",
+    "hiredis": "~0.1.15",
+    "jade": "~0.31.1",
+    "mongoose": "~3.6.11",
+    "node-redis-events": "~1.0.0",
+    "passport": "~0.1.17",
+    "passport-txssc": "~0.1.0",
+    "redis": "~0.8.3",
+    "underscore": "~1.4.4"
   },
   "devDependencies": {
-    "mocha": "1.1.x",
-    "should": "0.6.x",
-    "superagent": "0.5.x",
-    "async": "0.1.x"
+    "mocha": "~1.10.0",
+    "should": "~1.2.2",
+    "superagent": "~0.14.6"
   },
   "scripts": {
     "test": "mocha api/test",
     "start": "node api/app.js"
-  },
-  "subdomain": "txssc-tickets",
-  "engines": {
-    "node": ">=v0.6.x"
   }
 }
