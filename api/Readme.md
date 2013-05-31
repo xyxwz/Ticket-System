@@ -11,262 +11,244 @@ The Ticket-System has a RESTful JSON api. It uses a token based authentication t
 
 ## API Endpoints:
 
-> All requests must include Content-Type, and X-Auth-Token headers.
-
 All routes are RESTful, being if the endpoint is `/api/users` you can expect that there is an `/api/users/:id` route, and all other corresponding HTTP verb routes.
 
-API status codes returned are the proper corresponding HTTP [status codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html).
+###### Notes:
+* All requests must include Content-Type, and X-Auth-Token headers.
+* API status codes returned are the proper corresponding HTTP [status codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html).
 
 ### Users
 
-> Ticket system users
+Ticket system users
 
-* *GET* `/api/users`
+###### GET
 
-  * return all users
+> /api/users
 
-* *GET* `/api/users/:id`
+* return all users
 
-  * return user with the specified `id`
+> /api/users/:id
 
-* *POST* `/api/users`
+* return user with the specified `id`
 
-  * create a new user
+###### POST
 
-  * required parameters:
+> /api/users
 
-    * `username` - *String* - login name for the user
+* create a new user
+* required parameters:
+  * `username` - *String* - login name for the user
+  * `name` - *String* - name of the user
+  * `role` - *String* - permission level of user, *member* or *admin*
+  * `avatar` - *String* - uri to the users avatar image
+  * `access_token` - *String* - OAuth2 access token
+  * `refresh_token` - *String* - OAuth2 refresh token
+* returns the newly created user
 
-    * `name` - *String* - name of the user
+###### PUT
 
-    * `role` - *String* - permission level of user, *member* or *admin*
+> /api/users/:id
 
-    * `avatar` - *String* - uri to the users avatar image
+* update the user with the corresponding `id`
+* accepts parameters:
+  * `username` - *String* - login name of the user
+  * `name` - *String* - name of the user
+  * `role` - *String* - permission level of user, *member* or *admin*
+* returns the updated list
 
-    * `access_token` - *String* - OAuth2 access token
+###### DELETE
 
-    * `refresh_token` - *String* - OAuth2 refresh token
+> /api/users/:id
 
-  * returns the newly created user
-
-* *PUT* `/api/users/:id`
-
-  * update the user with the corresponding `id`
-
-  * accepts parameters:
-
-    * `username` - *String* - login name of the user
-
-    * `name` - *String* - name of the user
-
-    * `role` - *String* - permission level of user, *member* or *admin*
-
-  * returns the updated list
-
-* *DELETE* `/api/users/:id`
-
-  * destroys the user with the specified `id`
-
-  * returns an error if present
-
+* destroys the user with the specified `id`
+* returns an error if present
 
 ### Tickets
 
-> A workorder request, has many comments.
+A workorder request, has many comments.
 
-* *GET* `/api/tickets`
+###### GET
 
-  * return all tickets
+> /api/tickets
 
-* *GET* `/api/tickets/mine`
+* return all tickets
 
-  * uses `X-Auth-Token` for user
+> /api/tickets/mine
 
-  * return all tickets belonging to, assigned to, or participating in for the user
+* uses `X-Auth-Token` for user
+* return all tickets belonging to, assigned to, or participating in for the user
 
-* *GET* `/api/tickets/:id`
+> /api/tickets/:id
 
-  * return ticket with specified `id`
+* return ticket with specified `id`
 
-* *POST* `/api/tickets`
+###### POST
 
-  * create a new ticket object
+> /api/tickets
 
-  * required parameters:
+* create a new ticket object
+* required parameters:
+  * `user` - *String* - ticket owner
+  * `title` - *String* - ticket title
+  * `description` - *String* - ticket body
+* returns the newly created ticket
 
-    * `user` - *String* - ticket owner
+###### PUT
 
-    * `title` - *String* - ticket title
+> /api/tickets/:id
 
-    * `description` - *String* - ticket body
+* update the ticket with new attributes
+* accepts parameters:
+  * `title` - *String*
+  * `description` - *String*
+  * `status` - *String* - ticket status, *open* or *closed*
+  * `assigned_to` - *Array* - user the ticket is assigned to
+  * `participants` - *Array* - users that are participating in this ticket
+* returns the updated ticket
 
+###### DELETE
+
+> /api/tickets/:id
+
+* destroys the ticket with specified `id`
+* returns an error if present
+
+### Comments
+
+Comments, belongs to a ticket object
+
+###### GET
+
+> /api/tickets/:ticketID/comments
+
+* return all comments belonging to ticket with specified `ticketID`
+
+> /api/tickets/:ticketID/:id
+
+* return comment with specified `id`
+
+###### POST
+
+> /api/tickets/:ticketID/comments
+
+* create a new comment on ticket specified by `ticketID`
+* required parameters:
+  * `user` - *String* - comment owner
+  * `comment` - *String* - comment body
   * returns the newly created ticket
 
-* *PUT* `/api/tickets/:id`
+###### PUT
 
-  * update the ticket with new attributes
+> /api/tickets/:ticketID/comments/:id
 
-  * accepts parameters:
+* update the comment specified by `:id` with new attributes
+* accepts parameters:
+  * `comment` - *String*
+* returns the updated comment
 
-    * `title` - *String*
+###### DELETE
 
-    * `description` - *String*
+> /api/tickets/:ticketID/comments/:id
 
-    * `status` - *String* - ticket status, *open* or *closed*
-
-    * `assigned_to` - *Array* - user the ticket is assigned to
-
-    * `participants` - *Array* - users that are participating in this ticket
-
-  * returns the updated ticket
-
-
-* *DELETE* `/api/tickets/:id`
-
-  * destroys the ticket with specified `id`
-  
-  * returns an error if present
-
-
-#### Comments
-
-> Comments on a ticket object
-
-* *GET* `/api/tickets/:ticketID/comments`
-
-  * return all comments belonging to ticket with specified `ticketID`
-
-* *GET* `/api/tickets/:ticketID/:id`
-
-  * return comment with specified `id`
-
-* *POST* `/api/tickets/:ticketID/comments`
-
-  * create a new comment on ticket specified by `ticketID`
-
-  * required parameters:
-
-    * `user` - *String* - comment owner
-
-    * `comment` - *String* - comment body
-
-  * returns the newly created ticket
-
-* *PUT* `/api/tickets/:ticketID/comments/:id`
-
-  * update the comment specified by `:id` with new attributes
-
-  * accepts parameters:
-
-    * `comment` - *String*
-
-  * returns the updated comment
-
-* *DELETE* `/api/tickets/:ticketID/comments/:id`
-
-  * destroys the comment with specified `id`
-  
-  * returns an error if present
-
+* destroys the comment with specified `id`
+* returns an error if present
 
 ### Lists
 
-> User specific collection of tickets.
+User specific collection of tickets.
 
-* *GET* `/api/lists`
+###### GET
 
-  * returns all lists belonging to the current user
+> /api/lists
 
-* *GET* `/api/lists/:id`
+* returns all lists belonging to the current user
 
-  * return list with the specified `id`
+> /api/lists/:id
 
-* *POST* `/api/lists`
+* return list with the specified `id`
 
-  * create a new list
+###### POST
 
-  * required parameters:
+> /api/lists
 
-    * `name` - *String* - name of list
+* create a new list
+* required parameters:
+  * `name` - *String* - name of list
+  * `user` - *String* - user that created this list
+  * `color` - *String* - color the list will be in the web application
+* returns the newly created list
 
-    * `user` - *String* - user that created this list
+###### PUT
 
-    * `color` - *String* - color the list will be in the web application
+> /api/lists/:id
 
-  * returns the newly created list
+* update the list with the corresponding `id`
+* accepts parameters:
+  * `name` - *String*
+  * `tickets` - *Array* - array of ticket ids that belong to this list
+* returns the updated list
 
-* *PUT* `/api/lists/:id`
+###### DELETE
 
-  * update the list with the corresponding `id`
+> /api/lists/:id
 
-  * accepts parameters:
-
-    * `name` - *String*
-
-    * `tickets` - *Array* - array of ticket ids that belong to this list
-
-  * returns the updated list
-
-* *DELETE* `/api/lists/:id`
-
-  * destroys the list with the specified `id`
-
-  * returns an error if present
-
+* destroys the list with the specified `id`
+* returns an error if present
 
 ### Projects
 
-> Global collection of tickets - not used by the current version of the web application.
+Global collection of tickets - not used by the current version of the web application.
 
-* *GET* `/api/projects`
+###### GET
 
-  * returns all projects
+> /api/projects
 
-* *GET* `/api/projects/:id`
+* returns all projects
 
-  * return project with the specified `id`
+> /api/projects/:id
 
-* *POST* `/api/projects`
+* return project with the specified `id`
 
-  * create a new project
+###### POST
 
-  * required parameters:
+> /api/projects
 
-    * `name` - *String* - name of project
+* create a new project
+* required parameters:
+  * `name` - *String* - name of project
+  * `user` - *String* - user that created this project
+  * `description` - *String* - brief description of project
+* returns the newly created project
 
-    * `user` - *String* - user that created this project
+###### PUT
+> /api/projects/:id
 
-    * `description` - *String* - brief description of project
+* update the project with the corresponding `id`
+* accepts parameters:
+  * `name` - *String*
+  * `description` - *String*
+  * `tickets` - *Array* - array of ticket ids that belong to this project
+* returns the updated project
 
-  * returns the newly created project
+###### DELETE
+> /api/projects/:id
 
-* *PUT* `/api/projects/:id`
-
-  * update the project with the corresponding `id`
-
-  * accepts parameters:
-
-    * `name` - *String*
-
-    * `description` - *String*
-
-    * `tickets` - *Array* - array of ticket ids that belong to this project
-
-  * returns the updated project
-
-* *DELETE* `/api/projects/:id`
-
-  * destroys the project with the specified `id`
-
-  * returns an error if present
+* destroys the project with the specified `id`
+* returns an error if present
 
 
 ## Example Requests
 
-##### Return all users:
+**Return all users:**
 
 ```shell
 curl -H 'X-Auth-Token: APITOKENHERE' -H 'Content-Type: application/json' -X GET localhost:3000/api/users
+```
+
+**Create new ticket:**
+
+```shell
+curl -X GET -H 'X-Auth-Token: APITOKENHERE' -H 'Content-Type: application/json' -d '{"title": "New Ticket", "description": "Hello world", "user": "ObjectID"}' localhost:3000/api/tickets
 ```
 
 
