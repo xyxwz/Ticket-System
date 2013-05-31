@@ -192,8 +192,8 @@ module.exports = function(app) {
         // create a new user if not found
         data = {
           username: profile.username,
-          name: profile.name,
-          role: profile.role,
+          name: profile.displayName,
+          role: profile.role || 'member',
           access_token: access_token,
           avatar: profile.avatar
         };
