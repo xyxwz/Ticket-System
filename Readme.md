@@ -13,9 +13,66 @@ npm install
 ```
 
 
+## Environment variables
+
+###### NODE_ENV
+
+> Optional
+
+Express environment, see [env](http://expressjs.com/api.html#app-settings)
+
+###### TIX_PORT
+
+> Optional
+
+Port the server starts listening on
+
+###### SESSION_SECRET
+
+> Required
+
+Express session secret, see [sessions](http://www.senchalabs.org/connect/middleware-session.html)
+
+###### CONSUMER_KEY
+
+> Required
+
+OAuth2 strategy consumer key
+
+###### CONSUMER_SECRET
+
+> Required
+
+OAuth2 strategy consumer secret
+
+###### CALLBACK_HOST
+
+> Required
+
+OAuth2 strategy's callback host
+
+###### TYPEKIT
+
+> Optional
+
+Typekit key
+
+###### MONGO_URI
+
+> Required
+
+Mongo connection uri - Ex: `mongodb://127.0.0.1:27017/tickets`
+
+###### REDIS_URI
+
+> Required
+
+Redis connection uri - Ex: `redis://0:@127.0.0.1:6379`
+
+
 ## Starting the server
 
-Ensure that all modules are installed and execute:
+Ensure that all dependencies are installed and environment variables set, then execute:
 
 ```shell
 npm start
