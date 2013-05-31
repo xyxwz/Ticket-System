@@ -40,7 +40,7 @@ describe('tickets', function(){
     before(function(done){
       request
       .get('http://127.0.0.1:3000/api/tickets')
-      .send({status: 'open'})
+      .query({status: 'open'})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -79,7 +79,7 @@ describe('tickets', function(){
     before(function(done){
       request
       .get('http://127.0.0.1:3000/api/tickets')
-      .send({status: 'closed'})
+      .query({status: 'closed'})
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json')
       .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -139,7 +139,7 @@ describe('tickets', function(){
       function runCallback(){
         request
         .get('http://127.0.0.1:3000/api/tickets/mine')
-        .send({status: 'open'})
+        .query({status: 'open'})
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('X-Auth-Token', fixtures.users[0].access_token)
@@ -200,7 +200,7 @@ describe('tickets', function(){
       function runCallback(){
         request
         .get('http://127.0.0.1:3000/api/tickets/mine')
-        .send({status: 'closed'})
+        .query({status: 'closed'})
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
         .set('X-Auth-Token', fixtures.users[0].access_token)
