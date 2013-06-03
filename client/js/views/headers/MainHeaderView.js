@@ -5,10 +5,12 @@
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/widgets/TagFormView',
   'views/tickets/TicketFormView',
+  'views/widgets/SearchWidgetView',
   'text!templates/headers/MainHeader.html',
   'text!templates/headers/UserOptions.html',
   'dropdowns'],
-function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_Options) {
+function($, _, mustache, BaseView, TagWidget,
+  TicketFormView, SearchWidget, tmpl_Header, tmpl_Options) {
 
   /**
    * A basic header view
@@ -23,7 +25,7 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
       "click a[data-action]": "preventDefault",
       "click a[data-action='new-ticket']": "createTicket",
       "click a[data-action='refresh']": "refresh",
-      "click a[data-action='new-tag']": 'showTagWidget'
+      "click a[data-action='new-tag']": "showTagWidget"
     },
 
     initialize: function() {
@@ -33,6 +35,7 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
     render: function() {
       this.$el.html(Mustache.to_html(tmpl_Header));
       this.addUserOptions();
+      this.addSearchWidget();
 
       return this;
     },
@@ -44,6 +47,12 @@ function($, _, mustache, BaseView, TagWidget, TicketFormView, tmpl_Header, tmpl_
 
       data.user = ticketer.currentUser;
       this.$el.append(Mustache.to_html(tmpl_Options, data));
+    },
+
+    addSearchWidget: function() {
+      var view = this.createView(SearchWidget);
+
+      this.$el.find('[data-role="search-placeholder"]').html(view.render().el);
     },
 
     preventDefault: function(e) {
