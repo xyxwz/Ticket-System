@@ -9,13 +9,13 @@ define(['jquery', 'underscore', 'backbone', 'BaseView',
 function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
 
   /**
-   * TaskListView
+   * TagListView
    * Renders a collection of Tags
    *
    * @param {Backbone.Collection} collection
    */
 
-  var TaskListView = BaseView.extend({
+  var TagListView = BaseView.extend({
     className: 'option-set tag-list-widget',
 
     events: {
@@ -161,5 +161,5 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
     }
   });
 
-  return TaskListView;
+  return TagListView;
 });
