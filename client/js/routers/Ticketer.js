@@ -14,7 +14,8 @@ function(Backbone, HeaderView, PanelController) {
       "": "index",
       "tickets/open": "openTickets",
       "tickets/closed": "closedTickets",
-      "tickets/mine": "myTickets"
+      "tickets/mine": "myTickets",
+      "tickets/search/:term": "searchTickets"
     },
 
     /**
@@ -24,7 +25,7 @@ function(Backbone, HeaderView, PanelController) {
 
     initialize: function(){
       // Create the Page Header
-      var view = new HeaderView();
+      var view = new HeaderView({router: this});
       $('header').append(view.render().el);
 
       this.controller = new PanelController();
@@ -48,6 +49,10 @@ function(Backbone, HeaderView, PanelController) {
 
     myTickets: function() {
       this.controller.showMyTickets();
+    },
+
+    searchTickets: function(term) {
+      this.controller.searchTickets(term);
     }
 
   });

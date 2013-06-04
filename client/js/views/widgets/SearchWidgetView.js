@@ -20,10 +20,19 @@ function($, _, Backbone, BaseView, tmpl_Search) {
     },
 
     events: {
-      "click a[data-action='clear']": "resetFilter",
+      "click a[data-action='clear']": "showOpen",
       "blur input[data-action='filter']": "hideClear",
       "focus input[data-action='filter']": "showClear",
-      "keyup input[data-action='filter']": "emitFilter"
+      "keyup input[data-action='filter']": "attemptSearch"
+    },
+
+    initialize: function(options) {
+      var self = this;
+
+      this.router = options.router;
+      this.router.on('route:searchTickets', function(term) {
+        self.$el.children('input').val(term);
+      });
     },
 
     render: function() {
@@ -53,31 +62,28 @@ function($, _, Backbone, BaseView, tmpl_Search) {
     },
 
     /**
-     * Trigger the `list:filter` event on collections, passing the
-     *  custom search filter.
+     * Search tickets on enter press
      *
      * @param {jQuery.Event} e
      */
 
-    emitFilter: function(e) {
-      var val = $(e.currentTarget).val().toLowerCase();
+    attemptSearch: function(e) {
+      if(e.keyCode !== 13) return;
 
-      ticketer.EventEmitter.trigger('list:filter', function(ticket) {
-        return ~ticket.get('title').toLowerCase().indexOf(val);
-      });
+      var val = $(e.currentTarget).val().toLowerCase();
+      this.router.navigate('tickets/search/' + encodeURIComponent(val), true);
     },
 
     /**
-     * Trigger the `list:filter` event on collections with no
-     *  arguments to reset the current filter.
+     * Return to open tickets
      *
      * @param {jQuery.Event} e
      */
 
-    resetFilter: function(e) {
+    showOpen: function(e) {
       e.preventDefault();
       this.$el.children('input').val('');
-      ticketer.EventEmitter.trigger('list:filter');
+      this.router.navigate('tickets/open', true);
     }
 
   });
