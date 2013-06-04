@@ -99,33 +99,32 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
     },
 
     /**
-     * A helper function for `this.dispose`
-     * unbinds events, removes any dangeling events,
-     * and removes the node from the `DOM`
+     * Clean up all children views
      */
 
-    trash: function() {
-      this.unbindAll();
-      this.clearIntervals();
-      this.remove();
-
-      return null;
-    },
-
-    /**
-     * Iterate over all views stored in `this.views`
-     * and dispose of each before finally calling `this.trash`
-     */
-
-    dispose: function () {
+    removeChildren: function() {
       var i, view;
 
       for(i = this.views.length; i > 0; i = i - 1) {
         view = this.views.pop();
         view.dispose();
       }
+    },
 
-      return this.trash();
+    /**
+     * Remove all children views, unbind events, remove any dangeling events,
+     *  and remove the node from the `DOM`.
+     *
+     * @return {Null}
+     */
+
+    dispose: function () {
+      this.removeChildren();
+      this.unbindAll();
+      this.clearIntervals();
+      this.remove();
+
+      return null;
     }
   });
 
