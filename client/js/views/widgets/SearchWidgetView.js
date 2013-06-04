@@ -21,7 +21,8 @@ function($, _, Backbone, BaseView, tmpl_Search) {
 
     events: {
       "click a[data-action='clear']": "resetFilter",
-      // "focus a[data-action='filter']": "bind"
+      "blur input[data-action='filter']": "hideClear",
+      "focus input[data-action='filter']": "showClear",
       "keyup input[data-action='filter']": "emitFilter"
     },
 
@@ -31,6 +32,33 @@ function($, _, Backbone, BaseView, tmpl_Search) {
       return this;
     },
 
+    /**
+     * Show the clear button on focus of input
+     *
+     * @param {jQuery.Event} e
+     */
+
+    showClear: function(e) {
+      this.$el.children('.clear').fadeIn();
+    },
+
+    /**
+     * Hide the clear button on blur of input
+     *
+     * @param {jQuery.Event} e
+     */
+
+    hideClear: function(e) {
+      this.$el.children('.clear').fadeOut();
+    },
+
+    /**
+     * Trigger the `list:filter` event on collections, passing the
+     *  custom search filter.
+     *
+     * @param {jQuery.Event} e
+     */
+
     emitFilter: function(e) {
       var val = $(e.currentTarget).val().toLowerCase();
 
@@ -38,6 +66,13 @@ function($, _, Backbone, BaseView, tmpl_Search) {
         return ~ticket.get('title').toLowerCase().indexOf(val);
       });
     },
+
+    /**
+     * Trigger the `list:filter` event on collections with no
+     *  arguments to reset the current filter.
+     *
+     * @param {jQuery.Event} e
+     */
 
     resetFilter: function(e) {
       e.preventDefault();
