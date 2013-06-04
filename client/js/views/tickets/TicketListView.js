@@ -22,7 +22,6 @@ function($, _, Backbone, BaseView, TicketView) {
     },
 
     initialize: function() {
-      this.status = this.options.status ? this.options.status : 'open';
       this.filter = this.options.filter || function() { return true; };
       this._filter = this.filter; // Original filter
       this.controller = this.options.controller || null;
@@ -85,9 +84,7 @@ function($, _, Backbone, BaseView, TicketView) {
     },
 
     refresh: function() {
-      this.collection.fetch({
-        data: { status: this.status }
-      });
+      this.collection.fetch();
     },
 
     renderTicket: function(model) {
