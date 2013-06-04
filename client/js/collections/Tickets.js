@@ -22,6 +22,27 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
     },
 
     /**
+     * Keep only the bare attributes we want to store in lists
+     *
+     * @param {Object} response
+     */
+
+    parse: function(response) {
+      return response.map(function(model) {
+        return {
+          id: model.id,
+          read: model.read,
+          user: model.user,
+          title: model.title,
+          opened_at: model.opened_at,
+          closed_at: model.closed_at,
+          notification: model.notification,
+          participating: model.participating
+        };
+      });
+    },
+
+    /**
      * Override the fetch function to provide status functionality
      *
      * @param {Object} options
