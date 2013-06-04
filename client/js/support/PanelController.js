@@ -126,6 +126,32 @@ function($, Tickets, FillerView, SpinnerView,
   };
 
   /**
+   *
+   *
+   * @
+   */
+
+  PanelController.prototype.searchTickets = function(term) {
+    var self = this;
+    var collection = new Tickets();
+
+    this._callViewFunction('one', 'selectTab');
+    this._setPanel('two', SpinnerView);
+
+    collection.fetch({
+      data: {query: term},
+      success: function() {
+        self._setPanel('two', ListView, {
+          collection: collection,
+          controller: self
+        });
+
+        self._setPanel('three', FillerView);
+      }
+    });
+  };
+
+  /**
    * Display `ticket` in panel-three
    *
    * @param {Backbone.Model} ticket

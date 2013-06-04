@@ -28,7 +28,8 @@ function($, _, mustache, BaseView, TagWidget,
       "click a[data-action='new-tag']": "showTagWidget"
     },
 
-    initialize: function() {
+    initialize: function(options) {
+      this.router = options.router;
       this.bindTo(ticketer.EventEmitter, 'popup:TicketForm', this.createTicket, this);
     },
 
@@ -50,7 +51,9 @@ function($, _, mustache, BaseView, TagWidget,
     },
 
     addSearchWidget: function() {
-      var view = this.createView(SearchWidget);
+      var view = this.createView(SearchWidget, {
+        router: this.router
+      });
 
       this.$el.find('[data-role="search-placeholder"]').html(view.render().el);
     },
