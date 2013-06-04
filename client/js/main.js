@@ -1,7 +1,7 @@
 require.config( {
   baseUrl:'js',
   paths: {
-    'backbone':         'libs/backbone-0.9.10',
+    'backbone':         'libs/backbone-1.0.0',
     'underscore':       'libs/lodash',
     'text':             'libs/require/text',
     'mustache':         'libs/mustache',
