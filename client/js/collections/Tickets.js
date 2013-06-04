@@ -22,6 +22,19 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
     },
 
     /**
+     * Override the fetch function to provide status functionality
+     *
+     * @param {Object} options
+     */
+
+    fetch: function(options) {
+      options.data = options.data || {};
+      options.data.status = this.status;
+
+      return Backbone.Collection.prototype.fetch.call(this, options);
+    },
+
+    /**
      * Reset the collection and clear all global event bindings
      */
 
@@ -58,6 +71,10 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
       if(model) {
         model.set(model.parse(obj));
+      }
+
+      if(model.get('status') !== this.status) {
+        this.remove(model.id);
       }
     },
 

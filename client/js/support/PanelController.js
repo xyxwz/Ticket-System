@@ -48,13 +48,12 @@ function($, Tickets, FillerView, SpinnerView,
 
   PanelController.prototype.showOpenTickets = function() {
     var self = this,
-        collection = new Tickets();
+        collection = new Tickets(null, {status: 'open'});
 
     this._callViewFunction('one', 'selectTab', 'tickets/open');
     this._setPanel('two', SpinnerView);
 
     collection.fetch({
-      data: {status: 'open'},
       success: function() {
         self._setPanel('two', ListView, {
           collection: collection,
@@ -71,14 +70,16 @@ function($, Tickets, FillerView, SpinnerView,
    */
 
   PanelController.prototype.showMyTickets = function() {
-    var self = this,
-        collection = new Tickets(null, {url: '/api/tickets/mine'});
+    var self = this;
+    var collection = new Tickets(null, {
+      status: 'open',
+      url: '/api/tickets/mine'
+    });
 
     this._callViewFunction('one', 'selectTab', 'tickets/mine');
     this._setPanel('two', SpinnerView);
 
     collection.fetch({
-      data: {status: 'open'},
       success: function() {
         self._setPanel('two', ListView, {
           collection: collection,
@@ -100,6 +101,7 @@ function($, Tickets, FillerView, SpinnerView,
   PanelController.prototype.showClosedTickets = function() {
     var self = this;
     var collection = new Tickets(null, {
+      status: 'closed',
       comparator: function(collection) {
         var datum = new Date(collection.get('closed_at'));
         var closed_at = datum.getTime();
@@ -111,7 +113,6 @@ function($, Tickets, FillerView, SpinnerView,
     this._setPanel('two', SpinnerView);
 
     collection.fetch({
-      data: { status: 'closed' },
       success: function() {
         self._setPanel('two', ListView, {
           collection: collection,

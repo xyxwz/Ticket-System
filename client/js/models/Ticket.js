@@ -17,13 +17,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       this.on('error', function() {
         ticketer.EventEmitter.trigger('error', "Error saving ticket");
       });
-
-      // When a ticket is closed remove it from the collection
-      this.on("change:status", function(model, status) {
-        if(status === 'closed' && typeof model.collection !== 'undefined') {
-          model.collection.remove(model.id);
-        }
-      });
     },
 
     isOpen: function() {
