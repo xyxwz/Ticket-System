@@ -287,6 +287,11 @@ module.exports = function(app) {
       query.limit(10);
     }
 
+    // Search title
+    if(args.query) {
+      query.where('title', new RegExp(args.query, 'i'));
+    }
+
     query
     .populate('user')
     .exec(function(err, models) {
