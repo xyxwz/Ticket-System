@@ -67,6 +67,9 @@ function($, _, Backbone, BaseView, TicketView) {
       var tickets = this.collection.filter(this.filter);
       var len = tickets.length;
 
+      // Clean up children is any
+      this.removeChildren();
+
       if(len) {
         this.$el.empty();
 
