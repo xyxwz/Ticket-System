@@ -85,7 +85,7 @@ function($, Tickets, FillerView, SpinnerView,
           collection: collection,
           controller: self,
           collectionFilter: function(model) {
-            return model.participating ? model.participating : false;
+            return !!model.participating;
           }
         });
 
@@ -102,8 +102,8 @@ function($, Tickets, FillerView, SpinnerView,
     var self = this;
     var collection = new Tickets(null, {
       status: 'closed',
-      comparator: function(collection) {
-        var datum = new Date(collection.get('closed_at'));
+      comparator: function(model) {
+        var datum = new Date(model.get('closed_at'));
         var closed_at = datum.getTime();
         return -closed_at;
       }
