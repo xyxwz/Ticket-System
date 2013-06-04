@@ -134,12 +134,16 @@ function($, Tickets, FillerView, SpinnerView,
   PanelController.prototype.showTicket = function(ticket) {
     var self = this;
 
-    this._setPanel('three', DetailsView, {
-      model: ticket
-    });
+    ticket.fetch({
+      success: function() {
+        self._setPanel('three', DetailsView, {
+          model: ticket
+        });
 
-    this._callViewFunction('three', 'bindTo', this._panels.three.model, 'remove', function() {
-      self._setPanel('three', FillerView);
+        self._callViewFunction('three', 'bindTo', self._panels.three.model, 'remove', function() {
+          self._setPanel('three', FillerView);
+        });
+      }
     });
   };
 
