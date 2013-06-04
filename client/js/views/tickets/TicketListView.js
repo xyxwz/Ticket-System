@@ -104,8 +104,10 @@ function($, _, Backbone, BaseView, TicketView) {
     },
 
     newTicket: function(data) {
-      if(data.status === this.status && this.collectionFilter(data))
+      if(data.status === this.collection.status && (this.collectionFilter &&
+              this.collectionFilter(data))) {
         this.collection.add(data);
+      }
     }
 
   });
