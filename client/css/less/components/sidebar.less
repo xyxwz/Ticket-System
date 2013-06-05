@@ -162,3 +162,34 @@
     }
   }
 }
+
+// sidebar user filter widget styles
+.sidebar .user-filter-widget {
+  .clearfix();
+
+  .group {
+    width: 80%;
+    margin: 0 auto;
+
+    .user {
+      display: block;
+      float: left;
+      padding: 6px;
+
+      &.active { background: none; }
+
+      img {
+        display: block;
+        padding: 1px;
+        width: 32px;
+        height: 32px;
+        border-radius: 1000px;
+        border: 1px solid lighten(@sidebarBg, 20%);
+      }
+
+      &.active img {
+        .box-shadow(0 0 6px lighten(@sidebarBg, 40%))
+      }
+    }
+  }
+}
