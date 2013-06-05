@@ -76,14 +76,13 @@ module.exports = function(app) {
    *
    *  Returns an Array ready to be sent to the client.
    *
-   *  @param {Object} criteria
    *  @api public
    */
 
-  User.all = function all(criteria, cb) {
+  User.all = function all(cb) {
     var array, obj;
 
-    UserSchema.find(criteria).exec(function(err, models) {
+    UserSchema.find().exec(function(err, models) {
       if(err) {
         return cb("Error finding users");
       }
@@ -116,7 +115,7 @@ module.exports = function(app) {
   User.find = function find(id, cb){
     UserSchema
     .findOne({'_id':id})
-    .exec(function(err, model){
+    .exec(function(err, model) {
       if(err || !model) {
         return cb("User not found");
       }

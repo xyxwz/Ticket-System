@@ -20,7 +20,7 @@ module.exports = function(app) {
         avatar: req.session.passport.user.avatar
       };
 
-      User.all({active: true}, function(err, users) {
+      User.all(function(err, users) {
         List.mine(req.session.passport.user._id, function(err, lists) {
           res.render('index', {
             user: user,

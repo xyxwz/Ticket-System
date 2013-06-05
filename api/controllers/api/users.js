@@ -9,11 +9,7 @@ module.exports = function(app) {
   *
   *  returns a list of all the users in the database */
   app.get('/api/users', function(req, res) {
-    var args = {};
-
-    if(req.query.status === 'active') args.active = true;
-
-    User.all(args, function(err, users){
+    User.all(function(err, users){
       if(err) return res.json({error: 'Error getting users'}, 400);
       res.json(users);
     });
