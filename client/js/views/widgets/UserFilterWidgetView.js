@@ -22,7 +22,7 @@ function($, _, Backbone, BaseView, tmpl_Base, tmpl_User) {
     },
 
     initialize: function() {
-      this.bindTo(this.collection, 'add remove reset', this.renderUsers, this);
+      this.bindTo(this.collection, 'reset', this.renderUsers, this);
     },
 
     render: function() {
@@ -45,6 +45,8 @@ function($, _, Backbone, BaseView, tmpl_Base, tmpl_User) {
         this.collection.each(function(user) {
           html.push(self.renderUser(user));
         });
+      } else {
+        html.push('<li class="empty">No users to display</li>');
       }
 
       this.$el.find('.group').html(html.join(''));
