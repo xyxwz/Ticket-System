@@ -25,7 +25,7 @@ function($, _, Backbone, BaseView, TicketView) {
       this.filter = this.options.filter || function() { return true; };
       this._filter = this.filter; // Original filter
       this.controller = this.options.controller || null;
-      this.collectionFilter = this.options.collectionFilter || function() { return true; };
+      this.viewFilter = this.options.viewFilter || function() { return true; };
 
       // The original filter and a filter function that is triggered with 'filter'
       function setFilter(fn) {
@@ -103,8 +103,8 @@ function($, _, Backbone, BaseView, TicketView) {
     },
 
     newTicket: function(data) {
-      if(data.status === this.collection.status && (this.collectionFilter &&
-              this.collectionFilter(data))) {
+      if(data.status === this.collection.status() &&
+          this.viewFilter(data)) {
         this.collection.add(data);
       }
     }
