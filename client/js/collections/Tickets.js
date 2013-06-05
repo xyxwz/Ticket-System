@@ -91,10 +91,11 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
           model = this.get(obj.id);
 
       if(model) {
-        model.set(model.parse(obj));
+        model.set(obj);
       }
 
-      if(model.get('status') !== this.status) {
+      if(this.data && this.data.status &&
+          model.get('status') !== this.data.status) {
         this.remove(model.id);
       }
     },
