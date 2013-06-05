@@ -135,7 +135,6 @@
 
 .search-widget {
   position: relative;
-  height: 27px;
   width: 360px;
 
   .search, .clear { color: @lightGray; }
@@ -169,14 +168,14 @@
     font-size: 14px;
     color: @lightBlack;
     border-radius: 12px;
+    outline: none;
     border: 1px solid darken(@ashGray, 30%);
     background: @ashGray;
     .box-sizing(border-box);
 
     &:focus {
-      outline: none;
       border: 1px solid @active;
-      .box-shadow(0 0 4px @active);
+      .box-shadow(0 0 5px @active);
     }
   }
 }
