@@ -103,11 +103,13 @@ define([
     ticketer.SSE = new EventSource('/events', { withCredentials: true });
     new ServerEvents();
 
-    // Fetch projects and lists
-    ticketer.collections.lists.fetch();
+    // User bootstrapped data for lists and users
+    ticketer.collections.lists.reset(ticketer.boot.lists);
+    ticketer.collections.users.reset(ticketer.boot.users);
 
-    // Fetch Users
-    ticketer.collections.users.fetch();
+    // delete the bootstrapped data
+    delete ticketer.boot;
+
 
     // Start Backbone History
     try {

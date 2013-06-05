@@ -19,6 +19,10 @@ html
 
     script.
       window.ticketer = window.ticketer || {};
+      window.ticketer.boot = {
+        lists: !{JSON.stringify(lists)},
+        users: !{JSON.stringify(users)}
+      };
       window.ticketer.currentUser = {
         id: "#{user.id}",
         name: "#{user.name}",

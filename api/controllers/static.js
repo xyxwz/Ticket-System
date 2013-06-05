@@ -1,4 +1,6 @@
 module.exports = function(app) {
+  var List = app.models.List,
+      User = app.models.User;
 
   /* Site Index
    * GET /
@@ -6,16 +8,26 @@ module.exports = function(app) {
    * currently just renders the index.jade view
    */
   app.get('/', function(req, res) {
+    var user;
+
     if(req.session.passport.user) {
       // If User session then user has been authenticated.
-      res.render('index', {
-        user: {
-          id: req.session.passport.user._id,
-          name: req.session.passport.user.name,
-          access_token: req.session.passport.user.access_token,
-          role: req.session.passport.user.role,
-          avatar: req.session.passport.user.avatar
-        }
+      user = {
+        id: req.session.passport.user._id,
+        name: req.session.passport.user.name,
+        access_token: req.session.passport.user.access_token,
+        role: req.session.passport.user.role,
+        avatar: req.session.passport.user.avatar
+      };
+
+      User.all({active: true}, function(err, users) {
+        List.mine(req.session.passport.user._id, function(err, lists) {
+          res.render('index', {
+            user: user,
+            users: users || [],
+            lists: lists || []
+          });
+        });
       });
     }
     else {
