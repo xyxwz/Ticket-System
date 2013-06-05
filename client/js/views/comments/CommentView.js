@@ -65,7 +65,8 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       data.isEditable = this.isEditable(data);
       data.comment = marked(data.comment);
 
-      $(this.el).html(Mustache.to_html(CommentTmpl, data));
+      this.$el.empty();
+      this.$el.html(Mustache.to_html(CommentTmpl, data));
 
       return this;
     },
