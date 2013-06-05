@@ -30,8 +30,13 @@ function($, _, Backbone, BaseView, tmpl_Search) {
       var self = this;
 
       this.router = options.router;
-      this.router.on('route:searchTickets', function(term) {
-        self.$el.children('input').val(term);
+
+      this.router.on('route', function(route, params) {
+        if(route === 'searchTickets') {
+          self.$el.children('input').val(params[0]);
+        } else {
+          self.$el.children('input').val('');
+        }
       });
     },
 
@@ -82,7 +87,6 @@ function($, _, Backbone, BaseView, tmpl_Search) {
 
     showOpen: function(e) {
       e.preventDefault();
-      this.$el.children('input').val('');
       this.router.navigate('tickets/open', true);
     }
 
