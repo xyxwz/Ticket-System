@@ -72,17 +72,18 @@ module.exports = function(app) {
   /**
    *  all
    *
-   *  Gets a list of all the users in the database.
+   *  Gets a list of all the active users in the database.
    *
    *  Returns an Array ready to be sent to the client.
    *
+   *  @param {Object} criteria
    *  @api public
    */
 
-  User.all = function all(cb) {
+  User.all = function all(criteria, cb) {
     var array, obj;
 
-    UserSchema.find().exec(function(err, models) {
+    UserSchema.find(criteria).exec(function(err, models) {
       if(err) {
         return cb("Error finding users");
       }
@@ -151,7 +152,6 @@ module.exports = function(app) {
       name: data.name,
       role: data.role,
       access_token: data.access_token,
-      refresh_token: data.refresh_token,
       avatar: data.avatar
     });
 
@@ -172,7 +172,6 @@ module.exports = function(app) {
    *  oAuth should manage access control to the application
    *
    *  :access_token        - access_token returned from oAuth response
-   *  :request_token       - request_token returned from oAuth response
    *  :profile             - profile information returned from oAuth response
    *
    *  Returns an authorized user profile to store in session
