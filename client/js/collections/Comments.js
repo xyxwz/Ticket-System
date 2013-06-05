@@ -37,6 +37,7 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
 
     fetch: function(callback) {
       Backbone.Collection.prototype.fetch.call(this, {
+        reset: true,
         success: callback
       });
     },
