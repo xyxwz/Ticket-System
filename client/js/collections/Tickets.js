@@ -23,6 +23,17 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
     },
 
     /**
+     * Getter for internal status that is sent when
+     *  fetching from server
+     *
+     * @return {String}
+     */
+
+    status: function() {
+      return this.data.status || 'open';
+    },
+
+    /**
      * Keep only the bare attributes we want to store in lists
      *
      * @param {Object} response
