@@ -66,7 +66,7 @@ function($, _, Backbone, BaseView, TicketView) {
       var tickets = this.collection.filter(this.filter);
       var len = tickets.length;
 
-      // Clean up children is any
+      // Clean up children if any
       this.removeChildren();
 
       if(len) {
@@ -99,8 +99,7 @@ function($, _, Backbone, BaseView, TicketView) {
       this.$el.find('.active').removeClass('active');
       this.$el.find('.ticket[data-id="' + id + '"]').addClass('active');
 
-      if(this.controller)
-        this.controller.showTicket(ticket);
+      if(this.controller) this.controller.showTicket(ticket);
     },
 
     newTicket: function(data) {
