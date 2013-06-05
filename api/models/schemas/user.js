@@ -1,13 +1,14 @@
 var mongoose = require("mongoose");
 
 var User = new mongoose.Schema({
-  username      : {type : String, default:  '', required: true, trim: true,
+  username      : {type: String, default:  '', required: true, trim: true,
                    lowercase: true, index: { unique: true }},
-  name          : {type : String, default : '', required: true, trim: true},
-  role          : {type : String, default : '', required: true, trim: true,
+  name          : {type: String, default: '', required: true, trim: true},
+  role          : {type: String, default: '', required: true, trim: true,
                    enum: ['admin', 'member', 'read']},
-  created_at    : {type : Date,   default : Date.now, required: true},
-  access_token  : {type : String, required: true, trim: true},
+  active        : {type: String, default: true, required: true},
+  created_at    : {type: Date,   default: Date.now, required: true},
+  access_token  : {type: String, required: true, trim: true},
   avatar        : {type: String, trim: true}
 });
 
