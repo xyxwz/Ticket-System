@@ -47,8 +47,10 @@ function($, Tickets, FillerView, SpinnerView,
    */
 
   PanelController.prototype.showOpenTickets = function() {
-    var self = this,
-        collection = new Tickets(null, {status: 'open'});
+    var self = this;
+    var collection = new Tickets(null, {
+      data: {status: 'open'}
+    });
 
     this._callViewFunction('one', 'selectTab', 'tickets/open');
     this._setPanel('two', SpinnerView);
@@ -72,7 +74,7 @@ function($, Tickets, FillerView, SpinnerView,
   PanelController.prototype.showMyTickets = function() {
     var self = this;
     var collection = new Tickets(null, {
-      status: 'open',
+      data: {status: 'open'},
       url: '/api/tickets/mine'
     });
 
@@ -101,7 +103,7 @@ function($, Tickets, FillerView, SpinnerView,
   PanelController.prototype.showClosedTickets = function() {
     var self = this;
     var collection = new Tickets(null, {
-      status: 'closed',
+      data: {status: 'closed'},
       comparator: function(model) {
         var datum = new Date(model.get('closed_at'));
         var closed_at = datum.getTime();
@@ -133,13 +135,14 @@ function($, Tickets, FillerView, SpinnerView,
 
   PanelController.prototype.searchTickets = function(term) {
     var self = this;
-    var collection = new Tickets();
+    var collection = new Tickets(null, {
+      data: {query: term}
+    });
 
     this._callViewFunction('one', 'selectTab');
     this._setPanel('two', SpinnerView);
 
     collection.fetch({
-      data: {query: term},
       success: function() {
         self._setPanel('two', ListView, {
           collection: collection,

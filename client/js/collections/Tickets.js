@@ -10,7 +10,7 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
       options = options || {};
 
       this.url = options.url || '/api/tickets';
-      this.status = options.status || 'open';
+      this.data = options.data || {};
       this.comparator = options.comparator || function(model) {
         var date = new Date(model.get("opened_at"));
         return -date.getTime();
@@ -51,7 +51,7 @@ define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket
 
     fetch: function(options) {
       options = options || {};
-      options.data = options.data || {status: this.status};
+      options.data = options.data || this.data;
       return Backbone.Collection.prototype.fetch.call(this, options);
     },
 
