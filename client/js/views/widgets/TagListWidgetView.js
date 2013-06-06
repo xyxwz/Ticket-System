@@ -83,19 +83,20 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
           tag = this.collection.get(target.data('id')),
           tickets = tag.get('tickets');
 
+      // Named tag filter for filter removal
+      function tagFilter(ticket) {
+        return ~tickets.indexOf(ticket.id);
+      }
+
       // Toggle functionality
       if(target.hasClass('active')) {
         target.removeClass('active');
-        ticketer.EventEmitter.trigger('list:filter');
+        ticketer.EventEmitter.trigger('list:filter', this);
       }
       else {
         target.siblings().removeClass('active');
         target.addClass('active');
-
-        // Trigger a filter event passing the filter function
-        ticketer.EventEmitter.trigger('list:filter', function(ticket) {
-          return ~tickets.indexOf(ticket.id);
-        });
+        ticketer.EventEmitter.trigger('list:filter', tagFilter, this);
       }
     },
 

@@ -22,31 +22,47 @@ function($, _, Backbone, BaseView, TicketView) {
     },
 
     initialize: function() {
-      this.filter = this.options.filter || function() { return true; };
-      this._filter = this.filter; // Original filter
+      var emitter = ticketer.EventEmitter;
+
+      this.filters = [];
       this.controller = this.options.controller || null;
       this.viewFilter = this.options.viewFilter || function() { return true; };
 
-      // The original filter and a filter function that is triggered with 'filter'
-      function setFilter(fn) {
-        var self = this;
-
-        if(typeof fn === 'function') {
-          this.filter = function(ticket) {
-            return self._filter(ticket) && fn(ticket);
-          };
-        } else {
-          this.filter = this._filter;
-        }
-
-        this.render();
-      }
-
       // Bindings
       this.bindTo(this.collection, 'add remove reset', this.render, this);
-      this.bindTo(ticketer.EventEmitter, 'list:filter', setFilter, this);
-      this.bindTo(ticketer.EventEmitter, 'collection:reset', this.refresh, this);
-      this.bindTo(ticketer.EventEmitter, 'ticket:new', this.newTicket, this);
+      this.bindTo(emitter, 'list:filter', this.pushFilter, this);
+      this.bindTo(emitter, 'list:removeFilter', this.removeFilter, this);
+      this.bindTo(emitter, 'collection:reset', this.refresh, this);
+      this.bindTo(emitter, 'ticket:new', this.newTicket, this);
+    },
+
+    runFilters: function(ticket) {
+      return this.filters.every(function(obj) {
+        return obj.filter(ticket);
+      });
+    },
+
+    /**
+     * Push a filter to the internal filters array.
+     *  Each context can only have one filter
+     *
+     * @param {Function} fn
+     * @param {Object} context
+     */
+
+    pushFilter: function(fn, context) {
+      var i = this.filters.length - 1,
+          filters = this.filters;
+
+      context = context || fn;
+
+      while(i >= 0) {
+        if(filters[i].context === context) filters.splice(i, 1);
+        i = i - 1;
+      }
+
+      if(context !== fn) filters.push({filter: fn, context: context});
+      this.render();
     },
 
     /**
@@ -62,17 +78,22 @@ function($, _, Backbone, BaseView, TicketView) {
     },
 
     render: function() {
-      var i;
-      var tickets = this.collection.filter(this.filter);
-      var len = tickets.length;
+      var i, len, tickets;
+
+      if(this.filters.length) {
+        tickets = this.collection.filter(this.runFilters, this);
+      }
+      else {
+        tickets = this.collection.models;
+      }
 
       // Clean up children if any
       this.removeChildren();
 
-      if(len) {
+      if(tickets.length) {
         this.$el.empty();
 
-        for(i = 0; i < len; i = i + 1) {
+        for(i = 0, len = tickets.length; i < len; i = i + 1) {
           this.$el.append(this.renderTicket(tickets[i]));
         }
 
@@ -102,6 +123,7 @@ function($, _, Backbone, BaseView, TicketView) {
       if(this.controller) this.controller.showTicket(ticket);
     },
 
+    // TODO: Fix this obscure check...
     newTicket: function(data) {
       if(data.status === this.collection.status() &&
           this.viewFilter(data)) {
