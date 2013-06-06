@@ -18,7 +18,9 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
   var UserWidgetView = BaseView.extend({
     tagName: 'li',
     className: 'widget user-widget',
-    attributes: {'data-role': 'assign-user'},
+    attributes: {
+      'data-role': 'assign-user'
+    },
 
     events: {
       "click [data-action='display']": "bindEvents",

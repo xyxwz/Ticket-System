@@ -64,7 +64,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       $(this.el).html(Mustache.to_html(TicketTmpl, data));
 
       // Render Meta Data in Details View
-      if(this.renderAll && this.model.isOpen()) {
+      if(this.renderAll) {
         this.renderMeta();
       }
 
@@ -154,7 +154,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       }
 
       data.hoverTime = this.model.responseTime() || data.cleanTime;
-      data.isClosed = this.model.get('status') === 'closed';
+      data.isClosed = !this.model.isOpen();
 
       data.showTags = true; // default
 
