@@ -146,7 +146,11 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
         data.cleanTime = RegExp.$1; // Today || Yesterday
       }
       else {
-        data.cleanTime = momentDate.format('MMM D');
+        if(momentDate.year() < Date.now().year) {
+          data.cleanTime = momentDate.format('MMMM YYYY');
+        } else {
+          data.cleanTime = momentDate.format('MMM D');
+        }
       }
 
       data.hoverTime = this.model.responseTime() || data.cleanTime;
