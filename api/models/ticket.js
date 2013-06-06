@@ -309,7 +309,7 @@ module.exports = function(app) {
         obj._toClient(function(err, item) {
 
           // Don't check participating or notifications for closed tickets
-          if(args.status === 'closed') {
+          if(item.status === 'closed') {
             tickets.push(item);
             return callback(null);
           }
