@@ -146,7 +146,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
         data.cleanTime = RegExp.$1; // Today || Yesterday
       }
       else {
-        if(momentDate.year() < Date.now().year) {
+        if(momentDate.year() < moment().year()) {
           data.cleanTime = momentDate.format('MMMM YYYY');
         } else {
           data.cleanTime = momentDate.format('MMM D');
