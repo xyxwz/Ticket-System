@@ -79,19 +79,19 @@ function($, _, Backbone, BaseView, tmpl_Base, tmpl_User) {
       var target = $(e.currentTarget),
           user = this.collection.get(target.data('id'));
 
-      // Toggle functionality
+      // Named user filter for filter removal
+      function userFilter(ticket) {
+        return ticket.get('user').id === user.id;
+      }
+
       if(target.hasClass('active')) {
         target.removeClass('active');
-        ticketer.EventEmitter.trigger('list:filter');
+        ticketer.EventEmitter.trigger('list:filter', this);
       }
       else {
         target.siblings().removeClass('active');
         target.addClass('active');
-
-        // Trigger a filter event passing the filter function
-        ticketer.EventEmitter.trigger('list:filter', function(ticket) {
-          return ticket.get('user').id === user.id;
-        });
+        ticketer.EventEmitter.trigger('list:filter', userFilter, this);
       }
     }
 
