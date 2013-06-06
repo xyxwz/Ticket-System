@@ -6,7 +6,7 @@ var User = new mongoose.Schema({
   name          : {type: String, default: '', required: true, trim: true},
   role          : {type: String, default: '', required: true, trim: true,
                    enum: ['admin', 'member', 'read']},
-  active        : {type: String, default: true, required: true},
+  active        : {type: Boolean, default: true, required: true},
   created_at    : {type: Date,   default: Date.now, required: true},
   access_token  : {type: String, required: true, trim: true},
   avatar        : {type: String, trim: true}
@@ -29,6 +29,7 @@ User.methods.toClient = function(){
     id: obj.id,
     name: obj.name,
     role: obj.role,
+    active: obj.active,
     avatar: obj.avatar
   };
 
