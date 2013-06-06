@@ -147,7 +147,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       }
       else {
         if(momentDate.year() < moment().year()) {
-          data.cleanTime = momentDate.format('MMMM YYYY');
+          data.cleanTime = momentDate.format('MMM YYYY');
         } else {
           data.cleanTime = momentDate.format('MMM D');
         }
