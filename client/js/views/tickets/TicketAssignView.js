@@ -58,18 +58,23 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
         user = users.get(participants[i]);
         html = $(Mustache.to_html(tmpl_User, user.toJSON()));
 
-        if(ticketer.currentUser.role === 'admin' ||
-            ticketer.currentUser.id === participants[i]) {
+        if((ticketer.currentUser.role === 'admin' ||
+            ticketer.currentUser.id === participants[i]) &&
+            this.model.isOpen()) {
           html.addClass('removable');
         }
 
         this.$el.append(html);
       }
 
-      if(ticketer.currentUser.role === 'admin' ||
-          !~participants.indexOf(ticketer.currentUser.id)) {
+      if((ticketer.currentUser.role === 'admin' ||
+          !~participants.indexOf(ticketer.currentUser.id)) &&
+          this.model.isOpen()) {
         this.renderWidget();
       }
+
+      // Don't allow actions if the ticket is closed
+      if(!this.model.isOpen()) this.undelegateEvents();
 
       return this;
     },
