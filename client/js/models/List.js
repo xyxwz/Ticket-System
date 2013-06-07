@@ -4,8 +4,8 @@ define(['underscore', 'backbone'], function(_, Backbone) {
   List = Backbone.Model.extend({
 
     initialize: function() {
-      this.on('error', function() {
-        ticketer.EventEmitter.trigger('error', "Error saving comment");
+      this.on('invalid', function() {
+        ticketer.EventEmitter.trigger('error', "Error saving tag");
       });
     },
 

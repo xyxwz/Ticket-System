@@ -4,7 +4,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
   Project = Backbone.Model.extend({
 
     initialize: function() {
-      this.on('error', function() {
+      this.on('invalid', function() {
         ticketer.EventEmitter.trigger('error', "Error saving project");
       });
     },
