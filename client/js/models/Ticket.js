@@ -9,7 +9,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       var self = this,
           currentUser = ticketer.currentUser;
 
-      this.on('error', function() {
+      this.on('invalid', function() {
         ticketer.EventEmitter.trigger('error', "Error saving ticket");
       });
     },
