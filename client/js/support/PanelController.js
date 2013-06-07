@@ -163,6 +163,8 @@ function($, Tickets, FillerView, SpinnerView,
   PanelController.prototype.showTicket = function(ticket) {
     var self = this;
 
+    this._setPanel('three', SpinnerView);
+
     ticket.fetch({
       success: function() {
         self._setPanel('three', DetailsView, {
