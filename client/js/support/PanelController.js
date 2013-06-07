@@ -162,11 +162,14 @@ function($, Tickets, FillerView, SpinnerView,
 
   PanelController.prototype.showTicket = function(ticket) {
     var self = this;
-
-    this._setPanel('three', SpinnerView);
+    var spinOnTimeout = setTimeout(function() {
+      self._setPanel('three', SpinnerView);
+    }, 200);
 
     ticket.fetch({
       success: function() {
+        clearTimeout(spinOnTimeout);
+
         self._setPanel('three', DetailsView, {
           model: ticket
         });
