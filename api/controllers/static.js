@@ -17,7 +17,8 @@ module.exports = function(app) {
         name: req.session.passport.user.name,
         access_token: req.session.passport.user.access_token,
         role: req.session.passport.user.role,
-        avatar: req.session.passport.user.avatar
+        avatar: req.session.passport.user.avatar,
+        settings: req.session.passport.user.settings
       };
 
       User.all(function(err, users) {

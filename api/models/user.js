@@ -27,9 +27,10 @@ module.exports = function(app) {
   User.prototype.update = function update(data, cb) {
     var user = this.model;
 
-    if (data.username) user.username = data.username;
-    if (data.name) user.name = data.name;
-    if (data.role) user.role = data.role;
+    if(data.username) user.username = data.username;
+    if(data.name) user.name = data.name;
+    if(data.role) user.role = data.role;
+    if(data.settings) user.settings = _.extend(user.settings, data.settings);
 
     user.save(function(err, model) {
       if (err || !model) {

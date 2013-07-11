@@ -41,7 +41,8 @@ module.exports = function(app) {
           access_token: accessToken,
           name: user.name,
           role: user.role,
-          username: user.username
+          username: user.username,
+          settings: user.settings
         };
 
         if(user.avatar) sessionData.avatar = user.avatar;
