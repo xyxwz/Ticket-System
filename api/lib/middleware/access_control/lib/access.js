@@ -63,7 +63,7 @@ Access.prototype.checkAccess = function(user) {
       }
       else {
         // It's the User model so just check the _id property
-        status = user.id.toString() === accessModel._id.toString() ? true : false;
+        status = user._id.toString() === accessModel._id.toString() ? true : false;
       }
     }
 
