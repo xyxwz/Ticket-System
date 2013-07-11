@@ -12,7 +12,7 @@ module.exports = {
   // except /users and /tickets/mine
   "get": {
     "/users": ["admin", "member", "read"],
-    "/users/:userID": ["admin", "read"],
+    "/users/:userID": ["admin", "read", "owner"],
     "/projects": ["member", "admin", "read"],
     "/projects/:projectID": ["member", "admin", "read"],
     "/lists": ["admin", "member"],
