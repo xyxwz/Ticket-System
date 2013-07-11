@@ -58,7 +58,7 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
         user = users.get(participants[i]);
         html = $(Mustache.to_html(tmpl_User, user.toJSON()));
 
-        if((ticketer.currentUser.role === 'admin' ||
+        if((ticketer.currentUser.isAdmin() ||
             ticketer.currentUser.id === participants[i]) &&
             this.model.isOpen()) {
           html.addClass('removable');
@@ -67,7 +67,7 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
         this.$el.append(html);
       }
 
-      if((ticketer.currentUser.role === 'admin' ||
+      if((ticketer.currentUser.isAdmin() ||
           !~participants.indexOf(ticketer.currentUser.id)) &&
           this.model.isOpen()) {
         this.renderWidget();
@@ -89,11 +89,10 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
     },
 
     unFollow: function(e) {
-      var id = $(e.currentTarget).data('id'),
-          role = ticketer.currentUser.role,
-          rep;
+      var resp,
+          id = $(e.currentTarget).data('id');
 
-      if(role === 'admin') {
+      if(ticketer.currentUser.isAdmin()) {
         resp = confirm('Remove the user from the Ticket?');
         if(resp) this.model.stopParticipating(id);
       } else {

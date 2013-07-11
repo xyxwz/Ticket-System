@@ -108,7 +108,7 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
 
     isDeletable: function(data) {
       return data.user.id === ticketer.currentUser.id ||
-              ticketer.currentUser.role === 'admin';
+              ticketer.currentUser.isAdmin();
     },
 
     editComment: function(e) {
