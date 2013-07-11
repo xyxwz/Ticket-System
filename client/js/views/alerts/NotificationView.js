@@ -23,6 +23,12 @@ function($, _, Backbone, mustache, Ticket, NotificationTmpl) {
       $(this.el).slideDown(200);
     },
 
+    enabled: function() {
+      var s = ticketer.currentUser.get('settings');
+
+      return ticketer.notifications && s.desktop;
+    },
+
     requestPermissions: function() {
       $(this.el).hide();
       var self = this;
@@ -42,12 +48,15 @@ function($, _, Backbone, mustache, Ticket, NotificationTmpl) {
      * in, send a desktop notification if enabled.
      */
     commentNotification: function(message) {
-      // Fetch the ticket from the server
-      var ticket = new Ticket({id: message.ticket});
+      var self = this,
+          ticket = new Ticket({id: message.ticket});
+
+      // Ensure notifications are enabled
+      if(!this.enabled()) return;
 
       ticket.fetch({
         success: function() {
-          if(ticket.get('status') === 'open' && ticketer.notifications && message.notification) {
+          if(ticket.get('status') === 'open' && message.notification) {
             var title = message.user.name + ' made a comment on "' + ticket.get('title') + '":';
             webkitNotifications.createNotification('', title, message.comment).show();
           }
@@ -59,17 +68,22 @@ function($, _, Backbone, mustache, Ticket, NotificationTmpl) {
      * to the ticket a desktop notification if enabled.
      */
     closedNotification: function(message) {
-      if(!ticketer.notifications) { return false; }
+      // Ensure notifications are enabled
+      if(!this.enabled()) return;
 
       if(message.status === 'closed') {
         var title = "Ticket Closed";
+
         // Check if currentUser is assigned or the creator
         // if so, send a desktop notification
         if(message.user.id === ticketer.currentUser.id) {
           webkitNotifications.createNotification('', title, message.title).show();
         } else if(message.assigned_to.length > 0) {
           var assignedTo = _.include(message.assigned_to, ticketer.currentUser.id);
-          if(assignedTo) { webkitNotifications.createNotification('', title, message.title).show(); }
+
+          if(assignedTo) {
+            webkitNotifications.createNotification('', title, message.title).show();
+          }
         }
       }
     }

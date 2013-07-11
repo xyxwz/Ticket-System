@@ -5,12 +5,13 @@
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/widgets/TagFormView',
   'views/tickets/TicketFormView',
+  'views/dialogs/SettingsDialog',
   'views/widgets/SearchWidgetView',
   'text!templates/headers/MainHeader.html',
   'text!templates/headers/UserOptions.html',
   'dropdowns'],
-function($, _, mustache, BaseView, TagWidget,
-  TicketFormView, SearchWidget, tmpl_Header, tmpl_Options) {
+function($, _, mustache, BaseView, TagWidget, TicketFormView,
+  SettingsDialog, SearchWidget, tmpl_Header, tmpl_Options) {
 
   /**
    * A basic header view
@@ -25,7 +26,8 @@ function($, _, mustache, BaseView, TagWidget,
       "click a[data-action]": "preventDefault",
       "click a[data-action='new-ticket']": "createTicket",
       "click a[data-action='refresh']": "refresh",
-      "click a[data-action='new-tag']": "showTagWidget"
+      "click a[data-action='new-tag']": "showTagWidget",
+      "click a[data-role='display-settings']": 'displaySettings'
     },
 
     initialize: function(options) {
@@ -78,6 +80,12 @@ function($, _, mustache, BaseView, TagWidget,
         widget = this.createView(TagWidget);
         $(element).append(widget.render().el);
       }
+    },
+
+    displaySettings: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      new SettingsDialog({model: ticketer.currentUser});
     },
 
     createTicket: function() {

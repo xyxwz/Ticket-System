@@ -41,7 +41,29 @@
     padding: 0 0 4px 0;
     line-height: 1.2em;
     font-family: @sans-serif;
-    border-bottom: 1px solid @border;
+    border-bottom: 1px solid @lightGray;
+  }
+
+  .settings {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      width: 60%;
+      padding: 6px 0;
+      margin: 0 auto 8px auto;
+      font-size: 18px;
+      border-bottom: 1px solid darken(@border, 5%);
+      .clearfix;
+
+      input {
+        display: inline-block;
+        float: right;
+        margin: 4px 0 0 0;
+      }
+    }
   }
 
   .column {
