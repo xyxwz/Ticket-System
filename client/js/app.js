@@ -16,6 +16,7 @@ define([
   'collections/Lists',
   'routers/Ticketer',
   'views/alerts/ErrorView',
+  'views/alerts/AlertView',
   'views/alerts/NotificationView',
   'EventSource',
   'ServerEvents',
@@ -32,6 +33,7 @@ define([
   Lists,
   Ticketer,
   ErrorView,
+  AlertView,
   NotificationView,
   EventSource,
   ServerEvents,
@@ -90,6 +92,7 @@ define([
     ticketer.views = {
       alerts: {
         error: new ErrorView(),
+        alerts: new AlertView(),
         notifications: new NotificationView()
       }
     };
