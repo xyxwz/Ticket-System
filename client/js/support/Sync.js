@@ -14,6 +14,9 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     var auth_token = ticketer.currentUser.access_token,
         default_sync = Backbone.sync;
 
+    // Delete the access token global reference
+    delete ticketer.currentUser.access_token;
+
     Backbone.sync = function(method, model, options) {
       var new_options = _.extend({
 
