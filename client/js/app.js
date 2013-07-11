@@ -9,6 +9,7 @@ define([
   'underscore',
   'backbone',
   'support/PanelController',
+  'models/User',
   'collections/Tickets',
   'collections/Comments',
   'collections/Users',
@@ -26,6 +27,7 @@ define([
   _,
   Backbone,
   PanelController,
+  User,
   Tickets,
   Comments,
   Users,
@@ -106,7 +108,10 @@ define([
     ticketer.SSE = new EventSource('/events', { withCredentials: true });
     new ServerEvents();
 
-    // User bootstrapped data for lists and users
+    // Turn ticketer.currentUser into instance of Backbone.model
+    ticketer.currentUser = new User(ticketer.currentUser);
+
+    // Use bootstrapped data for lists and users
     ticketer.collections.lists.reset(ticketer.boot.lists);
     ticketer.collections.users.reset(ticketer.boot.users);
 

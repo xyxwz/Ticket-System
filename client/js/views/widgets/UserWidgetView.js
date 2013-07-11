@@ -30,7 +30,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
 
     render: function() {
       var data = {};
-      data.title = ticketer.currentUser.role === 'admin' ? "Add a Follower" : "Follow";
+      data.title = ticketer.currentUser.isAdmin() ? "Add a Follower" : "Follow";
       this.$el.html(Mustache.to_html(tmpl_UserWidget, data));
 
       return this;
@@ -118,7 +118,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
      */
 
     bindEvents: function(e) {
-      if(ticketer.currentUser.role === 'admin') {
+      if(ticketer.currentUser.isAdmin()) {
         this.$el.find('input').on('keyup', this.renderFilteredResults.bind(this));
         this.$el.find('a').hide();
         this.$el.find('input').fadeIn(200).focus();

@@ -170,7 +170,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
         data.fullDate = momentDate.format('MMMM Do, YYYY h:mm A');
         data.showTags = false;
         data.isEditable = this.isEditable(data);
-        data.isAssignable = ticketer.currentUser.role === 'admin' && !this.model.get('read');
+        data.isAssignable = ticketer.currentUser.isAdmin() && !this.model.get('read');
         data.isClosable = !!~this.model.get('assigned_to')
           .indexOf(ticketer.currentUser.id) && !data.isClosed;
       }
@@ -186,7 +186,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
     isEditable: function(data) {
       return (data.user.id === ticketer.currentUser.id ||
-              ticketer.currentUser.role === 'admin') && !data.isClosed;
+              ticketer.currentUser.isAdmin()) && !data.isClosed;
     },
 
     // Handle Actions
@@ -282,7 +282,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       this.$('.content').before(Mustache.to_html(NotifyTmpl));
 
       // Remove close button if currentUser is an Admin
-      if(ticketer.currentUser.role === 'admin') {
+      if(ticketer.currentUser.isAdmin()) {
         $('.edit-options li[data-role="close-ticket"]').remove();
       }
     },

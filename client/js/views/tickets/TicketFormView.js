@@ -30,12 +30,7 @@ function($, _, Backbone, BaseView, mustache, TicketModel, MarkdownGuide, TicketF
     },
 
     render: function() {
-      var data;
-
-      data = ticketer.currentUser;
-      data.shortname = data.name.split(' ')[0];
-
-      $(this.el).html(Mustache.to_html(TicketForm, ticketer.currentUser));
+      $(this.el).html(Mustache.to_html(TicketForm));
       $('body').append(this.el);
 
       return this;
