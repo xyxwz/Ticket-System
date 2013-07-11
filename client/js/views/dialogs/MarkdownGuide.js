@@ -3,7 +3,7 @@
  */
 
 define(['jquery', 'underscore', 'backbone', 'BaseView', 'mustache',
-  'text!templates/tickets/MarkdownGuide.html'
+  'text!templates/dialogs/MarkdownGuide.html'
 ],
 function($, _, Backbone, BaseView, mustache, tmpl_MarkdownGuide) {
 
