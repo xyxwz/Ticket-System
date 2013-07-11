@@ -7,7 +7,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     urlRoot: '/api/users',
 
     initialize: function(attributes) {
-      this.on('error', function() {
+      this.on('invalid', function() {
         ticketer.EventEmitter.trigger('error', "Error saving user");
       });
     },

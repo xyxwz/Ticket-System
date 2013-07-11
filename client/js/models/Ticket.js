@@ -6,8 +6,6 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     urlRoot: '/api/tickets',
 
     initialize: function() {
-      var self = this;
-
       this.on('invalid', function() {
         ticketer.EventEmitter.trigger('error', "Error saving ticket");
       });
@@ -47,9 +45,9 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
      * of the ticket argument, also takes a save error
      * callback. */
     updateTicket: function(ticket, callback) {
-      if (ticket.title) this.set({ title: ticket.title });
-      if (ticket.description) this.set({ description: ticket.description });
-      if (ticket.status) this.set({ status: ticket.status });
+      if(ticket.title) this.set({ title: ticket.title });
+      if(ticket.description) this.set({ description: ticket.description });
+      if(ticket.status) this.set({ status: ticket.status });
 
       this.save(null, { error: callback });
     },
