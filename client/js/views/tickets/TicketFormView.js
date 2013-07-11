@@ -78,6 +78,7 @@ function($, _, Backbone, BaseView, mustache, TicketModel, MarkdownGuide, TicketF
 
     displayHelp: function(e) {
       e.preventDefault();
+      e.stopPropagation();
       new MarkdownGuide();
     }
 
