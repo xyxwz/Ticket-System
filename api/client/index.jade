@@ -28,7 +28,8 @@ html
         name: "#{user.name}",
         access_token: "#{user.access_token}",
         role: "#{user.role}",
-        avatar: "#{user.avatar}"
+        avatar: "#{user.avatar}",
+        settings: !{JSON.stringify(user.settings)}
       };
 
   body

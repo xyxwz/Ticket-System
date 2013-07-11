@@ -9,7 +9,11 @@ var User = new mongoose.Schema({
   active        : {type: Boolean, default: true, required: true},
   created_at    : {type: Date,   default: Date.now, required: true},
   access_token  : {type: String, required: true, trim: true},
-  avatar        : {type: String, trim: true}
+  avatar        : {type: String, trim: true},
+  settings      : {
+    email: {type: Boolean, default: false},
+    desktop: {type: Boolean, default: true}
+  }
 });
 
 /**
@@ -30,7 +34,8 @@ User.methods.toClient = function(){
     name: obj.name,
     role: obj.role,
     active: obj.active,
-    avatar: obj.avatar
+    avatar: obj.avatar,
+    settings: obj.settings
   };
 
   return user;
