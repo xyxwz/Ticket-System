@@ -91,6 +91,14 @@ function($, _, Backbone, BaseView, mustache,
       } else {
         this.$('[data-role="open-count"]').text(open).show();
       }
+
+      // Format page title
+      if(open || mine) {
+        document.title = "TxSSC Ticket System " + "(" +
+          (mine ? mine + ":" : "0:") + (open ? open + ")" : "0)");
+      } else {
+        document.title = "TxSSC Ticket System";
+      }
     },
 
     renderTagWidget: function() {
