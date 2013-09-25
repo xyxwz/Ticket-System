@@ -271,31 +271,20 @@ module.exports = function(app) {
 
     // Check Status
     if(args.status) {
-      query.where('status', args.status);
-      var sort = args.status === 'open' ? 'opened_at' : '-closed_at';
-      query.sort(sort);
+      query.where("status", args.status === "closed" ? "closed" : "open");
+      query.sort(args.status !== "closed" ? "opened_at" : "-closed_at");
     }
 
     // Optional read status
-    if(typeof args.read !== 'undefined') {
-      query.where('read', args.read);
-    }
+    if(args.read !== void 0) query.where('read', args.read);
 
-    // Check Pagination
-    if(args.page) {
-      query.skip((args.page - 1) * 10);
-      query.limit(10);
-    }
-
-    // Search title
-    if(args.query) {
-      query.where('title', new RegExp(args.query, 'i'));
-    }
+    // Search by title or user
+    if(args.title) query.where('title', new RegExp(args.title, 'i'));
 
     query
-    .populate('user')
+    .populate("user")
     .exec(function(err, models) {
-      if(err) return cb(new Error("Error finding tickets"));
+      if(err) return callback(new Error("Error finding tickets"));
       if(models.length === 0) return callback(null, []);
       var tickets = [];
 
@@ -314,9 +303,20 @@ module.exports = function(app) {
             return callback(null);
           }
 
+          // Ensure the `args.user` is correct, too bad there
+          // isn't documentation for putting this in the fucking query
+          if(args.user && !~item.user.name.toLowerCase().indexOf(args.user.toLowerCase())) {
+            return callback(null);
+          }
+
           checkParticipating(user, item.id, function(err, participating) {
             if(err) return callback(err);
             item.participating = participating;
+
+            // If not participating and searching my tickets
+            if(args.status && args.status === "mine" && !participating) {
+              return callback(null);
+            }
 
             checkNotification(user, item.id, function(err, notification) {
               if(err) return callback(err);

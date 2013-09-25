@@ -13,9 +13,9 @@ module.exports = function(app) {
   app.get('/api/tickets', function(req, res) {
     var args = {};
 
+    if(req.query.user) args.user = req.query.user;
+    if(req.query.title) args.title = req.query.title;
     if(req.query.status) args.status = req.query.status;
-    if(req.query.page) args.page = req.query.page;
-    if(req.query.query) args.query = req.query.query;
 
     Ticket.all(req.user._id, args, function(err, tickets) {
       if(err) return res.json({error: 'Error getting tickets'}, 400);
