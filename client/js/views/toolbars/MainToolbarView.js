@@ -93,9 +93,8 @@ function($, _, Backbone, BaseView, mustache,
       }
 
       // Format page title
-      if(open || mine) {
-        document.title = "TxSSC Ticket System " + "(" +
-          (mine ? mine + ":" : "0:") + (open ? open + ")" : "0)");
+      if(mine) {
+        document.title = "TxSSC Ticket System (" + mine + ")";
       } else {
         document.title = "TxSSC Ticket System";
       }
