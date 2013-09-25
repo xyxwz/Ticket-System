@@ -6,10 +6,9 @@ define(['jquery', 'underscore', 'backbone',
   'BaseView', 'mustache',
   'collections/PollingCollection',
   'views/widgets/TagListWidgetView',
-  'views/widgets/UserFilterWidgetView',
   'text!templates/toolbars/Toolbar.html'],
 function($, _, Backbone, BaseView, mustache,
-          PollingCollection, TaskList, UserFilter, tmpl_Toolbar) {
+          PollingCollection, TaskList, tmpl_Toolbar) {
 
   /**
    * Toolbar view
@@ -73,7 +72,6 @@ function($, _, Backbone, BaseView, mustache,
       this.$el.html(Mustache.to_html(tmpl_Toolbar));
       this.renderCounts();
       this.renderTagWidget();
-      this.renderUserFilterWidget();
 
       return this;
     },
@@ -98,14 +96,6 @@ function($, _, Backbone, BaseView, mustache,
     renderTagWidget: function() {
       var view = this.createView(TaskList, {
         collection: ticketer.collections.lists
-      });
-
-      this.$el.append(view.render().el);
-    },
-
-    renderUserFilterWidget: function() {
-      var view = this.createView(UserFilter, {
-        collection: ticketer.collections.users
       });
 
       this.$el.append(view.render().el);
