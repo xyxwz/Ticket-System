@@ -160,9 +160,9 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
       if(this.model.notification()) {
         data.statusClass = 'notify';
-      }
-      else {
-        data.statusClass = this.model.get('read') ? 'read' : 'unread';
+      } else {
+        data.statusClass = !this.model.get('read') ? 'unread' :
+                            (this.model.isOpen() ? 'read' : 'closed');
       }
 
       if(this.renderAll) {
