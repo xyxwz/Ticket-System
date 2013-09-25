@@ -12,7 +12,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     },
 
     isOpen: function() {
-      return this.get('status') === 'open';
+      return this.get('closed_at') === void 0;
     },
 
     /*
