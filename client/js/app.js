@@ -63,7 +63,12 @@ define([
       { value: 4, name: 'teal' },
       { value: 5, name: 'pink' },
       { value: 6, name: 'brightGreen' },
-      { value: 7, name: 'tan' }
+      { value: 7, name: 'brightPink' },
+      { value: 8, name: 'yellow' },
+      { value: 9, name: 'purple' },
+      { value: 10, name: 'darkBlue' },
+      { value: 11, name: 'darkGreen' }
+
     ];
 
     /**
