@@ -33,7 +33,7 @@ function($, _, Backbone, BaseView, tmpl_Search) {
 
       this.router.on('route', function(route, params) {
         if(route === 'searchTickets') {
-          self.$el.children('input').val(params[0]);
+          self.$el.children('input').val(params[1]);
         } else {
           self.$el.children('input').val('');
         }
@@ -73,10 +73,11 @@ function($, _, Backbone, BaseView, tmpl_Search) {
      */
 
     attemptSearch: function(e) {
-      if(e.keyCode !== 13) return;
+      var val = $(e.currentTarget).val().toLowerCase(),
+          route = this.router.getRoute().match(/^tickets\/(\w+)/);
 
-      var val = $(e.currentTarget).val().toLowerCase();
-      this.router.navigate('tickets/search/' + encodeURIComponent(val), true);
+      if(e.keyCode !== 13) return;
+      this.router.navigate('tickets/' + route[1] + "/" + encodeURIComponent(val), true);
     },
 
     /**
@@ -86,8 +87,10 @@ function($, _, Backbone, BaseView, tmpl_Search) {
      */
 
     showOpen: function(e) {
+      var route = this.router.getRoute().match(/^tickets\/(\w+)/);
+
       e.preventDefault();
-      this.router.navigate('tickets/open', true);
+      this.router.navigate('tickets/' + route[1], true);
     }
 
   });

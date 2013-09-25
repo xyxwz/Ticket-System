@@ -15,7 +15,7 @@ function(Backbone, HeaderView, PanelController) {
       "tickets/open": "openTickets",
       "tickets/closed": "closedTickets",
       "tickets/mine": "myTickets",
-      "tickets/search/:term": "searchTickets"
+      "tickets/:tickets/:term": "searchTickets"
     },
 
     /**
@@ -32,7 +32,15 @@ function(Backbone, HeaderView, PanelController) {
     },
 
     /**
-     * Default view
+     * Return string indicating the current route
+     */
+
+    getRoute: function() {
+      return Backbone.history.fragment;
+    },
+
+    /**
+     * Route handlers
      */
 
     index: function() {
@@ -51,8 +59,8 @@ function(Backbone, HeaderView, PanelController) {
       this.controller.showMyTickets();
     },
 
-    searchTickets: function(term) {
-      this.controller.searchTickets(term);
+    searchTickets: function(status, term) {
+      this.controller.searchTickets(status, term);
     }
 
   });

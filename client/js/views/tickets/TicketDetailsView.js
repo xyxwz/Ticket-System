@@ -46,7 +46,6 @@ function($, _, Backbone, BaseView, Comments,
     renderTicket: function() {
       var view = this.createView(TicketView, {
         model: this.model,
-        admin: true,
         renderAll: true
       });
 

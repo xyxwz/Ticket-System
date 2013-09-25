@@ -133,13 +133,17 @@ function($, Tickets, FillerView, SpinnerView,
    * @
    */
 
-  PanelController.prototype.searchTickets = function(term) {
-    var self = this;
-    var collection = new Tickets(null, {
-      data: {query: term}
-    });
+  PanelController.prototype.searchTickets = function(status, term) {
+    var self = this, collection, query = {status: status};
 
-    this._callViewFunction('one', 'selectTab');
+    if(term.match(/^user:\s+(.+)$/)) {
+      query.user = RegExp.$1;
+    } else {
+      query.title = term;
+    }
+
+    collection = new Tickets(null, {data: query});
+    this._callViewFunction('one', 'selectTab', 'tickets/' + status);
     this._setPanel('two', SpinnerView);
 
     collection.fetch({
