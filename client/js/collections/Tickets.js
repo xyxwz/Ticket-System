@@ -55,6 +55,7 @@ define([
           title: model.title,
           opened_at: model.opened_at,
           closed_at: model.closed_at,
+          description: model.description,
           notification: model.notification,
           participating: model.participating
         };
