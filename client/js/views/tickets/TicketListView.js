@@ -105,7 +105,7 @@ function($, _, Backbone, BaseView, TicketView) {
     },
 
     refresh: function() {
-      this.collection.fetch();
+      this.collection.fetch({ reset: true });
     },
 
     renderTicket: function(model) {
