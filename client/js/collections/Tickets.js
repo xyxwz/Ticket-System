@@ -1,9 +1,16 @@
-/* Ticket collection - used to represent a collection of
- * tickets */
+define([
+  'underscore',
+  'backbone',
+  'models/Ticket'
+], function(_, Backbone, Ticket) {
+  var Tickets;
 
-define(['underscore', 'backbone', 'models/Ticket'], function(_, Backbone, Ticket) {
+  /**
+   * Ticket collection, used for my tickets, open tickets, and closed tickets.
+   * Only one will exist in memory at any given time.
+   */
 
-  var Tickets = Backbone.Collection.extend({
+  Tickets = Backbone.Collection.extend({
     model: Ticket,
 
     initialize: function(models, options) {

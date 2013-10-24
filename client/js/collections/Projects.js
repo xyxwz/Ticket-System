@@ -1,7 +1,13 @@
-define(['underscore', 'backbone', 'models/Project'],
-
-function(_, Backbone, Project) {
+define([
+  'underscore',
+  'backbone',
+  'models/Project'
+], function(_, Backbone, Project) {
   var Projects;
+
+  /**
+   * Projects collection, a global collection of ticket groupings
+   */
 
   Projects = Backbone.Collection.extend({
     model: Project,
@@ -45,9 +51,7 @@ function(_, Backbone, Project) {
 
       if(model) model.destroy();
     }
-
   });
-
 
   return Projects;
 });

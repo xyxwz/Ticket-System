@@ -1,8 +1,9 @@
-/**
- * Collection dependencies
- */
-
-define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comment) {
+define([
+  'underscore',
+  'backbone',
+  'models/Comment'
+], function(_, Backbone, Comment) {
+  var Comments;
 
   /**
    * Comment collection, used to hold a collection of comments for
@@ -11,7 +12,7 @@ define(['underscore', 'backbone', 'models/Comment'], function(_, Backbone, Comme
    * @param {String} ticketId
    */
 
-  var Comments = Backbone.Collection.extend({
+  Comments = Backbone.Collection.extend({
     model: Comment,
 
     initialize: function(models, options) {

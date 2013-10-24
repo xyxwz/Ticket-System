@@ -2,16 +2,17 @@ module.exports = function(app) {
   var List = app.models.List,
       User = app.models.User;
 
-  /* Site Index
+  /**
+   * Site Index
    * GET /
    *
    * currently just renders the index.jade view
    */
+
   app.get('/', function(req, res) {
     var user;
 
     if(req.session.passport.user) {
-      // If User session then user has been authenticated.
       user = {
         id: req.session.passport.user._id,
         name: req.session.passport.user.name,
@@ -42,5 +43,4 @@ module.exports = function(app) {
   app.get('/login', function(req, res) {
     res.render('login');
   });
-
 };

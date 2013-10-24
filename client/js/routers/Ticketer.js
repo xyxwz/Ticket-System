@@ -1,15 +1,15 @@
-/**
- * Application Router
- */
-
 define([
   'backbone',
   'views/headers/MainHeaderView',
   'support/PanelController'
-],
-function(Backbone, HeaderView, PanelController) {
+], function(Backbone, HeaderView, PanelController) {
+  var Ticketer;
 
-  var Ticketer = Backbone.Router.extend({
+  /**
+   * Application Router
+   */
+
+  Ticketer = Backbone.Router.extend({
     routes: {
       "": "index",
       "tickets/open": "openTickets",
@@ -62,7 +62,6 @@ function(Backbone, HeaderView, PanelController) {
     searchTickets: function(status, term) {
       this.controller.searchTickets(status, term);
     }
-
   });
 
   return Ticketer;

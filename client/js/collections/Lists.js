@@ -1,7 +1,14 @@
-define(['underscore', 'backbone', 'models/List'],
-
-function(_, Backbone, List) {
+define([
+  'underscore',
+  'backbone',
+  'models/List'
+], function(_, Backbone, List) {
   var Lists;
+
+  /**
+   * List collection, for a personal grouping of tickets.
+   * Data bootstrapped on load.
+   */
 
   Lists = Backbone.Collection.extend({
     model: List,
@@ -12,9 +19,7 @@ function(_, Backbone, List) {
 
       return list.get('tickets');
     }
-
   });
-
 
   return Lists;
 });
