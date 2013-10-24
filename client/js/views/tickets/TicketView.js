@@ -46,10 +46,11 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       if(!this.renderAll) {
         this.bindTo(ticketer.collections.lists, 'reset', this.renderTags, this);
         this.bindTo(this.model, 'tag:add tag:remove', this.renderTags, this);
+      } else {
+        this.bindTo(this.model, 'edit', this.renderEditForm, this);
       }
 
       // Bindings
-      this.bindTo(this.model, 'edit', this.renderEditForm, this);
       this.bindTo(this.model, 'change:read', this.render, this);
       this.bindTo(this.model, 'change:description', this.renderDescription, this);
       this.bindTo(this.model, 'change:status', this.renderStatusNotification, this);
@@ -136,9 +137,13 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       var momentDate,
           data = {};
 
-      data.title = this.model.get('title');
+      // Set default attributes to render
+      data.showTags = true;
+      data.isClosed = !this.model.isOpen();
       data.user = this.model.get('user');
+      data.title = this.model.get('title');
       data.datetime = this.model.get('closed_at') || this.model.get('opened_at');
+      data.description = marked(this.model.get('description').split("\n").slice(0, 2).join("\n"));
 
       momentDate = moment(new Date(data.datetime));
 
@@ -154,9 +159,6 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       }
 
       data.hoverTime = this.model.responseTime() || data.cleanTime;
-      data.isClosed = !this.model.isOpen();
-
-      data.showTags = true; // default
 
       if(this.model.notification()) {
         data.statusClass = 'notify';

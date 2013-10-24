@@ -3,32 +3,39 @@
 // --------------------------------------
 
 .ticket-list {
+  .active {
+    background: @activeBright;
+
+    .unread { background: none !important; }
+    h4, time, .title { color: @darkGray !important; }
+
+    .attrs .tags li[class*="color-"] i {
+      text-shadow: 1px 1px 0 fade(@black, 20%), 0 0 1px fade(@black, 20%);
+    }
+  }
+
   .ticket {
     cursor: pointer;
     border-bottom: 1px solid @border;
+
+    .unread { background: @notifyBG; }
+
+    .notify:before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      bottom: 2px;
+      width: 6px;
+      background-color: lighten(@active, 15%);
+    }
 
     .header {
       padding: 10px 20px;
       .clearfix;
 
-      hgroup {
-        width: 80%;
-      }
-
-      &.unread {
-        background: @notifyBG;
-      }
-
-      &.notify:before {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 2px;
-        left: 3px;
-        bottom: 2px;
-        width: 6px;
-        background-color: lighten(@active, 15%);
-      }
+      hgroup { width: 80%; }
 
       .attrs {
         float: right;
@@ -60,22 +67,18 @@
         }
       }
     }
-  }
 
-  .active {
-    background: @activeBright;
+    .ticket-content .content {
+      margin: 0;
+      padding-bottom: 4px;
+      max-height: 36px;
 
-    .title, h4, time {
-      color: @darkGray !important;
-    }
-
-    .header {
-      &.unread {
-        background: none !important;
-      }
-
-      .attrs .tags li[class*="color-"] i {
-        text-shadow: 1px 1px 0 fade(@black, 20%), 0 0 1px fade(@black, 20%);
+      > *:last-child {
+        font-size: 12px;
+        font-weight: 400;
+        margin-bottom: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
   }
