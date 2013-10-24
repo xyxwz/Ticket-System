@@ -1,10 +1,17 @@
-/* User collection - used to represent all users */
+define([
+  'underscore',
+  'backbone',
+  'models/User'
+], function(_, Backbone, User) {
+  var Users;
 
-define(['underscore', 'backbone', 'models/User'], function(_, Backbone, User) {
-  var Users = Backbone.Collection.extend({
+  /**
+   * User Collection, loaded with bootstrapped data
+   */
 
+  Users = Backbone.Collection.extend({
     model: User,
-    url: '/api/users',
+    url: "/api/users",
 
     initialize: function() {
 
@@ -13,7 +20,6 @@ define(['underscore', 'backbone', 'models/User'], function(_, Backbone, User) {
       };
 
     }
-
   });
 
   return Users;

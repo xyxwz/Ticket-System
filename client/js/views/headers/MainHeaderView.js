@@ -9,9 +9,9 @@ define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/widgets/SearchWidgetView',
   'text!templates/headers/MainHeader.html',
   'text!templates/headers/UserOptions.html',
-  'dropdowns'],
-function($, _, mustache, BaseView, TagWidget, TicketFormView,
-  SettingsDialog, SearchWidget, tmpl_Header, tmpl_Options) {
+  'dropdowns'
+], function($, _, mustache, BaseView, TagWidget, TicketFormView,
+    SettingsDialog, SearchWidget, tmpl_Header, tmpl_Options) {
 
   /**
    * A basic header view

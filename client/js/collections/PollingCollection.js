@@ -1,8 +1,8 @@
-/**
- * Collection dependencies
- */
-
-define(['underscore', 'backbone'], function(_, Backbone) {
+define([
+  'underscore',
+  'backbone'
+], function(_, Backbone) {
+  var PollingCollection;
 
   /**
    * PollingCollection, used to hold a collection of generic models
@@ -11,7 +11,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
    * @param {String} url
    */
 
-  var PollingCollection = Backbone.Collection.extend({
+  PollingCollection = Backbone.Collection.extend({
     initialize: function(models, options) {
       options = options || {};
 
