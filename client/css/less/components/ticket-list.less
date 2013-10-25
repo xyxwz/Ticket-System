@@ -36,7 +36,8 @@
     }
 
     .header {
-      padding: 10px 20px;
+      margin-bottom: 6px;
+      padding: 8px 20px 0 20px;
       .clearfix;
 
       hgroup { width: 80%; }
@@ -74,16 +75,14 @@
 
     .ticket-content .content {
       margin: 0;
-      padding-bottom: 4px;
-      max-height: 36px;
-      overflow: hidden;
-      .box-sizing(border-box);
+      padding-bottom: 8px;
 
-      > *:last-child {
-        font-size: 12px;
-        font-weight: 400;
-        margin-bottom: 0;
+      p {
+        margin: 0;
         overflow: hidden;
+        font-size: 12px;
+        line-height: 1.3em;
+        max-height: 30px;
         text-overflow: ellipsis;
       }
     }
