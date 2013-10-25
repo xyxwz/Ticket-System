@@ -135,7 +135,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
     packageModel: function() {
       var momentDate,
-          data = {};
+          data = {},
+          desc = this.model.get('description');
 
       // Set default attributes to render
       data.showTags = true;
@@ -143,14 +144,12 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       data.user = this.model.get('user');
       data.title = this.model.get('title');
       data.datetime = this.model.get('closed_at') || this.model.get('opened_at');
-      data.description = marked(this.model.get('description').split("\n").slice(0, 2).join("\n"));
 
       momentDate = moment(new Date(data.datetime));
 
       if(momentDate.calendar().match(/(Today|Yesterday)/g)) {
         data.cleanTime = RegExp.$1; // Today || Yesterday
-      }
-      else {
+      } else {
         if(momentDate.year() < moment().year()) {
           data.cleanTime = momentDate.format('MMM YYYY');
         } else {
@@ -168,13 +167,17 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       }
 
       if(this.renderAll) {
-        data.description = marked(this.model.get('description'));
-        data.fullDate = momentDate.format('MMMM Do, YYYY h:mm A');
+        data.description = marked(desc);
         data.showTags = false;
         data.isEditable = this.isEditable(data);
+        data.fullDate = momentDate.format('MMMM Do, YYYY h:mm A');
         data.isAssignable = ticketer.currentUser.isAdmin() && !this.model.get('read');
         data.isClosable = !!~this.model.get('assigned_to')
           .indexOf(ticketer.currentUser.id) && !data.isClosed;
+      } else {
+        // Take the first 200 characters of description
+        desc = desc.slice(0, desc.length < 200 ? desc.length : 200);
+        data.description = "<p>" + desc.replace(/[^A-Za-z0-9,\.\?"'\s]/g, "") + "</p>";
       }
 
       return data;
