@@ -298,7 +298,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
      */
 
     renderStatusMarker: function() {
-      var element = this.$('.header');
+      var element = this.$('.ticket-content');
 
       if(this.model.notification()) {
         element.removeClass('unread read').addClass('notify');
