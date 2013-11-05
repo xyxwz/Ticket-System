@@ -296,16 +296,15 @@ module.exports = function(app) {
       function checkFlags(model, callback) {
         var obj = new Ticket(model);
         obj._toClient(function(err, item) {
+          // Ensure the `args.user` is correct, too bad there
+          // isn't documentation for putting this in the query
+          if(args.user && !~item.user.name.toLowerCase().indexOf(args.user.toLowerCase())) {
+            return callback(null);
+          }
 
           // Don't check participating or notifications for closed tickets
           if(item.status === 'closed') {
             tickets.push(item);
-            return callback(null);
-          }
-
-          // Ensure the `args.user` is correct, too bad there
-          // isn't documentation for putting this in the fucking query
-          if(args.user && !~item.user.name.toLowerCase().indexOf(args.user.toLowerCase())) {
             return callback(null);
           }
 
