@@ -23,7 +23,7 @@ define([
 
       this.comparator = function(model) {
         var date = new Date(model.get("created_at"));
-        return date.getTime();
+        return -date.getTime();
       };
 
       // Global event bindings
