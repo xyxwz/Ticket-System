@@ -21,7 +21,12 @@ function($, _, Backbone, BaseView, Comments,
     className: "ticket-details",
 
     initialize: function() {
+      this.comments = new Comments(null, {
+        ticketId: this.model.id
+      });
+
       this.bindTo(this.model, 'remove', this.dispose, this);
+      this.bindTo(this.comments, 'add', this.scrollToBottom, this);
     },
 
     render: function() {
@@ -53,15 +58,21 @@ function($, _, Backbone, BaseView, Comments,
     },
 
     renderComments: function() {
-      var collection = new Comments(null, {
-        ticketId: this.model.id
-      });
-
       var view = this.createView(CommentListView, {
-        collection: collection
+        collection: this.comments
       });
 
       $(this.el).append(view.render().el);
+    },
+
+    /**
+     * Scoll to the bottom of the ticket details view
+     */
+
+    scrollToBottom: function() {
+      this.$el.parent().animate({
+        scrollTop: this.$el.height()
+      }, 1200);
     }
 
   });
