@@ -22,7 +22,8 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
       "click .tag[data-id]": "filterListView",
       "dblclick [data-action='edit']": "editTag",
       "mousedown [data-action='delete']": "deleteTag",
-      "blur .editable input": "saveTag"
+      "blur .editable input": "saveTag",
+      "dragstart .tag[data-id]": "dragStart"
     },
 
     initialize: function() {
@@ -65,6 +66,8 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
 
     renderTag: function(tag) {
       var data = tag.toJSON();
+
+      data.draggable = true;
       data.color = ticketer.colors[data.color].name;
 
       return Mustache.to_html(tmpl_Tag, data);
@@ -159,6 +162,19 @@ function($, _, Backbone, BaseView, tmpl_TagList, tmpl_Tag, tmpl_TagEdit) {
       // Try to prevent the edit blur
       e.stopPropagation();
       e.stopImmediatePropagation();
+    },
+
+    /**
+     * Start of drag tag event
+     *
+     * @param {jQuery.Event} e
+     */
+
+    dragStart: function(e) {
+      var id = $(e.target).data('id');
+
+      e.originalEvent.dataTransfer.setData('text', id);
+      e.originalEvent.dataTransfer.effectAllowed = 'move';
     }
   });
 

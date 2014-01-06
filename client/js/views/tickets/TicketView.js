@@ -33,7 +33,11 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       "click a[data-action]": "ticketAction",
       "click [data-action='save']": "saveTicket",
       "click [data-action='cancel']": "renderDescription",
-      "click .md a": "openLink"
+      "click .md a": "openLink",
+      "drop": "onDrop",
+      "dragover": "nullEvent",
+      "dragenter": "nullEvent",
+      "dragleave": "nullEvent"
     },
 
     initialize: function() {
@@ -44,8 +48,8 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       // Handles page refreshes where list may render before
       // the collection reset event
       if(!this.renderAll) {
-        this.bindTo(ticketer.collections.lists, 'reset', this.renderTags, this);
         this.bindTo(this.model, 'tag:add tag:remove', this.renderTags, this);
+        this.bindTo(ticketer.collections.lists, 'reset', this.renderTags, this);
       } else {
         this.bindTo(this.model, 'edit', this.renderEditForm, this);
       }
@@ -319,6 +323,39 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       e.preventDefault();
       e.stopPropagation();
       window.open(e.currentTarget.href);
+    },
+
+    /**
+     * Used to enable drop events.
+     * - Bound to dragenter, dragover, dragleave
+     *
+     * @param {jQuery.Event} e
+     */
+
+    nullEvent: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    },
+
+    /**
+     * Handle list drop event
+     *
+     * @param {jQuery.Event} e
+     */
+
+    onDrop: function(e) {
+      var list,
+          data = e.originalEvent.dataTransfer,
+          id = data ? data.getData('text') : '';
+
+      if(id) {
+        list = ticketer.collections.lists.get(id);
+
+        if(list) {
+          list.addTicket(this.model.id);
+          this.model.trigger('tag:add');
+        }
+      }
     }
 
   });
