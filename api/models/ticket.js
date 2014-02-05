@@ -123,7 +123,7 @@ module.exports = function(app) {
       model.save(function(err, ticket) {
         if (err || !ticket) return cb('Error updating model. Check required attributes.');
         var obj = new Ticket(ticket);
-        obj._toClient(function(err, ticket){
+        obj._toClient(function(err, ticket) {
           if(err) return cb(err);
 
           // Build model to emit
@@ -490,34 +490,6 @@ module.exports = function(app) {
     Notifications.nowParticipating(app.redis, user._id, ticket.id, function(err) {
       if(err) return cb(err);
       createTicketObject(ticket, data, cb);
-    });
-  };
-
-  /**
-   * Allow a User to follow and unfollow updates on a Ticket
-   *
-   * @user - A User ID
-   * @model - A Ticket ID
-   * @callback - A callback to run
-   *
-   * @api Public
-   */
-
-  Ticket.follow = function follow(user, model, callback) {
-    Notifications.nowParticipating(app.redis, user, model, function(err, status) {
-      Ticket.find(model, function(err, ticket) {
-        app.eventEmitter.emit('ticket:update', { body: ticket });
-        return callback(err, !!status);
-      });
-    });
-  };
-
-  Ticket.unfollow = function unfollow(user, model, callback) {
-    Notifications.removeParticipating(app.redis, user, model, function(err, status) {
-      Ticket.find(model, function(err, ticket) {
-        app.eventEmitter.emit('ticket:update', { body: ticket });
-        return callback(err, !!status);
-      });
     });
   };
 

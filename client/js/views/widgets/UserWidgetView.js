@@ -64,22 +64,19 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
 
       // On enter, assign the active user
       if(e.keyCode === 13 && activeElement.length) {
-        this.model.participate(activeElement.data('id'));
-      }
-      else if(e.keyCode === 40 && activeElement.length) {
+        this.model.addParticipant(activeElement.data('id'));
+      } else if(e.keyCode === 40 && activeElement.length) {
         // Wrap the activeElement index + 1
         next = (activeElement.index() + 1) % element.children().length;
 
         activeElement.removeClass('active');
         $(element.children().get(next)).addClass('active');
-      }
-      else {
+      } else {
         // There must be something to worth searching for...
         if(val.replace(/\s+/g, '').length) {
           element.html(this.filterUsers(val.toLowerCase())).fadeIn(400);
           element.children(':first').addClass('active');
-        }
-        else {
+        } else {
           element.empty();
         }
       }
@@ -114,6 +111,8 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
     /**
      * Bind events on `click` of the `display` button
      *
+     * Renders the user name results list or just follows the ticket
+     *
      * @param {jQuery.Event} e
      */
 
@@ -123,7 +122,7 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
         this.$el.find('a').hide();
         this.$el.find('input').fadeIn(200).focus();
       } else {
-        this.follow();
+        this.model.addParticipant(ticketer.currentUser.id);
       }
 
       e.preventDefault();
@@ -156,13 +155,8 @@ function($, _, Backbone, BaseView, mustache, tmpl_UserWidget, tmpl_User) {
 
       e.preventDefault();
       e.stopPropagation();
-      this.model.participate(id);
-    },
-
-    follow: function() {
-      this.model.follow();
+      this.model.addParticipant(id);
     }
-
   });
 
   return UserWidgetView;
