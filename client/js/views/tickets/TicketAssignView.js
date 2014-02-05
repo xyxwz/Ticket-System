@@ -48,28 +48,38 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
       if(assigned_to.length) {
         for(i = 0, len = assigned_to.length; i < len; i = i + 1) {
           user = users.get(assigned_to[i]);
-          html = $(Mustache.to_html(tmpl_User, user.toJSON()));
-          this.$el.append(html.addClass('assigned'));
+
+          // Account for deleted users
+          if(user) {
+            html = $(Mustache.to_html(tmpl_User, user.toJSON()));
+            this.$el.append(html.addClass('assigned'));
+          }
         }
       }
 
       for(i = 0, len = participants.length; i < len; i = i + 1) {
-        if(~assigned_to.indexOf(participants[i])) continue;
-        user = users.get(participants[i]);
-        html = $(Mustache.to_html(tmpl_User, user.toJSON()));
+        // Only render a participant if they were not assigned
+        if(assigned_to.indexOf(participants[i]) === -1) {
+          user = users.get(participants[i]);
 
-        if((ticketer.currentUser.isAdmin() ||
-            ticketer.currentUser.id === participants[i]) &&
-            this.model.isOpen()) {
-          html.addClass('removable');
+          // Account for deleted users
+          if(user) {
+            html = $(Mustache.to_html(tmpl_User, user.toJSON()));
+
+            if((ticketer.currentUser.isAdmin() ||
+                ticketer.currentUser.id === participants[i]) &&
+                this.model.isOpen()) {
+              html.addClass('removable');
+            }
+
+            this.$el.append(html);
+          }
         }
-
-        this.$el.append(html);
       }
 
-      if((ticketer.currentUser.isAdmin() ||
-          !~participants.indexOf(ticketer.currentUser.id)) &&
-          this.model.isOpen()) {
+      // Render the follow button only if not already following or admin
+      if(this.model.isOpen() && (ticketer.currentUser.isAdmin() ||
+          participants.indexOf(ticketer.currentUser.id) === -1)) {
         this.renderWidget();
       }
 

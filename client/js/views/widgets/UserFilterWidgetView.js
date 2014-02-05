@@ -38,16 +38,12 @@ function($, _, Backbone, BaseView, tmpl_Base, tmpl_User) {
      */
 
     renderUsers: function() {
-      var users,
+      var html = [],
           self = this,
-          html = [];
-
-      users = this.collection.filter(function(user) {
-        return user.get('active');
-      });
+          users = this.collection;
 
       if(users.length) {
-        users.forEach(function(user) {
+        users.each(function(user) {
           html.push(self.renderUser(user));
         });
       } else {
