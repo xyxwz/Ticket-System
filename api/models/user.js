@@ -81,24 +81,22 @@ module.exports = function(app) {
    */
 
   User.all = function all(cb) {
-    var array, obj;
+    var array = [];
 
     UserSchema.find().exec(function(err, models) {
       if(err) {
-        return cb("Error finding users");
+        return cb(new Error("Error finding users"));
       }
       else {
-        array = [];
         _.each(models, function(user) {
           if(user.role === 'read') return;
-          obj = user.toClient();
-          array.push(obj);
+          array.push(user.toClient());
         });
+
         return cb(null, array);
       }
     });
   };
-
 
 
   /**
@@ -106,7 +104,7 @@ module.exports = function(app) {
    *
    *  Retrieves a single user model by id.
    *
-   *  :id - string, a user's BSON id
+   *    :id - string, a user's BSON id
    *
    *  Returns a single user object ready to be sent to the client
    *
@@ -115,7 +113,7 @@ module.exports = function(app) {
 
   User.find = function find(id, cb){
     UserSchema
-    .findOne({'_id':id})
+    .findOne({ '_id': id, active: true })
     .exec(function(err, model) {
       if(err || !model) {
         return cb("User not found");

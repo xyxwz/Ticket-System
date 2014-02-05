@@ -33,7 +33,6 @@ User.methods.toClient = function(){
     id: obj.id,
     name: obj.name,
     role: obj.role,
-    active: obj.active,
     avatar: obj.avatar,
     settings: obj.settings
   };
