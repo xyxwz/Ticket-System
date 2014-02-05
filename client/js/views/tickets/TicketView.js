@@ -181,7 +181,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       } else {
         // Take the first 200 characters of description
         desc = desc.slice(0, desc.length < 200 ? desc.length : 200);
-        data.description = "<p>" + desc.replace(/[^A-Za-z0-9,\.\?"'\s]/g, "") + "</p>";
+        data.description = "<p>" + desc.replace(/[^A-Za-z0-9\\\/:,\.\?"'\s]/g, "") + "</p>";
       }
 
       return data;
