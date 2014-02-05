@@ -83,7 +83,7 @@ module.exports = function(app) {
   User.all = function all(cb) {
     var array = [];
 
-    UserSchema.find().exec(function(err, models) {
+    UserSchema.find({ active: true }).exec(function(err, models) {
       if(err) {
         return cb(new Error("Error finding users"));
       }
