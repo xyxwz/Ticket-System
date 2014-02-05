@@ -62,39 +62,33 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     },
 
     /**
-     * Sets a user to participating
+     * Add `id` to the participating array
+     *
+     * @param {String} id
+     * @param {Function} callback
      */
-    participate: function(id, callback) {
-      var array = _.clone(this.get('participants'));
-      array.push(id);
-      this.set({participants: _.uniq(array)});
+
+    addParticipant: function(id, callback) {
+      var uids = this.get('participants').concat(id);
+
+      this.set({ participants: uids });
       this.save(null, { error: callback });
     },
 
-    stopParticipating: function(id, callback) {
-      var array = _.clone(this.get('participants'));
-      var newArray = _.reject(array, function(user) {
-        return user === id;
+    /**
+     * Remove the id from participants array
+     *
+     * @param {String} id
+     * @param {Function} callback
+     */
+
+    removeParticipant: function(id, callback) {
+      var uids = this.get('participants').filter(function(u) {
+        return u !== id;
       });
 
-      this.set({participants: _.uniq(newArray)});
+      this.set({ participants: uids });
       this.save(null, { error: callback });
-    },
-
-    follow: function() {
-      var self = this,
-          clone = _.clone(this);
-
-      clone.url = "/api/tickets/" + clone.get('id') + '/follow';
-      Backbone.sync("create", clone);
-    },
-
-    unfollow: function() {
-      var self = this,
-          clone = _.clone(this);
-
-      clone.url = "/api/tickets/" + clone.get('id') + '/follow';
-      Backbone.sync("delete", clone);
     },
 
     /**

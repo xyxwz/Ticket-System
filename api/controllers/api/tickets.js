@@ -59,39 +59,14 @@ module.exports = function(app) {
     });
   });
 
-  /**
-   * Follow a ticket
-   *
-   * Adds user to the tickets participating set
-   */
-
-  app.post('/api/tickets/:ticketID/follow', function(req, res) {
-    Ticket.follow(req.user._id, req.ticket._id, function(err) {
-      if(err) return res.json({participating: false, error: 'Could not follow'}, 400);
-      res.json({participating: true}, 201);
-    });
-  });
-
-  /**
-   * Unfollow a ticket
-   *
-   * Removes a user from the tickets participating set
-   */
-
-  app.del('/api/tickets/:ticketID/follow', function(req, res) {
-    Ticket.unfollow(req.user._id, req.ticket._id, function(err) {
-      if(err) return res.json({participating: true, error: 'Could not unfollow'}, 400);
-      res.json({participating: false}, 200);
-    });
-  });
-
-
   /* Ticket Info
   *  GET /api/tickets/:ticketID
   *
   *  ticketID - The MongoDb BSON id converted to a string
   *
-  *  returns a single ticket */
+  *  returns a single ticket
+  */
+
   app.get('/api/tickets/:ticketID', function(req, res) {
     var ticket;
 

@@ -94,11 +94,11 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
 
       if(ticketer.currentUser.isAdmin()) {
         resp = confirm('Remove the user from the Ticket?');
-        if(resp) this.model.stopParticipating(id);
+        if(resp) this.model.removeParticipant(id);
       } else {
         if(id === ticketer.currentUser.id) {
           resp = confirm('Unfollow this Ticket?');
-          if(resp) this.model.unfollow();
+          if(resp) this.model.removeParticipant(ticketer.currentUser.id);
         }
       }
     }
