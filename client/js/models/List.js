@@ -14,7 +14,6 @@ define(['underscore', 'backbone'], function(_, Backbone) {
      *
      * @param {String} ticketId
      */
-
     hasTicket: function(ticketId) {
       return !!~this.get('tickets').indexOf(ticketId);
     },
@@ -24,7 +23,6 @@ define(['underscore', 'backbone'], function(_, Backbone) {
      *
      * @param{TicketObject} ticket the ticket object/array to add to the project
      */
-
     addTicket: function(thing, callback) {
       var tickets = this.get('tickets');
 
