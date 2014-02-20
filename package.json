@@ -16,10 +16,11 @@
   "devDependencies": {
     "should": "~3.1.2",
     "superagent": "~0.16.0",
-    "mocha": "~1.17.1"
+    "mocha": "~1.17.1",
+    "sqlite3": "~2.2.0"
   },
   "scripts": {
-    "test": "mocha api/test",
+    "test": "make test",
     "start": "node api/app.js"
   }
 }
