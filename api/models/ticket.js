@@ -11,7 +11,7 @@ module.exports = function(sequelize, Types) {
    */
 
   return sequelize.define('Ticket', {
-    closed_at: Types.DATETIME,
+    closed_at: Types.DATE,
 
     title: {
       type: Types.STRING,

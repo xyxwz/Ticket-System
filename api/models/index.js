@@ -51,6 +51,7 @@ sequelize = new Sequelize(database, user, password, options);
  */
 
 var models = module.exports = {
+  Sequelize: sequelize,
   Tag: sequelize.import(__dirname + '/tag'),
   User: sequelize.import(__dirname + '/user'),
   Ticket: sequelize.import(__dirname + '/ticket'),
@@ -73,11 +74,13 @@ models.User
   .hasMany(models.Ticket)
   .hasMany(models.Setting)
   .hasMany(models.Notification)
+  .hasMany(models.Ticket, { as: 'Owning' })
   .hasMany(models.Ticket, { as: 'Watching' });
 
 models.Ticket
   .hasMany(models.Comment)
   .hasMany(models.Project)
+  .hasOne(models.User, { as: 'Owner' })
   .hasOne(models.User, { as: 'Author' })
   .hasMany(models.User, { as: 'Watcher' });
 

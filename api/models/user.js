@@ -13,15 +13,25 @@ module.exports = function(sequelize, Types) {
   return sequelize.define('User', {
     token: Types.STRING,
 
-    active: {
-      type: Types.BOOLEAN,
+    name: {
+      type: Types.STRING,
       validate: {
-        notNull: true
+        notNull: true,
+        notEmpty: true
+      }
+    },
+
+    username: {
+      type: Types.STRING,
+      validate: {
+        notNull: true,
+        notEmpty: true
       }
     },
 
     role: {
       type: Types.STRING,
+      defaultValue: 'member',
       validate: {
         notNull: true,
         notEmpty: true
@@ -31,7 +41,15 @@ module.exports = function(sequelize, Types) {
     avatar: {
       type: Types.STRING,
       validate: {
-        isURL: true
+        isUrl: true
+      }
+    },
+
+    active: {
+      type: Types.BOOLEAN,
+      defaultValue: true,
+      validate: {
+        notNull: true
       }
     }
   });
