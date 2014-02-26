@@ -16,10 +16,10 @@ exports.Authenticate = function(req, res, next) {
   // If a Session is set, no need to look up the user again
   if(req.user) return next();
 
-  if(typeof(req.header('X-Auth-Token')) != 'undefined') {
+  if(typeof(req.header('X-Auth-Token')) !== 'undefined') {
     var token = req.header('X-Auth-Token');
     User
-    .findOne({'access_token':token})
+    .findOne({ 'access_token': token })
     .exec(function(err, model){
       if(err || !model) {
         next(new Error("Not Authenticated"));
