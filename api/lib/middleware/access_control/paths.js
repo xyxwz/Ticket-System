@@ -32,7 +32,6 @@ module.exports = {
     "/projects": ["admin", "member"],
     "/lists": ["admin", "member"],
     "/tickets": ["admin", "member"],
-    "/tickets/:ticketID/follow": ["admin", "member"],
     "/tickets/:ticketID/comments": ["admin", "member"]
   },
 
@@ -42,7 +41,7 @@ module.exports = {
     "/users/:userID": ["owner", "admin"],
     "/projects/:projectID": ["admin", "owner"],
     "/lists/:listID": ["owner"],
-    "/tickets/:ticketID": ["owner", "admin"],
+    "/tickets/:ticketID": ["owner", "admin", "member"],
     "/tickets/:ticketID/comments/:commentID": ["owner"]
   },
 
@@ -53,7 +52,6 @@ module.exports = {
     "/lists/:listID": ["owner"],
     "/tickets/:ticketID": ["owner", "admin"],
     "/tickets/:ticketID/comments/:commentID": ["owner", "admin"],
-    "/notifications/:notificationID": ["member", "admin", "read"],
-    "/tickets/:ticketID/follow": ["admin", "member"]
+    "/notifications/:notificationID": ["member", "admin", "read"]
   }
 };
