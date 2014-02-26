@@ -18,17 +18,26 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     delete ticketer.currentUser.access_token;
 
     Backbone.sync = function(method, model, options) {
-      var new_options = _.extend({
+      var error = options.error;
+      var new_options = _.extend(options, {
 
         beforeSend: function(xhr) {
           if(auth_token) {
-            xhr.setRequestHeader('X-Auth-Token', auth_token);
+            xhr.setRequestHeader('X-Auth-Token', "abc123");
           }
 
           // Add Accept Header for API
           xhr.setRequestHeader('Accept', 'application/json');
+        },
+
+        error: function(xhr) {
+          if(xhr.status === 401) {
+            return window.location.replace(window.location.origin);
+          }
+
+          return error.apply(this, arguments);
         }
-      }, options);
+      });
 
       default_sync(method, model, new_options);
     };
