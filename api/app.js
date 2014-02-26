@@ -49,8 +49,8 @@ function bootApplication(app) {
   app.use('/events', lib.middleware.SSE);
   app.use('/api', lib.middleware.CORS); // Allow CORS
   app.use('/api', lib.middleware.Auth);
-  app.use('/api', lib.middleware.Error);
   app.use('/api', lib.middleware.AccessControl);
+  app.use(lib.middleware.Error);
   app.use(app.router);
   app.use(express.static(path + '/../client/'));
 }
