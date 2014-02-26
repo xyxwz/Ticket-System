@@ -5,6 +5,16 @@ define(['underscore', 'backbone'], function(_, Backbone) {
   var ServerEvents = function() {
 
     /**
+     * Error Event
+     */
+
+    // Redirect on unauthorized
+    ticketer.SSE.onerror = function(status) {
+      if(status !== 401) return;
+      window.location.replace(window.location.origin);
+    };
+
+    /**
      * Binding for a `ticket:new` event
      */
 
