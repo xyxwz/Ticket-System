@@ -97,6 +97,14 @@ module.exports = function(app) {
     if (data.title) model.title = data.title;
     if (data.description) model.description = data.description.replace(/<\/?script>/ig, '');
 
+    // Set read status
+    if(data.participants && data.participants.length ||
+        data.assigned_to && data.assigned_to.length) {
+      model.read = true;
+    } else {
+      model.read = false;
+    }
+
     async.parallel([
       // Set Participants Array in Redis
       function(callback) {
@@ -154,12 +162,6 @@ module.exports = function(app) {
     var redis = this.redis,
         model = this.model,
         ticketNamespace = 'ticket:' + model.id + ':assignees';
-
-    if(array.length) {
-      model.read = true;
-    } else {
-      model.read = false;
-    }
 
     // Wipe the assignees set prior to assigning the new user
     redis.DEL(ticketNamespace, function(err) {
