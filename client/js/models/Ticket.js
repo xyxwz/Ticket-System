@@ -15,6 +15,16 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
       return this.get('closed_at') === void 0;
     },
 
+    /**
+     * Is the ticket assigned to a user
+     *
+     * @return {Boolean}
+     */
+
+    isAssigned: function() {
+      return this.get('assigned_to') && this.get('assigned_to').length;
+    },
+
     /*
      * Returns if the user has a notification for the ticket
      */
