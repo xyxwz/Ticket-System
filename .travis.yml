@@ -8,5 +8,4 @@ services:
   - mongodb
 
 env:
-  - CONSUMER_KEY="nothing to see here"
-  - CONSUMER_SECRET="nothing to see here"
+  - CONSUMER_KEY="nothing to see here" CONSUMER_SECRET="nothing to see here"
