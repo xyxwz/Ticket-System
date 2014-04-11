@@ -420,43 +420,6 @@ describe('ticket', function(){
 
     });
 
-
-    /**
-     * Follow
-     *
-     * Should add a User ID to a Ticket's participating array
-     */
-
-    describe('follow', function() {
-      before(function(done) {
-        Ticket.follow('user123', fixtures.tickets[1], function(err, status) {
-          done(err);
-        });
-      });
-
-      it('should add user id to ticket participating array', function(done) {
-        server.redis.SISMEMBER('ticket:' + fixtures.tickets[1] + ':participating', 'user123', function(err, status) {
-          status.should.eql(1);
-          done();
-        });
-      });
-    });
-
-    describe('unfollow', function() {
-      before(function(done) {
-        Ticket.unfollow('user123', fixtures.tickets[1], function(err, status) {
-          done(err);
-        });
-      });
-
-      it('should remove user id from ticket participating array', function(done) {
-        server.redis.SISMEMBER('ticket:' + fixtures.tickets[1] + ':participating', 'user123', function(err, status) {
-          status.should.eql(0);
-          done();
-        });
-      });
-    });
-
     /* getSingle */
     /* Should test a single ticket is returned */
     describe('getSingle', function(){
