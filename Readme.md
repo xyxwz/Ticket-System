@@ -1,4 +1,4 @@
-TXSSC Ticket System
+TXSSC Ticket System [![Build Status](https://travis-ci.org/TxSSC/Ticket-System.svg?branch=master)](https://travis-ci.org/TxSSC/Ticket-System)
 ===================
 
 ## Overview
