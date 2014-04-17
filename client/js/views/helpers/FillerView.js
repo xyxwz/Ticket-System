@@ -17,7 +17,7 @@ function($, _, BaseView) {
     className: "view-filler",
 
     render: function() {
-      this.$el.html("<p>Select an item to view it's details.</p>");
+      this.$el.html("<p>Select an item to view its details.</p>");
       return this;
     }
   });
