@@ -72,16 +72,12 @@ function($, _, Backbone, BaseView, mustache, TagWidget, tmpl_Tag) {
     },
 
     unassignTag: function(e) {
-      var tag,
-          id = $(e.currentTarget).data('id'),
-          resp = confirm('Remove this tag from the Ticket?');
+      var id = $(e.currentTarget).data('id'),
+          tag = ticketer.collections.lists.get(id);
 
-      if(resp) {
-        tag = ticketer.collections.lists.get(id);
-        if(tag) {
-          tag.removeTicket(this.model.id);
-          this.model.trigger('tag:remove', tag);
-        }
+      if(tag) {
+        tag.removeTicket(this.model.id);
+        this.model.trigger('tag:remove', tag);
       }
     }
   });
