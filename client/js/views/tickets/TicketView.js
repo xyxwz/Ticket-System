@@ -55,7 +55,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       }
 
       // Bindings
-      this.bindTo(this.model, 'change:read', this.render, this);
+      this.bindTo(this.model, 'change:read change:assigned_to', this.render, this);
       this.bindTo(this.model, 'change:description', this.renderDescription, this);
       this.bindTo(this.model, 'change:status', this.renderStatusNotification, this);
       this.bindTo(this.model, 'change:notification', this.renderStatusMarker, this);
