@@ -99,16 +99,13 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
     },
 
     unFollow: function(e) {
-      var resp,
-          id = $(e.currentTarget).data('id');
+      var id = $(e.currentTarget).data('id');
 
       if(ticketer.currentUser.isAdmin()) {
-        resp = confirm('Remove the user from the Ticket?');
-        if(resp) this.model.removeParticipant(id);
+        this.model.removeParticipant(id);
       } else {
         if(id === ticketer.currentUser.id) {
-          resp = confirm('Unfollow this Ticket?');
-          if(resp) this.model.removeParticipant(ticketer.currentUser.id);
+          this.model.removeParticipant(ticketer.currentUser.id);
         }
       }
     }
