@@ -12,7 +12,8 @@ var User = new mongoose.Schema({
   avatar        : {type: String, trim: true},
   settings      : {
     email: {type: Boolean, default: false},
-    desktop: {type: Boolean, default: true}
+    desktop: {type: Boolean, default: true},
+    inverseComments: {type: Boolean, default: false}
   }
 });
 
