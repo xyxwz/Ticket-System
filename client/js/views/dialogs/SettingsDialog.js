@@ -64,11 +64,13 @@ function($, _, Backbone, BaseView, mustache, Tmpl) {
     },
 
     save: function(e) {
-      var email = this.$el.find("[name='email']").prop('checked'),
-          desktop = this.$el.find("[name='desktop']").prop('checked');
+      var email = this.$el.find("[name='email']").is(':checked'),
+          desktop = this.$el.find("[name='desktop']").is(':checked'),
+          comments = this.$el.find("[name='inverseComments']").is(':checked');
 
       this.model.updateSettings({
-          desktop: Boolean(desktop)
+          desktop: desktop,
+          inverseComments: comments
       });
     }
 

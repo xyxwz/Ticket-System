@@ -16,13 +16,18 @@ define([
     model: Comment,
 
     initialize: function(models, options) {
-      this.options = options || {};
+      var settings = ticketer.currentUser.get('settings');
 
-      // Set url for this comment collection
+      this.options = options || {};
       this.url = '/api/tickets/' + options.ticketId + '/comments';
 
       this.comparator = function(model) {
         var date = new Date(model.get("created_at"));
+
+        if(settings.inverseComments) {
+          return -date.getTime();
+        }
+
         return date.getTime();
       };
 
