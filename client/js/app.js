@@ -141,23 +141,5 @@ define([
 
     // Bind Keyboard Shortcuts
     new Shortcuts();
-
-    /* Check for Desktop Notification Support
-     * and permissions. If supported and no permissions
-     * request them.
-     *
-     * Set ticketer.notifications to true if they are enabled
-     */
-    if (webkitNotifications) {
-      var status = webkitNotifications.checkPermission();
-      if (status === 0) {
-        ticketer.notifications = true;
-      } else if(status === 2) {
-        ticketer.notifications = false;
-      } else {
-        ticketer.views.alerts.notifications.render();
-      }
-    }
-
   });
 });
