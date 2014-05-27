@@ -1,54 +1,56 @@
 define([
   'jquery', 'underscore', 'backbone',
-  'mustache', 'models/Ticket',
-  'text!templates/alerts/Notification.html'
+  'mustache', 'models/Ticket'
 ],
-function($, _, Backbone, mustache, Ticket, NotificationTmpl) {
+function($, _, Backbone, mustache, Ticket) {
 
   var NotificationView = Backbone.View.extend({
-    id: "notification",
-    className: "clearfix",
-    events: {
-      "click button": "requestPermissions"
-    },
-
     initialize: function() {
+      var self = this;
+
+      // Just return if Notification is not supported
+      if(typeof Notification === 'undefined') return;
+
       ticketer.EventEmitter.on('comment:new', this.commentNotification, this);
       ticketer.EventEmitter.on('ticket:update', this.closedNotification, this);
-    },
 
-    render: function() {
-      $(this.el).html(Mustache.to_html(NotificationTmpl, {})).hide();
-      $('body').prepend(this.el);
-      $(this.el).slideDown(200);
+      // Notification.request permission must be invoked
+      // after the first event on the page - this is a HACK
+      if(Notification.permission === 'granted') {
+        this.allowed = true;
+      } else if(Notification.permission !== 'denied') {
+        $('body').one('click', function() {
+          self.requestPermission();
+        });
+      }
     },
 
     enabled: function() {
       var s = ticketer.currentUser.get('settings');
 
-      return ticketer.notifications && s.desktop;
+      return this.allowed && s.desktop;
     },
 
-    requestPermissions: function() {
-      $(this.el).hide();
+    requestPermission: function() {
       var self = this;
-      webkitNotifications.requestPermission(self.requestCallback);
+
+      Notification.requestPermission(function(permission) {
+        if(permission === 'granted') {
+          self.allowed = true;
+        } else {
+          self.allowed = false;
+        }
+      });
     },
 
-    requestCallback: function() {
-      var status = webkitNotifications.checkPermission();
-      if (status === 0) {
-        ticketer.notifications = true;
-      } else {
-        ticketer.notifications = false;
-      }
-    },
-
-    /* When a comment is added to a ticket the user is participating
-     * in, send a desktop notification if enabled.
+    /**
+     * Comment notification, renders a new comment notification
+     *
+     * @param {Object} message event data from the server
      */
+
     commentNotification: function(message) {
-      var self = this,
+      var n, t, self = this,
           ticket = new Ticket({id: message.ticket});
 
       // Ensure notifications are enabled
@@ -57,33 +59,45 @@ function($, _, Backbone, mustache, Ticket, NotificationTmpl) {
       ticket.fetch({
         success: function() {
           if(ticket.get('status') === 'open' && message.notification) {
-            var title = message.user.name + ' made a comment on "' + ticket.get('title') + '":';
-            webkitNotifications.createNotification('', title, message.comment).show();
+            t = message.user.name + ' has commented on "' + ticket.get('title') + '":';
+
+            n = new Notification(t, {
+              body: message.comment,
+              icon: message.user.avatar
+            });
+
+            $(n).one('click', function() {
+              ticketer.controller.showTicket(ticket);
+            });
           }
         }
       });
     },
 
-    /* When a ticket is closed, send the creator and the people assigned
-     * to the ticket a desktop notification if enabled.
+    /**
+     * Closed notification, renders a closed ticket notification
+     *
+     * @param {Object} message event data from the server
      */
+
+
     closedNotification: function(message) {
+      var n;
+
       // Ensure notifications are enabled
       if(!this.enabled()) return;
 
       if(message.status === 'closed') {
-        var title = "Ticket Closed";
+        // Check if the current user is the creator,
+        // or is not assigned (the closer) and a participant
+        if(message.user.id === ticketer.currentUser.id ||
+          (!_.include(message.assigned_to, ticketer.currentUser.id) &&
+            _.include(message.participants, ticketer.currentUser.id))) {
 
-        // Check if currentUser is assigned or the creator
-        // if so, send a desktop notification
-        if(message.user.id === ticketer.currentUser.id) {
-          webkitNotifications.createNotification('', title, message.title).show();
-        } else if(message.assigned_to.length > 0) {
-          var assignedTo = _.include(message.assigned_to, ticketer.currentUser.id);
-
-          if(assignedTo) {
-            webkitNotifications.createNotification('', title, message.title).show();
-          }
+          n = new Notification('Ticket Closed', {
+            icon: '/img/assets/closed_ticket.png',
+            body: 'The following ticket has been closed: "' + message.title + '".'
+          });
         }
       }
     }
