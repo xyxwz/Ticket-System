@@ -89,8 +89,18 @@ define([
       lists: new Lists()
     };
 
+    /**
+     * Declare our panel controller to be used primarily by the router
+     */
+
+    ticketer.controller = new PanelController();
+
+    /**
+     * Declare our Backbone.Router instance
+     */
+
     ticketer.routers = {
-      ticketer: new Ticketer()
+      ticketer: new Ticketer({ controller: ticketer.controller })
     };
 
     /**
