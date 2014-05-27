@@ -128,9 +128,10 @@ function($, Tickets, FillerView, SpinnerView,
   };
 
   /**
+   * Search tickets and shit
    *
-   *
-   * @
+   * @param {String} status can be either closed, open, mine
+   * @param {String} term search term
    */
 
   PanelController.prototype.searchTickets = function(status, term) {
@@ -142,7 +143,7 @@ function($, Tickets, FillerView, SpinnerView,
       query.title = term;
     }
 
-    collection = new Tickets(null, {data: query});
+    collection = new Tickets(null, { data: query });
     this._callViewFunction('one', 'selectTab', 'tickets/' + status);
     this._setPanel('two', SpinnerView);
 

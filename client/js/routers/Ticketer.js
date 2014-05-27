@@ -1,8 +1,7 @@
 define([
   'backbone',
-  'views/headers/MainHeaderView',
-  'support/PanelController'
-], function(Backbone, HeaderView, PanelController) {
+  'views/headers/MainHeaderView'
+], function(Backbone, HeaderView) {
   var Ticketer;
 
   /**
@@ -23,12 +22,12 @@ define([
      * and toolbar swapping
      */
 
-    initialize: function(){
-      // Create the Page Header
-      var view = new HeaderView({router: this});
-      $('header').append(view.render().el);
+    initialize: function(options) {
+      options = options || {};
+      this.controller = options.controller;
 
-      this.controller = new PanelController();
+      // Add page header
+      $('header').append(new HeaderView({ router: this }).render().el);
     },
 
     /**
