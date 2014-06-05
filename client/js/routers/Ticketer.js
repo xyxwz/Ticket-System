@@ -28,6 +28,7 @@ define([
 
       // Add page header
       $('header').append(new HeaderView({ router: this }).render().el);
+      this.controller._setHeight();
     },
 
     /**
