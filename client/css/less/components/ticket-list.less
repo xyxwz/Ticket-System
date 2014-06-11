@@ -39,7 +39,15 @@
       padding: 8px 20px 0 20px;
       .clearfix;
 
-      hgroup { width: 80%; }
+      hgroup {
+        width: 80%;
+
+        .title {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+	}
+      }
 
       .attrs {
         float: right;
