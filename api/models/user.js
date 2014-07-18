@@ -18,6 +18,7 @@ module.exports = function(app) {
    *     :name         - string, optional
    *     :username     - string, optional
    *     :role         - string, optional, available options ['admin', 'member']
+   *     :email        - string, optional
    *
    *  Returns a user object ready to be sent to the client.
    *
@@ -30,6 +31,7 @@ module.exports = function(app) {
     if(data.username) user.username = data.username;
     if(data.name) user.name = data.name;
     if(data.role) user.role = data.role;
+    if(data.email) user.email = data.email;
     if(data.settings) user.settings = _.extend(user.settings, data.settings);
 
     user.save(function(err, model) {
@@ -136,6 +138,7 @@ module.exports = function(app) {
    *     :role          - string, options include ['admin', 'member']
    *     :access_token  - string, oAuth access token
    *     :avatar        - string, url to a profile photo (optional)
+   *     :email         - string
    *
    *  Returns a user object ready to be sent to the client.
    *
@@ -150,7 +153,8 @@ module.exports = function(app) {
       name: data.name,
       role: data.role,
       access_token: data.access_token,
-      avatar: data.avatar
+      avatar: data.avatar,
+      email: data.email
     });
 
     user.save(function(err, model) {
@@ -192,7 +196,8 @@ module.exports = function(app) {
           name: profile.displayName,
           role: profile.role || 'member',
           access_token: access_token,
-          avatar: profile.avatar
+          avatar: profile.avatar,
+          email: profile.email
         };
 
         User.create(data, function(err, model) {

@@ -9,6 +9,7 @@ var User = new mongoose.Schema({
   active        : {type: Boolean, default: true, required: true},
   created_at    : {type: Date,   default: Date.now, required: true},
   access_token  : {type: String, required: true, trim: true},
+  email         : {type: String, default: '', trim: true},
   avatar        : {type: String, trim: true},
   settings      : {
     email: {type: Boolean, default: false},
@@ -34,6 +35,7 @@ User.methods.toClient = function(){
     id: obj.id,
     name: obj.name,
     role: obj.role,
+    email: obj.email,
     avatar: obj.avatar,
     settings: obj.settings
   };
