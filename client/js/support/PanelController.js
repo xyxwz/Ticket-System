@@ -174,6 +174,7 @@ function($, Tickets, FillerView, SpinnerView,
     ticket.fetch({
       success: function() {
         clearTimeout(spinOnTimeout);
+        self._callViewFunction('two', 'selectTicket', ticket.id);
 
         self._setPanel('three', DetailsView, {
           model: ticket

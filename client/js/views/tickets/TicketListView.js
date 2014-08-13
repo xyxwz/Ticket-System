@@ -117,10 +117,17 @@ function($, _, Backbone, BaseView, TicketView) {
       var id = $(e.currentTarget).data('id'),
           ticket = this.collection.get(id);
 
+      if(this.controller) this.controller.showTicket(ticket);
+    },
+
+    /**
+     * Display the ticket as selected
+     *  - panel controller's responsibility to invoke
+     */
+
+    selectTicket: function(id) {
       this.$el.find('.active').removeClass('active');
       this.$el.find('.ticket[data-id="' + id + '"]').addClass('active');
-
-      if(this.controller) this.controller.showTicket(ticket);
     },
 
     // TODO: Fix this obscure check...
