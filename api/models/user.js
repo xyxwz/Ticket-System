@@ -207,7 +207,11 @@ module.exports = function(app) {
       }
       else {
         model.access_token = access_token;
-        if(profile.email) {model.email = profile.email;}
+
+        if(profile.name) model.name = profile.name;
+        if(profile.email) model.email = profile.email;
+        if(profile.avatar) model.avatar = profile.avatar;
+
         model.save(function(err, user) {
           if(err) return cb(err);
           return cb(null, user);
