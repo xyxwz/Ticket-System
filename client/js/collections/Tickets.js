@@ -111,12 +111,16 @@ define([
 
       if(model) {
         model.set(obj);
-      }
 
-      if(this.data && this.data.status &&
-          model.get('status') !== this.data.status) {
-        this.remove(model.id);
-      }
+        if(this.data && this.data.status &&
+            model.get('status') !== this.data.status) {
+          this.remove(model.id);
+        }
+      } else {
+        if(this.data && this.data.status
+            obj.status === this.data.status) {
+          this.add(obj);
+        }
     },
 
     /**
