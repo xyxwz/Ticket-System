@@ -78,7 +78,7 @@ function($, _, Backbone, BaseView, TicketView) {
     },
 
     render: function() {
-      var i, len, tickets;
+      var i, len, tickets, views;
 
       if(this.filters.length) {
         tickets = this.collection.filter(this.runFilters, this);
@@ -94,9 +94,10 @@ function($, _, Backbone, BaseView, TicketView) {
         this.$el.empty();
 
         for(i = 0, len = tickets.length; i < len; i = i + 1) {
-          this.$el.append(this.renderTicket(tickets[i]));
+          views.push(this.renderTicket(tickets[i]));
         }
 
+        this.$el.append(views);
       } else {
         this.$el.html('<div class="view-filler"><p>No tickets to list</p></div>');
       }
