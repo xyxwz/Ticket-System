@@ -113,12 +113,12 @@ define([
         model.set(obj);
 
         if(this.data && this.data.status &&
-            model.get('status') !== this.data.status) {
+           model.get('status') !== this.data.status) {
           this.remove(model.id);
         }
       } else {
-        if(this.data && this.data.status
-            obj.status === this.data.status) {
+        if(this.data && this.data.status &&
+           obj.status === this.data.status) {
           this.add(obj);
         }
       }
