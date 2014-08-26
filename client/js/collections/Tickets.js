@@ -121,6 +121,7 @@ define([
             obj.status === this.data.status) {
           this.add(obj);
         }
+      }
     },
 
     /**
