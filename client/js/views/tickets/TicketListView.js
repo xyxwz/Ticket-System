@@ -136,6 +136,8 @@ function($, _, Backbone, BaseView, TicketView) {
       if(data.status === this.collection.status() &&
           this.viewFilter(data)) {
         this.collection.add(data);
+        console.log("Ticket added after notification");
+        console.log(data);
       }
     }
 
