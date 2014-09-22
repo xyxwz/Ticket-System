@@ -138,6 +138,7 @@ function($, _, Backbone, BaseView, TicketView) {
         this.collection.add(data);
         console.log("Ticket added after notification");
         console.log(data);
+        console.log(this.viewFilter.toString());
       }
     }
 
