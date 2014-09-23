@@ -1,0 +1,42 @@
+// --------------------------------------
+// Layout
+// --------------------------------------
+
+@media print {
+  body > header,
+  #panel-one,
+  #panel-two,
+  #panel-divider { display: none !important; }
+
+  #panel-three {
+    position: static !important;
+    border-top: none !important;
+  }
+
+  .ticket-details {
+    .edit-options { display: none !important; }
+
+    .comments-wrapper {
+      .body { margin-left: 0 !important; }
+      .comment { padding: 14px 0 0 0; }
+      .comments-list { margin: 0 40px !important; }
+
+      .avatar,
+      .edit-actions,
+      .comment-form { display: none !important; }
+
+      .commentHeader { 
+        padding-bottom: 4px !important; 
+        margin-bottom: 8px !important;
+
+        h5 { font-weight: 400 !important; }
+      }
+    }
+
+    .ticket-meta {
+      .empty,
+      .tag-widget,
+      .user-widget { display: none !important; }
+    }
+  }
+}
