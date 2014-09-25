@@ -14,10 +14,13 @@ define([
     model: Ticket,
 
     initialize: function(models, options) {
+      var noop = function() { return true; };
+
       options = options || {};
 
       this.url = options.url || '/api/tickets';
       this.data = options.data || {};
+      this.collectionFilter = options.collectionFilter || noop;
       this.comparator = options.comparator || function(model) {
         var date = new Date(model.get("opened_at"));
         return -date.getTime();
@@ -25,6 +28,7 @@ define([
 
       /* Global EventEmitter bindings */
       ticketer.EventEmitter.on('comment:new comment:update', this.addNotification, this);
+      ticketer.EventEmitter.on('ticket:new', this.newTicket, this);
       ticketer.EventEmitter.on('ticket:update', this.updateTicket, this);
       ticketer.EventEmitter.on('ticket:remove', this.removeTicket, this);
     },
@@ -100,6 +104,18 @@ define([
     },
 
     /**
+     * Add a new ticket to the collection
+     *
+     * @param {Object} data
+     */
+
+    newTicket: function(data) {
+      if(data.status === this.data.status && this.collectionFilter(data)) {
+        this.add(data);
+      }
+    },
+
+    /**
      * Update the ticket with id `attrs.id` if found in the collection
      *
      * @param {Object} attrs
@@ -112,13 +128,11 @@ define([
       if(model) {
         model.set(obj);
 
-        if(this.data && this.data.status &&
-           model.get('status') !== this.data.status) {
+        if(this.data.status && model.get('status') !== this.data.status) {
           this.remove(model.id);
         }
       } else {
-        if(this.data && this.data.status &&
-           obj.status === this.data.status) {
+        if(this.data.status && obj.status === this.data.status) {
           this.add(obj);
         }
       }

@@ -75,7 +75,10 @@ function($, Tickets, FillerView, SpinnerView,
     var self = this;
     var collection = new Tickets(null, {
       data: {status: 'open'},
-      url: '/api/tickets/mine'
+      url: '/api/tickets/mine',
+      collectionFilter: function(model) {
+        return !!model.participating;
+      }
     });
 
     this._callViewFunction('one', 'selectTab', 'tickets/mine');
@@ -85,10 +88,7 @@ function($, Tickets, FillerView, SpinnerView,
       success: function() {
         self._setPanel('two', ListView, {
           collection: collection,
-          controller: self,
-          viewFilter: function(model) {
-            return !!model.participating;
-          }
+          controller: self
         });
 
         self._setPanel('three', FillerView);
