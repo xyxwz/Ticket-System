@@ -128,11 +128,13 @@ define([
       if(model) {
         model.set(obj);
 
-        if(this.data.status && model.get('status') !== this.data.status) {
+        if(this.data.status && model.get('status') !== this.data.status ||
+           !this.collectionFilter(obj)) {
           this.remove(model.id);
         }
       } else {
-        if(this.data.status && obj.status === this.data.status) {
+        if(this.data.status && obj.status === this.data.status &&
+           this.collectionFilter(obj)) {
           this.add(obj);
         }
       }
