@@ -32,6 +32,27 @@ define(['jquery', 'underscore','backbone'], function($, _, Backbone) {
     },
 
     /**
+     * Remove a child view if `filter` returned true
+     *
+     * @param {function} filterFn
+     * @return {Object}
+     */
+
+    removeView: function(filterFn) {
+      var i, views = [];
+
+      for(i = this.views.length - 1; i >= 0; i--) {
+        if(filterFn(this.views[i]) === true) {
+          views.push(this.views[i]);
+          this.views[i].dispose();
+          this.views.splice(i, 1);
+        }
+      }
+
+      return views;
+    },
+
+    /**
      * Create an interval and save the callback to
      * be cleared on view disposal.
      *

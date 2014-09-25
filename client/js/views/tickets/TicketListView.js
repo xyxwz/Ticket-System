@@ -26,14 +26,14 @@ function($, _, Backbone, BaseView, TicketView) {
 
       this.filters = [];
       this.controller = this.options.controller || null;
-      this.viewFilter = this.options.viewFilter || function() { return true; };
 
       // Bindings
-      this.bindTo(this.collection, 'add remove reset', this.render, this);
+      this.bindTo(this.collection, 'add', this.renderNew, this);
+      this.bindTo(this.collection, 'reset', this.render, this);
+      this.bindTo(this.collection, 'remove', this.renderRemove, this);
       this.bindTo(emitter, 'list:filter', this.pushFilter, this);
       this.bindTo(emitter, 'list:removeFilter', this.removeFilter, this);
       this.bindTo(emitter, 'collection:reset', this.refresh, this);
-      this.bindTo(emitter, 'ticket:new', this.newTicket, this);
     },
 
     runFilters: function(ticket) {
@@ -112,6 +112,46 @@ function($, _, Backbone, BaseView, TicketView) {
     renderTicket: function(model) {
       var view = this.createView(TicketView, {model: model});
       return view.render().el;
+    },
+
+    /**
+     * Add a new ticket into its proper spot in the collection
+     *
+     * @param {Object} ticket
+     */
+
+    renderNew: function(ticket) {
+      var i, len, view, temp, next;
+
+      if(this.runFilters(ticket)) {
+        view = this.renderTicket(ticket);
+
+        for(i = 0, len = this.collection.length; i < len; i++) {
+          if(this.collection.at(i).id === ticket.id) break;
+        }
+
+        if(i + 1 >= len) {
+          this.$el.append(view);
+        } else {
+          sibling = this.$el.find('[data-id="' +
+                      this.collection.at(i + 1).id + '"]');
+
+          sibling.before(view);
+        }
+      }
+    },
+
+    /**
+     * Remove a ticket from the view
+     */
+
+    renderRemove: function(ticket) {
+      // Ensure there is length
+      if(!this.collection.length) return this.render();
+
+      this.removeView(function(view) {
+        return view.$el.data('id') === ticket.id;
+      });
     },
 
     showDetails: function(e) {
