@@ -129,17 +129,6 @@ function($, _, Backbone, BaseView, TicketView) {
     selectTicket: function(id) {
       this.$el.find('.active').removeClass('active');
       this.$el.find('.ticket[data-id="' + id + '"]').addClass('active');
-    },
-
-    // TODO: Fix this obscure check...
-    newTicket: function(data) {
-      if(data.status === this.collection.status() &&
-          this.viewFilter(data)) {
-        this.collection.add(data);
-        console.log("Ticket added after notification");
-        console.log(data);
-        console.log(this.viewFilter.toString());
-      }
     }
 
   });
