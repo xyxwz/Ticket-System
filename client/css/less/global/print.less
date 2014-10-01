@@ -3,6 +3,17 @@
 // --------------------------------------
 
 @media print {
+  html, body { overflow: visible !important; }
+
+  #main { height: auto !important; }
+
+  .scrollable {
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+
+    &::-webkit-scrollbar-thumb { display: none; width: 0; }
+  }
+
   body > header,
   #panel-one,
   #panel-two,
@@ -18,15 +29,23 @@
 
     .comments-wrapper {
       .body { margin-left: 0 !important; }
-      .comment { padding: 14px 0 0 0; }
       .comments-list { margin: 0 40px !important; }
 
       .avatar,
       .edit-actions,
       .comment-form { display: none !important; }
 
-      .commentHeader { 
-        padding-bottom: 4px !important; 
+      .comment {
+        padding: 14px 0 0 0;
+        page-break-inside: avoid;
+        border-bottom: none;
+        border-top: 1px solid @border;
+
+        &:first-child { border-top: none; }
+      }
+
+      .commentHeader {
+        padding-bottom: 4px !important;
         margin-bottom: 8px !important;
 
         h5 { font-weight: 400 !important; }
