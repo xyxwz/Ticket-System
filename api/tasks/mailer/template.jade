@@ -1,20 +1,20 @@
 doctype html
 html(lang="en")
   head
-    style(type='text/css)
-      .title {
-        float: left;
+    style(type='text/css').
+      ul {
+        margin-top: 2em;
       }
 
-      .updated {
-        float: right;
+      li {
+        font-style: italic;
+        text-decoration: underline;
       }
-  
+
   body
-    h1 You have ticket notifications!
+    h3 You have updates on your tickets!
+    p Please visit the <a href="http://tickets.txssc.com/#tickets/mine">ticket system</a> to view them.
 
     ul
       each ticket in tickets
-        li
-          span.title= ticket.title
-          span.updated= ticket.updated
+        li= ticket.title
