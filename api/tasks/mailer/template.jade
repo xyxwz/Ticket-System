@@ -1,0 +1,20 @@
+doctype html
+html(lang="en")
+  head
+    style(type='text/css)
+      .title {
+        float: left;
+      }
+
+      .updated {
+        float: right;
+      }
+  
+  body
+    h1 You have ticket notifications!
+
+    ul
+      each ticket in tickets
+        li
+          span.title= ticket.title
+          span.updated= ticket.updated
