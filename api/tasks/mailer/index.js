@@ -5,7 +5,8 @@ var fs = require('fs'),
     redis = require('redis'),
     mongoose = require('mongoose'),
     nodemailer = require('nodemailer'),
-    transport = require('nodemailer-smtp-transport');
+    transport = require('nodemailer-smtp-transport'),
+    template = fs.readFileSync(__dirname + '/template.jade');
 
 // Initialize mongoose
 mongoose.connect(process.env.MONGO_URI);
@@ -17,8 +18,8 @@ var mockApp = {
 
 // Boot models with out mock app
 var models = require('../../models')(mockApp);
-var template = jade.compile('template', {
-  filename: __dirname + '/template.jade'
+var template = jade.compile(template, {
+  filename: __dirname + '/template.jade',
 });
 
 var mailer = nodemailer.createTransport(transport({
@@ -49,7 +50,11 @@ models.User.all(function(err, users) {
  */
 
 function findTickets(user, done) {
-  models.Ticket.mine(user, { status: 'open' }, function(err, tickets) {
+  if(!user.settings.email) {
+    return done(false);
+  }
+
+  models.Ticket.mine(user.id, { status: 'open' }, function(err, tickets) {
     if(err) {
       console.error("Failed to lookup tickets for: " + user.name);
     }
@@ -91,14 +96,15 @@ function filterTicket(ticket, done) {
  */
 
 function sendMail(user, tickets, done) {
-  var html = template({ user: user, tickets: tickets });
-
-  console.log(html);
+  var html = template({
+    user: user,
+    tickets: tickets
+  });
 
   mailer.sendMail({
     to: user.email,
     from: 'Ticket-System <noreply@txssc.com>',
-    subject: 'Ticket Updates',
+    subject: 'Ticket notifications',
     html: html,
   }, done);
 }
