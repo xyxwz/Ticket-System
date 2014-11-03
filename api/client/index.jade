@@ -4,11 +4,6 @@ html
     title TxSSC Ticket System
     meta(name="viewport", content="width=device-width,initial-scale=1")
 
-    - if (process.env.TYPEKIT)
-      script(src="http://use.typekit.com/#{process.env.TYPEKIT}.js").
-      script(type='text/javascript').
-        try{Typekit.load();}catch(e){}
-
     - if (process.env.NODE_ENV === 'production')
       script(src="/js/release/bundle.js").
       link(rel="stylesheet", href="css/bundle.css")
