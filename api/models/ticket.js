@@ -98,8 +98,7 @@ module.exports = function(app) {
     if (data.description) model.description = data.description.replace(/<\/?script>/ig, '');
 
     // Set read status
-    if(data.participants && data.participants.length ||
-        data.assigned_to && data.assigned_to.length) {
+    if(data.assigned_to && data.assigned_to.length) {
       model.read = true;
     } else {
       model.read = false;
