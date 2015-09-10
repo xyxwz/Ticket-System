@@ -1,7 +1,9 @@
 var mongoose = require('mongoose'),
     redis = require('redis'),
+    fs = require('fs'),
     _ = require('underscore'),
     async = require('async'),
+    rimraf = require('rimraf'),
     TicketSchema = require('./schemas/ticket').Ticket,
     Notifications = require('./helpers/').Notifications;
 
@@ -30,6 +32,9 @@ module.exports = function(app) {
     obj = this.model.toObject();
     obj.id = obj._id;
     delete obj._id;
+
+    // Set var for ticket items server path
+    obj.ticketsPath = process.env.TICKETS_PATH;
 
     if(obj.__v) delete obj.__v;
 
@@ -90,6 +95,14 @@ module.exports = function(app) {
     if (data.status) {
       if(model.status === "open" && data.status === "closed") {
         model.closed_at = Date.now();
+
+        // Move ticket items to archive
+        var path = process.env.LOCAL_PATH,
+            oldPath = path + "Open/" + model.id,
+            newPath = path + "Closed/" + model.id;
+        fs.rename(oldPath, newPath, function(err) {
+          if(err && err.code != 'EEXIST') cb(err);
+        });
       }
       model.status = data.status;
     }
@@ -231,6 +244,11 @@ module.exports = function(app) {
 
     ticket.remove(function(err) {
       if (err) return cb(err);
+
+      // Remove ticket item directory
+      rimraf(process.env.LOCAL_PATH+'Open/'+ticketID, function(err) {
+        if (err) return cb(err);
+      });
 
       self._removeSets(function(err, status) {
 
@@ -510,6 +528,12 @@ module.exports = function(app) {
 
           // Emit a 'ticket:new' event
           app.eventEmitter.emit('ticket:new', obj);
+
+          // Create folder for ticket items
+          var path = process.env.LOCAL_PATH;
+          fs.mkdir(path+'Open/'+ticket._id, 1775, function(err) {
+            if(err && err.code != 'EEXIST') cb(err);
+          });
           return cb(null, model);
         });
       }

@@ -69,6 +69,18 @@ Mongo connection uri - Ex: `mongodb://127.0.0.1:27017/tickets`
 
 Redis connection uri - Ex: `redis://0:@127.0.0.1:6379`
 
+###### TICKETS_PATH
+
+> Required
+
+Base network path for ticket items - Ex: `//myserver/folder/Tickets/`
+
+###### LOCAL_PATH
+
+> Required
+
+Base local path for ticket items - Ex: `/folder/Tickets/`
+
 
 ## Starting the server
 
