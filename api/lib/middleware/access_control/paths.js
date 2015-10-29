@@ -22,6 +22,8 @@ module.exports = {
     "/tickets/:ticketID": ["member", "admin", "read"],
     "/tickets/:ticketID/comments": ["member", "admin", "read"],
     "/tickets/:ticketID/comments/:commentID": ["member", "admin", "read"],
+    "/templates": ["member", "admin", "read"],
+    "/templates/:templateID": ["member", "admin", "read"],
     "/notifications": ["member", "admin", "read"],
     "/unread": ["member", "admin", "read"]
   },
@@ -32,7 +34,8 @@ module.exports = {
     "/projects": ["admin", "member"],
     "/lists": ["admin", "member"],
     "/tickets": ["admin", "member"],
-    "/tickets/:ticketID/comments": ["admin", "member"]
+    "/tickets/:ticketID/comments": ["admin", "member"],
+    "/templates": ["admin", "member"]
   },
 
   // Limit updates to only the resource owner, except for
@@ -52,6 +55,7 @@ module.exports = {
     "/lists/:listID": ["owner"],
     "/tickets/:ticketID": ["owner", "admin"],
     "/tickets/:ticketID/comments/:commentID": ["owner", "admin"],
+    "/templates/:templateID": ["admin"],
     "/notifications/:notificationID": ["member", "admin", "read"]
   }
 };

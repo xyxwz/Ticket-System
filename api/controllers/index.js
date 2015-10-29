@@ -9,6 +9,7 @@ module.exports = function requireControllers(app) {
       tickets: require('./api/tickets')(app),
       comments: require('./api/comments')(app),
       projects: require('./api/projects')(app),
+      templates: require('./api/templates')(app),
       notifications: require('./api/notifications')(app)
     }
   };
