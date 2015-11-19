@@ -1,12 +1,19 @@
 <div class="ticket-content {{statusClass}}">
   <div class="header">
-    <hgroup>
-      <h2 class="title">{{title}}</h2>
-      <h4>{{user.name}}</h4>
-      {{#fullDate}}
-        <h4><a data-role="display-ticket-path" href="#">View Location</a></h4>
-      {{/fullDate}}
-    </hgroup>
+    {{#isEditing}}
+      <div class="ticket-form">
+        <input type="text" name="title" value={{title}}>
+      </div>
+    {{/isEditing}}
+    {{^isEditing}}
+      <hgroup>
+        <h2 class="title">{{title}}</h2>
+        <h4>{{user.name}}</h4>
+        {{#fullDate}}
+          <h4><a data-role="display-ticket-path" href="#">View Location</a></h4>
+        {{/fullDate}}
+      </hgroup>
+    {{/isEditing}}
 
     <div class="attrs">
 
