@@ -25,8 +25,7 @@ var template = jade.compile(template, {
 var mailer = nodemailer.createTransport(transport({
   host: 'smtp.txstate.edu',
   port: 25,
-  secure: false,
-  ignoreTLS: true
+  secure: false
 }));
 
 // Find all users, and filter/iterate over them
