@@ -14,7 +14,7 @@ if ! which lessc &> /dev/null; then
   echo "Less not found, you need less to compile a release"
 else
   echo "Building less files into css/bundle.css"
-  lessc --yui-compress css/less/main.less 1> css/bundle.css
+  lessc -x --yui-compress css/less/main.less 1> css/bundle.css
 fi
 
 if [[ $? == 0 ]]; then
