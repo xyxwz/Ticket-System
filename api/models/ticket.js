@@ -95,15 +95,8 @@ module.exports = function(app) {
     if (data.status) {
       if(model.status === "open" && data.status === "closed") {
         model.closed_at = Date.now();
-
-        // Move ticket items to archive
-        var path = process.env.LOCAL_PATH,
-            oldPath = path + "Open/" + model.id,
-            newPath = path + "Closed/" + model.id;
-        fs.rename(oldPath, newPath, function(err) {
-          if(err && err.code != 'EEXIST') cb(err);
-        });
       }
+
       model.status = data.status;
     }
 
@@ -118,6 +111,21 @@ module.exports = function(app) {
     }
 
     async.parallel([
+      function(callback) {
+        if(model.status !== "open" || data.status !== "closed") {
+          return callback(null);
+        }
+
+        // Move ticket folder
+        var oldPath = process.env.LOCAL_PATH + "Open/" + model.id;
+        var newPath = process.env.LOCAL_PATH + "Closed/" + model.id;
+
+        fs.rename(oldPath, newPath, function(err) {
+          if(err && err.code !== 'EEXIST') return callback(err);
+
+          return callback(null);
+        });
+      },
       // Set Participants Array in Redis
       function(callback) {
         if(!data.participants) return callback(null);
@@ -246,7 +254,7 @@ module.exports = function(app) {
       if (err) return cb(err);
 
       // Remove ticket item directory
-      rimraf(process.env.LOCAL_PATH+'Open/'+ticketID, function(err) {
+      rimraf(process.env.LOCAL_PATH + 'Open/' + ticketID, function(err) {
         if (err) return cb(err);
       });
 
@@ -531,10 +539,12 @@ module.exports = function(app) {
 
           // Create folder for ticket items
           var path = process.env.LOCAL_PATH;
-          fs.mkdir(path+'Open/'+ticket._id, 1775, function(err) {
-            if(err && err.code != 'EEXIST') cb(err);
+
+          fs.mkdir(path + 'Open/' + ticket._id, function(err) {
+            if(err && err.code != 'EEXIST') return cb(err);
+
+            return cb(null, model);
           });
-          return cb(null, model);
         });
       }
     });
