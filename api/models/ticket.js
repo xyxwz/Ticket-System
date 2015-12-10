@@ -121,8 +121,11 @@ module.exports = function(app) {
         var newPath = process.env.LOCAL_PATH + "Closed/" + model.id;
 
         fs.rename(oldPath, newPath, function(err) {
-          if(err && err.code !== 'EEXIST') return callback(err);
+          if(err) {
+            console.log(err);
+          }
 
+          // Disregard errors here
           return callback(null);
         });
       },
@@ -541,8 +544,11 @@ module.exports = function(app) {
           var path = process.env.LOCAL_PATH;
 
           fs.mkdir(path + 'Open/' + ticket._id, function(err) {
-            if(err && err.code != 'EEXIST') return cb(err);
+            if(err) {
+              console.log(err);
+            }
 
+            // Disregard errors here
             return cb(null, model);
           });
         });
