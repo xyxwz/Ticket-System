@@ -4,13 +4,15 @@
 
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/tickets/TicketMetaView',
+  'views/dialogs/CopyTicketPath',
   'text!templates/tickets/Ticket.html',
   'text!templates/tickets/AssignedUser.html',
   'text!templates/tickets/EditTicket.html',
+  'text!templates/tickets/EditTicketTitle.html',
   'text!templates/tickets/ClosedNotification.html',
   'text!templates/tickets/AssignedTag.html',
   'moment', 'marked'],
-function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, NotifyTmpl, TagTmpl) {
+function($, _, mustache, BaseView, TicketMeta, CopyTicketPath, TicketTmpl, UserTmpl, EditTmpl, EditTitleTmpl, NotifyTmpl, TagTmpl) {
 
   /**
    * TicketView
@@ -33,6 +35,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       "click a[data-action]": "ticketAction",
       "click [data-action='save']": "saveTicket",
       "click [data-action='cancel']": "renderDescription",
+      "click [data-role='display-ticket-path']": "displayPath",
       "click .md a": "openLink",
       "drop": "onDrop",
       "dragover": "nullEvent",
@@ -56,6 +59,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
       // Bindings
       this.bindTo(this.model, 'change:read change:assigned_to', this.render, this);
+      this.bindTo(this.model, 'change:title', this.renderDescription, this);
       this.bindTo(this.model, 'change:description', this.renderDescription, this);
       this.bindTo(this.model, 'change:status', this.renderStatusNotification, this);
       this.bindTo(this.model, 'change:notification', this.renderStatusMarker, this);
@@ -239,11 +243,23 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
           description: this.model.get('description')
         }));
 
+        $('hgroup', this.$el).html(Mustache.to_html(EditTitleTmpl, {
+          title: this.model.get('title')
+        }));
+
         $('textarea', this.$el).autoResize({
           minHeight: 150,
           extraSpace: 14
         });
       }
+    },
+
+    /**
+     * determine if a ticket is being edited
+     */
+
+    isEditing: function() {
+      return $('.ticket .ticket-form', this.$el).length;
     },
 
     /**
@@ -257,11 +273,14 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
       e.preventDefault();
 
       var self = this,
+          title = $('.ticket-form > input', self.el).val(),
           description = $('.wrap > textarea', self.el).val();
 
       $('textarea', this.el).data('AutoResizer').destroy();
 
-      self.model.save({description: description}, {
+      self.model.save({
+        title: title,
+        description: description}, {
         error: self.triggerViewError
       });
     },
@@ -277,6 +296,7 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
 
       var html = marked(this.model.get('description'));
       $('.content', this.el).html(html);
+      this.render();
     },
 
     /**
@@ -356,6 +376,33 @@ function($, _, mustache, BaseView, TicketMeta, TicketTmpl, UserTmpl, EditTmpl, N
           this.model.trigger('tag:add');
         }
       }
+    },
+
+    /**
+     * Display modal with ticket items path
+     *
+     * @param {jQuery.Event} e
+     */
+
+    displayPath: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Change displayed path based on host OS
+      var basepath = '',
+          OS = navigator.appVersion;
+          open = this.model.isOpen() ? 'Open/' : 'Closed/';
+
+      if(OS.indexOf("Win") != -1) {
+        basepath = this.model.get('ticketsPath').replace('/', '\\') + open;
+      }
+      else if(OS.indexOf("Mac") != -1) {
+        basepath = 'afp:' + this.model.get('ticketsPath') + open;
+      }
+      else {
+        basepath = 'smb:' + this.model.get('ticketsPath') + open;
+      }
+      new CopyTicketPath().setPath(basepath + this.model.get('id'));
     }
 
   });

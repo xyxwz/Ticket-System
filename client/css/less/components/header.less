@@ -63,6 +63,19 @@ header {
         }
       }
 
+      a[data-action="new-template-ticket"] {
+        width: 6.9em;
+
+        i {
+          width: 1em;
+        }
+
+        i.icon-sort-down {
+          vertical-align: text-top !important;
+          margin-top: -2px;
+        }
+      }
+
       a[data-action="new-tag"] {
         i {
           width: 1em;
@@ -100,6 +113,30 @@ header {
           .box-sizing(border-box);
           font-family: @sans-serif;
         }
+
+        input[disabled] {
+          cursor: not-allowed;
+          background-color: darken(@ashGray, 5%);
+        }
+      }
+    }
+
+    // Template Dropdown Forms
+    .templates-form {
+      position: absolute;
+      z-index: @zindexDropdown;
+      top: 100%;
+      left: -58px;
+      width: 209px;
+      background: @ashGray;
+      border: 1px solid @border;
+      border-radius: 3px;
+      margin-top: 4px;
+      .box-shadow(0 5px 10px rgba(0,0,0,.2));
+
+      form {
+        border-top: 1px solid @border;
+        padding: 8px;
 
         input[disabled] {
           cursor: not-allowed;

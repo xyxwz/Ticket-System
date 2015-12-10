@@ -236,6 +236,37 @@ Global collection of tickets - not used by the current version of the web applic
 * destroys the project with the specified `id`
 * returns an error if present
 
+### Templates
+
+Ticket templates
+
+###### GET
+
+> /api/templates
+
+* return all templates
+
+> /api/templates/:id
+
+* return template with the specified `id`
+
+###### POST
+
+> /api/templates
+
+* create a new templates
+* required parameters:
+  * `title` - *String* - ticket title
+  * `description` - *String* - ticket body
+* returns the newly created template
+
+###### DELETE
+
+> /api/templates/:id
+
+* destroys the template with the specified `id`
+* returns an error if present
+
 
 ## Example Requests
 

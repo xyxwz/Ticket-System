@@ -12,6 +12,7 @@ require.config( {
     'spin':             'libs/spin',
     'EventSource':      'libs/eventsource',
     'Mousetrap':        'libs/mousetrap',
+    'ZeroClipboard':    'libs/ZeroClipboard.min',
     'Shortcuts':        'support/Shortcuts',
     'Sync':             'support/Sync',
     'BaseView':         'support/GarbageCollector',

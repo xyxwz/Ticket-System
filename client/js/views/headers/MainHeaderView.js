@@ -5,12 +5,13 @@
 define(['jquery', 'underscore', 'mustache', 'BaseView',
   'views/widgets/TagFormView',
   'views/tickets/TicketFormView',
+  'views/widgets/TemplateFormView',
   'views/dialogs/SettingsDialog',
   'views/widgets/SearchWidgetView',
   'text!templates/headers/MainHeader.html',
   'text!templates/headers/UserOptions.html',
   'dropdowns'
-], function($, _, mustache, BaseView, TagWidget, TicketFormView,
+], function($, _, mustache, BaseView, TagWidget, TicketFormView, TemplateWidget,
     SettingsDialog, SearchWidget, tmpl_Header, tmpl_Options) {
 
   /**
@@ -27,6 +28,7 @@ define(['jquery', 'underscore', 'mustache', 'BaseView',
       "click a[data-action='new-ticket']": "createTicket",
       "click a[data-action='refresh']": "refresh",
       "click a[data-action='new-tag']": "showTagWidget",
+      "click a[data-action='new-template-ticket']": "showTemplateWidget",
       "click a[data-role='display-settings']": 'displaySettings'
     },
 
@@ -78,6 +80,20 @@ define(['jquery', 'underscore', 'mustache', 'BaseView',
       // Prevent multiple widgets
       if(!element.children('.tags-form').length) {
         widget = this.createView(TagWidget);
+        $(element).append(widget.render().el);
+      }
+    },
+
+    showTemplateWidget: function(e) {
+      var element = $(e.currentTarget).parent(),
+          widget;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Prevent multiple widgets
+      if(!element.children('.templates-form').length) {
+        widget = this.createView(TemplateWidget);
         $(element).append(widget.render().el);
       }
     },

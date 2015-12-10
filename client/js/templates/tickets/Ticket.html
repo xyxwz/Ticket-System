@@ -1,9 +1,14 @@
 <div class="ticket-content {{statusClass}}">
   <div class="header">
-    <hgroup>
-      <h2 class="title">{{title}}</h2>
-      <h4>{{user.name}}</h4>
-    </hgroup>
+    {{^isEditing}}
+      <hgroup>
+        <h2 class="title">{{title}}</h2>
+        <h4>{{user.name}}</h4>
+        {{#fullDate}}
+          <h4><a data-role="display-ticket-path" href="#">View Location</a></h4>
+        {{/fullDate}}
+      </hgroup>
+    {{/isEditing}}
 
     <div class="attrs">
 
@@ -24,13 +29,13 @@
     {{#isEditable}}
       <ul class="edit-options">
         {{#isAssignable}}
-          <li data-role="assign-ticket"><a data-action="assign" href="#"><i class="icon-pushpin"></i></a></li>
+          <li data-role="assign-ticket"><a title="Assign Ticket" data-action="assign" href="#"><i class="icon-pushpin"></i></a></li>
         {{/isAssignable}}
         {{#isClosable}}
-          <li data-role="close-ticket"><a data-action="close" href="#"><i class="icon-ok"></i></a></li>
+          <li data-role="close-ticket"><a title="Close Ticket" data-action="close" href="#"><i class="icon-ok"></i></a></li>
         {{/isClosable}}
-        <li><a data-action="edit" href="#"><i class="icon-edit"></i></a></li>
-        <li><a data-action="delete" href="#"><i class="icon-trash"></i></a></li>
+        <li><a title="Edit Ticket" data-action="edit" href="#"><i class="icon-edit"></i></a></li>
+        <li><a title="Delete Ticket" data-action="delete" href="#"><i class="icon-trash"></i></a></li>
       </ul>
     {{/isEditable}}
   </div>

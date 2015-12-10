@@ -19,6 +19,7 @@
     "passport": "~0.1.17",
     "passport-txssc": "~0.1.0",
     "redis": "~0.8.3",
+    "rimraf": "~2.4.3",
     "underscore": "^1.7.0"
   },
   "devDependencies": {

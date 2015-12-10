@@ -55,6 +55,16 @@ module.exports = function(route) {
     });
   });
 
+  /* Find A Template */
+  route.param('templateID', function(id, key, models, cb){
+    schemas.Template
+    .findOne({'_id':id})
+    .exec(function(err, model){
+      if(err || !model) return cb(err);
+      return cb(null, key, model);
+    });
+  });
+
   /* Find A Comment */
   route.param('commentID', function(id, key, models, cb){
     var model, comment;
