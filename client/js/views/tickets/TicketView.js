@@ -389,19 +389,18 @@ function($, _, mustache, BaseView, TicketMeta, CopyTicketPath, TicketTmpl, UserT
       e.stopPropagation();
 
       // Change displayed path based on host OS
-      var basepath = '',
+      var basepath,
           OS = navigator.appVersion;
-          open = this.model.isOpen() ? 'Open/' : 'Closed/';
+          sub = this.model.isOpen() ? 'Open/' : 'Closed/';
 
       if(OS.indexOf("Win") != -1) {
-        basepath = this.model.get('ticketsPath').replace('/', '\\') + open;
+        basepath = 'S:' + this.model.get('ticketsPath').replace('/', '\\') + sub;
+      } else if(OS.indexOf("Mac") != -1) {
+        basepath = 'afp:/Volumes/SHARED' + this.model.get('ticketsPath') + sub;
+      } else {
+        basepath = 'smb://txssc-fileserv2.tssc.txstate.edu' + this.model.get('ticketsPath') + sub;
       }
-      else if(OS.indexOf("Mac") != -1) {
-        basepath = 'afp:' + this.model.get('ticketsPath') + open;
-      }
-      else {
-        basepath = 'smb:' + this.model.get('ticketsPath') + open;
-      }
+
       new CopyTicketPath().setPath(basepath + this.model.get('id'));
     }
 
