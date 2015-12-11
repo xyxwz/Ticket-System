@@ -48,32 +48,36 @@ function($, _, Backbone, BaseView, mustache, TemplateModel,
     render: function() {
       var self = this;
 
-      this.collection.fetch({success: function() {
-        var data = {
-          templates: self.collection.models
-        };
+      this.collection.fetch({
+        success: function() {
+          var data = {
+            templates: self.collection.models
+          };
 
-        self.$el.html(Mustache.to_html(tmpl_TemplateForm, data));
+          self.$el.html(Mustache.to_html(tmpl_TemplateForm, data));
 
-        if(!data.templates.length)
-          $('ul', self.$el).append('<li>No templates found</li>')
-      }});
+          if(!data.templates.length) {
+            $('ul', self.$el).append('<li>No templates found</li>');
+          }
+        }
+      });
 
       return this;
     },
 
     pickTemplate: function(e) {
       var element = $(e.currentTarget),
-          value = element.data('value'),
+          id = element.data('id'),
+          template = this.collection.get(id),
           view = new TicketFormView();
 
-      this.template = value;
-
-      if($('[role=popup]').length || !value) return false;
+      if($('[role=popup]').length || !template) {
+        return false;
+      }
 
       view.render();
 
-      $('[role=description]', view.el).val(this.template);
+      $('[role=description]', view.el).val(template.get("description"));
 
       this.dispose();
     },

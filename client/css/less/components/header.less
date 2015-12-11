@@ -45,8 +45,6 @@ header {
       margin-right: 10px;
       vertical-align: middle;
 
-      &.large a { width: 34px; }
-
       a {
         display: block;
         color: @darkGray;
@@ -56,34 +54,14 @@ header {
         border-radius: 3px;
         padding: 3px 5px;
         text-decoration: none;
-        width: 20px;
 
         &:active {
           color: @active;
         }
-      }
 
-      a[data-action="new-template-ticket"] {
-        width: 6.9em;
-
-        i {
-          width: 1em;
-        }
-
-        i.icon-sort-down {
-          vertical-align: text-top !important;
+        .icon-sort-down {
           margin-top: -2px;
-        }
-      }
-
-      a[data-action="new-tag"] {
-        i {
-          width: 1em;
-        }
-
-        i.icon-sort-down {
-          vertical-align: text-top !important;
-          margin-top: -2px;
+          vertical-align: text-top;
         }
       }
     }
