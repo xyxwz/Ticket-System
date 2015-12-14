@@ -396,7 +396,7 @@ function($, _, mustache, BaseView, TicketMeta, CopyTicketPath, TicketTmpl, UserT
       if(OS.indexOf("Win") != -1) {
         basepath = 'S:' + this.model.get('ticketsPath').replace('/', '\\') + sub;
       } else if(OS.indexOf("Mac") != -1) {
-        basepath = 'afp:/Volumes/SHARED' + this.model.get('ticketsPath') + sub;
+        basepath = '/Volumes/SHARED' + this.model.get('ticketsPath') + sub;
       } else {
         basepath = 'smb://txssc-fileserv2.tssc.txstate.edu/SHARED' +
           this.model.get('ticketsPath') + sub;
