@@ -112,14 +112,14 @@ module.exports = function(app) {
 
     async.parallel([
       function(callback) {
-        if(!data.status || !(model.status === "open" && data.status === "closed")) {
+        var oldPath = process.env.LOCAL_PATH + "Open/" + model.id;
+        var newPath = process.env.LOCAL_PATH + "Closed/" + model.id;
+
+        if(data.status !== model.status || !fs.existsSync(oldPath)) {
           return callback(null);
         }
 
         // Move ticket folder
-        var oldPath = process.env.LOCAL_PATH + "Open/" + model.id;
-        var newPath = process.env.LOCAL_PATH + "Closed/" + model.id;
-
         fs.rename(oldPath, newPath, function(err) {
           if(err) {
             console.log(err);
