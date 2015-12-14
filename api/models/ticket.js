@@ -112,7 +112,7 @@ module.exports = function(app) {
 
     async.parallel([
       function(callback) {
-        if(model.status !== "open" || data.status !== "closed") {
+        if(!data.status || data.status !== "closed" || model.status !== "open") {
           return callback(null);
         }
 
