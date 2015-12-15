@@ -115,7 +115,7 @@ module.exports = function(app) {
         var oldPath = process.env.LOCAL_PATH + "Open/" + model.id;
         var newPath = process.env.LOCAL_PATH + "Closed/" + model.id;
 
-        if(data.status !== model.status || !fs.existsSync(oldPath)) {
+        if(!model.closed_at || !fs.existsSync(oldPath)) {
           return callback(null);
         }
 
