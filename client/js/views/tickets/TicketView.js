@@ -394,7 +394,7 @@ function($, _, mustache, BaseView, TicketMeta, CopyTicketPath, TicketTmpl, UserT
           sub = this.model.isOpen() ? 'Open/' : 'Closed/';
 
       if(OS.indexOf("Win") != -1) {
-        basepath = 'S:' + this.model.get('ticketsPath').replace('/', '\\') + sub;
+        basepath = 'S:' + this.model.get('ticketsPath').replace(/\//g, '\\') + sub;
       } else if(OS.indexOf("Mac") != -1) {
         basepath = '/Volumes/SHARED' + this.model.get('ticketsPath') + sub;
       } else {
