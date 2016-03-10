@@ -174,12 +174,15 @@ function($, _, mustache, BaseView, TicketMeta, CopyTicketPath, TicketTmpl, UserT
                             (this.model.isOpen() ? 'read' : 'closed');
       }
 
+      if(window.aprilFool)
+        data.statusClass = 'unread';
+
       if(this.renderAll) {
         data.description = marked(desc);
         data.showTags = false;
         data.isEditable = this.isEditable(data);
         data.fullDate = momentDate.format('MMMM Do, YYYY h:mm A');
-        data.isAssignable = ticketer.currentUser.isAdmin() && !this.model.isAssigned();
+        data.isAssignable = window.aprilFool || (ticketer.currentUser.isAdmin() && !this.model.isAssigned());
         data.isClosable = !!~this.model.get('assigned_to')
           .indexOf(ticketer.currentUser.id) && !data.isClosed;
       } else {
@@ -330,6 +333,11 @@ function($, _, mustache, BaseView, TicketMeta, CopyTicketPath, TicketTmpl, UserT
         element.removeClass('unread notify').addClass('read');
       } else {
         element.removeClass('read notify').addClass('unread');
+      }
+
+      if(aprilFool) {
+        console.log('fools');
+        element.removeClass('unread read notify').addClass('unread');
       }
     },
 

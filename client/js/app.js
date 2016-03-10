@@ -133,6 +133,15 @@ define([
     // delete the bootstrapped data
     delete ticketer.boot;
 
+    /*
+     * Happy April Fool's Day, Lisa
+     */
+    window.aprilFool = false;
+    var dateCheck = new Date();
+    if(dateCheck.getDate() == 10 && dateCheck.getMonth() == 2 &&
+       ticketer.currentUser.get('name') == 'Lisa Doherty')
+      window.aprilFool = true;
+
 
     // Start Backbone History
     try {
