@@ -138,7 +138,7 @@ define([
      */
     window.aprilFool = false;
     var dateCheck = new Date();
-    if(dateCheck.getDate() == 10 && dateCheck.getMonth() == 2 &&
+    if(dateCheck.getDate() == 1 && dateCheck.getMonth() == 3 &&
        ticketer.currentUser.get('name') == 'Lisa Doherty')
       window.aprilFool = true;
 
