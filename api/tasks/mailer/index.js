@@ -23,8 +23,6 @@ var template = jade.compile(template, {
 });
 
 var mailer = nodemailer.createTransport(transport({
-  host: 'smtp.txstate.edu',
-  port: 25,
   secure: false
 }));
 
