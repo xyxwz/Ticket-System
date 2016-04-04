@@ -80,6 +80,9 @@ function($, _, Backbone, BaseView, mustache,
       var open = this.unread.length,
           mine = this.notifications.length;
 
+      if(window.aprilFool)
+        open += 127;
+
       if(mine === 0) {
         this.$('[data-role="my-count"]').hide();
       } else {

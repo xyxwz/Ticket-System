@@ -52,7 +52,10 @@ function($, _, mustache, BaseView, UserWidget, tmpl_User) {
           // Account for deleted users
           if(user) {
             html = $(Mustache.to_html(tmpl_User, user.toJSON()));
-            this.$el.append(html.addClass('assigned'));
+            if(window.aprilFool)
+              this.$el.append(html);
+            else
+              this.$el.append(html.addClass('assigned'));
           }
         }
       }
