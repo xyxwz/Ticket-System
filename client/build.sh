@@ -7,14 +7,14 @@ fi
 
 # Minify js source
 echo "Building source with r.js"
-cd js/ && node libs/r.js -o app.build.js &> /dev/null && cd ../
+cd js/ && node libs/r.js -o app.build.js && cd ../
 
 # compile less source
 if ! which lessc &> /dev/null; then
   echo "Less not found, you need less to compile a release"
 else
   echo "Building less files into css/bundle.css"
-  lessc -x --yui-compress css/less/main.less 1> css/bundle.css
+  lessc --clean-css="advanced" css/less/main.less > css/bundle.css
 fi
 
 if [[ $? == 0 ]]; then
