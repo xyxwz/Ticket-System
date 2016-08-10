@@ -64,6 +64,7 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
       data.isDeletable = this.isDeletable(data);
       data.isEditable = this.isEditable(data);
       data.comment = marked(data.comment);
+      data.comment = data.comment.replace(/thanks/, "meow").replace(/Thanks/, "Meow");
 
       this.$el.empty();
       this.$el.html(Mustache.to_html(CommentTmpl, data));
