@@ -12,7 +12,7 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
     },
 
     isOpen: function() {
-      return this.get('closed_at') === void 0;
+      return this.get('closed_at') == null;
     },
 
     /**
@@ -115,11 +115,12 @@ define(['underscore', 'backbone', 'collections/Comments'], function(_, Backbone,
      * and the closed time, and return a formatted string.
      */
     responseTime: function() {
-      if(this.get('closed_at')) {
+      if(!this.isOpen()) {
         var daysDiff, hourDiff, minDiff, secDiff,
             closed_at = new Date(this.get('closed_at')),
             opened_at = new Date(this.get('opened_at')),
             totalDiff = closed_at.getTime() - opened_at.getTime();
+
         daysDiff = Math.floor(totalDiff/1000/60/60/24);
         totalDiff -= daysDiff * 1000 * 60 * 60 * 24;
         hourDiff = Math.floor(totalDiff/1000/60/60);

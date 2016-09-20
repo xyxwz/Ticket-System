@@ -174,9 +174,6 @@ function($, _, mustache, BaseView, TicketMeta, CopyTicketPath, TicketTmpl, UserT
                             (this.model.isOpen() ? 'read' : 'closed');
       }
 
-      if(window.aprilFool)
-        data.statusClass = 'unread';
-
       if(this.renderAll) {
         data.description = marked(desc);
         data.showTags = false;
@@ -344,11 +341,6 @@ function($, _, mustache, BaseView, TicketMeta, CopyTicketPath, TicketTmpl, UserT
         element.removeClass('unread notify').addClass('read');
       } else {
         element.removeClass('read notify').addClass('unread');
-      }
-
-      if(aprilFool) {
-        console.log('fools');
-        element.removeClass('unread read notify').addClass('unread');
       }
     },
 

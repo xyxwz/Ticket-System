@@ -14,14 +14,10 @@ function($, _, Backbone, mustache, Ticket) {
       ticketer.EventEmitter.on('comment:new', this.commentNotification, this);
       ticketer.EventEmitter.on('ticket:update', this.closedNotification, this);
 
-      // Notification.request permission must be invoked
-      // after the first event on the page - this is a HACK
       if(Notification.permission === 'granted') {
         this.allowed = true;
       } else if(Notification.permission !== 'denied') {
-        $('body').one('click', function() {
-          self.requestPermission();
-        });
+        self.requestPermission();
       }
     },
 
@@ -63,7 +59,8 @@ function($, _, Backbone, mustache, Ticket) {
 
             n = new Notification(t, {
               body: message.comment,
-              icon: message.user.avatar
+              icon: message.user.avatar,
+              requireInteraction: true
             });
 
             $(n).one('click', function() {
@@ -96,7 +93,8 @@ function($, _, Backbone, mustache, Ticket) {
 
           n = new Notification('Ticket Closed', {
             icon: '/img/assets/closed_ticket.png',
-            body: 'The following ticket has been closed: "' + message.title + '".'
+            body: 'The following ticket has been closed: "' + message.title + '".',
+            requireInteraction: true
           });
         }
       }
