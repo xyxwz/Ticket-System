@@ -13,8 +13,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     },
 
     fun: function() {
-      var funUsers = ["Mark Andrus", "Kirby Williams",
-                      "Shane Fleming", "Andrew Young"];
+      var funUsers = ["Andrew Young"];
       return funUsers.indexOf(this.get('name')) != -1;
     },
 
