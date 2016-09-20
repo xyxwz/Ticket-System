@@ -63,6 +63,7 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
 
       data.isDeletable = this.isDeletable(data);
       data.isEditable = this.isEditable(data);
+      data.isFun = this.isFun();
       data.comment = marked(data.comment);
 
       this.$el.empty();
@@ -109,6 +110,16 @@ function($, _, Backbone, BaseView, mustache, CommentTmpl, EditTmpl) {
     isDeletable: function(data) {
       return data.user.id === ticketer.currentUser.id ||
               ticketer.currentUser.isAdmin();
+    },
+
+    /**
+     * Fun user?
+     *
+     * @return {Boolean}
+     */
+
+    isFun: function() {
+      return ticketer.currentUser.fun();
     },
 
     editComment: function(e) {

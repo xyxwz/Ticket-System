@@ -10,7 +10,8 @@
     <time datetime="{{created_at}}">{{cleanTime}}</time>
   </div>
 
-  <div class="md">
+  {{#isFun}}<div class="md" style="font-family: ComicSans;">{{/isFun}}
+  {{^isFun}}<div class="md">{{/isFun}}
     {{{comment}}}
   </div>
 </div>

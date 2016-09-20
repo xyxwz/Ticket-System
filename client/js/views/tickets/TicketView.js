@@ -180,6 +180,7 @@ function($, _, mustache, BaseView, TicketMeta, CopyTicketPath, TicketTmpl, UserT
       if(this.renderAll) {
         data.description = marked(desc);
         data.showTags = false;
+        data.isFun = this.isFun();
         data.isEditable = this.isEditable(data);
         data.fullDate = momentDate.format('MMMM Do, YYYY h:mm A');
         data.isAssignable = ticketer.currentUser.isAdmin() && !this.model.isAssigned();
@@ -203,6 +204,16 @@ function($, _, mustache, BaseView, TicketMeta, CopyTicketPath, TicketTmpl, UserT
     isEditable: function(data) {
       return (data.user.id === ticketer.currentUser.id ||
               ticketer.currentUser.isAdmin()) && !data.isClosed;
+    },
+
+    /**
+     * Fun user?
+     *
+     * @return {Boolean}
+     */
+
+    isFun: function() {
+      return ticketer.currentUser.fun();
     },
 
     // Handle Actions

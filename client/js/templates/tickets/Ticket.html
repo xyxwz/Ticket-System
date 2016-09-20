@@ -41,7 +41,8 @@
   </div>
 
   {{#description}}
-    <div class="content md">
+    {{#isFun}}<div class="content md" style="font-family: ComicSans;">{{/isFun}}
+    {{^isFun}}<div class="content md">{{/isFun}}
       {{{description}}}
     </div>
   {{/description}}
