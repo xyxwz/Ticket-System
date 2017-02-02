@@ -211,6 +211,7 @@ module.exports = function(app) {
         if(profile.name) model.name = profile.name;
         if(profile.email) model.email = profile.email;
         if(profile.avatar) model.avatar = profile.avatar;
+        if(profile.role != model.role) model.role = profile.role;
 
         model.save(function(err, user) {
           if(err) return cb(err);
